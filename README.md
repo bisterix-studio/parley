@@ -1,10 +1,10 @@
 # Parley
 
 Parley is an addon for [Godot 4.4+](https://godotengine.org/) that provides a
-graph-based dialogue manager for writing, testing, and running dialogue
-sequences at scale with ease. Write your dialogue sequences by defining the
-graph for your dialogue sequence which are backed by a well-defined Dialogue AST
-for easy management and integration within your game.
+graph-based dialogue manager for easy writing, testing, and running of dialogue
+sequences at scale. Write your dialogue sequences by defining the graph for your
+dialogue sequence which are backed by a well-defined Dialogue AST for easy
+management and integration within your game.
 
 <!-- TODO: check the link -->
 
@@ -70,4 +70,4 @@ Documentation for Parley can be found [here](docs/parley.md).
 
 ## License
 
-Nifty li'l tricks packages are 100% free and open-source, under the MIT license.
+Parley is 100% free and open-source, under the MIT license.
