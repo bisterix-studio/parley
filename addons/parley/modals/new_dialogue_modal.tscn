@@ -1,0 +1,91 @@
+[gd_scene load_steps=3 format=3 uid="uid://1alef4tqlskn"]
+
+[ext_resource type="Script" uid="uid://k61ki1a2kh34" path="res://addons/parley/modals/new_dialogue_modal.gd" id="1_71u4d"]
+[ext_resource type="Texture2D" uid="uid://d4d8bblglcblx" path="res://addons/parley/assets/Folder.svg" id="2_02wlb"]
+
+[node name="NewDialogueModal" type="Window"]
+auto_translate_mode = 1
+title = "New Dialogue"
+initial_position = 2
+size = Vector2i(800, 400)
+min_size = Vector2i(800, 400)
+script = ExtResource("1_71u4d")
+
+[node name="NewDialogueMarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="NewDialogueContainer" type="VBoxContainer" parent="NewDialogueMarginContainer"]
+layout_mode = 2
+
+[node name="PathContainer" type="HBoxContainer" parent="NewDialogueMarginContainer/NewDialogueContainer"]
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="NewDialogueMarginContainer/NewDialogueContainer/PathContainer"]
+layout_mode = 2
+text = "Path:"
+
+[node name="PathEdit" type="LineEdit" parent="NewDialogueMarginContainer/NewDialogueContainer/PathContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "res://dialogue/new_dialogue.dlog"
+expand_to_text_length = true
+
+[node name="ChoosePathButton" type="Button" parent="NewDialogueMarginContainer/NewDialogueContainer/PathContainer"]
+layout_mode = 2
+icon = ExtResource("2_02wlb")
+flat = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="NewDialogueMarginContainer/NewDialogueContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[color=#19e34f]
+[ul]Script/path name is valid[/ul][/color][color=#19e34f]
+[ul]Will create a new Dialogue file[/ul][/color]
+"
+fit_content = true
+
+[node name="ActionButonContainer" type="HBoxContainer" parent="NewDialogueMarginContainer/NewDialogueContainer"]
+layout_mode = 2
+
+[node name="CancelContainer" type="MarginContainer" parent="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CancelButton" type="Button" parent="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer/CancelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Cancel"
+
+[node name="CreateContainer" type="MarginContainer" parent="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CreateButton" type="Button" parent="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer/CreateContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Create"
+
+[node name="ChoosePathModal" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "Open Dialogue / Choose Location"
+initial_position = 2
+size = Vector2i(1000, 750)
+ok_button_text = "Open"
+filters = PackedStringArray("*.dlog")
+
+[connection signal="pressed" from="NewDialogueMarginContainer/NewDialogueContainer/PathContainer/ChoosePathButton" to="." method="_on_choose_path_button_pressed"]
+[connection signal="pressed" from="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer/CancelContainer/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer/CreateContainer/CreateButton" to="." method="_on_create_button_pressed"]
+[connection signal="file_selected" from="ChoosePathModal" to="." method="_on_file_dialog_file_selected"]

@@ -1,0 +1,73 @@
+[gd_scene load_steps=7 format=3 uid="uid://bl5g47dhb7hmk"]
+
+[ext_resource type="Script" uid="uid://dbqp7dc5s5e3n" path="res://addons/parley/components/sidebar.gd" id="1_d0u7e"]
+[ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="2_sqyhy"]
+[ext_resource type="Script" uid="uid://cjo7uxv32sr14" path="res://addons/parley/models/edge_ast.gd" id="2_vb3pr"]
+[ext_resource type="Script" uid="uid://3nqtsewsmim0" path="res://addons/parley/models/node_ast.gd" id="3_1dc5p"]
+[ext_resource type="Script" uid="uid://btn7s5anok7p4" path="res://addons/parley/models/dialogue_ast.gd" id="4_jvowb"]
+
+[sub_resource type="Resource" id="Resource_kmloq"]
+script = ExtResource("4_jvowb")
+title = ""
+edges = Array[ExtResource("2_vb3pr")]([])
+nodes = Array[ExtResource("3_1dc5p")]([])
+
+[node name="Sidebar" type="VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+script = ExtResource("1_d0u7e")
+current_dialogue_ast = SubResource("Resource_kmloq")
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DialogueSequenceListContainer" type="MarginContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="DialogueSequenceList" type="VBoxContainer" parent="VSplitContainer/DialogueSequenceListContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FilterDialogueSequences" type="LineEdit" parent="VSplitContainer/DialogueSequenceListContainer/DialogueSequenceList"]
+layout_mode = 2
+placeholder_text = "Filter dialogues..."
+right_icon = ExtResource("2_sqyhy")
+
+[node name="DialogueSequencesList" type="ItemList" parent="VSplitContainer/DialogueSequenceListContainer/DialogueSequenceList"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+allow_search = false
+
+[node name="NodeListContainer" type="MarginContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="NodeList" type="VBoxContainer" parent="VSplitContainer/NodeListContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SearchNodes" type="LineEdit" parent="VSplitContainer/NodeListContainer/NodeList"]
+layout_mode = 2
+placeholder_text = "Filter nodes..."
+clear_button_enabled = true
+right_icon = ExtResource("2_sqyhy")
+
+[node name="NodesItemList" type="ItemList" parent="VSplitContainer/NodeListContainer/NodeList"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+allow_search = false
+
+[connection signal="item_selected" from="VSplitContainer/DialogueSequenceListContainer/DialogueSequenceList/DialogueSequencesList" to="." method="_on_dialogue_sequences_list_item_selected"]
+[connection signal="text_changed" from="VSplitContainer/NodeListContainer/NodeList/SearchNodes" to="." method="_on_search_nodes_text_changed"]
+[connection signal="item_selected" from="VSplitContainer/NodeListContainer/NodeList/NodesItemList" to="." method="_on_item_list_item_selected"]

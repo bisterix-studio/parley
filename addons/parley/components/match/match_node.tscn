@@ -1,0 +1,111 @@
+[gd_scene load_steps=5 format=3 uid="uid://bmkirsqm7siwr"]
+
+[ext_resource type="Script" uid="uid://b1mht28t52klh" path="res://addons/parley/components/match/match_node.gd" id="1_43mlm"]
+[ext_resource type="Texture2D" uid="uid://b4bvbns7oq1fv" path="res://addons/parley/assets/ArrowHead.svg" id="1_46ahc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ga5i"]
+content_margin_left = 3.0
+content_margin_top = 5.0
+content_margin_right = 3.0
+content_margin_bottom = 5.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+border_color = Color(0.325, 0.325, 0.325, 0.6)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oifpe"]
+content_margin_left = 15.0
+content_margin_top = 5.0
+content_margin_right = 15.0
+content_margin_bottom = 5.0
+bg_color = Color(0.658824, 0.313726, 0.0470588, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_detail = 5
+
+[node name="MatchNode" type="GraphNode"]
+z_index = 10
+custom_minimum_size = Vector2(350, 350)
+offset_right = 350.0
+offset_bottom = 350.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1ga5i")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_oifpe")
+title = "Match [ID: ]"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(0.498039, 1, 0, 1)
+slot/0/left_icon = ExtResource("1_46ahc")
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(0.498039, 1, 0, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(0.498039, 1, 0, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(0.498039, 1, 0, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color(0.498039, 1, 0, 1)
+slot/2/left_icon = null
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color(0.498039, 1, 0, 1)
+slot/2/right_icon = null
+slot/2/draw_stylebox = true
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color(0.498039, 1, 0, 1)
+slot/3/left_icon = null
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color(0.498039, 1, 0, 1)
+slot/3/right_icon = null
+slot/3/draw_stylebox = true
+script = ExtResource("1_43mlm")
+
+[node name="MatchDescriptionContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="MatchDescription" type="Label" parent="MatchDescriptionContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="HSeparator" type="HSeparator" parent="MatchDescriptionContainer"]
+layout_mode = 2
+
+[node name="FactContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="FactLabelContainer" type="HBoxContainer" parent="FactContainer"]
+layout_mode = 2
+
+[node name="FactLabel" type="Label" parent="FactContainer/FactLabelContainer"]
+layout_mode = 2
+text = "Fact: "
+
+[node name="Fact" type="Label" parent="FactContainer/FactLabelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="FactContainer"]
+layout_mode = 2
+
+[node name="CasesContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="CasesLabel" type="Label" parent="CasesContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cases:"
+clip_text = true
+text_overrun_behavior = 3

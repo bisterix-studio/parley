@@ -1,0 +1,264 @@
+class_name ParleyDefaultBalloon extends CanvasLayer
+
+const DialogueContainer: PackedScene = preload('./dialogue/dialogue_container.tscn')
+const DialogueOptionsContainer: PackedScene = preload('./dialogue_option/dialogue_options_container.tscn')
+const NextDialogueButton: PackedScene = preload('./next_dialogue_button.tscn')
+
+## The action to use for advancing the dialogue
+@export var next_action: StringName = &"ui_accept"
+
+
+@onready var balloon: Control = %Balloon
+@onready var balloon_container: VBoxContainer = %BalloonContainer
+
+var ctx: Dictionary = {}
+var dialogue_ast: DialogueAst
+
+var dialogue_history: Array = []
+
+## Temporary game states
+var temporary_game_states: Array = []
+
+## See if we are waiting for the player
+var is_waiting_for_input: bool = false
+
+var previous_node_ast: NodeAst = null
+
+var current_node_asts: Array[NodeAst]:
+	set(p_current_node_asts):
+		is_waiting_for_input = false
+		balloon.focus_mode = Control.FOCUS_ALL
+		balloon.grab_focus()
+
+		# The dialogue has finished so close the balloon
+		if p_current_node_asts.size() == 0 or is_instance_of(p_current_node_asts.front(), EndNodeAst):
+			queue_free()
+			return
+
+		# If the node isn't ready yet then none of the options
+		# will be ready yet either so we wait
+		if not is_node_ready():
+			await ready
+
+		balloon.show()
+		current_node_asts = p_current_node_asts
+		var current_children = balloon_container.get_children()
+		var next_children: Array[Node] = _build_next_children(current_children, p_current_node_asts.front())
+		if next_children.size() == 0:
+			return
+
+		_handle_next_actions(current_children, next_children)
+
+		balloon.focus_mode = Control.FOCUS_NONE
+		if not DialogueAst.is_dialogue_options(current_node_asts):
+			var next_button: Control = next_children.back()
+			next_button.gui_input.connect(_on_next_dialogue_button_gui_input.bind(next_button))
+			if not next_button.is_node_ready():
+				await next_button.ready
+			next_button.grab_focus()
+	get:
+		return current_node_asts
+
+
+func _build_next_children(current_children: Array[Node], current_node_ast: NodeAst) -> Array[Node]:
+	var next_children: Array[Node] = []
+	if is_instance_of(current_node_ast, DialogueNodeAst) and not current_node_ast.text.is_empty():
+		next_children.append_array(_build_next_dialogue_children(current_node_ast))
+	elif current_node_asts.filter(func(n): return is_instance_of(current_node_ast, DialogueOptionNodeAst)).size() == current_node_asts.size():
+		next_children.append_array(_build_next_dialogue_option_children(current_children))
+	else:
+		printerr("PARLEY_ERR: Invalid dialogue balloon nodes")
+		return []
+	return next_children
+
+
+func _build_next_dialogue_children(current_node_ast: NodeAst) -> Array[Node]:
+	var next_children: Array[Node] = []
+	if previous_node_ast is DialogueOptionNodeAst:
+		# Generate a new dialogue instance as if it were a dialogue
+		# because it effectively is now
+		var previous_dialogue_option_container = DialogueContainer.instantiate()
+		var previous_node_dialogue_ast = DialogueNodeAst.new(previous_node_ast.id, previous_node_ast.position, previous_node_ast.character, previous_node_ast.text)
+		previous_dialogue_option_container.dialogue_node = previous_node_dialogue_ast
+		previous_dialogue_option_container.set_meta('ast', previous_node_dialogue_ast)
+		next_children.append(previous_dialogue_option_container)
+		next_children.append(_create_horizontal_separator(previous_dialogue_option_container))
+	var next_dialogue_container = DialogueContainer.instantiate()
+	next_dialogue_container.dialogue_node = current_node_ast
+	next_dialogue_container.set_meta('ast', current_node_ast)
+	next_children.append(next_dialogue_container)
+	var next_dialogue_button: Control = NextDialogueButton.instantiate()
+	if dialogue_ast.is_at_end(ctx, current_node_ast):
+		next_dialogue_button.text = 'Leave'
+	next_children.append(next_dialogue_button)
+	return next_children
+
+
+func _build_next_dialogue_option_children(current_children: Array[Node]) -> Array[Node]:
+	var next_children: Array[Node] = []
+	var previous_node = _find_previous_node_ast(current_children)
+	if previous_node:
+		next_children.append(previous_node)
+		next_children.append(_create_horizontal_separator(previous_node))
+	var dialogue_options_container = DialogueOptionsContainer.instantiate()
+	dialogue_options_container.dialogue_options = current_node_asts
+	dialogue_options_container.dialogue_option_selected.connect(_on_dialogue_options_container_dialogue_option_selected)
+	next_children.append(dialogue_options_container)
+	return next_children
+
+
+func _handle_next_actions(current_children: Array[Node], next_children: Array[Node]) -> void:
+	var next_actions = []
+	for child in current_children:
+		if child is DialogueContainer:
+			if next_children.has(child):
+				next_actions.append({
+					'action': 'move_to_top',
+					'child': child
+				})
+			else:
+				next_actions.append({
+					'action': 'exit_top',
+					'child': child
+				})
+		else:
+			next_actions.append({
+				'action': 'fade_out',
+				'child': child
+			})
+	for child in next_children:
+		if not current_children.has(child):
+			next_actions.append({
+				'action': 'fade_in',
+				'child': child
+			})
+	for next_action in next_actions:
+		match next_action.action:
+			'exit_top': _exit_top(next_action)
+			'move_to_top': _move_to_top(next_action)
+			'fade_in': _fade_in(next_action)
+			'fade_out': _fade_out(next_action)
+
+
+func _create_horizontal_separator(sibling_above: Node) -> Node:
+	var horizontal_separator: MarginContainer = MarginContainer.new()
+	if sibling_above.has_theme_constant('margin_left'):
+		var margin_left = sibling_above.get_theme_constant('margin_left')
+		horizontal_separator.add_theme_constant_override('margin_left', margin_left * 2)
+	if sibling_above.has_theme_constant('margin_right'):
+		var margin_right = sibling_above.get_theme_constant('margin_right')
+		horizontal_separator.add_theme_constant_override('margin_right', margin_right * 2)
+	horizontal_separator.add_theme_constant_override('margin_top', 0)
+	horizontal_separator.add_theme_constant_override('margin_bottom', 0)
+	horizontal_separator.add_child(HSeparator.new())
+	return horizontal_separator
+
+
+#region ACTIONS
+func _exit_top(next_action: Dictionary) -> void:
+	var child = next_action.get('child')
+	if child and child.has_meta('ast'):
+		var ast = child.get_meta('ast')
+		dialogue_history.append(ast.duplicate())
+		child.queue_free()
+		await child.tree_exited
+
+
+func _move_to_top(next_action: Dictionary) -> void:
+	pass
+
+
+func _fade_in(next_action: Dictionary) -> void:
+	var child = next_action.get('child')
+	if child:
+		balloon_container.add_child(child)
+
+
+func _fade_out(next_action: Dictionary) -> void:
+	var child = next_action.get('child')
+	if child:
+		child.queue_free()
+		await child.tree_exited
+#endregion
+
+func _find_previous_node_ast(children: Array[Node]):
+	if not previous_node_ast:
+		return
+	for child in children:
+		if child.has_meta('ast'):
+			var ast = child.get_meta('ast')
+			if ast.id == previous_node_ast.id:
+				return child
+	return
+
+
+func _render_top() -> void:
+	if not previous_node_ast:
+		return
+	match previous_node_ast.type:
+		DialogueAst.Type.DIALOGUE:
+			balloon_container
+			
+
+func _ready() -> void:
+	balloon.hide()
+
+
+func _unhandled_input(_event: InputEvent) -> void:
+	# Only the balloon is allowed to handle input while it's showing
+	get_viewport().set_input_as_handled()
+
+
+# TODO: add a context param
+## Start some dialogue
+func start(_ctx: Dictionary, _dialogue_ast: DialogueAst, start_node: NodeAst = null) -> void:
+	balloon.show()
+	temporary_game_states = [self]
+	is_waiting_for_input = false
+	ctx = _ctx
+	dialogue_ast = _dialogue_ast
+	if start_node is DialogueNodeAst or start_node is DialogueOptionNodeAst:
+		current_node_asts = [start_node]
+	elif start_node:
+		current_node_asts = dialogue_ast.process_next(ctx, start_node)
+	else:
+		current_node_asts = dialogue_ast.process_next(ctx)
+
+
+## Process the next Nodes
+func next(current_node_ast: NodeAst) -> void:
+	# Probably want to emit at this point? Or maybe earlier
+	dialogue_history.append(current_node_ast)
+	previous_node_ast = current_node_ast
+	current_node_asts = dialogue_ast.process_next(ctx, current_node_ast)
+
+
+#region Signals
+func _on_balloon_gui_input(event: InputEvent) -> void:
+	if not is_waiting_for_input: return
+	if DialogueAst.is_dialogue_options(current_node_asts): return
+
+	# When there are no dialogue options the balloon itself is the clickable thing
+	get_viewport().set_input_as_handled()
+
+	var current_node: DialogueNodeAst = current_node_asts.front()
+	if event is InputEventMouseButton and event.is_pressed() and event.get('button_index') == MOUSE_BUTTON_LEFT:
+		next(current_node)
+	elif event.is_action_pressed(next_action) and get_viewport().gui_get_focus_owner() == balloon:
+		next(current_node)
+
+
+func _on_next_dialogue_button_gui_input(event: InputEvent, item: Control) -> void:
+	if DialogueAst.is_dialogue_options(current_node_asts): return
+	get_viewport().set_input_as_handled()
+
+	var current_node: DialogueNodeAst = current_node_asts.front()
+	if event is InputEventMouseButton and event.is_pressed() and event.get('button_index') == MOUSE_BUTTON_LEFT:
+		next(current_node)
+	elif event is InputEventKey and event.is_action_pressed(next_action) and item is NextDialogueButton and get_viewport().gui_get_focus_owner() == item:
+		next(current_node)
+
+
+func _on_dialogue_options_container_dialogue_option_selected(current_node: DialogueOptionNodeAst) -> void:
+	next(current_node)
+#endregion

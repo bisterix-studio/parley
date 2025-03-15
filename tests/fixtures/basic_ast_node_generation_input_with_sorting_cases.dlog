@@ -1,0 +1,155 @@
+{
+  "title": "",
+  "nodes": [
+    {
+      "id": "1",
+      "type": "START",
+      "position": "(920.0, 1080.0)"
+    },
+    {
+      "id": "2",
+      "type": "DIALOGUE",
+      "position": "(1240.0, 980.0)",
+      "character": "Carrie",
+      "text": "Test cases"
+    },
+    {
+      "id": "3",
+      "type": "DIALOGUE_OPTION",
+      "position": "(1820.0, 720.0)",
+      "character": "Carrie",
+      "text": "Fixture 1"
+    },
+    {
+      "id": "4",
+      "type": "DIALOGUE_OPTION",
+      "position": "(1840.0, 1180.0)",
+      "character": "Carrie",
+      "text": "Fixture 2"
+    },
+    {
+      "id": "6",
+      "type": "DIALOGUE",
+      "position": "(2440.0, 640.0)",
+      "character": "Carrie",
+      "text": "Ordered already"
+    },
+    {
+      "id": "8",
+      "type": "DIALOGUE",
+      "position": "(2440.0, 1260.0)",
+      "character": "Carrie",
+      "text": "Created in a different order"
+    },
+    {
+      "id": "9",
+      "type": "DIALOGUE_OPTION",
+      "position": "(3120.0, 140.0)",
+      "character": "Carrie",
+      "text": "Top"
+    },
+    {
+      "id": "10",
+      "type": "DIALOGUE_OPTION",
+      "position": "(3120.0, 420.0)",
+      "character": "Carrie",
+      "text": "Middle"
+    },
+    {
+      "id": "11",
+      "type": "DIALOGUE_OPTION",
+      "position": "(3120.0, 720.0)",
+      "character": "Carrie",
+      "text": "Bottom"
+    },
+    {
+      "id": "12",
+      "type": "DIALOGUE_OPTION",
+      "position": "(3140.0, 1460.0)",
+      "character": "Carrie",
+      "text": "Middle"
+    },
+    {
+      "id": "13",
+      "type": "DIALOGUE_OPTION",
+      "position": "(3580.0, 1480.0)",
+      "character": "Carrie",
+      "text": "Bottom"
+    },
+    {
+      "id": "14",
+      "type": "DIALOGUE_OPTION",
+      "position": "(3120.0, 1140.0)",
+      "character": "Carrie",
+      "text": "Top"
+    }
+  ],
+  "edges": [
+    {
+      "from_node": "1",
+      "from_slot": 0,
+      "to_node": "2",
+      "to_slot": 0
+    },
+    {
+      "from_node": "2",
+      "from_slot": 0,
+      "to_node": "3",
+      "to_slot": 0
+    },
+    {
+      "from_node": "2",
+      "from_slot": 0,
+      "to_node": "4",
+      "to_slot": 0
+    },
+    {
+      "from_node": "4",
+      "from_slot": 0,
+      "to_node": "8",
+      "to_slot": 0
+    },
+    {
+      "from_node": "3",
+      "from_slot": 0,
+      "to_node": "6",
+      "to_slot": 0
+    },
+    {
+      "from_node": "6",
+      "from_slot": 0,
+      "to_node": "9",
+      "to_slot": 0
+    },
+    {
+      "from_node": "6",
+      "from_slot": 0,
+      "to_node": "10",
+      "to_slot": 0
+    },
+    {
+      "from_node": "6",
+      "from_slot": 0,
+      "to_node": "11",
+      "to_slot": 0
+    },
+    {
+      "from_node": "8",
+      "from_slot": 0,
+      "to_node": "14",
+      "to_slot": 0
+    },
+    {
+      "from_node": "8",
+      "from_slot": 0,
+      "to_node": "12",
+      "to_slot": 0
+    },
+    {
+      "from_node": "8",
+      "from_slot": 0,
+      "to_node": "13",
+      "to_slot": 0
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://m3v11vm16l8y"]
+
+[ext_resource type="Script" uid="uid://edcww4owyx04" path="res://addons/parley/components/node/node_editor.gd" id="1_g4urk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l4dko"]
+bg_color = Color(0.0980392, 0.301961, 0.156863, 1)
+
+[node name="NodeEditor" type="VBoxContainer"]
+offset_right = 125.0
+offset_bottom = 39.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_g4urk")
+
+[node name="TitleContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TitlePanelContainer" type="PanelContainer" parent="TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_l4dko")
+
+[node name="TitleMarginContainer" type="MarginContainer" parent="TitleContainer/TitlePanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 1
+
+[node name="TitleLabel" type="Label" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Unknown [ID: ]"
+
+[node name="BodyMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="BodyContainer" type="VBoxContainer" parent="BodyMarginContainer"]
+layout_mode = 2

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="FactStore" load_steps=9 format=3 uid="uid://cxvb7na67nr1w"]
+
+[ext_resource type="Script" uid="uid://dhlbgj5hd2115" path="res://addons/parley/models/fact.gd" id="1_oavai"]
+[ext_resource type="Script" uid="uid://ob0am6au6mmt" path="res://addons/parley/stores/fact_store.gd" id="2_1bmlr"]
+[ext_resource type="Script" uid="uid://b4fwgn4lc3lch" path="res://tests/fixtures/facts/basic_fact_1_fact.gd" id="2_o0yu1"]
+[ext_resource type="Script" uid="uid://ckyejfwwtt68r" path="res://tests/fixtures/facts/basic_fact_2_fact.gd" id="3_syhfx"]
+[ext_resource type="Script" uid="uid://cujwnp27j3o17" path="res://tests/fixtures/facts/basic_fact_3_fact.gd" id="4_u3827"]
+
+[sub_resource type="Resource" id="Resource_mx15w"]
+script = ExtResource("1_oavai")
+id = 0
+name = "Fact 1"
+ref = ExtResource("2_o0yu1")
+
+[sub_resource type="Resource" id="Resource_xkj64"]
+script = ExtResource("1_oavai")
+id = 1
+name = "Fact 2"
+ref = ExtResource("3_syhfx")
+
+[sub_resource type="Resource" id="Resource_8vw6b"]
+script = ExtResource("1_oavai")
+id = 2
+name = "Fact 3"
+ref = ExtResource("4_u3827")
+
+[resource]
+script = ExtResource("2_1bmlr")
+facts = Array[ExtResource("1_oavai")]([SubResource("Resource_mx15w"), SubResource("Resource_xkj64"), SubResource("Resource_8vw6b")])

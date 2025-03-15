@@ -1,0 +1,267 @@
+{
+  "title": "Jonny",
+  "nodes": [
+    {
+      "id": "1",
+      "type": "START",
+      "position": "(0.0, 400.0)"
+    },
+    {
+      "id": "3",
+      "type": "DIALOGUE",
+      "position": "(240.0, 400.0)",
+      "character": "Jonny",
+      "text": "Look. I made a thing."
+    },
+    {
+      "id": "4",
+      "type": "DIALOGUE",
+      "position": "(600.0, 400.0)",
+      "character": "Carrie",
+      "text": "Wow. Great."
+    },
+    {
+      "id": "6",
+      "type": "CONDITION",
+      "position": "(980.0, 400.0)",
+      "description": "Carrie has a coffee",
+      "condition": "ALL",
+      "conditions": [
+        {
+          "fact_ref": "res://facts/carrie_has_coffee_fact.gd",
+          "operator": 0,
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "type": "DIALOGUE",
+      "position": "(1480.0, 400.0)",
+      "character": "Jonny",
+      "text": "LOOK AT MY THING!"
+    },
+    {
+      "id": "8",
+      "type": "DIALOGUE_OPTION",
+      "position": "(2040.0, 340.0)",
+      "character": "Billie",
+      "text": "Give to Jonny"
+    },
+    {
+      "id": "13",
+      "type": "DIALOGUE_OPTION",
+      "position": "(2040.0, 700.0)",
+      "character": "Billie",
+      "text": "Keep it"
+    },
+    {
+      "id": "9",
+      "type": "ACTION",
+      "position": "(2460.0, 340.0)",
+      "description": "Register that coffee was found",
+      "action_type": "SCRIPT",
+      "action_script_ref": "res://actions/advance_time_action.gd",
+      "values": [
+        "4h"
+      ]
+    },
+    {
+      "id": "10",
+      "type": "DIALOGUE",
+      "position": "(3000.0, 340.0)",
+      "character": "Billie",
+      "text": "Here you go."
+    },
+    {
+      "id": "11",
+      "type": "DIALOGUE",
+      "position": "(3360.0, 340.0)",
+      "character": "Asterix",
+      "text": "Cheers."
+    },
+    {
+      "id": "12",
+      "type": "DIALOGUE",
+      "position": "(3720.0, 340.0)",
+      "character": "Billie",
+      "text": "You're welcome."
+    },
+    {
+      "id": "14",
+      "type": "DIALOGUE",
+      "position": "(2460.0, 700.0)",
+      "character": "Billie",
+      "text": "But it's mine."
+    },
+    {
+      "id": "15",
+      "type": "DIALOGUE",
+      "position": "(2820.0, 700.0)",
+      "character": "Asterix",
+      "text": "Fair enough."
+    },
+    {
+      "id": "16",
+      "type": "CONDITION",
+      "position": "(1480.0, 700.0)",
+      "description": "Jonny gave a coffee",
+      "condition": "ALL",
+      "conditions": [
+        {
+          "fact_ref": "res://facts/jonny_gave_coffee_fact.gd",
+          "operator": 0,
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "id": "17",
+      "type": "DIALOGUE",
+      "position": "(2040.0, 960.0)",
+      "character": "Carrie",
+      "text": "Mmm. Coffee. Now, what did you want me to look at?"
+    },
+    {
+      "id": "19",
+      "type": "DIALOGUE",
+      "position": "(2020.0, 1340.0)",
+      "character": "Carrie",
+      "text": "I NEED COFFEE!"
+    },
+    {
+      "id": "20",
+      "type": "DIALOGUE",
+      "position": "(2420.0, 1340.0)",
+      "character": "Billie",
+      "text": "I'll get you coffee, Mama. But first, CATNIP."
+    },
+    {
+      "id": "21",
+      "type": "END",
+      "position": "(4160.0, 860.0)"
+    }
+  ],
+  "edges": [
+    {
+      "from_node": "1",
+      "from_slot": 0,
+      "to_node": "3",
+      "to_slot": 0
+    },
+    {
+      "from_node": "3",
+      "from_slot": 0,
+      "to_node": "4",
+      "to_slot": 0
+    },
+    {
+      "from_node": "4",
+      "from_slot": 0,
+      "to_node": "6",
+      "to_slot": 0
+    },
+    {
+      "from_node": "6",
+      "from_slot": 0,
+      "to_node": "7",
+      "to_slot": 0
+    },
+    {
+      "from_node": "6",
+      "from_slot": 1,
+      "to_node": "16",
+      "to_slot": 0
+    },
+    {
+      "from_node": "7",
+      "from_slot": 0,
+      "to_node": "8",
+      "to_slot": 0
+    },
+    {
+      "from_node": "7",
+      "from_slot": 0,
+      "to_node": "13",
+      "to_slot": 0
+    },
+    {
+      "from_node": "8",
+      "from_slot": 0,
+      "to_node": "9",
+      "to_slot": 0
+    },
+    {
+      "from_node": "13",
+      "from_slot": 0,
+      "to_node": "14",
+      "to_slot": 0
+    },
+    {
+      "from_node": "9",
+      "from_slot": 0,
+      "to_node": "10",
+      "to_slot": 0
+    },
+    {
+      "from_node": "10",
+      "from_slot": 0,
+      "to_node": "11",
+      "to_slot": 0
+    },
+    {
+      "from_node": "11",
+      "from_slot": 0,
+      "to_node": "12",
+      "to_slot": 0
+    },
+    {
+      "from_node": "14",
+      "from_slot": 0,
+      "to_node": "15",
+      "to_slot": 0
+    },
+    {
+      "from_node": "16",
+      "from_slot": 0,
+      "to_node": "17",
+      "to_slot": 0
+    },
+    {
+      "from_node": "16",
+      "from_slot": 1,
+      "to_node": "19",
+      "to_slot": 0
+    },
+    {
+      "from_node": "19",
+      "from_slot": 0,
+      "to_node": "20",
+      "to_slot": 0
+    },
+    {
+      "from_node": "12",
+      "from_slot": 0,
+      "to_node": "21",
+      "to_slot": 0
+    },
+    {
+      "from_node": "15",
+      "from_slot": 0,
+      "to_node": "21",
+      "to_slot": 0
+    },
+    {
+      "from_node": "20",
+      "from_slot": 0,
+      "to_node": "21",
+      "to_slot": 0
+    },
+    {
+      "from_node": "17",
+      "from_slot": 0,
+      "to_node": "21",
+      "to_slot": 0
+    }
+  ]
+}

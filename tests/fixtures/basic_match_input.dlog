@@ -1,0 +1,247 @@
+{
+  "title": "",
+  "nodes": [
+    {
+      "id": "1",
+      "type": "START",
+      "position": "(340.0, 800.0)"
+    },
+    {
+      "id": "2",
+      "type": "MATCH",
+      "position": "(1140.0, 640.0)",
+      "description": "Jonny's coffee status",
+      "fact_ref": "res://facts/jonny_coffee_status_fact.gd",
+      "cases": [
+        "NEEDS_COFFEE",
+        "NEEDS_MORE_COFFEE",
+        "NEEDS_EVEN_MORE_COFFEE",
+        "FALLBACK"
+      ]
+    },
+    {
+      "id": "3",
+      "type": "DIALOGUE",
+      "position": "(1980.0, 120.0)",
+      "character": "Jonny",
+      "text": "Yep, coffee please."
+    },
+    {
+      "id": "4",
+      "type": "DIALOGUE",
+      "position": "(1980.0, 560.0)",
+      "character": "Jonny",
+      "text": "Seriously, I need coffee."
+    },
+    {
+      "id": "5",
+      "type": "DIALOGUE",
+      "position": "(1980.0, 1020.0)",
+      "character": "Jonny",
+      "text": "COFFEE."
+    },
+    {
+      "id": "6",
+      "type": "DIALOGUE",
+      "position": "(1980.0, 1480.0)",
+      "character": "Jonny",
+      "text": "If in doubt, coffee please."
+    },
+    {
+      "id": "8",
+      "type": "DIALOGUE",
+      "position": "(2620.0, 800.0)",
+      "character": "Jonny",
+      "text": "Let's play some snooker!"
+    },
+    {
+      "id": "9",
+      "type": "MATCH",
+      "position": "(3220.0, 720.0)",
+      "description": "What snooker balls are these?",
+      "fact_ref": "res://facts/snooker_balls_fact.gd",
+      "cases": [
+        1.0,
+        2.0,
+        6.0,
+        5.0,
+        "FALLBACK"
+      ]
+    },
+    {
+      "id": "10",
+      "type": "DIALOGUE",
+      "position": "(3880.0, 260.0)",
+      "character": "Jonny",
+      "text": "You potted the red ball!"
+    },
+    {
+      "id": "11",
+      "type": "DIALOGUE",
+      "position": "(3880.0, 1820.0)",
+      "character": "Jonny",
+      "text": "And that's a bad miss."
+    },
+    {
+      "id": "12",
+      "type": "DIALOGUE",
+      "position": "(3880.0, 1420.0)",
+      "character": "Jonny",
+      "text": "You potted the blue ball!"
+    },
+    {
+      "id": "13",
+      "type": "DIALOGUE",
+      "position": "(3880.0, 1040.0)",
+      "character": "Jonny",
+      "text": "You potted the pink ball!"
+    },
+    {
+      "id": "14",
+      "type": "DIALOGUE",
+      "position": "(3880.0, 640.0)",
+      "character": "Jonny",
+      "text": "You potted the yellow ball!"
+    },
+    {
+      "id": "15",
+      "type": "END",
+      "position": "(4580.0, 1140.0)"
+    },
+    {
+      "id": "16",
+      "type": "DIALOGUE",
+      "position": "(700.0, 700.0)",
+      "character": "Jonny",
+      "text": "Let's find Jonny's coffee status."
+    }
+  ],
+  "edges": [
+    {
+      "from_node": "2",
+      "from_slot": 0,
+      "to_node": "3",
+      "to_slot": 0
+    },
+    {
+      "from_node": "2",
+      "from_slot": 1,
+      "to_node": "4",
+      "to_slot": 0
+    },
+    {
+      "from_node": "2",
+      "from_slot": 2,
+      "to_node": "5",
+      "to_slot": 0
+    },
+    {
+      "from_node": "2",
+      "from_slot": 3,
+      "to_node": "6",
+      "to_slot": 0
+    },
+    {
+      "from_node": "8",
+      "from_slot": 0,
+      "to_node": "9",
+      "to_slot": 0
+    },
+    {
+      "from_node": "4",
+      "from_slot": 0,
+      "to_node": "8",
+      "to_slot": 0
+    },
+    {
+      "from_node": "5",
+      "from_slot": 0,
+      "to_node": "8",
+      "to_slot": 0
+    },
+    {
+      "from_node": "6",
+      "from_slot": 0,
+      "to_node": "8",
+      "to_slot": 0
+    },
+    {
+      "from_node": "3",
+      "from_slot": 0,
+      "to_node": "8",
+      "to_slot": 0
+    },
+    {
+      "from_node": "9",
+      "from_slot": 0,
+      "to_node": "10",
+      "to_slot": 0
+    },
+    {
+      "from_node": "9",
+      "from_slot": 1,
+      "to_node": "14",
+      "to_slot": 0
+    },
+    {
+      "from_node": "9",
+      "from_slot": 2,
+      "to_node": "13",
+      "to_slot": 0
+    },
+    {
+      "from_node": "9",
+      "from_slot": 3,
+      "to_node": "12",
+      "to_slot": 0
+    },
+    {
+      "from_node": "9",
+      "from_slot": 4,
+      "to_node": "11",
+      "to_slot": 0
+    },
+    {
+      "from_node": "11",
+      "from_slot": 0,
+      "to_node": "15",
+      "to_slot": 0
+    },
+    {
+      "from_node": "12",
+      "from_slot": 0,
+      "to_node": "15",
+      "to_slot": 0
+    },
+    {
+      "from_node": "13",
+      "from_slot": 0,
+      "to_node": "15",
+      "to_slot": 0
+    },
+    {
+      "from_node": "14",
+      "from_slot": 0,
+      "to_node": "15",
+      "to_slot": 0
+    },
+    {
+      "from_node": "10",
+      "from_slot": 0,
+      "to_node": "15",
+      "to_slot": 0
+    },
+    {
+      "from_node": "1",
+      "from_slot": 0,
+      "to_node": "16",
+      "to_slot": 0
+    },
+    {
+      "from_node": "16",
+      "from_slot": 0,
+      "to_node": "2",
+      "to_slot": 0
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://lc8lftuoiu8k"]
+
+[ext_resource type="Texture2D" uid="uid://b4bvbns7oq1fv" path="res://addons/parley/assets/ArrowHead.svg" id="1_o2pw1"]
+[ext_resource type="Script" uid="uid://5igvflm4euei" path="res://addons/parley/components/end/end_node.gd" id="1_uj44e"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yxjvc"]
+content_margin_left = 3.0
+content_margin_top = 5.0
+content_margin_right = 3.0
+content_margin_bottom = 5.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xulwf"]
+content_margin_left = 15.0
+content_margin_top = 5.0
+content_margin_right = 15.0
+content_margin_bottom = 5.0
+bg_color = Color(0.356863, 0.305882, 0.564706, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_detail = 5
+
+[node name="EndNode" type="GraphNode"]
+z_index = 10
+custom_minimum_size = Vector2(200, 100)
+offset_right = 150.0
+offset_bottom = 50.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yxjvc")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_xulwf")
+title = "End [ID: ]"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(0.498039, 1, 0, 1)
+slot/0/left_icon = ExtResource("1_o2pw1")
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(0.498039, 1, 0, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("1_uj44e")
+
+[node name="EndDescriptionContainer" type="VBoxContainer" parent="."]
+layout_mode = 2

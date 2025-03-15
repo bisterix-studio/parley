@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://wc2udkydnpmq"
+
+[deps]
+
+files=["res://addons/parley/translations/tooltip_translations.en.translation"]
+
+source_file="res://addons/parley/translations/tooltip_translations.csv"
+dest_files=["res://addons/parley/translations/tooltip_translations.en.translation"]
+
+[params]
+
+compress=true
+delimiter=0

@@ -1,0 +1,50 @@
+[gd_scene load_steps=4 format=3 uid="uid://c4xfrrjgqu3cc"]
+
+[ext_resource type="Script" uid="uid://bh5kyegsgre06" path="res://addons/parley/components/match/case.gd" id="1_8khmf"]
+[ext_resource type="Texture2D" uid="uid://dres8tr2nd82o" path="res://addons/parley/assets/Remove.svg" id="2_onc15"]
+[ext_resource type="Texture2D" uid="uid://oqt4tn7c8fd" path="res://addons/parley/assets/Fallback.svg" id="2_qur82"]
+
+[node name="Case" type="HBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_8khmf")
+available_cases = ["FALLBACK"]
+
+[node name="Padding" type="Label" parent="."]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="FallbackIconContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+
+[node name="FallbackIcon" type="TextureRect" parent="FallbackIconContainer"]
+unique_name_in_owner = true
+visible = false
+layout_direction = 3
+layout_mode = 2
+texture = ExtResource("2_qur82")
+stretch_mode = 5
+
+[node name="CaseTextEditor" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CaseEditor" type="OptionButton" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+item_count = 1
+popup/item_0/text = "Fallback"
+popup/item_0/id = 0
+
+[node name="DeleteButton" type="Button" parent="."]
+layout_mode = 2
+icon = ExtResource("2_onc15")
+flat = true
+
+[connection signal="text_changed" from="CaseTextEditor" to="." method="_on_case_text_editor_text_changed"]
+[connection signal="item_selected" from="CaseEditor" to="." method="_on_case_editor_item_selected"]
+[connection signal="pressed" from="DeleteButton" to="." method="_on_delete_button_pressed"]

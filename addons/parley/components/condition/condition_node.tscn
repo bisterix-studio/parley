@@ -1,0 +1,94 @@
+[gd_scene load_steps=5 format=3 uid="uid://cp1kmxuvtwkf0"]
+
+[ext_resource type="Script" uid="uid://xrp5rdiheqii" path="res://addons/parley/components/condition/condition_node.gd" id="1_eh5mm"]
+[ext_resource type="Texture2D" uid="uid://b4bvbns7oq1fv" path="res://addons/parley/assets/ArrowHead.svg" id="1_o8bk8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7hhag"]
+content_margin_left = 3.0
+content_margin_top = 5.0
+content_margin_right = 3.0
+content_margin_bottom = 5.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q0i1h"]
+content_margin_left = 15.0
+content_margin_top = 5.0
+content_margin_right = 15.0
+content_margin_bottom = 5.0
+bg_color = Color(0.45098, 0.447059, 0.262745, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_detail = 5
+
+[node name="ConditionNode" type="GraphNode"]
+z_index = 10
+custom_minimum_size = Vector2(350, 250)
+offset_right = 9.0
+offset_bottom = 55.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_7hhag")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_q0i1h")
+title = "Condition [ID: ]"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(0.498039, 1, 0, 1)
+slot/0/left_icon = ExtResource("1_o8bk8")
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(0.498039, 1, 0, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(0.498039, 1, 0, 1)
+slot/1/left_icon = ExtResource("1_o8bk8")
+slot/1/right_enabled = true
+slot/1/right_type = 0
+slot/1/right_color = Color(0.498039, 1, 0, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color(0.498039, 1, 0, 1)
+slot/2/left_icon = ExtResource("1_o8bk8")
+slot/2/right_enabled = true
+slot/2/right_type = 0
+slot/2/right_color = Color(0.698039, 0.133333, 0.133333, 1)
+slot/2/right_icon = null
+slot/2/draw_stylebox = true
+script = ExtResource("1_eh5mm")
+
+[node name="ConditionDescriptionContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ConditionDescription" type="Label" parent="ConditionDescriptionContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="HSeparator" type="HSeparator" parent="ConditionDescriptionContainer"]
+layout_mode = 2
+
+[node name="ConditionTrueContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ConditionTrue" type="Label" parent="ConditionTrueContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "true	
+"
+horizontal_alignment = 2
+
+[node name="ConditionFalseContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ConditionFalse" type="Label" parent="ConditionFalseContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "false"
+horizontal_alignment = 2

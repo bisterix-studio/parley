@@ -1,0 +1,7 @@
+# Normalize EOL for all files that Git considers text files.
+* text=auto eol=lf
+
+# Only include the addons/parley folder when downloading from the Asset Library.
+/**        export-ignore
+/addons/parley    !export-ignore
+/addons/parley/** !export-ignore

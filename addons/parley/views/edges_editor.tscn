@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://brdgm6uqjhaxq"]
+
+[ext_resource type="Script" uid="uid://c6hnlb23dr6a3" path="res://addons/parley/views/edges_editor.gd" id="1_5t3tj"]
+
+[node name="EdgesEditor" type="VBoxContainer"]
+script = ExtResource("1_5t3tj")
+
+[node name="Edges" type="Label" parent="."]
+layout_mode = 2
+text = "Edges:"

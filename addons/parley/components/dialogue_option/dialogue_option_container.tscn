@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://be62d1ktifshc"]
+
+[ext_resource type="Script" uid="uid://vmw0so0ytp4g" path="res://addons/parley/components/dialogue_option/dialogue_option_container.gd" id="1_pntep"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42qd1"]
+resource_local_to_scene = true
+bg_color = Color(0.621524, 0.621524, 0.621524, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.196078, 0.196078, 0.196078, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="DialogueOptionContainer" type="PanelContainer"]
+custom_minimum_size = Vector2(200, 0)
+offset_right = 48.0
+offset_bottom = 40.0
+focus_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_42qd1")
+script = ExtResource("1_pntep")
+
+[node name="DialogueOptionMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 5
+
+[node name="DialogueOptionLabel" type="RichTextLabel" parent="DialogueOptionMarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/bold_italics_font_size = 24
+theme_override_font_sizes/italics_font_size = 24
+theme_override_font_sizes/mono_font_size = 24
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+bbcode_enabled = true
+text = "[center]Unknown[/center]"
+fit_content = true
+scroll_active = false
+
+[connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
+[connection signal="focus_exited" from="." to="." method="_on_focus_exited"]

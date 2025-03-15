@@ -1,0 +1,80 @@
+[gd_scene load_steps=3 format=3 uid="uid://dqn2u4mrnggth"]
+
+[ext_resource type="Script" uid="uid://y5sl824eliam" path="res://addons/parley/components/edge/edge_editor.gd" id="1_dn5bp"]
+[ext_resource type="Texture2D" uid="uid://dres8tr2nd82o" path="res://addons/parley/assets/Remove.svg" id="2_s762g"]
+
+[node name="EdgeEditor" type="VBoxContainer" node_paths=PackedStringArray("from_node_value", "from_slot_value", "to_node_value", "to_slot_value", "delete_edge_button")]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+script = ExtResource("1_dn5bp")
+from_node_value = NodePath("EdgeDetailsMargin/EdgeTableContainer/FromNodeValue")
+from_slot_value = NodePath("EdgeDetailsMargin/EdgeTableContainer/FromSlotValue")
+to_node_value = NodePath("EdgeDetailsMargin/EdgeTableContainer/ToNodeValue")
+to_slot_value = NodePath("EdgeDetailsMargin/EdgeTableContainer/ToSlotValue")
+delete_edge_button = NodePath("DeleteEdgeButtonContainer/DeleteEdgeButton")
+
+[node name="EdgeSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="EdgeDetailsMargin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="EdgeTableContainer" type="GridContainer" parent="EdgeDetailsMargin"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 4
+
+[node name="FromNodeLabel" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+layout_mode = 2
+text = "From Node:"
+
+[node name="FromNodeValue" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+layout_mode = 2
+
+[node name="FromSlotLabel" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+layout_mode = 2
+text = "From Slot:"
+
+[node name="FromSlotValue" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+layout_mode = 2
+text = "0"
+
+[node name="ToNodeLabel" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+layout_mode = 2
+text = "To Node:"
+
+[node name="ToNodeValue" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+layout_mode = 2
+
+[node name="ToSlotLabel" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+layout_mode = 2
+text = "To Slot:"
+
+[node name="ToSlotValue" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+layout_mode = 2
+text = "0"
+
+[node name="DeleteEdgeButtonContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="DeleteEdgeButton" type="Button" parent="DeleteEdgeButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Delete the selected edge."
+text = "Delete Edge"
+icon = ExtResource("2_s762g")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="mouse_entered" from="DeleteEdgeButtonContainer/DeleteEdgeButton" to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="DeleteEdgeButtonContainer/DeleteEdgeButton" to="." method="_on_mouse_exited"]
+[connection signal="pressed" from="DeleteEdgeButtonContainer/DeleteEdgeButton" to="." method="_on_delete_edge_button_pressed"]

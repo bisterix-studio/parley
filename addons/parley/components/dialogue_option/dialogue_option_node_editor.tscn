@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://cnq1fogoewemd"]
+
+[ext_resource type="Script" uid="uid://dy0x43s04n867" path="res://addons/parley/components/dialogue_option/dialogue_option_node_editor.gd" id="1_3b5a7"]
+[ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_acvks"]
+
+[node name="DialogueOptionNodeEditor" instance=ExtResource("1_acvks")]
+visible = false
+script = ExtResource("1_3b5a7")
+character = ""
+option = ""
+type = 1
+
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer" index="0"]
+text = "Dialogue Option [ID: ]"
+
+[node name="CharacterContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="BodyMarginContainer/BodyContainer/CharacterContainer" index="0"]
+layout_mode = 2
+text = "Character:"
+
+[node name="OptionButton" type="OptionButton" parent="BodyMarginContainer/BodyContainer/CharacterContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 4
+popup/item_0/text = "Carrie"
+popup/item_1/text = "Jonny"
+popup/item_1/id = 1
+popup/item_2/text = "Billie"
+popup/item_2/id = 2
+popup/item_3/text = "Asterix"
+popup/item_3/id = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="1"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="BodyMarginContainer/BodyContainer/VBoxContainer" index="0"]
+layout_mode = 2
+text = "Text: "
+
+[node name="CodeEdit" type="CodeEdit" parent="BodyMarginContainer/BodyContainer/VBoxContainer" index="1"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Dialogue goes here.."
+wrap_mode = 1
+line_folding = true
+indent_size = 2
+indent_use_spaces = true
+
+[connection signal="item_selected" from="BodyMarginContainer/BodyContainer/CharacterContainer/OptionButton" to="." method="_on_option_button_item_selected"]
+[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/VBoxContainer/CodeEdit" to="." method="_on_code_edit_text_changed"]

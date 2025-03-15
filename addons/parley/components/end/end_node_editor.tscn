@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://3nd63sr4621w"]
+
+[ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_5tahe"]
+[ext_resource type="Script" uid="uid://cxdbr384p80pg" path="res://addons/parley/components/end/end_node_editor.gd" id="2_oqdss"]
+
+[node name="EndNodeEditor" instance=ExtResource("1_5tahe")]
+visible = false
+script = ExtResource("2_oqdss")
+type = 5

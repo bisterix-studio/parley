@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bluc7ffod8a78"]
+
+[ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_d7xal"]
+[ext_resource type="Script" uid="uid://c57qf0jxioj6g" path="res://addons/parley/components/start/start_node_editor.gd" id="1_shjdk"]
+
+[node name="StartNodeEditor" instance=ExtResource("1_d7xal")]
+script = ExtResource("1_shjdk")
+type = 4
+
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer" index="0"]
+text = "Start [ID: ]"

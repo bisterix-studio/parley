@@ -1,0 +1,111 @@
+[gd_scene load_steps=5 format=3 uid="uid://i47f3r2rqsf6"]
+
+[ext_resource type="Script" uid="uid://bb2tkab6q6jy6" path="res://addons/parley/components/action/action_node_editor.gd" id="1_3lxj7"]
+[ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_ngxen"]
+[ext_resource type="Texture2D" uid="uid://c4qx01xbrjp7h" path="res://addons/parley/assets/Edit.svg" id="3_3rqr3"]
+[ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="4_ithju"]
+
+[node name="ActionNodeEditor" instance=ExtResource("1_ngxen")]
+script = ExtResource("1_3lxj7")
+description = ""
+action_type = 0
+action_script_name = ""
+values = []
+type = 3
+
+[node name="ActionDescriptionContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
+layout_mode = 2
+
+[node name="DescriptionEditor" type="TextEdit" parent="BodyMarginContainer/BodyContainer/ActionDescriptionContainer" index="0"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Register that Clue 1 was found"
+wrap_mode = 1
+scroll_past_end_of_file = true
+scroll_fit_content_height = true
+use_default_word_separators = false
+
+[node name="CodeEdit" type="CodeEdit" parent="BodyMarginContainer/BodyContainer/ActionDescriptionContainer" index="1"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+text = "func run() -> void:
+  pass"
+placeholder_text = "func run() -> void:
+  pass"
+scroll_past_end_of_file = true
+scroll_fit_content_height = true
+symbol_lookup_on_click = true
+code_completion_enabled = true
+
+[node name="HSeparator1" type="HSeparator" parent="BodyMarginContainer/BodyContainer" index="1"]
+layout_mode = 2
+
+[node name="ActionTypeContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="2"]
+layout_mode = 2
+
+[node name="ActionTypeLabel" type="Label" parent="BodyMarginContainer/BodyContainer/ActionTypeContainer" index="0"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Type:"
+
+[node name="ActionTypeEditor" type="OptionButton" parent="BodyMarginContainer/BodyContainer/ActionTypeContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 1
+popup/item_0/text = "Script"
+
+[node name="HSeparator2" type="HSeparator" parent="BodyMarginContainer/BodyContainer" index="3"]
+layout_mode = 2
+
+[node name="ActionScriptContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="4"]
+layout_mode = 2
+
+[node name="ActionScriptLabel" type="Label" parent="BodyMarginContainer/BodyContainer/ActionScriptContainer" index="0"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Action: "
+
+[node name="ActionScriptSelector" type="OptionButton" parent="BodyMarginContainer/BodyContainer/ActionScriptContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Advance Time"
+popup/item_1/text = "Found Clue"
+popup/item_1/id = 1
+popup/item_2/text = "Show NPC Item"
+popup/item_2/id = 2
+
+[node name="EditActionScriptButton" type="Button" parent="BodyMarginContainer/BodyContainer/ActionScriptContainer" index="2"]
+layout_mode = 2
+disabled = true
+icon = ExtResource("3_3rqr3")
+
+[node name="NewActionScriptButton" type="Button" parent="BodyMarginContainer/BodyContainer/ActionScriptContainer" index="3"]
+layout_mode = 2
+disabled = true
+icon = ExtResource("4_ithju")
+
+[node name="ActionValuesContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="5"]
+layout_mode = 2
+
+[node name="ActionValuesLabel" type="Label" parent="BodyMarginContainer/BodyContainer/ActionValuesContainer" index="0"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Values:"
+
+[node name="ActionValueDescription" type="TextEdit" parent="BodyMarginContainer/BodyContainer/ActionValuesContainer" index="1"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Clue1"
+wrap_mode = 1
+scroll_past_end_of_file = true
+scroll_fit_content_height = true
+use_default_word_separators = false
+
+[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/ActionDescriptionContainer/DescriptionEditor" to="." method="_on_action_description_text_changed"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyContainer/ActionTypeContainer/ActionTypeEditor" to="." method="_on_action_type_option_item_selected"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyContainer/ActionScriptContainer/ActionScriptSelector" to="." method="_on_action_script_selector_item_selected"]
+[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/ActionValuesContainer/ActionValueDescription" to="." method="_on_action_value_description_text_changed"]
