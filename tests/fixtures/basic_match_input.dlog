@@ -10,8 +10,8 @@
       "id": "2",
       "type": "MATCH",
       "position": "(1140.0, 640.0)",
-      "description": "Jonny's coffee status",
-      "fact_ref": "res://facts/jonny_coffee_status_fact.gd",
+      "description": "Alice's coffee status",
+      "fact_ref": "res://facts/alice_coffee_status_fact.gd",
       "cases": [
         "NEEDS_COFFEE",
         "NEEDS_MORE_COFFEE",
@@ -23,35 +23,35 @@
       "id": "3",
       "type": "DIALOGUE",
       "position": "(1980.0, 120.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "Yep, coffee please."
     },
     {
       "id": "4",
       "type": "DIALOGUE",
       "position": "(1980.0, 560.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "Seriously, I need coffee."
     },
     {
       "id": "5",
       "type": "DIALOGUE",
       "position": "(1980.0, 1020.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "COFFEE."
     },
     {
       "id": "6",
       "type": "DIALOGUE",
       "position": "(1980.0, 1480.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "If in doubt, coffee please."
     },
     {
       "id": "8",
       "type": "DIALOGUE",
       "position": "(2620.0, 800.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "Let's play some snooker!"
     },
     {
@@ -72,35 +72,35 @@
       "id": "10",
       "type": "DIALOGUE",
       "position": "(3880.0, 260.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "You potted the red ball!"
     },
     {
       "id": "11",
       "type": "DIALOGUE",
       "position": "(3880.0, 1820.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "And that's a bad miss."
     },
     {
       "id": "12",
       "type": "DIALOGUE",
       "position": "(3880.0, 1420.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "You potted the blue ball!"
     },
     {
       "id": "13",
       "type": "DIALOGUE",
       "position": "(3880.0, 1040.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "You potted the pink ball!"
     },
     {
       "id": "14",
       "type": "DIALOGUE",
       "position": "(3880.0, 640.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "You potted the yellow ball!"
     },
     {
@@ -112,8 +112,8 @@
       "id": "16",
       "type": "DIALOGUE",
       "position": "(700.0, 700.0)",
-      "character": "Jonny",
-      "text": "Let's find Jonny's coffee status."
+      "character": "Alice",
+      "text": "Let's find Alice's coffee status."
     }
   ],
   "edges": [

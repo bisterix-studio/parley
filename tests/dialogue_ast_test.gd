@@ -21,8 +21,8 @@ class Test_process_next:
 	var test_process_next_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "3", "expected_ids": ["4"]},
 		{"ctx": {}, "current_id": "4", "expected_ids": ["7"]},
-		{"ctx": {"carrie_has_coffee": false}, "current_id": "4", "expected_ids": ["17"]},
-		{"ctx": {"carrie_has_coffee": false, "jonny_gave_coffee": false}, "current_id": "4", "expected_ids": ["19"]},
+		{"ctx": {"bob_has_coffee": false}, "current_id": "4", "expected_ids": ["17"]},
+		{"ctx": {"bob_has_coffee": false, "alice_gave_coffee": false}, "current_id": "4", "expected_ids": ["19"]},
 		{"ctx": {}, "current_id": "7", "expected_ids": ["8", "13"]},
 		{"ctx": {}, "current_id": "8", "expected_ids": ["10"]},
 		{"ctx": {}, "current_id": "10", "expected_ids": ["11"]},
@@ -70,10 +70,10 @@ class Test_process_next:
 	
 	var test_process_next_with_match_node_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "1", "expected_ids": ["16"]},
-		{"ctx": {"jonny_coffee_status": "NEEDS_COFFEE"}, "current_id": "16", "expected_ids": ["3"]},
-		{"ctx": {"jonny_coffee_status": "NEEDS_MORE_COFFEE"}, "current_id": "16", "expected_ids": ["4"]},
-		{"ctx": {"jonny_coffee_status": "NEEDS_EVEN_MORE_COFFEE"}, "current_id": "16", "expected_ids": ["5"]},
-		{"ctx": {"jonny_coffee_status": "INVALID"}, "current_id": "16", "expected_ids": ["6"]},
+		{"ctx": {"alice_coffee_status": "NEEDS_COFFEE"}, "current_id": "16", "expected_ids": ["3"]},
+		{"ctx": {"alice_coffee_status": "NEEDS_MORE_COFFEE"}, "current_id": "16", "expected_ids": ["4"]},
+		{"ctx": {"alice_coffee_status": "NEEDS_EVEN_MORE_COFFEE"}, "current_id": "16", "expected_ids": ["5"]},
+		{"ctx": {"alice_coffee_status": "INVALID"}, "current_id": "16", "expected_ids": ["6"]},
 		{"ctx": {}, "current_id": "16", "expected_ids": ["6"]},
 		{"ctx": {}, "current_id": "3", "expected_ids": ["8"]},
 		{"ctx": {}, "current_id": "4", "expected_ids": ["8"]},

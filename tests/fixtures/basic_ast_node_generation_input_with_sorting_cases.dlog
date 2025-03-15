@@ -10,77 +10,77 @@
       "id": "2",
       "type": "DIALOGUE",
       "position": "(1240.0, 980.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Test cases"
     },
     {
       "id": "3",
       "type": "DIALOGUE_OPTION",
       "position": "(1820.0, 720.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Fixture 1"
     },
     {
       "id": "4",
       "type": "DIALOGUE_OPTION",
       "position": "(1840.0, 1180.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Fixture 2"
     },
     {
       "id": "6",
       "type": "DIALOGUE",
       "position": "(2440.0, 640.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Ordered already"
     },
     {
       "id": "8",
       "type": "DIALOGUE",
       "position": "(2440.0, 1260.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Created in a different order"
     },
     {
       "id": "9",
       "type": "DIALOGUE_OPTION",
       "position": "(3120.0, 140.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Top"
     },
     {
       "id": "10",
       "type": "DIALOGUE_OPTION",
       "position": "(3120.0, 420.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Middle"
     },
     {
       "id": "11",
       "type": "DIALOGUE_OPTION",
       "position": "(3120.0, 720.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Bottom"
     },
     {
       "id": "12",
       "type": "DIALOGUE_OPTION",
       "position": "(3140.0, 1460.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Middle"
     },
     {
       "id": "13",
       "type": "DIALOGUE_OPTION",
       "position": "(3580.0, 1480.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Bottom"
     },
     {
       "id": "14",
       "type": "DIALOGUE_OPTION",
       "position": "(3120.0, 1140.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Top"
     }
   ],

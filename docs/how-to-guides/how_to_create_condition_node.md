@@ -51,7 +51,7 @@ examples in the Parley `examples` folder.
 ![Condition Node Editor Add Condition](images/how_to_create_condition_node/condition_node_editor_add_condition.png)
 
 - Select a fact using the dropdown. In this case, we will select the
-  `Jonny gave coffee` fact. Facts are manually defined scripts that execute when
+  `Alice gave coffee` fact. Facts are manually defined scripts that execute when
   a condition is evaluated and return a value to be checked later in the
   condition.
 

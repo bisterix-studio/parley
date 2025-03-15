@@ -17,21 +17,21 @@
       "id": "3",
       "type": "DIALOGUE_OPTION",
       "position": "(1500.0, 580.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "SHOULD NOT BE RENDERED"
     },
     {
       "id": "4",
       "type": "DIALOGUE_OPTION",
       "position": "(1000.0, 1100.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "No guard 1"
     },
     {
       "id": "5",
       "type": "DIALOGUE_OPTION",
       "position": "(1000.0, 1540.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "No guard 2"
     },
     {
@@ -42,7 +42,7 @@
       "condition": "ALL",
       "conditions": [
         {
-          "fact_ref": "res://facts/jonny_gave_coffee_fact.gd",
+          "fact_ref": "res://facts/alice_gave_coffee_fact.gd",
           "operator": 0,
           "value": "false"
         }
@@ -52,14 +52,14 @@
       "id": "7",
       "type": "DIALOGUE",
       "position": "(2020.0, 1000.0)",
-      "character": "Jonny",
+      "character": "Alice",
       "text": "End"
     },
     {
       "id": "8",
       "type": "DIALOGUE_OPTION",
       "position": "(1500.0, 60.0)",
-      "character": "Carrie",
+      "character": "Bob",
       "text": "Behind truthy guard"
     },
     {
@@ -70,7 +70,7 @@
       "condition": "ALL",
       "conditions": [
         {
-          "fact_ref": "res://facts/jonny_gave_coffee_fact.gd",
+          "fact_ref": "res://facts/alice_gave_coffee_fact.gd",
           "operator": 0,
           "value": "true"
         }

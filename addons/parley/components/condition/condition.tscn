@@ -22,10 +22,10 @@ text = "Fact"
 unique_name_in_owner = true
 layout_mode = 2
 item_count = 3
-popup/item_0/text = "Jonny gave coffee"
-popup/item_1/text = "Carrie has coffee"
+popup/item_0/text = "Alice gave coffee"
+popup/item_1/text = "Bob has coffee"
 popup/item_1/id = 1
-popup/item_2/text = "Jonny gave coffee"
+popup/item_2/text = "Alice gave coffee"
 popup/item_2/id = 2
 
 [node name="OperatorContainer" type="HBoxContainer" parent="."]

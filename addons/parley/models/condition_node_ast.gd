@@ -18,7 +18,7 @@ enum Operator {EQUAL, NOT_EQUAL}
 
 
 ## The conditions of the Condition Node AST.
-## Example: [{"fact_ref":"res://facts/jonny_gave_coffee_fact.gd","operator":Operator.EQUAL,"value":"found"}]
+## Example: [{"fact_ref":"res://facts/alice_gave_coffee_fact.gd","operator":Operator.EQUAL,"value":"found"}]
 @export var conditions: Array = []
 
 
@@ -58,7 +58,7 @@ func update(p_description: String, p_condition_combiner: Combiner, p_conditions:
 
 
 ## Add a condition to the Condition Node AST.
-## Example: node.add_condition("res://facts/jonny_gave_coffee_fact.gd", Operator.EQUAL, true)
+## Example: node.add_condition("res://facts/alice_gave_coffee_fact.gd", Operator.EQUAL, true)
 func add_condition(fact_ref: String, operator: Operator, value) -> void:
 	conditions.append({
 		# TODO: create type for this

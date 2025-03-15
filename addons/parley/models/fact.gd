@@ -8,12 +8,12 @@ class_name Fact extends Resource
 
 
 ## The unique name of the Fact.
-## Example: "jonny_gave_coffee"
+## Example: "alice_gave_coffee"
 @export var name: String
 
 
 ## The ref script of the Fact.
-## Example: "res://facts/jonny_gave_coffee_fact.gd"
+## Example: "res://facts/alice_gave_coffee_fact.gd"
 @export var ref: Resource
 
 

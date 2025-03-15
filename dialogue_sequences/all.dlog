@@ -1,29 +1,29 @@
 {
-  "title": "Alice",
+  "title": "All",
   "nodes": [
     {
       "id": "1",
       "type": "START",
-      "position": "(0.0, 400.0)"
+      "position": "(0.0, 620.0)"
     },
     {
       "id": "3",
       "type": "DIALOGUE",
-      "position": "(240.0, 400.0)",
+      "position": "(1680.0, 440.0)",
       "character": "Alice",
-      "text": "Look. I made a thing."
+      "text": "Look. I made a whatdyamacallit."
     },
     {
       "id": "4",
       "type": "DIALOGUE",
-      "position": "(600.0, 400.0)",
+      "position": "(2140.0, 460.0)",
       "character": "Bob",
       "text": "Wow. Great."
     },
     {
       "id": "6",
       "type": "CONDITION",
-      "position": "(980.0, 400.0)",
+      "position": "(2580.0, 500.0)",
       "description": "Bob has a coffee",
       "condition": "ALL",
       "conditions": [
@@ -37,29 +37,29 @@
     {
       "id": "7",
       "type": "DIALOGUE",
-      "position": "(1480.0, 400.0)",
+      "position": "(3100.0, 420.0)",
       "character": "Alice",
-      "text": "LOOK AT MY THING!"
+      "text": "I have a coffee."
     },
     {
       "id": "8",
       "type": "DIALOGUE_OPTION",
-      "position": "(2040.0, 340.0)",
+      "position": "(3600.0, 320.0)",
       "character": "Carol",
       "text": "Give to Alice"
     },
     {
       "id": "13",
       "type": "DIALOGUE_OPTION",
-      "position": "(2040.0, 700.0)",
+      "position": "(3600.0, 700.0)",
       "character": "Carol",
-      "text": "Keep it"
+      "text": "Keep it."
     },
     {
       "id": "9",
       "type": "ACTION",
-      "position": "(2460.0, 340.0)",
-      "description": "Register that coffee was found",
+      "position": "(4040.0, 360.0)",
+      "description": "Register that Clue 1 was found",
       "action_type": "SCRIPT",
       "action_script_ref": "res://actions/advance_time_action.gd",
       "values": [
@@ -69,42 +69,42 @@
     {
       "id": "10",
       "type": "DIALOGUE",
-      "position": "(3000.0, 340.0)",
+      "position": "(4500.0, 360.0)",
       "character": "Carol",
       "text": "Here you go."
     },
     {
       "id": "11",
       "type": "DIALOGUE",
-      "position": "(3360.0, 340.0)",
+      "position": "(4940.0, 360.0)",
       "character": "Dave",
       "text": "Cheers."
     },
     {
       "id": "12",
       "type": "DIALOGUE",
-      "position": "(3720.0, 340.0)",
+      "position": "(5420.0, 360.0)",
       "character": "Carol",
       "text": "You're welcome."
     },
     {
       "id": "14",
       "type": "DIALOGUE",
-      "position": "(2460.0, 700.0)",
+      "position": "(4060.0, 800.0)",
       "character": "Carol",
       "text": "But it's mine."
     },
     {
       "id": "15",
       "type": "DIALOGUE",
-      "position": "(2820.0, 700.0)",
+      "position": "(4500.0, 800.0)",
       "character": "Dave",
       "text": "Fair enough."
     },
     {
       "id": "16",
       "type": "CONDITION",
-      "position": "(1480.0, 700.0)",
+      "position": "(3080.0, 880.0)",
       "description": "Alice gave a coffee",
       "condition": "ALL",
       "conditions": [
@@ -118,37 +118,85 @@
     {
       "id": "17",
       "type": "DIALOGUE",
-      "position": "(2040.0, 960.0)",
+      "position": "(4040.0, 1260.0)",
       "character": "Bob",
       "text": "Mmm. Coffee. Now, what did you want me to look at?"
     },
     {
       "id": "19",
       "type": "DIALOGUE",
-      "position": "(2020.0, 1340.0)",
+      "position": "(3620.0, 1740.0)",
       "character": "Bob",
       "text": "I NEED COFFEE!"
     },
     {
       "id": "20",
       "type": "DIALOGUE",
-      "position": "(2420.0, 1340.0)",
+      "position": "(4120.0, 1740.0)",
       "character": "Carol",
       "text": "I'll get you coffee, Mama. But first, CATNIP."
     },
     {
       "id": "21",
       "type": "END",
-      "position": "(4160.0, 860.0)"
+      "position": "(5920.0, 820.0)"
+    },
+    {
+      "id": "22",
+      "type": "GROUP",
+      "position": "(1620.0, 340.0)",
+      "name": "Super dooper ones",
+      "node_ids": [
+        "3",
+        "4",
+        "6"
+      ],
+      "colour": "(0.6142, 0.617, 0.5924, 0.3)",
+      "size": "(1380.0, 520.0)"
+    },
+    {
+      "id": "23",
+      "type": "MATCH",
+      "position": "(300.0, 540.0)",
+      "description": "Alice's coffee status",
+      "fact_ref": "res://facts/alice_coffee_status_fact.gd",
+      "cases": [
+        "NEEDS_COFFEE",
+        "NEEDS_MORE_COFFEE",
+        "NEEDS_EVEN_MORE_COFFEE",
+        "FALLBACK"
+      ]
+    },
+    {
+      "id": "24",
+      "type": "DIALOGUE",
+      "position": "(980.0, 140.0)",
+      "character": "Alice",
+      "text": "Look, I need coffee."
+    },
+    {
+      "id": "25",
+      "type": "DIALOGUE",
+      "position": "(980.0, 580.0)",
+      "character": "Alice",
+      "text": "Look, I really need coffee."
+    },
+    {
+      "id": "26",
+      "type": "DIALOGUE",
+      "position": "(960.0, 1000.0)",
+      "character": "Alice",
+      "text": "Look, I really really REALLY need coffee."
+    },
+    {
+      "id": "27",
+      "type": "DIALOGUE",
+      "position": "(960.0, 1480.0)",
+      "character": "Alice",
+      "text": "Coffee please."
     }
   ],
   "edges": [
-    {
-      "from_node": "1",
-      "from_slot": 0,
-      "to_node": "3",
-      "to_slot": 0
-    },
     {
       "from_node": "3",
       "from_slot": 0,
@@ -261,6 +309,60 @@
       "from_node": "17",
       "from_slot": 0,
       "to_node": "21",
+      "to_slot": 0
+    },
+    {
+      "from_node": "1",
+      "from_slot": 0,
+      "to_node": "23",
+      "to_slot": 0
+    },
+    {
+      "from_node": "27",
+      "from_slot": 0,
+      "to_node": "3",
+      "to_slot": 0
+    },
+    {
+      "from_node": "26",
+      "from_slot": 0,
+      "to_node": "3",
+      "to_slot": 0
+    },
+    {
+      "from_node": "25",
+      "from_slot": 0,
+      "to_node": "3",
+      "to_slot": 0
+    },
+    {
+      "from_node": "24",
+      "from_slot": 0,
+      "to_node": "3",
+      "to_slot": 0
+    },
+    {
+      "from_node": "23",
+      "from_slot": 0,
+      "to_node": "24",
+      "to_slot": 0
+    },
+    {
+      "from_node": "23",
+      "from_slot": 1,
+      "to_node": "25",
+      "to_slot": 0
+    },
+    {
+      "from_node": "23",
+      "from_slot": 2,
+      "to_node": "26",
+      "to_slot": 0
+    },
+    {
+      "from_node": "23",
+      "from_slot": 3,
+      "to_node": "27",
       "to_slot": 0
     }
   ]

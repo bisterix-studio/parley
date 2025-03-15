@@ -2,27 +2,27 @@
 
 [ext_resource type="Script" uid="uid://dhlbgj5hd2115" path="res://addons/parley/models/fact.gd" id="1_57q5a"]
 [ext_resource type="Script" uid="uid://ob0am6au6mmt" path="res://addons/parley/stores/fact_store.gd" id="2_685c7"]
-[ext_resource type="Script" uid="uid://cpwr6bc02ec7a" path="res://facts/jonny_gave_coffee_fact.gd" id="2_tgdog"]
-[ext_resource type="Script" uid="uid://5ll5tg3r2x7c" path="res://facts/carrie_has_coffee_fact.gd" id="3_47mgl"]
-[ext_resource type="Script" uid="uid://c6bo3uftwlv5c" path="res://facts/jonny_coffee_status_fact.gd" id="4_81jjj"]
+[ext_resource type="Script" uid="uid://cpwr6bc02ec7a" path="res://facts/alice_gave_coffee_fact.gd" id="2_tgdog"]
+[ext_resource type="Script" uid="uid://5ll5tg3r2x7c" path="res://facts/bob_has_coffee_fact.gd" id="3_47mgl"]
+[ext_resource type="Script" uid="uid://c6bo3uftwlv5c" path="res://facts/alice_coffee_status_fact.gd" id="4_81jjj"]
 [ext_resource type="Script" uid="uid://dyrirlhcxgul4" path="res://facts/snooker_balls_fact.gd" id="5_d3w1r"]
 
 [sub_resource type="Resource" id="Resource_ouyu8"]
 script = ExtResource("1_57q5a")
 id = 0
-name = "Jonny gave coffee"
+name = "Alice gave coffee"
 ref = ExtResource("2_tgdog")
 
 [sub_resource type="Resource" id="Resource_3247g"]
 script = ExtResource("1_57q5a")
 id = 1
-name = "Carrie has coffee"
+name = "Bob has coffee"
 ref = ExtResource("3_47mgl")
 
 [sub_resource type="Resource" id="Resource_1ayml"]
 script = ExtResource("1_57q5a")
 id = 2
-name = "Jonny coffee status"
+name = "Alice coffee status"
 ref = ExtResource("4_81jjj")
 
 [sub_resource type="Resource" id="Resource_e1sw2"]

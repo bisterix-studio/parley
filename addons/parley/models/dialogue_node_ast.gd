@@ -4,7 +4,7 @@ class_name DialogueNodeAst extends NodeAst
 
 
 ## The character of the Dialogue Node AST.
-## Example: "Jonny"
+## Example: "Alice"
 @export var character: String
 
 
@@ -14,7 +14,7 @@ class_name DialogueNodeAst extends NodeAst
 
 
 ## Create a new instance of a Dialogue Node AST.
-## Example: DialogueNodeAst.new("1", Vector2.ZERO, "Jonny", "I need some coffee.")
+## Example: DialogueNodeAst.new("1", Vector2.ZERO, "Alice", "I need some coffee.")
 func _init(
 	p_id: String = "",
 	p_position: Vector2 = Vector2.ZERO,
@@ -29,7 +29,7 @@ func _init(
 
 
 ## Update a Dialogue Node AST.
-## Example: node.update("Jonny", "I need some coffee.")
+## Example: node.update("Alice", "I need some coffee.")
 func update(p_character: String, p_text: String) -> void:
 	character = p_character
 	text = p_text

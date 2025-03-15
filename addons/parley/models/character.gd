@@ -8,7 +8,7 @@ class_name Character extends Resource
 
 
 ## The Name of the Character.
-## Example: "Billie"
+## Example: "Carol"
 @export var name: String
 
 

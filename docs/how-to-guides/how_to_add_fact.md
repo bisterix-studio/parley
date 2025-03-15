@@ -2,7 +2,7 @@
 
 Facts are resources in Parley used by Condition Nodes for comparisons within the
 running game. For example, one might want to display different dialogue
-depending on whether Jonny gave a coffee or not.
+depending on whether Alice gave a coffee or not.
 
 Facts are stored in a fact store which can be configured in the Parley settings.
 
@@ -30,13 +30,13 @@ Condition Node in the corresponding
 > store and it is stored at: `res://facts/fact_store.tres`
 
 - Create a Fact script (ensure that it extends the `FactInterface` class) at:
-  `res://facts/jonny_gave_coffee_fact.gd`
+  `res://facts/alice_gave_coffee_fact.gd`
 
 ```gdscript
 extends FactInterface
 
 func execute(_ctx: Dictionary, _values: Array) -> bool:
-	print('Jonny did indeed give coffee')
+	print('Alice did indeed give coffee')
   # Note, you can return any value here, it doesn't
   # necessarily have to be a bool
 	return true

@@ -1,7 +1,7 @@
 extends FactInterface
 
 func execute(_ctx: Dictionary, _values: Array) -> String:
-	print('Jonny coffee status')
+	print('Alice coffee status')
 	return "NEEDS_COFFEE"
 
 
