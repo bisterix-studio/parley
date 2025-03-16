@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dres8tr2nd82o" path="res://addons/parley/assets/Remove.svg" id="2_bbjsx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l4dko"]
-bg_color = Color(0.14902, 0.380392, 0.270588, 1)
+bg_color = Color(0.658824, 0.313726, 0.0470588, 1)
 
 [node name="NodeEditor" type="VBoxContainer"]
 offset_right = 125.0
@@ -52,7 +52,13 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="BodyContainer" type="VBoxContainer" parent="BodyMarginContainer"]
+[node name="BodyScrollContainer" type="ScrollContainer" parent="BodyMarginContainer"]
 layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="BodyContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [connection signal="pressed" from="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer/DeleteNodeButton" to="." method="_on_delete_node_button_pressed"]

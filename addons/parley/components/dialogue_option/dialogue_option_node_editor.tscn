@@ -12,14 +12,14 @@ type = 1
 [node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Dialogue Option [ID: ]"
 
-[node name="CharacterContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
+[node name="CharacterContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="0"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="BodyMarginContainer/BodyContainer/CharacterContainer" index="0"]
+[node name="Label" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterContainer" index="0"]
 layout_mode = 2
 text = "Character:"
 
-[node name="OptionButton" type="OptionButton" parent="BodyMarginContainer/BodyContainer/CharacterContainer" index="1"]
+[node name="OptionButton" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 item_count = 4
@@ -32,15 +32,15 @@ popup/item_2/id = 2
 popup/item_3/text = "Dave"
 popup/item_3/id = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="1"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="BodyMarginContainer/BodyContainer/VBoxContainer" index="0"]
+[node name="Label" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/VBoxContainer" index="0"]
 layout_mode = 2
 text = "Text: "
 
-[node name="CodeEdit" type="CodeEdit" parent="BodyMarginContainer/BodyContainer/VBoxContainer" index="1"]
+[node name="CodeEdit" type="CodeEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/VBoxContainer" index="1"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -51,5 +51,5 @@ line_folding = true
 indent_size = 2
 indent_use_spaces = true
 
-[connection signal="item_selected" from="BodyMarginContainer/BodyContainer/CharacterContainer/OptionButton" to="." method="_on_option_button_item_selected"]
-[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/VBoxContainer/CodeEdit" to="." method="_on_code_edit_text_changed"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterContainer/OptionButton" to="." method="_on_option_button_item_selected"]
+[connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/VBoxContainer/CodeEdit" to="." method="_on_code_edit_text_changed"]

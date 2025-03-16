@@ -30,8 +30,8 @@ func _on_edge_changed(new_edge: EdgeAst) -> void:
 		else:
 			_update("", 0, "", 0)
 			return
-		
-	_update(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot)
+	if edge:
+		_update(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot)
 
 
 func _update(from_node: String, from_slot: int, to_node: String, to_slot: int):

@@ -12,29 +12,29 @@ type = 6
 [node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Group [ID: ]"
 
-[node name="GroupNodeNameContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
+[node name="GroupNodeNameContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="0"]
 layout_mode = 2
 
-[node name="GroupNodeNameLabel" type="Label" parent="BodyMarginContainer/BodyContainer/GroupNodeNameContainer" index="0"]
+[node name="GroupNodeNameLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/GroupNodeNameContainer" index="0"]
 layout_mode = 2
 text = "Name: "
 
-[node name="GroupNodeName" type="LineEdit" parent="BodyMarginContainer/BodyContainer/GroupNodeNameContainer" index="1"]
+[node name="GroupNodeName" type="LineEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/GroupNodeNameContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GroupNodeColorContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="1"]
+[node name="GroupNodeColorContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
 
-[node name="GroupNodeColorLabel" type="Label" parent="BodyMarginContainer/BodyContainer/GroupNodeColorContainer" index="0"]
+[node name="GroupNodeColorLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/GroupNodeColorContainer" index="0"]
 layout_mode = 2
 text = "Colour: "
 
-[node name="GroupNodeColorPickerButton" type="ColorPickerButton" parent="BodyMarginContainer/BodyContainer/GroupNodeColorContainer" index="1"]
+[node name="GroupNodeColorPickerButton" type="ColorPickerButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/GroupNodeColorContainer" index="1"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
-[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/GroupNodeNameContainer/GroupNodeName" to="." method="_on_group_node_name_text_changed"]
-[connection signal="color_changed" from="BodyMarginContainer/BodyContainer/GroupNodeColorContainer/GroupNodeColorPickerButton" to="." method="_on_group_node_color_picker_button_color_changed"]
+[connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/GroupNodeNameContainer/GroupNodeName" to="." method="_on_group_node_name_text_changed"]
+[connection signal="color_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/GroupNodeColorContainer/GroupNodeColorPickerButton" to="." method="_on_group_node_color_picker_button_color_changed"]

@@ -16,10 +16,10 @@ type = 3
 [node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Action [ID: ]"
 
-[node name="ActionDescriptionContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
+[node name="ActionDescriptionContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="0"]
 layout_mode = 2
 
-[node name="DescriptionEditor" type="TextEdit" parent="BodyMarginContainer/BodyContainer/ActionDescriptionContainer" index="0"]
+[node name="DescriptionEditor" type="TextEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionDescriptionContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Register that Clue 1 was found"
@@ -28,7 +28,7 @@ scroll_past_end_of_file = true
 scroll_fit_content_height = true
 use_default_word_separators = false
 
-[node name="CodeEdit" type="CodeEdit" parent="BodyMarginContainer/BodyContainer/ActionDescriptionContainer" index="1"]
+[node name="CodeEdit" type="CodeEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionDescriptionContainer" index="1"]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(0, 400)
@@ -42,61 +42,61 @@ scroll_fit_content_height = true
 symbol_lookup_on_click = true
 code_completion_enabled = true
 
-[node name="HSeparator1" type="HSeparator" parent="BodyMarginContainer/BodyContainer" index="1"]
+[node name="HSeparator1" type="HSeparator" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
 
-[node name="ActionTypeContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="2"]
+[node name="ActionTypeContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="2"]
 layout_mode = 2
 
-[node name="ActionTypeLabel" type="Label" parent="BodyMarginContainer/BodyContainer/ActionTypeContainer" index="0"]
+[node name="ActionTypeLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionTypeContainer" index="0"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Type:"
 
-[node name="ActionTypeEditor" type="OptionButton" parent="BodyMarginContainer/BodyContainer/ActionTypeContainer" index="1"]
+[node name="ActionTypeEditor" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionTypeContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 item_count = 1
 popup/item_0/text = "Script"
 popup/item_0/id = 0
 
-[node name="HSeparator2" type="HSeparator" parent="BodyMarginContainer/BodyContainer" index="3"]
+[node name="HSeparator2" type="HSeparator" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="3"]
 layout_mode = 2
 
-[node name="ActionScriptContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="4"]
+[node name="ActionScriptContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="4"]
 layout_mode = 2
 
-[node name="ActionScriptLabel" type="Label" parent="BodyMarginContainer/BodyContainer/ActionScriptContainer" index="0"]
+[node name="ActionScriptLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer" index="0"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Action: "
 
-[node name="ActionScriptSelector" type="OptionButton" parent="BodyMarginContainer/BodyContainer/ActionScriptContainer" index="1"]
+[node name="ActionScriptSelector" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 item_count = 1
 popup/item_0/text = "Advance Time"
 popup/item_0/id = 0
 
-[node name="EditActionScriptButton" type="Button" parent="BodyMarginContainer/BodyContainer/ActionScriptContainer" index="2"]
+[node name="EditActionScriptButton" type="Button" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer" index="2"]
 layout_mode = 2
 disabled = true
 icon = ExtResource("3_3rqr3")
 
-[node name="NewActionScriptButton" type="Button" parent="BodyMarginContainer/BodyContainer/ActionScriptContainer" index="3"]
+[node name="NewActionScriptButton" type="Button" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer" index="3"]
 layout_mode = 2
 disabled = true
 icon = ExtResource("4_ithju")
 
-[node name="ActionValuesContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="5"]
+[node name="ActionValuesContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="5"]
 layout_mode = 2
 
-[node name="ActionValuesLabel" type="Label" parent="BodyMarginContainer/BodyContainer/ActionValuesContainer" index="0"]
+[node name="ActionValuesLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionValuesContainer" index="0"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Values:"
 
-[node name="ActionValueDescription" type="TextEdit" parent="BodyMarginContainer/BodyContainer/ActionValuesContainer" index="1"]
+[node name="ActionValueDescription" type="TextEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionValuesContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -106,7 +106,7 @@ scroll_past_end_of_file = true
 scroll_fit_content_height = true
 use_default_word_separators = false
 
-[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/ActionDescriptionContainer/DescriptionEditor" to="." method="_on_action_description_text_changed"]
-[connection signal="item_selected" from="BodyMarginContainer/BodyContainer/ActionTypeContainer/ActionTypeEditor" to="." method="_on_action_type_option_item_selected"]
-[connection signal="item_selected" from="BodyMarginContainer/BodyContainer/ActionScriptContainer/ActionScriptSelector" to="." method="_on_action_script_selector_item_selected"]
-[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/ActionValuesContainer/ActionValueDescription" to="." method="_on_action_value_description_text_changed"]
+[connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionDescriptionContainer/DescriptionEditor" to="." method="_on_action_description_text_changed"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionTypeContainer/ActionTypeEditor" to="." method="_on_action_type_option_item_selected"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer/ActionScriptSelector" to="." method="_on_action_script_selector_item_selected"]
+[connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionValuesContainer/ActionValueDescription" to="." method="_on_action_value_description_text_changed"]

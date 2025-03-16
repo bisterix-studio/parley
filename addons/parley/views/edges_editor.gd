@@ -1,11 +1,11 @@
 @tool
-
 # TODO: prefix with Parley
 class_name EdgesEditor extends VBoxContainer
 
 @export var edges: Array[EdgeAst] = []
 @export var node_id: String = ""
 
+@onready var edges_container: VBoxContainer = %EdgesContainer
 
 const EdgeEditorScene: PackedScene = preload('../components/edge/edge_editor.tscn')
 
@@ -22,12 +22,13 @@ func _ready() -> void:
 func clear() -> void:
 	var children: Array[EdgeEditor] = []
 	edges = []
-	for edge in get_children():
-		if edge is EdgeEditor:
-			edge.queue_free()
-			children.append(edge)
-	for child in children:
-		await child.tree_exited
+	if edges_container:
+		for edge in edges_container.get_children():
+			if edge is EdgeEditor:
+				edge.queue_free()
+				children.append(edge)
+		for child in children:
+			await child.tree_exited
 
 
 ## Set the edges rendered by the editor
@@ -46,7 +47,8 @@ func set_edges(all_edges: Array[EdgeAst], p_node_id: String) -> void:
 		edge_editor.edge_deleted.connect(_on_edge_deleted)
 		edge_editor.mouse_entered_edge.connect(_build_on_mouse_entered_edge(edge))
 		edge_editor.mouse_exited_edge.connect(_build_on_mouse_exited_edge(edge))
-		add_child(edge_editor)
+		if edges_container:
+			edges_container.add_child(edge_editor)
 		index += 1
 
 
