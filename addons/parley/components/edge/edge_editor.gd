@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name EdgeEditor extends VBoxContainer
 
 @export var edge: EdgeAst: set = _on_edge_changed

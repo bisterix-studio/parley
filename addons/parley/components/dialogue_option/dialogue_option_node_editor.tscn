@@ -4,13 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_acvks"]
 
 [node name="DialogueOptionNodeEditor" instance=ExtResource("1_acvks")]
-visible = false
 script = ExtResource("1_3b5a7")
 character = ""
 option = ""
 type = 1
 
-[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer" index="0"]
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Dialogue Option [ID: ]"
 
 [node name="CharacterContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
@@ -24,8 +23,9 @@ text = "Character:"
 unique_name_in_owner = true
 layout_mode = 2
 item_count = 4
-popup/item_0/text = "Bob"
-popup/item_1/text = "Alice"
+popup/item_0/text = "Alice"
+popup/item_0/id = 0
+popup/item_1/text = "Bob"
 popup/item_1/id = 1
 popup/item_2/text = "Carol"
 popup/item_2/id = 2

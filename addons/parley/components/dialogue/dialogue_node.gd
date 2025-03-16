@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name DialogueNode extends ParleyGraphNode
 
 @export var character: String = "": set = _on_character_changed

@@ -4,13 +4,12 @@
 [ext_resource type="Script" uid="uid://b1eykujmm4kmo" path="res://addons/parley/components/group/group_node_editor.gd" id="2_mkv52"]
 
 [node name="GroupNodeEditor" instance=ExtResource("1_ffxbg")]
-visible = false
 script = ExtResource("2_mkv52")
 group_name = ""
 colour = Color(0, 0, 0, 1)
 type = 6
 
-[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer" index="0"]
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Group [ID: ]"
 
 [node name="GroupNodeNameContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]

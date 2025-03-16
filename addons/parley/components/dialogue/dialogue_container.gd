@@ -1,5 +1,6 @@
 @tool
 
+# TODO: prefix with Parley
 class_name DialogueContainer extends MarginContainer
 
 @onready var dialogue_text_label: RichTextLabel = %DialogueTextLabel

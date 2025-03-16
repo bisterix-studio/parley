@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name CharacterStore extends Resource
 
 @export var characters: Array[Character] = []

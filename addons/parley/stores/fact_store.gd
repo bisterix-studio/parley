@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name FactStore extends Resource
 
 @export var facts: Array[Fact] = []

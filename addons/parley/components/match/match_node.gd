@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name MatchNode extends ParleyGraphNode
 
 const case_label_scene = preload("./case_label.tscn")

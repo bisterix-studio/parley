@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name MatchNodeEditor extends NodeEditor
 
 @export var fact_store: FactStore = FactStore.new(): set = _on_set_fact_store
@@ -21,8 +22,9 @@ signal match_node_changed(id: String, description: String, fact_name: String, ca
 
 #region LIFECYCLE
 func _ready() -> void:
-	# TODO: revert as well as the fact store input
-	# hide()
+	set_title()
+	_render_description()
+	# TODO: revert the fact store input
 	_render_fact()
 	_render_cases()
 
@@ -50,6 +52,9 @@ func _on_set_fact_store(new_fact_store: FactStore) -> void:
 
 func _on_set_description(new_description: String) -> void:
 	description = new_description
+	_render_description()
+
+func _render_description() -> void:
 	if description_editor and description_editor.text != description:
 		description_editor.text = description
 

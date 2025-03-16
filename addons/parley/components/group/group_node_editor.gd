@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name GroupNodeEditor extends NodeEditor
 
 signal group_node_changed(id: String, name: String, colour: Color)
@@ -10,34 +11,35 @@ signal group_node_changed(id: String, name: String, colour: Color)
 @onready var group_name_editor: LineEdit = %GroupNodeName
 @onready var colour_picker_button: ColorPickerButton = %GroupNodeColorPickerButton
 
-
 func _ready() -> void:
-	hide()
-
+	_render_group_name()
+	_render_colour()
 
 func _on_group_name_changed(new_group_name: String) -> void:
 	group_name = new_group_name
+	_render_group_name()
+
+func _render_group_name() -> void:
 	set_title(group_name)
 	if group_name_editor and group_name_editor.text != group_name:
 		group_name_editor.text = group_name
 
-
 func _on_colour_changed(new_colour: Color) -> void:
 	colour = new_colour
+	_render_colour()
+
+func _render_colour() -> void:
 	if colour_picker_button and colour_picker_button.color != colour:
 		colour_picker_button.color = colour
-
 
 #region SIGNALS
 func _on_group_node_color_picker_button_color_changed(new_color: Color) -> void:
 	colour = new_color
 	_emit_group_node_changed()
 
-
 func _on_group_node_name_text_changed(new_group_name: String) -> void:
 	group_name = new_group_name
 	_emit_group_node_changed()
-	
 
 func _emit_group_node_changed() -> void:
 	group_node_changed.emit(id, group_name, colour)

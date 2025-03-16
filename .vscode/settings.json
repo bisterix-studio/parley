@@ -1,6 +1,13 @@
 {
   "cSpell.words": [
+    "Color",
+    "Dialog",
+    "onready",
     "printerr",
     "printwarn"
-  ]
+  ],
+  "files.associations": {
+    "*.djson": "json",
+    "*.dlog": "json"
+  }
 }

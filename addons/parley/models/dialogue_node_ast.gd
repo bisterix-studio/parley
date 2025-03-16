@@ -1,5 +1,6 @@
 @tool
 
+# TODO: prefix with Parley
 class_name DialogueNodeAst extends NodeAst
 
 

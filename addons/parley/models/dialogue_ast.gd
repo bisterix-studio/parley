@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name DialogueAst extends Resource
 
 
@@ -73,7 +74,6 @@ func add_ast_node(node: Dictionary) -> void:
 			return
 	ast_node.position = position
 	nodes.push_back(ast_node)
-	_emit_dialogue_updated()
 
 
 ## Add a new node to the list of nodes
@@ -119,25 +119,51 @@ func update_node_position(ast_node_id: String, position: Vector2) -> void:
 func add_ast_edge(edge: Dictionary) -> void:
 	# TODO: add validation before instantiation to ensure that
 	# all values are defined
-	add_new_edge(
+	add_edge(
 		edge.get('from_node'),
 		edge.get('from_slot'),
 		edge.get('to_node'),
 		edge.get('to_slot'),
+		false
 	)
-	_emit_dialogue_updated()
 
 
-## Add a new edge to the list of edges
-func add_new_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
-	edges.push_back(EdgeAst.new(
+## Add a new edge to the list of edges. It will not add an edge if it already exists
+## It returns the number of edges added (1 or 0).
+## dialogue_ast.add_edge("1", 0, "2", 1)
+func add_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit = true) -> int:
+	var new_edge: EdgeAst = EdgeAst.new(
 		from_node,
 		from_slot,
 		to_node,
 		to_slot,
-	))
-	_emit_dialogue_updated()
+	)
+	var has_existing_edge: bool = edges.filter(func(edge: EdgeAst) -> bool:
+		return (
+			edge.from_node == new_edge.from_node and
+			edge.from_slot == new_edge.from_slot and
+			edge.to_node == new_edge.to_node and
+			edge.to_slot == new_edge.to_slot
+		)
+	).size() > 0
+	if not has_existing_edge:
+		edges.push_back(new_edge)
+		if emit:
+			_emit_dialogue_updated()
+	return 1 if not has_existing_edge else 0
 
+## Remove edges to the list of edges.
+## It returns the number of edges added.
+## dialogue_ast.add_edges([EdgeAst("1", 0, "2", 1).new()])
+func add_edges(edges_to_create: Array[EdgeAst], emit = true) -> int:
+	var added: int = 0
+	for edge: EdgeAst in edges_to_create:
+		added += add_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
+	if added > 0 and emit:
+		_emit_dialogue_updated()
+	return added
+
+# TODO: also remove edges if there are any
 ## Remove a node from the list of nodes
 func remove_node(node_id: String) -> void:
 	var index: int = 0
@@ -163,8 +189,10 @@ func find_node_by_id(id: String) -> NodeAst:
 	return filtered_nodes.front()
 
 
-## Remove an edge from the list of edges
-func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
+## Remove an edge from the list of edges. It will log an error if an edge does not exist
+## It returns the number of edges removed (1 or 0).
+## dialogue_ast.remove_edge("1", 0, "2", 1)
+func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit = true) -> int:
 	var index: int = 0
 	var removed = false
 	for edge in edges:
@@ -178,7 +206,20 @@ func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: in
 		index += 1
 	if not removed:
 		_print("Unable to remove edge: %s-%s:%s-%s" % [from_node, from_slot, to_node, to_slot])
-	_emit_dialogue_updated()
+	if removed and emit:
+		_emit_dialogue_updated()
+	return 1 if removed else 0
+
+## Remove edges from the list of edges.
+## It returns the number of edges removed.
+## dialogue_ast.remove_edges([EdgeAst("1", 0, "2", 1).new()])
+func remove_edges(edges_to_remove: Array[EdgeAst], emit = true) -> int:
+	var removed: int = 0
+	for edge: EdgeAst in edges_to_remove:
+		removed += remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
+	if removed > 0 and emit:
+		_emit_dialogue_updated()
+	return removed
 #endregion
 
 

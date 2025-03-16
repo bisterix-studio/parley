@@ -4,14 +4,13 @@
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_rqlcg"]
 
 [node name="ConditionNodeEditor" instance=ExtResource("1_rqlcg")]
-visible = false
 script = ExtResource("1_fipku")
 description = ""
 condition = 0
 conditions = []
 type = 2
 
-[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer" index="0"]
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Condition [ID: ]"
 
 [node name="ConditionDescriptionContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
@@ -44,6 +43,7 @@ layout_mode = 2
 selected = 0
 item_count = 2
 popup/item_0/text = "All"
+popup/item_0/id = 0
 popup/item_1/text = "Any"
 popup/item_1/id = 1
 

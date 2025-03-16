@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name CaseEditor extends HBoxContainer
 
 @export var available_cases: Array[Variant] = [MatchNodeAst.fallback_key]: set = _set_available_cases
