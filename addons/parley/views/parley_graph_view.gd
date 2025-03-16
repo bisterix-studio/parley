@@ -4,15 +4,14 @@ class_name ParleyGraphView extends GraphEdit
 @export var ast: DialogueAst
 
 #region SETUP
-var DialogueNode = preload("./components/dialogue/dialogue_node.tscn")
-var DialogueOptionNode = preload("./components/dialogue_option/dialogue_option_node.tscn")
-var ActionNode = preload("./components/action/action_node.tscn")
-var ConditionNode = preload("./components/condition/condition_node.tscn")
-var MatchNode = preload("./components/match/match_node.tscn")
-var StartNode = preload("./components/start/start_node.tscn")
-var EndNode = preload("./components/end/end_node.tscn")
-var GroupNode = preload("./components/group/group_node.tscn")
-
+var DialogueNode = preload("../components/dialogue/dialogue_node.tscn")
+var DialogueOptionNode = preload("../components/dialogue_option/dialogue_option_node.tscn")
+var ActionNode = preload("../components/action/action_node.tscn")
+var ConditionNode = preload("../components/condition/condition_node.tscn")
+var MatchNode = preload("../components/match/match_node.tscn")
+var StartNode = preload("../components/start/start_node.tscn")
+var EndNode = preload("../components/end/end_node.tscn")
+var GroupNode = preload("../components/group/group_node.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

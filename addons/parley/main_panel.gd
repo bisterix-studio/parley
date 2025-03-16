@@ -32,7 +32,7 @@ const group_node_icon = preload("./assets/Group.svg")
 # TODO: use unique name
 @export var editor_controls_container: HBoxContainer
 @export var edges_editor: EdgesEditor
-@export var graph_view: ParleyGraphView
+@onready var graph_view: ParleyGraphView = %GraphView
 @export var save_button: Button
 @export var arrange_nodes_button: Button
 @export var refresh_button: Button
@@ -294,6 +294,7 @@ func _on_refresh_button_pressed() -> void:
 
 
 func _on_test_dialogue_from_start_button_pressed() -> void:
+	# TODO: dialogue is technically async so we should ideally wait here
 	_save_dialogue()
 	if plugin:
 		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_IS_RUNNING_DIALOGUE_TEST, true)
@@ -303,6 +304,7 @@ func _on_test_dialogue_from_start_button_pressed() -> void:
 		plugin.get_editor_interface().play_custom_scene(test_dialogue_path)
 
 func _on_test_dialogue_from_selected_button_pressed() -> void:
+	# TODO: dialogue is technically async so we should ideally wait here
 	_save_dialogue()
 	if plugin:
 		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_IS_RUNNING_DIALOGUE_TEST, true)

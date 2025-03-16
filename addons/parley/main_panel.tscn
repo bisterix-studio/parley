@@ -1,8 +1,7 @@
 [gd_scene load_steps=37 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
-[ext_resource type="Script" uid="uid://cyx7ixqxq6pxd" path="res://addons/parley/graph_view.gd" id="1_ab2wa"]
-[ext_resource type="Resource" uid="uid://bfkwyxgjxy7hb" path="res://tests/fixtures/basic_match_input.dlog" id="2_gwtip"]
+[ext_resource type="Resource" uid="uid://b5472y72kql2r" path="res://dialogue_sequences/all.dlog" id="2_8yxrj"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_4ui00"]
 [ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="3_qx68p"]
 [ext_resource type="Texture2D" uid="uid://cs83fq73m01l3" path="res://addons/parley/assets/Dialogue.svg" id="4_f842u"]
@@ -28,6 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://1alef4tqlskn" path="res://addons/parley/modals/new_dialogue_modal.tscn" id="12_v8y8i"]
 [ext_resource type="Texture2D" uid="uid://dngyydvxiwyvs" path="res://addons/parley/assets/Reload.svg" id="13_oy825"]
 [ext_resource type="PackedScene" uid="uid://bl5g47dhb7hmk" path="res://addons/parley/components/sidebar.tscn" id="18_re0cy"]
+[ext_resource type="PackedScene" uid="uid://dcdua1f2ah8xa" path="res://addons/parley/views/parley_graph_view.tscn" id="20_8yxrj"]
 [ext_resource type="PackedScene" uid="uid://bnfp7wifletst" path="res://addons/parley/components/group/group_node_editor.tscn" id="24_xgstb"]
 [ext_resource type="PackedScene" uid="uid://c6cagjh7y5wn4" path="res://addons/parley/modals/export_to_csv_modal.tscn" id="29_wngpy"]
 [ext_resource type="PackedScene" uid="uid://cjgxxvotxhj1g" path="res://addons/parley/components/bottom_panel.tscn" id="29_xxhvx"]
@@ -42,7 +42,7 @@ title = ""
 edges = Array[ExtResource("30_rspbv")]([])
 nodes = Array[ExtResource("31_tp54n")]([])
 
-[node name="MainPanel" type="VBoxContainer" node_paths=PackedStringArray("editor_controls_container", "edges_editor", "graph_view", "save_button", "arrange_nodes_button", "refresh_button", "delete_node_button", "open_file_dialogue")]
+[node name="MainPanel" type="VBoxContainer" node_paths=PackedStringArray("editor_controls_container", "edges_editor", "save_button", "arrange_nodes_button", "refresh_button", "delete_node_button", "open_file_dialogue")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -52,10 +52,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 0
 script = ExtResource("1_06n3w")
-dialogue_ast = ExtResource("2_gwtip")
 editor_controls_container = NodePath("HBoxContainer/HSplitContainer/EditorView/Editor/EditorContainer/EditorControlsContainer")
 edges_editor = NodePath("HBoxContainer/HSplitContainer/EditorView/Editor/EditorContainer/EditorDetailsContainer/EdgesScrollContainer/EdgesEditor")
-graph_view = NodePath("HBoxContainer/HSplitContainer/EditorView/GraphContainer/GraphView")
 save_button = NodePath("Toolbar/EditorActions/SaveButton")
 arrange_nodes_button = NodePath("Toolbar/EditorActions/ArrangeNodesButton")
 refresh_button = NodePath("Toolbar/EditorActions/RefreshButton")
@@ -195,8 +193,8 @@ size_flags_horizontal = 3
 [node name="Sidebar" parent="HBoxContainer/HSplitContainer" instance=ExtResource("18_re0cy")]
 unique_name_in_owner = true
 layout_mode = 2
-current_dialogue_ast = ExtResource("2_gwtip")
-dialogue_asts = Array[ExtResource("32_pogw7")]([ExtResource("2_gwtip")])
+current_dialogue_ast = ExtResource("2_8yxrj")
+dialogue_asts = Array[ExtResource("32_pogw7")]([ExtResource("2_8yxrj")])
 
 [node name="EditorView" type="HSplitContainer" parent="HBoxContainer/HSplitContainer"]
 unique_name_in_owner = true
@@ -209,148 +207,9 @@ split_offset = 300
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GraphView" type="GraphEdit" parent="HBoxContainer/HSplitContainer/EditorView/GraphContainer"]
+[node name="GraphView" parent="HBoxContainer/HSplitContainer/EditorView/GraphContainer" instance=ExtResource("20_8yxrj")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_colors/connection_rim_color = Color(0, 0, 0, 1)
-scroll_offset = Vector2(-50, 0)
-right_disconnects = true
-connection_lines_thickness = 3.0
-connections = Array[Dictionary]([{
-"from_node": &"MATCH-7",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"DIALOGUE-3",
-"to_port": 0
-}, {
-"from_node": &"MATCH-7",
-"from_port": 1,
-"keep_alive": false,
-"to_node": &"DIALOGUE-4",
-"to_port": 0
-}, {
-"from_node": &"MATCH-7",
-"from_port": 2,
-"keep_alive": false,
-"to_node": &"DIALOGUE-5",
-"to_port": 0
-}, {
-"from_node": &"MATCH-7",
-"from_port": 3,
-"keep_alive": false,
-"to_node": &"DIALOGUE-6",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-8",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"MATCH-9",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-4",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"DIALOGUE-8",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-5",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"DIALOGUE-8",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-6",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"DIALOGUE-8",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-3",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"DIALOGUE-8",
-"to_port": 0
-}, {
-"from_node": &"MATCH-9",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"DIALOGUE-10",
-"to_port": 0
-}, {
-"from_node": &"MATCH-9",
-"from_port": 1,
-"keep_alive": false,
-"to_node": &"DIALOGUE-14",
-"to_port": 0
-}, {
-"from_node": &"MATCH-9",
-"from_port": 2,
-"keep_alive": false,
-"to_node": &"DIALOGUE-13",
-"to_port": 0
-}, {
-"from_node": &"MATCH-9",
-"from_port": 3,
-"keep_alive": false,
-"to_node": &"DIALOGUE-12",
-"to_port": 0
-}, {
-"from_node": &"MATCH-9",
-"from_port": 4,
-"keep_alive": false,
-"to_node": &"DIALOGUE-11",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-11",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"END-15",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-12",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"END-15",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-13",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"END-15",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-14",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"END-15",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-10",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"END-15",
-"to_port": 0
-}, {
-"from_node": &"START-1",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"DIALOGUE-16",
-"to_port": 0
-}, {
-"from_node": &"DIALOGUE-16",
-"from_port": 0,
-"keep_alive": false,
-"to_node": &"MATCH-7",
-"to_port": 0
-}])
-zoom = 0.5
-show_zoom_label = true
-show_arrange_button = false
-script = ExtResource("1_ab2wa")
-ast = ExtResource("2_gwtip")
 
 [node name="BottomPanel" parent="HBoxContainer/HSplitContainer/EditorView/GraphContainer" instance=ExtResource("29_xxhvx")]
 layout_mode = 2

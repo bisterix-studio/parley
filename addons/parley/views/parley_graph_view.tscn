@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dcdua1f2ah8xa"]
+
+[ext_resource type="Script" uid="uid://cyx7ixqxq6pxd" path="res://addons/parley/views/parley_graph_view.gd" id="1_iscqg"]
+[ext_resource type="Resource" uid="uid://b5472y72kql2r" path="res://dialogue_sequences/all.dlog" id="2_o4wke"]
+
+[node name="ParleyGraphView" type="GraphEdit"]
+custom_minimum_size = Vector2(100, 0)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/connection_rim_color = Color(0, 0, 0, 1)
+scroll_offset = Vector2(-50, 0)
+right_disconnects = true
+connection_lines_thickness = 3.0
+zoom = 0.5
+show_zoom_label = true
+show_arrange_button = false
+script = ExtResource("1_iscqg")
+ast = ExtResource("2_o4wke")
