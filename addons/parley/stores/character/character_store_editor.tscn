@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://b282u3bhn7ncf"]
+
+[node name="CharacterStoreEditor" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CharacterStoreMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="CharacterStores" type="OptionButton" parent="CharacterStoreMarginContainer"]
+layout_mode = 2
+
+[node name="CharactersContainer" type="VBoxContainer" parent="CharacterStoreMarginContainer"]
+layout_mode = 2

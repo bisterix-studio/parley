@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=3 uid="uid://ly3ifjds4qun"]
+
+[ext_resource type="Script" uid="uid://cxap1x025hpxx" path="res://addons/parley/stores/stores_editor.gd" id="1_7ev3d"]
+
+[node name="StoresEditor" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_7ev3d")
+
+[node name="StoresMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="StoresEditorContainer" type="VBoxContainer" parent="StoresMarginContainer"]
+layout_mode = 2
+
+[node name="StoresOptionHBoxContainer" type="HBoxContainer" parent="StoresMarginContainer/StoresEditorContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="ShowCharacterStoreButton" type="Button" parent="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+text = "Character"
+
+[node name="ShowFactStoreButton" type="Button" parent="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Fact"
+flat = true
+
+[node name="ShowActionStoreButton" type="Button" parent="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Action"
+flat = true
+
+[node name="StoresContainer" type="VBoxContainer" parent="StoresMarginContainer/StoresEditorContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="StoresMarginContainer/StoresEditorContainer/StoresContainer"]
+layout_mode = 2
+text = "Yo"
+
+[connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowCharacterStoreButton" to="." method="_on_show_character_store_button_toggled"]
+[connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowFactStoreButton" to="." method="_on_show_fact_store_button_toggled"]
+[connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowActionStoreButton" to="." method="_on_show_action_store_button_toggled"]

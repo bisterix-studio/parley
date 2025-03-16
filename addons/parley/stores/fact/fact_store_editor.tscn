@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://bhcdx3h8xtn5"]
+
+[node name="FactStoreEditor" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="FactStoreMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="FactStores" type="OptionButton" parent="FactStoreMarginContainer"]
+layout_mode = 2
+
+[node name="FactsContainer" type="VBoxContainer" parent="FactStoreMarginContainer"]
+layout_mode = 2

@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dil4p8wvfe0y3"]
+
+[node name="ActionStoreEditor" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ActionStoreMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="ActionStores" type="OptionButton" parent="ActionStoreMarginContainer"]
+layout_mode = 2
+
+[node name="ActionsContainer" type="VBoxContainer" parent="ActionStoreMarginContainer"]
+layout_mode = 2
