@@ -30,4 +30,5 @@ metadata/_custom_type_script = "uid://cr1va2oab5tn5"
 [resource]
 script = ExtResource("1_3dy24")
 characters = Array[ExtResource("1_18ucv")]([SubResource("Resource_yumch"), SubResource("Resource_1iyyr"), SubResource("Resource_r7byi"), SubResource("Resource_iwv5x")])
+id = "main"
 metadata/_custom_type_script = "uid://cbi8x2vk7bku1"

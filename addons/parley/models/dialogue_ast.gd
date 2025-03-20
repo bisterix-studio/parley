@@ -2,41 +2,37 @@
 # TODO: prefix with Parley
 class_name DialogueAst extends Resource
 
-
-## The title of the Dialogue AST
+## The title of the Dialogue Sequence AST
 @export var title: String
 
-
-### The edges of the Dialogue AST
+### The edges of the Dialogue Sequence AST
 @export var edges: Array[EdgeAst]
 
-
-## The nodes of the Dialogue AST
+## The nodes of the Dialogue Sequence AST
 @export var nodes: Array[NodeAst]
 
+## The stores of the Dialogue Sequence AST
+@export var stores: StoresAst
 
 ## The type of the Dialogue AST Node
 ## Example: "DialogueAstNodeType.DIALOGUE"
 enum Type {DIALOGUE, DIALOGUE_OPTION, CONDITION, ACTION, START, END, GROUP, MATCH, UNKNOWN}
 
-
 var is_ready: bool = false
-
 
 # TODO: add types here. However it may be causing circular dep issues
 signal dialogue_updated(new_dialogue_ast: Variant)
 signal dialogue_ended(dialogue_ast: Variant)
 
-
-func _init(p_title: String = "", p_nodes: Array = [], p_edges: Array = []) -> void:
-	title = p_title
+func _init(_title: String = "", _nodes: Array = [], _edges: Array = [], _stores: Dictionary = {}) -> void:
+	title = _title
 	# TODO: add validation to ensure IDs are globally unique within the context of the dialogue
-	for node in p_nodes:
+	for node in _nodes:
 		add_ast_node(node)
-	for edge in p_edges:
+	for edge in _edges:
 		add_ast_edge(edge)
+	add_ast_stores(_stores)
 	is_ready = true
-
 
 #region BUILDING DIALOGUE
 ## Add a node to the list of nodes from an AST
@@ -105,7 +101,6 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO):
 	_emit_dialogue_updated()
 	return ast_node
 
-
 ## Update Node AST position
 func update_node_position(ast_node_id: String, position: Vector2) -> void:
 	for node in nodes:
@@ -113,7 +108,6 @@ func update_node_position(ast_node_id: String, position: Vector2) -> void:
 			node.position = position
 			break
 	_emit_dialogue_updated()
-
 
 ## Add an edge to the list of edges from an AST
 func add_ast_edge(edge: Dictionary) -> void:
@@ -127,6 +121,12 @@ func add_ast_edge(edge: Dictionary) -> void:
 		false
 	)
 
+## Add a store to from an AST
+func add_ast_stores(_stores: Dictionary) -> void:
+	# TODO: add validation before instantiation to ensure that
+	# all values are defined
+	var character_store: Array = _stores.get('character', [])
+	stores = StoresAst.new(character_store)
 
 ## Add a new edge to the list of edges. It will not add an edge if it already exists
 ## It returns the number of edges added (1 or 0).
@@ -432,7 +432,8 @@ func to_dict() -> Dictionary:
 	return {
 		'title': title,
 		'nodes': nodes.map(func(node: NodeAst) -> Dictionary: return node.to_dict()),
-		'edges': edges.map(func(edge: EdgeAst) -> Dictionary: return edge.to_dict())
+		'edges': edges.map(func(edge: EdgeAst) -> Dictionary: return edge.to_dict()),
+		'stores': stores.to_dict()
 	}
 
 

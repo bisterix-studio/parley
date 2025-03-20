@@ -27,6 +27,9 @@ const GroupNodeEditor: PackedScene = preload('./components/group/group_node_edit
 
 @export var dialogue_ast: DialogueAst: set = _set_dialogue_ast
 
+# TODO: check all uses of globals and ensure that these are used minimally
+# Ideally we only want to be referencing ParleyManager
+# Although... does this even need to be a global if everything is now defined in the DS AST?
 
 # TODO: use unique name (%)
 @export var edges_editor: EdgesEditor

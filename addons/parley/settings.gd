@@ -9,8 +9,12 @@ const DEFAULT_SETTINGS = {
 	# Dialogue
 	ParleyConstants.DIALOGUE_BALLOON_PATH: preload("./components/default_balloon.tscn").resource_path,
 	# Stores
+	# TODO: remove
 	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
+	# TODO: remove
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",
+	ParleyConstants.CHARACTER_STORE_PATHS: [],
+	# TODO: remove
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
@@ -18,6 +22,10 @@ const DEFAULT_SETTINGS = {
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: "res://addons/parley/views/test_dialogue_sequence_scene.tscn"
 }
 
+# TODO: Consider checking the following with helpful error messages if they are not populated
+# - Character store paths
+# - Fact store paths
+# - Action store paths
 
 static func prepare() -> void:
 	# Set up initial settings

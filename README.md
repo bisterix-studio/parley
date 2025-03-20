@@ -7,6 +7,7 @@ dialogue sequence which are backed by a well-defined Dialogue AST for easy
 management and integration within your game.
 
 <!-- TODO: check the link -->
+<!-- TODO: credits and licensing -->
 
 You can install it via the Asset Library or
 [downloading a copy](https://github.com/bisterix-studio/parley/archive/refs/heads/main.zip)

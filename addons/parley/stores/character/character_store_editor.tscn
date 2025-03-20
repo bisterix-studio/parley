@@ -1,16 +1,60 @@
-[gd_scene format=3 uid="uid://b282u3bhn7ncf"]
+[gd_scene load_steps=4 format=3 uid="uid://b282u3bhn7ncf"]
+
+[ext_resource type="Script" uid="uid://d2kl6i115lxk" path="res://addons/parley/stores/character/character_store_editor.gd" id="1_6ff4i"]
+[ext_resource type="Texture2D" uid="uid://c4qx01xbrjp7h" path="res://addons/parley/assets/Edit.svg" id="2_tcbaq"]
+[ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_hnfne"]
 
 [node name="CharacterStoreEditor" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("1_6ff4i")
 
 [node name="CharacterStoreMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 
-[node name="CharacterStores" type="OptionButton" parent="CharacterStoreMarginContainer"]
+[node name="CharacterStoreContainer" type="VBoxContainer" parent="CharacterStoreMarginContainer"]
 layout_mode = 2
 
-[node name="CharactersContainer" type="VBoxContainer" parent="CharacterStoreMarginContainer"]
+[node name="AvailableStoresContainer" type="HBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
+layout_mode = 2
+text = "Available:"
+
+[node name="AvailableCharacterStores" type="MenuButton" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = false
+text = "Available"
+
+[node name="EditCharacterStoreButton" type="Button" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+icon = ExtResource("2_tcbaq")
+flat = true
+
+[node name="NewCharacterStoreButton" type="Button" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+icon = ExtResource("3_hnfne")
+flat = true
+
+[node name="AvailableStoresContainer2" type="HBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer2"]
+layout_mode = 2
+text = "Selected:"
+
+[node name="CharacterStoreSelector" type="OptionButton" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+
+[node name="CharactersContainer" type="VBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
 layout_mode = 2

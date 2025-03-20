@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://ckubjbp3e7yy3"]
+[gd_scene load_steps=32 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
 [ext_resource type="Resource" uid="uid://b5472y72kql2r" path="res://dialogue_sequences/all.dlog" id="2_8yxrj"]
@@ -22,17 +22,24 @@
 [ext_resource type="PackedScene" uid="uid://bl5g47dhb7hmk" path="res://addons/parley/components/sidebar.tscn" id="18_re0cy"]
 [ext_resource type="PackedScene" uid="uid://dcdua1f2ah8xa" path="res://addons/parley/views/parley_graph_view.tscn" id="20_8yxrj"]
 [ext_resource type="PackedScene" uid="uid://ly3ifjds4qun" path="res://addons/parley/stores/stores_editor.tscn" id="23_exp1x"]
+[ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="28_anq7l"]
 [ext_resource type="PackedScene" uid="uid://c6cagjh7y5wn4" path="res://addons/parley/modals/export_to_csv_modal.tscn" id="29_wngpy"]
+[ext_resource type="Script" uid="uid://dlvt1tv8850a" path="res://addons/parley/models/stores_ast.gd" id="29_xjep8"]
 [ext_resource type="PackedScene" uid="uid://cjgxxvotxhj1g" path="res://addons/parley/components/bottom_panel.tscn" id="29_xxhvx"]
 [ext_resource type="Script" uid="uid://cjo7uxv32sr14" path="res://addons/parley/models/edge_ast.gd" id="30_rspbv"]
 [ext_resource type="Script" uid="uid://3nqtsewsmim0" path="res://addons/parley/models/node_ast.gd" id="31_tp54n"]
 [ext_resource type="Script" uid="uid://btn7s5anok7p4" path="res://addons/parley/models/dialogue_ast.gd" id="32_pogw7"]
+
+[sub_resource type="Resource" id="Resource_7jaih"]
+script = ExtResource("29_xjep8")
+character = Array[ExtResource("28_anq7l")]([])
 
 [sub_resource type="Resource" id="Resource_7hjis"]
 script = ExtResource("32_pogw7")
 title = ""
 edges = Array[ExtResource("30_rspbv")]([])
 nodes = Array[ExtResource("31_tp54n")]([])
+stores = SubResource("Resource_7jaih")
 
 [node name="MainPanel" type="VBoxContainer" node_paths=PackedStringArray("edges_editor", "save_button", "arrange_nodes_button", "refresh_button", "open_file_dialogue")]
 clip_contents = true

@@ -1,30 +1,29 @@
 @tool
 extends Node
 
-
 const ParleyConstants = preload('./constants.gd')
 const ParleySettings = preload('./settings.gd')
 
-
+# TODO: deprecated
 var character_store: CharacterStore = CharacterStore.new()
+# TODO: deprecated
 var action_store: ActionStore = ActionStore.new()
+# TODO: deprecated
 var fact_store: FactStore = FactStore.new()
 
+# TODO: rename to character store paths
+var character_stores: Array[String]: get = _character_stores
 
 var current_dialogue_ast: DialogueAst
 
-
 # TODO: expose settings in here to avoid circular dependencies
 
-
 signal dialogue_imported(source_file_path: String)
-
 
 func _init() -> void:
 	_init_character_store()
 	_init_action_store()
 	_init_fact_store()
-
 
 ## Start a dialogue session with the provided Dialogue AST
 ## Example: ParleyManager.start_dialogue(dialogue)
@@ -48,7 +47,6 @@ func start_dialogue(ctx: Dictionary, dialogue_ast: DialogueAst, start_node: Node
 		assert(false, "dialogue_balloon_scene_missing_start_method")
 	return balloon
 
-
 ## Used to resolve the current scene.
 ## Override if your game manages the current scene itself.
 ## Example: get_current_scene.call()
@@ -58,6 +56,13 @@ var get_current_scene: Callable = func() -> Node:
 		current_scene = Engine.get_main_loop().root.get_child(Engine.get_main_loop().root.get_child_count() - 1)
 	return current_scene
 
+# TODO: add check for these at startup
+func _character_stores() -> Array[String]:
+	var _paths = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATHS)
+	var paths: Array[String] = []
+	for path: String in _paths:
+		paths.append(path)
+	return paths
 
 func _init_character_store() -> void:
 	var character_store_path = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATH)
@@ -67,7 +72,6 @@ func _init_character_store() -> void:
 		character_store = CharacterStore.new()
 		ResourceSaver.save(character_store, character_store_path)
 
-
 func _init_action_store() -> void:
 	var action_store_path = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATH)
 	if ResourceLoader.exists(action_store_path):
@@ -75,7 +79,6 @@ func _init_action_store() -> void:
 	else:
 		action_store = ActionStore.new()
 		ResourceSaver.save(action_store, action_store_path)
-
 
 func _init_fact_store() -> void:
 	var fact_store_path = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)

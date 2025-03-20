@@ -23,6 +23,7 @@ const DIALOGUE_BALLOON_PATH = "parley/dialogue/dialogue_balloon_path"
 # Project settings
 const ACTION_STORE_PATH = "parley/stores/action_store_path"
 const CHARACTER_STORE_PATH = "parley/stores/character_store_path"
+const CHARACTER_STORE_PATHS = "parley/stores/character_store_paths"
 const FACT_STORE_PATH = "parley/stores/fact_store_path"
 #endregion
 

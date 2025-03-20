@@ -365,5 +365,17 @@
       "to_node": "27",
       "to_slot": 0
     }
-  ]
+  ],
+  "stores": {
+    "character": [
+      {
+        "id": "main",
+        "ref": "res://characters/character_store_main.tres"
+      },
+      {
+        "id": "npcs",
+        "ref": "res://characters/character_store_npcs.tres"
+      }
+    ]
+  }
 }
