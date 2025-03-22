@@ -4,4 +4,4 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 cd "${SCRIPT_DIR}/.."
 
-godot -d -s --path "." addons/gut/gut_cmdln.gd -gconfig .gutconfig.test.json
+godot -d -s --path "." addons/gut/gut_cmdln.gd -glog 0
