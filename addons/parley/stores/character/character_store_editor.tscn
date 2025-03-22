@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://b282u3bhn7ncf"]
+[gd_scene load_steps=5 format=3 uid="uid://b282u3bhn7ncf"]
 
 [ext_resource type="Script" uid="uid://d2kl6i115lxk" path="res://addons/parley/stores/character/character_store_editor.gd" id="1_6ff4i"]
 [ext_resource type="Texture2D" uid="uid://c4qx01xbrjp7h" path="res://addons/parley/assets/Edit.svg" id="2_tcbaq"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_hnfne"]
+[ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="7_kbaov"]
 
 [node name="CharacterStoreEditor" type="PanelContainer"]
 offset_right = 40.0
@@ -20,7 +21,8 @@ layout_mode = 2
 [node name="AvailableStoresContainer" type="HBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
+[node name="AvailableCharacterStoresLabel" type="Label" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Available:"
 
@@ -28,7 +30,8 @@ text = "Available:"
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = false
-text = "Available"
+text = "0/2 Selected"
+flat = false
 item_count = 2
 popup/item_0/text = "Main"
 popup/item_0/checkable = 1
@@ -51,16 +54,35 @@ disabled = true
 icon = ExtResource("3_hnfne")
 flat = true
 
-[node name="AvailableStoresContainer2" type="HBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
+[node name="CharacterStoreSelectorContainer" type="HBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer2"]
+[node name="CharacterStoreSelectorLabel" type="Label" parent="CharacterStoreMarginContainer/CharacterStoreContainer/CharacterStoreSelectorContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Selected:"
 
-[node name="CharacterStoreSelector" type="OptionButton" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer2"]
+[node name="CharacterStoreSelector" type="OptionButton" parent="CharacterStoreMarginContainer/CharacterStoreContainer/CharacterStoreSelectorContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="CharactersContainer" type="VBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
+[node name="FilterCharacters" type="LineEdit" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+placeholder_text = "Filter Characters"
+clear_button_enabled = true
+right_icon = ExtResource("7_kbaov")
+
+[node name="CharactersScrollContainer" type="ScrollContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CharactersContainer" type="VBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer/CharactersScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[connection signal="item_selected" from="CharacterStoreMarginContainer/CharacterStoreContainer/CharacterStoreSelectorContainer/CharacterStoreSelector" to="." method="_on_character_store_selector_item_selected"]
+[connection signal="text_changed" from="CharacterStoreMarginContainer/CharacterStoreContainer/FilterCharacters" to="." method="_on_filter_characters_text_changed"]

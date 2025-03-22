@@ -18,10 +18,12 @@ func _render() -> void:
 	%OptionButton.clear()
 	var selected: int = -1
 	var characters: Array[Character] = character_store.characters
+	var index: int = 0
 	for character_def in characters:
-		%OptionButton.add_item(character_def.name, character_def.id)
-		if character == character_def.name:
-			selected = character_def.id
+		%OptionButton.add_item(character_def.id)
+		if character == character_def.id:
+			selected = index
+		index += 1
 	%OptionButton.selected = selected
 	%CodeEdit.text = option
 
@@ -38,6 +40,6 @@ func set_data(node: DialogueOptionNode) -> void:
 	_render()
 
 func emit_dialogue_option_node_changed() -> void:
-	var character: String = character_store.get_character_name_by_id(%OptionButton.selected)
+	var character: String = character_store.get_character_id_by_index(%OptionButton.selected)
 	var option: String = %CodeEdit.text
 	dialogue_option_node_changed.emit(id, character, option)

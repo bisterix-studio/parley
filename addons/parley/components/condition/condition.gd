@@ -2,6 +2,7 @@
 
 extends VBoxContainer
 
+# TODO: make a string
 @export var id: int = 0
 @export var fact_name: String = "": set = _on_fact_selected
 @export var operator: ConditionNodeAst.Operator = ConditionNodeAst.Operator.EQUAL

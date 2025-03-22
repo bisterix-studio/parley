@@ -11,21 +11,23 @@ func _init(_id: String = "", _characters: Array[Character] = []) -> void:
 	characters = _characters
 
 func add_character(name: String = "") -> void:
-	var character: Character = Character.new(_generate_id(), name)
+	var character: Character = Character.new(_generate_id(name), name)
 	characters.append(character)
 	character_added.emit(character)
 
-func get_character_name_by_id(id: int) -> String:
-	var filtered_characters = characters.filter(func(character): return character.id == id)
-	if filtered_characters.size() == 0:
-		return 'Unknown'
-	return filtered_characters.front().name
+func get_character_id_by_index(index: int) -> String:
+	var character = characters.get(index)
+	return character.id if character else _generate_id('unknown')
 
 #region HELPERS
-func _generate_id() -> int:
-	if characters.size() == 0:
-		return 0
-	return characters.map(func(character): return character.id).max() + 1
+# TODO: figure out how to make this global
+func _generate_id(name: String = "") -> String:
+	var local_id: String
+	if not name:
+		local_id = str(characters.size())
+	else:
+		local_id = name.to_snake_case().to_lower()
+	return "%s:%s" % [id.to_snake_case().to_lower(), local_id]
 #endregion
 
 func _to_string() -> String:

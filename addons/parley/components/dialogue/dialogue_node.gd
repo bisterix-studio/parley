@@ -2,8 +2,8 @@
 # TODO: prefix with Parley
 class_name DialogueNode extends ParleyGraphNode
 
-@export var character: String = "": set = _on_character_changed
-@export var dialogue: String = "": set = _on_dialogue_changed
+@export var character: String = "": set = _on_set_character
+@export var dialogue: String = "": set = _on_set_dialogue
 @export var character_editor: Label
 @export var dialogue_editor: Label
 
@@ -17,13 +17,14 @@ func _ready() -> void:
 	set_slot_style(0)
 
 
-func _on_character_changed(new_character: String) -> void:
+func _on_set_character(new_character: String) -> void:
 	character = new_character
-	if character_editor:
-		character_editor.text = character
+	var parts: PackedStringArray = new_character.split(':')
+	if character_editor and parts.size() == 2:
+		character_editor.text = "%s [%s]" % [parts[1].capitalize(), parts[0].capitalize()]
 
 
-func _on_dialogue_changed(new_dialogue: String) -> void:
+func _on_set_dialogue(new_dialogue: String) -> void:
 	dialogue = new_dialogue
 	if dialogue_editor:
 		dialogue_editor.text = dialogue

@@ -2,7 +2,7 @@
 # TODO: prefix with Parley
 class_name Fact extends Resource
 
-
+# TODO: make a string
 ## The unique ID of the Fact. It is unique within the scope of the Parley plugin
 ## Example: 1
 @export var id: int

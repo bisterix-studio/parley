@@ -10,14 +10,14 @@
       "id": "3",
       "type": "DIALOGUE",
       "position": "(1680.0, 440.0)",
-      "character": "Alice",
+      "character": "main:alice",
       "text": "Look. I made a whatdyamacallit."
     },
     {
       "id": "4",
       "type": "DIALOGUE",
       "position": "(2140.0, 460.0)",
-      "character": "Bob",
+      "character": "main:bob",
       "text": "Wow. Great."
     },
     {
@@ -38,21 +38,21 @@
       "id": "7",
       "type": "DIALOGUE",
       "position": "(3100.0, 420.0)",
-      "character": "Alice",
+      "character": "main:alice",
       "text": "I have a coffee."
     },
     {
       "id": "8",
       "type": "DIALOGUE_OPTION",
       "position": "(3600.0, 320.0)",
-      "character": "Carol",
+      "character": "npcs:carol",
       "text": "Give to Alice"
     },
     {
       "id": "13",
       "type": "DIALOGUE_OPTION",
       "position": "(3600.0, 700.0)",
-      "character": "Carol",
+      "character": "npcs:carol",
       "text": "Keep it."
     },
     {
@@ -70,35 +70,35 @@
       "id": "10",
       "type": "DIALOGUE",
       "position": "(4500.0, 360.0)",
-      "character": "Carol",
+      "character": "npcs:carol",
       "text": "Here you go."
     },
     {
       "id": "11",
       "type": "DIALOGUE",
       "position": "(4940.0, 360.0)",
-      "character": "Dave",
+      "character": "npcs:dave",
       "text": "Cheers."
     },
     {
       "id": "12",
       "type": "DIALOGUE",
       "position": "(5420.0, 360.0)",
-      "character": "Carol",
+      "character": "npcs:carol",
       "text": "You're welcome."
     },
     {
       "id": "14",
       "type": "DIALOGUE",
       "position": "(4060.0, 800.0)",
-      "character": "Carol",
+      "character": "npcs:carol",
       "text": "But it's mine."
     },
     {
       "id": "15",
       "type": "DIALOGUE",
       "position": "(4500.0, 800.0)",
-      "character": "Dave",
+      "character": "npcs:dave",
       "text": "Fair enough."
     },
     {
@@ -119,21 +119,21 @@
       "id": "17",
       "type": "DIALOGUE",
       "position": "(4040.0, 1260.0)",
-      "character": "Bob",
+      "character": "main:bob",
       "text": "Mmm. Coffee. Now, what did you want me to look at?"
     },
     {
       "id": "19",
       "type": "DIALOGUE",
       "position": "(3620.0, 1740.0)",
-      "character": "Bob",
+      "character": "main:bob",
       "text": "I NEED COFFEE!"
     },
     {
       "id": "20",
       "type": "DIALOGUE",
       "position": "(4120.0, 1740.0)",
-      "character": "Carol",
+      "character": "npcs:carol",
       "text": "I'll get you coffee, Mama. But first, CATNIP."
     },
     {
@@ -171,28 +171,28 @@
       "id": "24",
       "type": "DIALOGUE",
       "position": "(980.0, 140.0)",
-      "character": "Alice",
+      "character": "main:alice",
       "text": "Look, I need coffee."
     },
     {
       "id": "25",
       "type": "DIALOGUE",
       "position": "(980.0, 580.0)",
-      "character": "Alice",
+      "character": "main:alice",
       "text": "Look, I really need coffee."
     },
     {
       "id": "26",
       "type": "DIALOGUE",
       "position": "(960.0, 1000.0)",
-      "character": "Alice",
+      "character": "main:alice",
       "text": "Look, I really really REALLY need coffee."
     },
     {
       "id": "27",
       "type": "DIALOGUE",
       "position": "(960.0, 1480.0)",
-      "character": "Alice",
+      "character": "main:alice",
       "text": "Coffee please."
     }
   ],
