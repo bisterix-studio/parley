@@ -193,6 +193,7 @@ func _on_graph_view_node_selected(node: Node) -> void:
 		# TODO: create from ast
 		var dialogue_node_editor: DialogueNodeEditor = DialogueNodeEditor.instantiate()
 		dialogue_node_editor.id = node.id
+		dialogue_node_editor.selected_character_stores = dialogue_ast.stores.character
 		dialogue_node_editor.character = node.character
 		dialogue_node_editor.dialogue = node.dialogue
 		dialogue_node_editor.dialogue_node_changed.connect(_on_dialogue_node_editor_dialogue_node_changed)
@@ -200,7 +201,10 @@ func _on_graph_view_node_selected(node: Node) -> void:
 	elif is_instance_of(node, DialogueOptionNode):
 		# TODO: create from ast
 		var dialogue_option_node_editor: DialogueOptionNodeEditor = DialogueOptionNodeEditor.instantiate()
-		dialogue_option_node_editor.set_data(node)
+		dialogue_option_node_editor.id = node.id
+		dialogue_option_node_editor.selected_character_stores = dialogue_ast.stores.character
+		dialogue_option_node_editor.character = node.character
+		dialogue_option_node_editor.option = node.option
 		dialogue_option_node_editor.dialogue_option_node_changed.connect(_on_dialogue_option_node_editor_dialogue_option_node_changed)
 		current_node_editor = dialogue_option_node_editor
 	elif is_instance_of(node, ConditionNode):
@@ -363,15 +367,16 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 		selected_node.character = new_character
 		selected_node.dialogue = new_dialogue_text
 
-
 func _on_dialogue_option_node_editor_dialogue_option_node_changed(id, new_character, new_option_text) -> void:
 	var ast_node = dialogue_ast.find_node_by_id(id)
 	var selected_node = graph_view.find_node_by_id(id)
 	if not ast_node or not _is_selected_node(DialogueOptionNode, selected_node, id):
 		return
-	ast_node.update(new_character, new_option_text)
-	selected_node.update(new_character, new_option_text)
-
+	if ast_node is DialogueOptionNodeAst:
+		ast_node.update(new_character, new_option_text)
+	if selected_node is DialogueOptionNode:
+		selected_node.character = new_character
+		selected_node.option = new_option_text
 
 func _on_condition_node_editor_condition_node_changed(id, description, condition, conditions) -> void:
 	var ast_node = dialogue_ast.find_node_by_id(id)

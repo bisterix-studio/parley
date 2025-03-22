@@ -13,8 +13,8 @@ class Test_dialogue_node_editor:
 		dialogue_node_editor = DialogueNodeEditorScene.instantiate()
 		var character_store: CharacterStore = CharacterStore.new()
 		character_store.id = "test"
-		dialogue_node_editor.character_store = character_store
-		dialogue_node_editor.character_store.add_character("Default Character")
+		character_store.add_character("Default Character")
+		dialogue_node_editor.selected_character_stores = [character_store]
 		add_child_autofree(dialogue_node_editor)
 	
 	func after_each() -> void:
@@ -28,7 +28,7 @@ class Test_dialogue_node_editor:
 			p_dialogue_node_editor.id = id
 		if _character_name and _character_name is String:
 			var character_name: String = _character_name
-			var added_character: Character = p_dialogue_node_editor.character_store.add_character(character_name)
+			var added_character: Character = p_dialogue_node_editor.selected_character_stores[0].add_character(character_name)
 			p_dialogue_node_editor.reload_character_store()
 			p_dialogue_node_editor.character = added_character.id
 		if dialogue:

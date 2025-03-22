@@ -126,7 +126,9 @@ func _render_characters() -> void:
 		var index: int = 0
 		for character: Character in filtered_characters:
 			var character_editor = CharacterEditor.instantiate()
-			character_editor.character = character
+			character_editor.character_id = character.id
+			character_editor.character_name = character.name
+			character_editor.character_changed.connect(_on_character_changed.bind(character))
 			characters_container.add_child(character_editor)
 			if index != filtered_characters.size() - 1:
 				var horizontal_separator: HSeparator = HSeparator.new()
@@ -135,6 +137,11 @@ func _render_characters() -> void:
 #endregion
 
 #region SIGNALS
+func _on_character_changed(id: String, name: String, character: Character) -> void:
+	character.id = id
+	character.name = name
+	character.emit_changed()
+
 func _on_available_character_store_pressed(id: int) -> void:
 	var popup: PopupMenu = available_character_store_menu.get_popup()
 	var index: int = popup.get_item_index(id)
@@ -146,6 +153,16 @@ func _on_character_store_selector_item_selected(index: int) -> void:
 
 func _on_filter_characters_text_changed(new_character_filter: String) -> void:
 	character_filter = new_character_filter
+
+func _on_save_character_store_button_pressed() -> void:
+	if character_store_selector and character_store_selector.selected != -1:
+		if character_store_selector.selected == 0:
+			for character_store: CharacterStore in selected_character_stores:
+				ResourceSaver.save(character_store)
+		else:
+			var character_store: CharacterStore = selected_character_stores[character_store_selector.selected - 1]
+			# TODO: maybe use emit changed at the resource level?
+			ResourceSaver.save(character_store)
 #endregion
 
 #region UTILS

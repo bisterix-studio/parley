@@ -46,7 +46,7 @@
       "type": "DIALOGUE_OPTION",
       "position": "(3600.0, 320.0)",
       "character": "npcs:carol",
-      "text": "Give to Alice"
+      "text": "Give to Alice."
     },
     {
       "id": "13",

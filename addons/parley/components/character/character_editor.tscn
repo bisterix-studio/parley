@@ -29,3 +29,6 @@ key = "id"
 unique_name_in_owner = true
 layout_mode = 2
 key = "name"
+
+[connection signal="value_changed" from="CharacterEditorMarginContainer/CharacterEditorContainer/IdEditor" to="." method="_on_id_editor_value_changed"]
+[connection signal="value_changed" from="CharacterEditorMarginContainer/CharacterEditorContainer/NameEditor" to="." method="_on_name_editor_value_changed"]

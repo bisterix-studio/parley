@@ -7,9 +7,6 @@ class_name DialogueNode extends ParleyGraphNode
 @export var character_editor: Label
 @export var dialogue_editor: Label
 
-#############
-# Lifecycle #
-#############
 func _ready() -> void:
 	setup(DialogueAst.Type.DIALOGUE)
 	clear_all_slots()

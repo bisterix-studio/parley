@@ -523,6 +523,8 @@ func _generate_id() -> String:
 
 
 func _emit_dialogue_updated() -> void:
+	# TODO: this seems to be called a lot - investigate
+	# It's unclear what the purpose of this is any more
 	if is_ready:
 		dialogue_updated.emit(self)
 #endregion

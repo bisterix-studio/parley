@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://b282u3bhn7ncf"]
 
 [ext_resource type="Script" uid="uid://d2kl6i115lxk" path="res://addons/parley/stores/character/character_store_editor.gd" id="1_6ff4i"]
-[ext_resource type="Texture2D" uid="uid://c4qx01xbrjp7h" path="res://addons/parley/assets/Edit.svg" id="2_tcbaq"]
+[ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="2_hnfne"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_hnfne"]
 [ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="7_kbaov"]
 
@@ -40,11 +40,10 @@ popup/item_1/text = "Npcs"
 popup/item_1/checkable = 1
 popup/item_1/id = 1
 
-[node name="EditCharacterStoreButton" type="Button" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
+[node name="SaveCharacterStoreButton" type="Button" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-disabled = true
-icon = ExtResource("2_tcbaq")
+icon = ExtResource("2_hnfne")
 flat = true
 
 [node name="NewCharacterStoreButton" type="Button" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
@@ -65,6 +64,10 @@ text = "Selected:"
 [node name="CharacterStoreSelector" type="OptionButton" parent="CharacterStoreMarginContainer/CharacterStoreContainer/CharacterStoreSelectorContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+selected = 0
+item_count = 1
+popup/item_0/text = "All"
+popup/item_0/id = 0
 
 [node name="FilterCharacters" type="LineEdit" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
 unique_name_in_owner = true
@@ -84,5 +87,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 5
 
+[connection signal="pressed" from="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer/SaveCharacterStoreButton" to="." method="_on_save_character_store_button_pressed"]
 [connection signal="item_selected" from="CharacterStoreMarginContainer/CharacterStoreContainer/CharacterStoreSelectorContainer/CharacterStoreSelector" to="." method="_on_character_store_selector_item_selected"]
 [connection signal="text_changed" from="CharacterStoreMarginContainer/CharacterStoreContainer/FilterCharacters" to="." method="_on_filter_characters_text_changed"]

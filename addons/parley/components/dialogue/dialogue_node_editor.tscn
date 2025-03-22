@@ -22,15 +22,6 @@ text = "Character: "
 [node name="CharacterEditor" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterEditorContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 4
-popup/item_0/text = "main:alice"
-popup/item_0/id = 4
-popup/item_1/text = "main:bob"
-popup/item_1/id = 5
-popup/item_2/text = "main:carol"
-popup/item_2/id = 6
-popup/item_3/text = "main:dave"
-popup/item_3/id = 7
 
 [node name="DialogueEditorContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
