@@ -336,6 +336,8 @@ func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, 
 		var value = condition_def.get('value')
 		var fact: FactInterface = load(fact_ref).new()
 		var result = fact.execute(ctx, [])
+		# TODO: create a wrapper for this
+		fact.call_deferred("free")
 		var evaluated_value = _evaluate_value(value)
 		match operator:
 			ConditionNodeAst.Operator.EQUAL:
@@ -361,6 +363,8 @@ func _process_match_node(ctx: Dictionary, match_node: MatchNodeAst) -> int:
 	var fact_ref: String = match_node.fact_ref
 	var fact: FactInterface = load(fact_ref).new()
 	var result: Variant = fact.execute(ctx, [])
+	# TODO: create a wrapper for this
+	fact.call_deferred("free")
 	var evaluated_result: Variant = _evaluate_value(result)
 	var cases: Array = match_node.cases
 	var case_index: int = cases.map(func(case: Variant) -> Variant: return _map_value(case)).find(evaluated_result)

@@ -25,6 +25,7 @@ from GitHub.
 - [Documentation](#documentation)
 - [Support](#support)
 - [License](#license)
+- [Contributions](#contributions)
 
 Installation Features Examples Support Useful links License Contributions
 
@@ -72,3 +73,15 @@ Documentation for Parley can be found [here](docs/parley.md).
 ## License
 
 Parley is 100% free and open-source, under the MIT license.
+
+## Contributions
+
+[Contributions](./CONTRIBUTING.md), issues and feature requests are very
+welcome. If you are using this package and fixed a bug for yourself, please
+consider submitting a PR!
+
+<p align="center">
+  <a href="https://github.com/bisterix-studio/parley/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=bisterix-studio/parley&columns=8" />
+  </a>
+</p>

@@ -73,6 +73,8 @@ func _on_set_fact_name(new_fact_name: String) -> void:
 		# TODO: check if method exists
 		var new_available_cases: Array[Variant] = []
 		new_available_cases.append_array(fact_interface.available_values())
+		# TODO: create a wrapper for this
+		fact_interface.call_deferred("free")
 		new_available_cases.append(MatchNodeAst.fallback_key)
 		available_cases = new_available_cases
 		var filtered_cases: Array[Variant] = []
