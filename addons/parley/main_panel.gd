@@ -47,6 +47,7 @@ const GroupNodeEditor: PackedScene = preload('./components/group/group_node_edit
 @onready var export_to_csv_modal: Window = %ExportToCsvModal
 @onready var editor = %EditorView
 @onready var sidebar: ParleySidebar = %Sidebar
+@onready var stores_editor: ParleyStoresEditor = %Stores
 
 
 # TODO: add setter that frees the previous and adds a new child
@@ -96,6 +97,8 @@ func _set_dialogue_ast(new_dialogue_ast) -> void:
 		dialogue_ast.dialogue_updated.connect(_on_dialogue_ast_changed)
 		if sidebar:
 			sidebar.add_dialogue_ast(dialogue_ast)
+		if stores_editor:
+			stores_editor.dialogue_ast = dialogue_ast
 
 func _set_current_node_editor(new_current_node_editor: NodeEditor) -> void:
 	if current_node_editor:

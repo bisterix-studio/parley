@@ -1,5 +1,5 @@
 @tool
-extends PanelContainer
+class_name ParleyStoresEditor extends PanelContainer
 
 @onready var show_character_store_button: Button = %ShowCharacterStoreButton
 @onready var show_fact_store_button: Button = %ShowFactStoreButton
@@ -14,6 +14,7 @@ enum Store {
 	ACTION,
 }
 
+var dialogue_ast: DialogueAst = DialogueAst.new(): set = _set_dialogue_ast
 var current_store: Store: set = _set_current_store
 
 func _ready() -> void:
@@ -26,6 +27,13 @@ func _clear() -> void:
 		fact_store_editor.hide()
 	if action_store_editor:
 		action_store_editor.hide()
+
+func _render() -> void:
+	_clear()
+
+func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
+	dialogue_ast = new_dialogue_ast
+	_set_current_store(current_store)
 
 func _set_current_store(new_current_store: Store) -> void:
 	current_store = new_current_store
@@ -40,6 +48,7 @@ func _set_character_store() -> void:
 		show_character_store_button.button_pressed = true
 	_clear()
 	if character_store_editor:
+		character_store_editor.selected_character_stores = dialogue_ast.stores.character
 		character_store_editor.show()
 
 func _set_fact_store() -> void:

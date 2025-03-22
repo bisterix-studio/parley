@@ -18,9 +18,14 @@ func _render_available_character_store_menu() -> void:
 		return
 	var popup: PopupMenu = available_character_store_menu.get_popup()
 	popup.clear()
+	var index: int = 0
 	for available_character_store in available_character_stores:
 		popup.add_check_item(str(available_character_store.id).capitalize())
-	popup.id_pressed.connect(_on_available_character_store_pressed)
+		var checked: bool = selected_character_stores.filter(func(c: CharacterStore) -> bool: return c.id == available_character_store.id).size() > 0
+		popup.set_item_checked(index, checked)
+		index += 1
+	if not popup.id_pressed.is_connected(_on_available_character_store_pressed):
+		popup.id_pressed.connect(_on_available_character_store_pressed)
 	popup.hide_on_checkable_item_selection = false
 
 func _on_available_character_store_pressed(id: int) -> void:
@@ -31,11 +36,17 @@ func _on_available_character_store_pressed(id: int) -> void:
 
 func _set_selected_character_store(index: int) -> void:
 	var new_character_stores = selected_character_stores
-	new_character_stores.append(available_character_stores[index])
+	var selected_character_store = available_character_stores[index]
+	var selected_character_store_index = selected_character_stores.find(selected_character_store)
+	if selected_character_store_index == -1:
+		new_character_stores.append(selected_character_store)
+	else:
+		new_character_stores.remove_at(selected_character_store_index)
 	selected_character_stores = new_character_stores
 
 func _set_selected_character_stores(new_selected_character_stores: Array[CharacterStore]) -> void:
 	selected_character_stores = new_selected_character_stores
+	_render_available_character_store_menu()
 	_render_selected_character_stores()
 
 func _render_selected_character_stores() -> void:

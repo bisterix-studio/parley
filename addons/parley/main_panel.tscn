@@ -51,6 +51,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_06n3w")
+dialogue_ast = ExtResource("2_8yxrj")
 edges_editor = NodePath("MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer/EdgesEditor")
 save_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/SaveButton")
 arrange_nodes_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/ArrangeNodesButton")
@@ -224,6 +225,175 @@ size_flags_horizontal = 3
 [node name="GraphView" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("20_8yxrj")]
 unique_name_in_owner = true
 layout_mode = 2
+connections = Array[Dictionary]([{
+"from_node": &"DIALOGUE-3",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-4",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-4",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"CONDITION-6",
+"to_port": 0
+}, {
+"from_node": &"CONDITION-6",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-7",
+"to_port": 0
+}, {
+"from_node": &"CONDITION-6",
+"from_port": 1,
+"keep_alive": false,
+"to_node": &"CONDITION-16",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-7",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE_OPTION-8",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-7",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE_OPTION-13",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE_OPTION-8",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"ACTION-9",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE_OPTION-13",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-14",
+"to_port": 0
+}, {
+"from_node": &"ACTION-9",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-10",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-10",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-11",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-11",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-12",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-14",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-15",
+"to_port": 0
+}, {
+"from_node": &"CONDITION-16",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-17",
+"to_port": 0
+}, {
+"from_node": &"CONDITION-16",
+"from_port": 1,
+"keep_alive": false,
+"to_node": &"DIALOGUE-19",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-19",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-20",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-12",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"END-21",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-15",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"END-21",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-20",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"END-21",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-17",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"END-21",
+"to_port": 0
+}, {
+"from_node": &"START-1",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"MATCH-23",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-27",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-3",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-26",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-3",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-25",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-3",
+"to_port": 0
+}, {
+"from_node": &"DIALOGUE-24",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-3",
+"to_port": 0
+}, {
+"from_node": &"MATCH-23",
+"from_port": 0,
+"keep_alive": false,
+"to_node": &"DIALOGUE-24",
+"to_port": 0
+}, {
+"from_node": &"MATCH-23",
+"from_port": 1,
+"keep_alive": false,
+"to_node": &"DIALOGUE-25",
+"to_port": 0
+}, {
+"from_node": &"MATCH-23",
+"from_port": 2,
+"keep_alive": false,
+"to_node": &"DIALOGUE-26",
+"to_port": 0
+}, {
+"from_node": &"MATCH-23",
+"from_port": 3,
+"keep_alive": false,
+"to_node": &"DIALOGUE-27",
+"to_port": 0
+}])
 
 [node name="BottomPanel" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("29_xxhvx")]
 layout_mode = 2
@@ -273,6 +443,7 @@ visible = false
 layout_mode = 2
 
 [node name="Stores" parent="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer" instance=ExtResource("23_exp1x")]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
