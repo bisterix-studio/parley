@@ -66,6 +66,7 @@ class Test_match_node:
 		# Arrange
 		var input: Dictionary = params['input']
 		var expected: Dictionary = params['expected']
+		var expected_cases: Array = expected['cases']
 		setup_match_node(match_node, input)
 		watch_signals(match_node)
 		
@@ -79,9 +80,9 @@ class Test_match_node:
 		assert_eq(match_node.description_label.text, str(expected['description']))
 		assert_eq(match_node.fact_name, str(expected['fact_name']), "Expected fact_name to be set to the expected value.")
 		assert_eq(match_node.fact_label.text, str(expected['fact_name']), "Expected fact_name to be set to the expected value.")
-		assert_eq_deep(match_node.cases, expected['cases'])
+		assert_eq_deep(match_node.cases, expected_cases)
 		var index: int = MatchNode.start_slot
 		for expected_case: Variant in expected['selected_cases']:
 			var case_label: CaseLabel = match_node.get_child(index)
-			assert_eq(case_label.case_label.text, expected_case, "Cases label does not equal expected case for child: %s" % [index])
+			assert_eq(case_label.case_label.text, str(expected_case), "Cases label does not equal expected case for child: %s" % [index])
 			index += 1

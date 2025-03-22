@@ -103,7 +103,7 @@ class Test_match_node_editor:
 		var index: int = 0
 		for expected_case: Variant in expected['selected_cases']:
 			var case_editor: CaseEditor = match_node_editor.cases_editor.get_child(index)
-			assert_eq(case_editor.case_editor.text, expected_case, "Cases selector does not equal expected case for child: %s" % [index])
+			assert_eq(case_editor.case_editor.text, str(expected_case), "Cases selector does not equal expected case for child: %s" % [index])
 			index += 1
 		assert_signal_not_emitted(match_node_editor, 'match_node_changed')
 
@@ -146,7 +146,7 @@ class Test_match_node_editor:
 		var index: int = 0
 		for expected_case: Variant in expected['selected_cases']:
 			var case_editor: CaseEditor = match_node_editor.cases_editor.get_child(index)
-			assert_eq(case_editor.case_editor.text, expected_case, "Cases selector does not equal expected case for child: %s" % [index])
+			assert_eq(case_editor.case_editor.text, str(expected_case), "Cases selector does not equal expected case for child: %s" % [index])
 			index += 1
 		assert_signal_not_emitted(match_node_editor, 'match_node_changed')
 
@@ -182,7 +182,7 @@ class Test_match_node_editor:
 		var index: int = 0
 		for expected_case: Variant in expected['selected_cases']:
 			var case_editor: CaseEditor = match_node_editor.cases_editor.get_child(index)
-			assert_eq(case_editor.case_editor.text, expected_case, "Cases selector does not equal expected case for child: %s" % [index])
+			assert_eq(case_editor.case_editor.text, str(expected_case), "Cases selector does not equal expected case for child: %s" % [index])
 			index += 1
 		assert_signal_emitted_with_parameters(match_node_editor, 'match_node_changed', [expected['id'], expected['description'], expected['fact_name'], expected['cases']])
 
