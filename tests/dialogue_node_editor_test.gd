@@ -11,7 +11,9 @@ class Test_dialogue_node_editor:
 	
 	func before_each():
 		dialogue_node_editor = DialogueNodeEditorScene.instantiate()
-		dialogue_node_editor.character_store = CharacterStore.new()
+		var character_store: CharacterStore = CharacterStore.new()
+		character_store.id = "test"
+		dialogue_node_editor.character_store = character_store
 		dialogue_node_editor.character_store.add_character("Default Character")
 		add_child_autofree(dialogue_node_editor)
 	
@@ -20,14 +22,14 @@ class Test_dialogue_node_editor:
 	
 	func setup_dialogue_node_editor(p_dialogue_node_editor: DialogueNodeEditor, test_case: Dictionary) -> void:
 		var id = test_case.get('id')
-		var character = test_case.get('character')
+		var character_name = test_case.get('character_name')
 		var dialogue = test_case.get('dialogue')
 		if id:
 			p_dialogue_node_editor.id = id
-		if character:
-			p_dialogue_node_editor.character_store.add_character(character)
+		if character_name:
+			var added_character: Character = p_dialogue_node_editor.character_store.add_character(character_name)
 			p_dialogue_node_editor.reload_character_store()
-			p_dialogue_node_editor.character = character
+			p_dialogue_node_editor.character = added_character.id
 		if dialogue:
 			p_dialogue_node_editor.dialogue = dialogue
 
@@ -43,24 +45,24 @@ class Test_dialogue_node_editor:
 
 	func test_initial_render(params = use_parameters([
 		{
-			"input": {"id": null, "character": null, "dialogue": null},
-			"expected": {"id": "", "character": "", "selected_character": - 1, "dialogue": ""},
+			"input": {"id": null, "character_name": null, "dialogue": null},
+			"expected": {"id": "", "character_id": "", "selected_character": - 1, "dialogue": ""},
 		},
 		{
-			"input": {"id": "1", "character": null, "dialogue": null},
-			"expected": {"id": "1", "character": "", "selected_character": - 1, "dialogue": ""},
+			"input": {"id": "1", "character_name": null, "dialogue": null},
+			"expected": {"id": "1", "character_id": "", "selected_character": - 1, "dialogue": ""},
 		},
 		{
-			"input": {"id": null, "character": "Test Character", "dialogue": null},
-			"expected": {"id": "", "character": "Test Character", "selected_character": 1, "dialogue": ""},
+			"input": {"id": null, "character_name": "Test Character", "dialogue": null},
+			"expected": {"id": "", "character_id": "test:test_character", "selected_character": 1, "dialogue": ""},
 		},
 		{
-			"input": {"id": null, "character": null, "dialogue": "Some dialogue"},
-			"expected": {"id": "", "character": "", "selected_character": - 1, "dialogue": "Some dialogue"},
+			"input": {"id": null, "character_name": null, "dialogue": "Some dialogue"},
+			"expected": {"id": "", "character_id": "", "selected_character": - 1, "dialogue": "Some dialogue"},
 		},
 		{
-			"input": {"id": "1", "character": "Test Character", "dialogue": "Some dialogue"},
-			"expected": {"id": "1", "character": "Test Character", "selected_character": 1, "dialogue": "Some dialogue"},
+			"input": {"id": "1", "character_name": "Test Character", "dialogue": "Some dialogue"},
+			"expected": {"id": "1", "character_id": "test:test_character", "selected_character": 1, "dialogue": "Some dialogue"},
 		},
 	])) -> void:
 		# Arrange
@@ -75,7 +77,7 @@ class Test_dialogue_node_editor:
 		# Assert
 		assert_true(dialogue_node_editor.is_inside_tree())
 		assert_eq(dialogue_node_editor.id, expected['id'])
-		assert_eq(dialogue_node_editor.character, expected['character'])
+		assert_eq(dialogue_node_editor.character, expected['character_id'])
 		assert_eq(dialogue_node_editor.character_editor.selected, expected['selected_character'])
 		assert_eq(dialogue_node_editor.dialogue, expected['dialogue'])
 		assert_eq(dialogue_node_editor.dialogue_editor.text, expected['dialogue'])
@@ -84,24 +86,24 @@ class Test_dialogue_node_editor:
 
 	func test_update_render_with_variables(params = use_parameters([
 		{
-			"input": {"id": null, "character": null, "dialogue": null},
-			"expected": {"id": "", "character": "", "selected_character": - 1, "dialogue": ""},
+			"input": {"id": null, "character_name": null, "dialogue": null},
+			"expected": {"id": "", "character_id": "", "selected_character": - 1, "dialogue": ""},
 		},
 		{
-			"input": {"id": "1", "character": null, "dialogue": null},
-			"expected": {"id": "1", "character": "", "selected_character": - 1, "dialogue": ""},
+			"input": {"id": "1", "character_name": null, "dialogue": null},
+			"expected": {"id": "1", "character_id": "", "selected_character": - 1, "dialogue": ""},
 		},
 		{
-			"input": {"id": null, "character": "Test Character", "dialogue": null},
-			"expected": {"id": "", "character": "Test Character", "selected_character": 1, "dialogue": ""},
+			"input": {"id": null, "character_name": "Test Character", "dialogue": null},
+			"expected": {"id": "", "character_id": "test:test_character", "selected_character": 1, "dialogue": ""},
 		},
 		{
-			"input": {"id": null, "character": null, "dialogue": "Some dialogue"},
-			"expected": {"id": "", "character": "", "selected_character": - 1, "dialogue": "Some dialogue"},
+			"input": {"id": null, "character_name": null, "dialogue": "Some dialogue"},
+			"expected": {"id": "", "character_id": "", "selected_character": - 1, "dialogue": "Some dialogue"},
 		},
 		{
-			"input": {"id": "1", "character": "Test Character", "dialogue": "Some dialogue"},
-			"expected": {"id": "1", "character": "Test Character", "selected_character": 1, "dialogue": "Some dialogue"},
+			"input": {"id": "1", "character_name": "Test Character", "dialogue": "Some dialogue"},
+			"expected": {"id": "1", "character_id": "test:test_character", "selected_character": 1, "dialogue": "Some dialogue"},
 		},
 	])) -> void:
 		# Arrange
@@ -124,11 +126,11 @@ class Test_dialogue_node_editor:
 	func test_update_render_with_text_input(params = use_parameters([
 		#{
 			#"input": {"id": "1", "dialogue": "Some dialogue"},
-			#"expected": {"id": "1", "character": "Unknown", "selected_character": -1, "dialogue": "Some dialogue"},
+			#"expected": {"id": "1", "character_id": "Unknown", "selected_character": -1, "dialogue": "Some dialogue"},
 		#},
 		{
 			"input": {"id": "1", "selected_character": 0},
-			"expected": {"id": "1", "character": "Default Character", "selected_character": 0, "dialogue": ""},
+			"expected": {"id": "1", "character_id": "test:default_character", "selected_character": 0, "dialogue": ""},
 		},
 	])) -> void:
 		# Arrange
@@ -147,4 +149,4 @@ class Test_dialogue_node_editor:
 		assert_eq(dialogue_node_editor.dialogue, expected['dialogue'])
 		assert_eq(dialogue_node_editor.dialogue_editor.text, expected['dialogue'])
 		assert_eq(dialogue_node_editor.character_editor.selected, expected['selected_character'])
-		assert_signal_emitted_with_parameters(dialogue_node_editor, 'dialogue_node_changed', [expected['id'], expected['character'], expected['dialogue']])
+		assert_signal_emitted_with_parameters(dialogue_node_editor, 'dialogue_node_changed', [expected['id'], expected['character_id'], expected['dialogue']])

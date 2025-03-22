@@ -10,10 +10,11 @@ func _init(_id: String = "", _characters: Array[Character] = []) -> void:
 	id = _id
 	characters = _characters
 
-func add_character(name: String = "") -> void:
+func add_character(name: String = "") -> Character:
 	var character: Character = Character.new(_generate_id(name), name)
 	characters.append(character)
 	character_added.emit(character)
+	return character
 
 func get_character_id_by_index(index: int) -> String:
 	var character = characters.get(index)
