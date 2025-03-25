@@ -1,7 +1,6 @@
-[gd_scene load_steps=32 format=3 uid="uid://ckubjbp3e7yy3"]
+[gd_scene load_steps=31 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
-[ext_resource type="Resource" uid="uid://b5472y72kql2r" path="res://dialogue_sequences/all.dlog" id="2_8yxrj"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_4ui00"]
 [ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="3_qx68p"]
 [ext_resource type="Texture2D" uid="uid://cs83fq73m01l3" path="res://addons/parley/assets/Dialogue.svg" id="4_f842u"]
@@ -214,8 +213,6 @@ split_offset = 400
 [node name="Sidebar" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView" instance=ExtResource("18_re0cy")]
 unique_name_in_owner = true
 layout_mode = 2
-current_dialogue_ast = ExtResource("2_8yxrj")
-dialogue_asts = Array[ExtResource("32_pogw7")]([ExtResource("2_8yxrj")])
 
 [node name="GraphContainer" type="VBoxContainer" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView"]
 layout_mode = 2
@@ -224,6 +221,7 @@ size_flags_horizontal = 3
 [node name="GraphView" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("20_8yxrj")]
 unique_name_in_owner = true
 layout_mode = 2
+ast = null
 
 [node name="BottomPanel" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("29_xxhvx")]
 layout_mode = 2

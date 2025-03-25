@@ -55,6 +55,7 @@ var current_node_editor: NodeEditor: set = _set_current_node_editor
 var selected_node_id
 var plugin: EditorPlugin
 
+signal node_selected(node_ast: NodeAst)
 
 #region SETUP
 func _ready() -> void:
@@ -187,7 +188,7 @@ func _on_graph_view_node_selected(node: Node) -> void:
 		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_START_NODE_ID, node.id)
 	if selected_node_id == node.id:
 		return
-
+	node_selected.emit(dialogue_ast.find_node_by_id(node.id))
 	_clear_editor()
 	if is_instance_of(node, DialogueNode):
 		# TODO: create from ast

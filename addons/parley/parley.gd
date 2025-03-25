@@ -8,6 +8,7 @@ const MainPanel: PackedScene = preload("./main_panel.tscn")
 var main_panel_instance: Node
 
 var import_plugin: EditorImportPlugin
+var inspector_plugin: EditorInspectorPlugin
 
 var resource_format_saver: DialogueAstFormatSaver
 
@@ -22,8 +23,12 @@ func _enter_tree():
 
 		import_plugin = preload("import_plugin.gd").new()
 		add_import_plugin(import_plugin)
+		
+		inspector_plugin = preload("inspector_plugin.gd").new()
+		add_inspector_plugin(inspector_plugin)
 
 		main_panel_instance = MainPanel.instantiate()
+		main_panel_instance.node_selected.connect(_on_node_selected)
 	
 		# Add the main panel to the editor's main viewport.
 		EditorInterface.get_editor_main_screen().add_child(main_panel_instance)
@@ -31,6 +36,8 @@ func _enter_tree():
 		# Hide the main panel. Very much required.
 		_make_visible(false)
 
+func _on_node_selected(node_ast: NodeAst) -> void:
+	EditorInterface.get_inspector().edit(node_ast)
 
 func _exit_tree():
 	if is_instance_valid(main_panel_instance):
@@ -39,6 +46,10 @@ func _exit_tree():
 	if import_plugin:
 		remove_import_plugin(import_plugin)
 		import_plugin = null
+
+	if inspector_plugin:
+		remove_inspector_plugin(inspector_plugin)
+		inspector_plugin = null
 	
 	if resource_format_saver:
 		ResourceSaver.remove_resource_format_saver(resource_format_saver)

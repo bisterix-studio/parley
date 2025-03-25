@@ -11,7 +11,7 @@ class_name DialogueNodeAst extends NodeAst
 
 ## The text of the Dialogue Node AST.
 ## Example: "I need some coffee."
-@export var text: String
+@export_multiline var text: String
 
 
 ## Create a new instance of a Dialogue Node AST.

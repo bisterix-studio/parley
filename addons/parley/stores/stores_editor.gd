@@ -67,6 +67,7 @@ func _set_action_store() -> void:
 
 func _on_show_character_store_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
+		current_store = Store.CHARACTER
 		if show_fact_store_button:
 			show_fact_store_button.button_pressed = false
 		if show_action_store_button:
@@ -74,6 +75,7 @@ func _on_show_character_store_button_toggled(toggled_on: bool) -> void:
 
 func _on_show_fact_store_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
+		current_store = Store.FACT
 		if show_character_store_button:
 			show_character_store_button.button_pressed = false
 		if show_action_store_button:
@@ -81,6 +83,7 @@ func _on_show_fact_store_button_toggled(toggled_on: bool) -> void:
 
 func _on_show_action_store_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
+		current_store = Store.ACTION
 		if show_fact_store_button:
 			show_fact_store_button.button_pressed = false
 		if show_character_store_button:

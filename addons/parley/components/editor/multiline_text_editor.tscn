@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://bjstrv43ydas4"]
+
+[ext_resource type="Script" uid="uid://b7nk77mo3jybk" path="res://addons/parley/components/editor/multiline_text_editor.gd" id="1_8f0mt"]
+[ext_resource type="Texture2D" uid="uid://2y4tdcok0gt1" path="res://addons/parley/assets/Popout.svg" id="2_tp7ej"]
+
+[node name="MultilineTextEditor" type="VBoxContainer"]
+custom_minimum_size = Vector2(100, 200)
+offset_right = 52.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_8f0mt")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextEdit" type="TextEdit" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Text goes here..."
+wrap_mode = 1
+
+[node name="Button" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("2_tp7ej")
+
+[node name="EditModal" type="AcceptDialog" parent="."]
+unique_name_in_owner = true
+title = "Edit text:"
+initial_position = 2
+size = Vector2i(1500, 1500)
+
+[node name="ModalTextEdit" type="TextEdit" parent="EditModal"]
+unique_name_in_owner = true
+offset_right = 8.0
+offset_bottom = 8.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+placeholder_text = "Text goes here..."
+
+[connection signal="text_changed" from="HBoxContainer/TextEdit" to="." method="_on_text_edit_text_changed"]
+[connection signal="pressed" from="HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="text_changed" from="EditModal/ModalTextEdit" to="." method="_on_modal_text_edit_text_changed"]

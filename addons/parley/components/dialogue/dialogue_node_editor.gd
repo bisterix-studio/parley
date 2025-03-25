@@ -33,7 +33,6 @@ func _select_character() -> void:
 		var selected_index: int = -1
 		var index = 0
 		for character_def: Character in all_characters:
-			print(character, '|', character_def.id)
 			if character == character_def.id:
 				selected_index = index
 			index += 1

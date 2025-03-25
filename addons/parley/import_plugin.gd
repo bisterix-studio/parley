@@ -1,7 +1,7 @@
 @tool
 extends EditorImportPlugin
 
-const compiler_version: String = "0.1.0"
+const compiler_version: String = "0.2.0"
 
 const ParleyConstants = preload("./constants.gd")
 
@@ -10,7 +10,6 @@ enum Presets {DEFAULT}
 func _get_importer_name():
 	# NOTE: A change to this forces a re-import of all dialogue
 	return "parley_dialogue_ast_compiler_%s" % compiler_version
-
 
 func _get_visible_name():
 	# "Import as Parley Dialogue AST"
