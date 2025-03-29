@@ -6,7 +6,6 @@ const USER_CONFIG_PATH = "user://parley_user_config.json"
 
 #region Parley Plugin
 const PARLEY_PLUGIN_METADATA = "ParleyManager"
-const PARLEY_MANAGER_SINGLETON = "ParleyManager"
 #endregion
 
 #region Editor

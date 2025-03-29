@@ -1,9 +1,6 @@
 @tool
 extends VBoxContainer
 
-const ParleyConstants = preload("./constants.gd")
-const ParleySettings = preload("./settings.gd")
-
 const new_file_icon = preload("./assets/New.svg")
 const load_file_icon = preload("./assets/Load.svg")
 const export_to_csv_icon = preload("./assets/Export.svg")
@@ -46,6 +43,7 @@ const GroupNodeEditor: PackedScene = preload('./components/group/group_node_edit
 @onready var new_dialogue_modal: Window = %NewDialogueModal
 @onready var export_to_csv_modal: Window = %ExportToCsvModal
 @onready var editor = %EditorView
+@onready var editor_panel = %EditorPanel
 @onready var sidebar: ParleySidebar = %Sidebar
 @onready var stores_editor: ParleyStoresEditor = %Stores
 
@@ -53,14 +51,11 @@ const GroupNodeEditor: PackedScene = preload('./components/group/group_node_edit
 # TODO: add setter that frees the previous and adds a new child
 var current_node_editor: NodeEditor: set = _set_current_node_editor
 var selected_node_id
-var plugin: EditorPlugin
 
 signal node_selected(node_ast: NodeAst)
 
 #region SETUP
 func _ready() -> void:
-	if Engine.is_editor_hint():
-		plugin = Engine.get_meta(ParleyConstants.PARLEY_PLUGIN_METADATA)
 	await _setup()
 	# TODO: figure this out at a later date
 	# ParleyManager.dialogue_imported.connect(_on_parley_manager_dialogue_imported)
@@ -112,11 +107,6 @@ func _set_current_node_editor(new_current_node_editor: NodeEditor) -> void:
 func _on_dialogue_ast_changed(new_dialogue_ast: DialogueAst) -> void:
 	if sidebar:
 		sidebar.current_dialogue_ast = new_dialogue_ast
-
-func _load_current_dialogue_sequence():
-	var current_dialogue_sequence_path = ParleySettings.get_user_value(ParleyConstants.EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH)
-	if current_dialogue_sequence_path and ResourceLoader.exists(current_dialogue_sequence_path):
-		dialogue_ast = load(current_dialogue_sequence_path)
 #endregion
 
 #region SETUP
@@ -124,7 +114,7 @@ func _setup() -> void:
 	_setup_file_menu()
 	_setup_insert_menu()
 	_setup_theme()
-	_load_current_dialogue_sequence()
+	dialogue_ast = ParleyManager.load_current_dialogue_sequence()
 	await refresh()
 
 
@@ -184,8 +174,8 @@ func _on_file_id_pressed(id: int) -> void:
 
 
 func _on_graph_view_node_selected(node: Node) -> void:
-	if not _is_test_dialogue_sequence_running():
-		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_START_NODE_ID, node.id)
+	if not ParleyManager.is_test_dialogue_sequence_running():
+		ParleyManager.set_test_dialogue_sequence_start_node(node.id)
 	if selected_node_id == node.id:
 		return
 	node_selected.emit(dialogue_ast.find_node_by_id(node.id))
@@ -276,27 +266,21 @@ func _on_graph_view_node_selected(node: Node) -> void:
 
 
 func _on_graph_view_node_deselected(node: Node) -> void:
-	if not _is_test_dialogue_sequence_running():
-		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_START_NODE_ID, null)
-
-
-func _is_test_dialogue_sequence_running() -> bool:
-	if ParleySettings.get_setting(ParleyConstants.TEST_DIALOGUE_SEQUENCE_IS_RUNNING_DIALOGUE_TEST):
-		return true
-	return false
+	if not ParleyManager.is_test_dialogue_sequence_running():
+		ParleyManager.set_test_dialogue_sequence_start_node(null)
 #endregion
 
 
 #region BUTTONS
 func _on_open_dialog_file_selected(path: String) -> void:
 	dialogue_ast = load(path)
-	ParleySettings.set_user_value(ParleyConstants.EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH, path)
+	ParleyManager.set_current_dialogue_sequence(path)
 	refresh()
 
 
 func _on_new_dialogue_modal_dialogue_ast_created(new_dialogue_ast: DialogueAst) -> void:
 	dialogue_ast = new_dialogue_ast
-	ParleySettings.set_user_value(ParleyConstants.EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH, dialogue_ast.resource_path)
+	ParleyManager.set_current_dialogue_sequence(dialogue_ast.resource_path)
 	refresh(true)
 
 
@@ -333,26 +317,12 @@ func _on_refresh_button_pressed() -> void:
 func _on_test_dialogue_from_start_button_pressed() -> void:
 	# TODO: dialogue is technically async so we should ideally wait here
 	_save_dialogue()
-	if plugin:
-		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_IS_RUNNING_DIALOGUE_TEST, true)
-		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH, dialogue_ast.resource_path)
-		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START, true)
-		var test_dialogue_path: String = ParleySettings.get_setting(ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH)
-		plugin.get_editor_interface().play_custom_scene(test_dialogue_path)
+	ParleyManager.run_test_dialogue_from_start(dialogue_ast)
 
 func _on_test_dialogue_from_selected_button_pressed() -> void:
 	# TODO: dialogue is technically async so we should ideally wait here
 	_save_dialogue()
-	if plugin:
-		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_IS_RUNNING_DIALOGUE_TEST, true)
-		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH, dialogue_ast.resource_path)
-		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START, null)
-		if selected_node_id:
-			ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_START_NODE_ID, selected_node_id)
-		else:
-			ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START, true)
-		var test_dialogue_path: String = ParleySettings.get_setting(ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH)
-		plugin.get_editor_interface().play_custom_scene(test_dialogue_path)
+	ParleyManager.run_test_dialogue_from_selected(dialogue_ast, selected_node_id)
 #endregion
 
 
@@ -542,6 +512,13 @@ func _on_bottom_panel_sidebar_toggled(is_sidebar_open: bool) -> void:
 			sidebar.show()
 		else:
 			sidebar.hide()
+
+func _on_bottom_panel_editor_toggled(is_editor_open: bool) -> void:
+	if editor_panel:
+		if is_editor_open:
+			editor_panel.show()
+		else:
+			editor_panel.hide()
 #endregion
 
 

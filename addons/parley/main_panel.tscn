@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://ckubjbp3e7yy3"]
+[gd_scene load_steps=32 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_4ui00"]
@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://opepismu63ox" path="res://addons/parley/assets/Export.svg" id="12_242yd"]
 [ext_resource type="PackedScene" uid="uid://1alef4tqlskn" path="res://addons/parley/modals/new_dialogue_modal.tscn" id="12_v8y8i"]
 [ext_resource type="Texture2D" uid="uid://dngyydvxiwyvs" path="res://addons/parley/assets/Reload.svg" id="13_oy825"]
+[ext_resource type="Resource" uid="uid://b5472y72kql2r" path="res://dialogue_sequences/all.dlog" id="18_anq7l"]
 [ext_resource type="PackedScene" uid="uid://bl5g47dhb7hmk" path="res://addons/parley/components/sidebar.tscn" id="18_re0cy"]
 [ext_resource type="PackedScene" uid="uid://dcdua1f2ah8xa" path="res://addons/parley/views/parley_graph_view.tscn" id="20_8yxrj"]
 [ext_resource type="PackedScene" uid="uid://ly3ifjds4qun" path="res://addons/parley/stores/stores_editor.tscn" id="23_exp1x"]
@@ -213,6 +214,8 @@ split_offset = 400
 [node name="Sidebar" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView" instance=ExtResource("18_re0cy")]
 unique_name_in_owner = true
 layout_mode = 2
+current_dialogue_ast = ExtResource("18_anq7l")
+dialogue_asts = Array[ExtResource("32_pogw7")]([ExtResource("18_anq7l")])
 
 [node name="GraphContainer" type="VBoxContainer" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView"]
 layout_mode = 2
@@ -221,12 +224,12 @@ size_flags_horizontal = 3
 [node name="GraphView" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("20_8yxrj")]
 unique_name_in_owner = true
 layout_mode = 2
-ast = null
 
 [node name="BottomPanel" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("29_xxhvx")]
 layout_mode = 2
 
 [node name="EditorPanel" type="PanelContainer" parent="MarginContainer/MainContainer/HSplitContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -305,6 +308,7 @@ dialogue_ast = SubResource("Resource_7hjis")
 [connection signal="disconnection_request" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_disconnection_request"]
 [connection signal="node_deselected" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_node_deselected"]
 [connection signal="node_selected" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_node_selected"]
+[connection signal="editor_toggled" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/BottomPanel" to="." method="_on_bottom_panel_editor_toggled"]
 [connection signal="sidebar_toggled" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/BottomPanel" to="." method="_on_bottom_panel_sidebar_toggled"]
 [connection signal="edge_deleted" from="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer/EdgesEditor" to="." method="_on_edges_editor_edge_deleted"]
 [connection signal="mouse_entered_edge" from="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer/EdgesEditor" to="." method="_on_edges_editor_mouse_entered_edge"]

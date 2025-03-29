@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name DialogueAstFormatSaver extends ResourceFormatSaver
+extends ResourceFormatSaver
 
 ## Returns the list of extensions available for saving the resource object,
 ## provided it is recognized (see _recognize).

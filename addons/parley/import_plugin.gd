@@ -3,8 +3,6 @@ extends EditorImportPlugin
 
 const compiler_version: String = "0.2.0"
 
-const ParleyConstants = preload("./constants.gd")
-
 enum Presets {DEFAULT}
 
 func _get_importer_name():
