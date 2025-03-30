@@ -1,6 +1,5 @@
 extends GutTest
 
-
 class Test_process_next:
 	extends GutTest
 

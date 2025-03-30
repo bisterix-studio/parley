@@ -2,7 +2,6 @@
 extends EditorPlugin
 
 const ParleyConstants = preload("./constants.gd")
-const ParleyDialogueSequenceAstFormatSaver: Script = preload("./dialogue_ast_format_saver.gd")
 const ParleyImportPlugin: Script = preload("./import_plugin.gd")
 const ParleyInspectorPlugin: Script = preload("./inspector_plugin.gd")
 const MainPanel: PackedScene = preload("./main_panel.tscn")
@@ -12,14 +11,10 @@ const PARLEY_MANAGER_SINGLETON = "ParleyManager"
 var main_panel_instance: Node
 var import_plugin: EditorImportPlugin
 var inspector_plugin: EditorInspectorPlugin
-var resource_format_saver: ResourceFormatSaver
 
 func _enter_tree():
 	if Engine.is_editor_hint():
 		Engine.set_meta(ParleyConstants.PARLEY_PLUGIN_METADATA, self)
-
-		resource_format_saver = ParleyDialogueSequenceAstFormatSaver.new()
-		ResourceSaver.add_resource_format_saver(resource_format_saver)
 
 		import_plugin = ParleyImportPlugin.new()
 		add_import_plugin(import_plugin)
@@ -50,9 +45,6 @@ func _exit_tree():
 	if inspector_plugin:
 		remove_inspector_plugin(inspector_plugin)
 		inspector_plugin = null
-	
-	if resource_format_saver:
-		ResourceSaver.remove_resource_format_saver(resource_format_saver)
 	
 	if Engine.has_meta(ParleyConstants.PARLEY_PLUGIN_METADATA):
 		Engine.remove_meta(ParleyConstants.PARLEY_PLUGIN_METADATA)
