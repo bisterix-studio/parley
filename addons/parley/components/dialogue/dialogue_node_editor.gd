@@ -2,7 +2,7 @@
 # TODO: prefix with Parley
 class_name DialogueNodeEditor extends NodeEditor
 
-signal dialogue_node_changed
+signal dialogue_node_changed(id: String, character: String, dialogue: String)
 
 @export var character: String = "": set = _set_character
 @export var dialogue: String = "": set = _set_dialogue

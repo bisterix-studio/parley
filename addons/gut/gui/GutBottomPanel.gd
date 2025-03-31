@@ -1,15 +1,15 @@
 @tool
 extends Control
 
-var GutEditorGlobals = load('res://addons/gut/gui/editor_globals.gd')
-var TestScript = load('res://addons/gut/test.gd')
-var GutConfigGui = load('res://addons/gut/gui/gut_config_gui.gd')
-var ScriptTextEditors = load('res://addons/gut/gui/script_text_editor_controls.gd')
+var GutEditorGlobals = preload('res://addons/gut/gui/editor_globals.gd')
+var TestScript = preload('res://addons/gut/test.gd')
+var GutConfigGui = preload('res://addons/gut/gui/gut_config_gui.gd')
+var ScriptTextEditors = preload('res://addons/gut/gui/script_text_editor_controls.gd')
 
 
 var _interface = null;
 var _is_running = false;
-var _gut_config = load('res://addons/gut/gut_config.gd').new()
+var _gut_config = preload('res://addons/gut/gut_config.gd').new()
 var _gut_config_gui = null
 var _gut_plugin = null
 var _light_color = Color(0, 0, 0, .5)
@@ -69,7 +69,7 @@ func _ready():
 	_ctrls.run_results.set_output_control(_ctrls.output_ctrl)
 
 	var check_import = load('res://addons/gut/images/red.png')
-	if(check_import == null):
+	if (check_import == null):
 		_ctrls.run_results.add_centered_text("GUT got some new images that are not imported yet.  Please restart Godot.")
 		print('GUT got some new images that are not imported yet.  Please restart Godot.')
 	else:
@@ -84,8 +84,8 @@ func _apply_options_to_controls():
 
 
 func _process(delta):
-	if(_is_running):
-		if(!_interface.is_playing_scene()):
+	if (_is_running):
+		if (!_interface.is_playing_scene()):
 			_is_running = false
 			_ctrls.output_ctrl.add_text("\ndone")
 			load_result_output()
@@ -102,7 +102,7 @@ func load_shortcuts():
 
 func _is_test_script(script):
 	var from = script.get_base_script()
-	while(from and from.resource_path != 'res://addons/gut/test.gd'):
+	while (from and from.resource_path != 'res://addons/gut/test.gd'):
 		from = from.get_base_script()
 
 	return from != null
@@ -127,7 +127,7 @@ func _save_config():
 
 	_gut_config.options = _gut_config_gui.get_options(_gut_config.options)
 	var w_result = _gut_config.write_options(GutEditorGlobals.editor_run_gut_config_path)
-	if(w_result != OK):
+	if (w_result != OK):
 		push_error(str('Could not write options to ', GutEditorGlobals.editor_run_gut_config_path, ': ', w_result))
 	else:
 		_gut_config_gui.mark_saved()
@@ -137,7 +137,7 @@ func _run_tests():
 	GutEditorGlobals.create_temp_directory()
 
 	var issues = _gut_config_gui.get_config_issues()
-	if(issues.size() > 0):
+	if (issues.size() > 0):
 		_show_errors(issues)
 		return
 
@@ -188,7 +188,7 @@ func _on_Light_draw():
 
 
 func _on_editor_script_changed(script):
-	if(script):
+	if (script):
 		set_current_script(script)
 
 
@@ -222,7 +222,7 @@ func _on_OutputBtn_pressed():
 
 
 func _on_RunResultsBtn_pressed():
-	hide_result_tree(! _ctrls.run_results_button.button_pressed)
+	hide_result_tree(!_ctrls.run_results_button.button_pressed)
 	_save_config()
 
 
@@ -245,7 +245,7 @@ func hide_settings(should):
 
 	# collapse only collapses the first control, so we move
 	# settings around to be the collapsed one
-	if(should):
+	if (should):
 		s_scroll.get_parent().move_child(s_scroll, 0)
 	else:
 		s_scroll.get_parent().move_child(s_scroll, 1)
@@ -289,11 +289,11 @@ func load_result_output():
 	_ctrls.results.orphans.text = str(summary_json.orphans)
 	_ctrls.results.orphans.get_parent().visible = _ctrls.results.orphans.text != '0' and !_gut_config.options.hide_orphans
 
-	if(summary_json.tests == 0):
+	if (summary_json.tests == 0):
 		_light_color = Color(1, 0, 0, .75)
-	elif(summary_json.failures != 0):
+	elif (summary_json.failures != 0):
 		_light_color = Color(1, 0, 0, .75)
-	elif(summary_json.pending != 0):
+	elif (summary_json.pending != 0):
 		_light_color = Color(1, 1, 0, .75)
 	else:
 		_light_color = Color(0, 1, 0, .75)
@@ -302,8 +302,8 @@ func load_result_output():
 
 
 func set_current_script(script):
-	if(script):
-		if(_is_test_script(script)):
+	if (script):
+		if (_is_test_script(script)):
 			var file = script.resource_path.get_file()
 			_last_selected_path = script.resource_path.get_file()
 			_ctrls.run_at_cursor.activate_for_script(script.resource_path)
@@ -311,7 +311,7 @@ func set_current_script(script):
 
 func set_interface(value):
 	_interface = value
-	_interface.get_script_editor().connect("editor_script_changed",Callable(self,'_on_editor_script_changed'))
+	_interface.get_script_editor().connect("editor_script_changed", Callable(self, '_on_editor_script_changed'))
 
 	var ste = ScriptTextEditors.new(_interface.get_script_editor())
 	_ctrls.run_results.set_interface(_interface)
@@ -332,7 +332,7 @@ func set_panel_button(value):
 # ------------------------------------------------------------------------------
 func write_file(path, content):
 	var f = FileAccess.open(path, FileAccess.WRITE)
-	if(f != null):
+	if (f != null):
 		f.store_string(content)
 	f = null;
 
@@ -345,7 +345,7 @@ func write_file(path, content):
 func get_file_as_text(path):
 	var to_return = ''
 	var f = FileAccess.open(path, FileAccess.READ)
-	if(f != null):
+	if (f != null):
 		to_return = f.get_as_text()
 	f = null
 	return to_return
@@ -355,7 +355,7 @@ func get_file_as_text(path):
 # return if_null if value is null otherwise return value
 # ------------------------------------------------------------------------------
 func nvl(value, if_null):
-	if(value == null):
+	if (value == null):
 		return if_null
 	else:
 		return value

@@ -19,7 +19,6 @@ class_name NodeAst extends Resource
 ## Example: "(1, 2)"
 @export var position: Vector2
 
-
 func _init(p_id: String = "", p_position: Vector2 = Vector2.ZERO) -> void:
 	id = p_id
 	position = p_position

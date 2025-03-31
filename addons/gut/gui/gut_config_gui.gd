@@ -1,5 +1,5 @@
-var PanelControls = load("res://addons/gut/gui/panel_controls.gd")
-var GutConfig = load('res://addons/gut/gut_config.gd')
+var PanelControls = preload("res://addons/gut/gui/panel_controls.gd")
+var GutConfig = preload('res://addons/gut/gut_config.gd')
 
 const DIRS_TO_LIST = 6
 
@@ -31,38 +31,38 @@ func _add_ctrl(key, ctrl):
 	_base_container.add_child(ctrl)
 
 
-func _add_number(key, value, disp_text, v_min, v_max, hint=''):
+func _add_number(key, value, disp_text, v_min, v_max, hint = ''):
 	var ctrl = PanelControls.NumberControl.new(disp_text, value, v_min, v_max, hint)
 	_add_ctrl(key, ctrl)
 	return ctrl
 
 
-func _add_select(key, value, values, disp_text, hint=''):
+func _add_select(key, value, values, disp_text, hint = ''):
 	var ctrl = PanelControls.SelectControl.new(disp_text, value, values, hint)
 	_add_ctrl(key, ctrl)
 	return ctrl
 
 
-func _add_value(key, value, disp_text, hint=''):
+func _add_value(key, value, disp_text, hint = ''):
 	var ctrl = PanelControls.StringControl.new(disp_text, value, hint)
 	_add_ctrl(key, ctrl)
 	return ctrl
 
 
-func _add_boolean(key, value, disp_text, hint=''):
+func _add_boolean(key, value, disp_text, hint = ''):
 	var ctrl = PanelControls.BooleanControl.new(disp_text, value, hint)
 	_add_ctrl(key, ctrl)
 	return ctrl
 
 
-func _add_directory(key, value, disp_text, hint=''):
+func _add_directory(key, value, disp_text, hint = ''):
 	var ctrl = PanelControls.DirectoryControl.new(disp_text, value, hint)
 	_add_ctrl(key, ctrl)
 	ctrl.dialog.title = disp_text
 	return ctrl
 
 
-func _add_file(key, value, disp_text, hint=''):
+func _add_file(key, value, disp_text, hint = ''):
 	var ctrl = PanelControls.DirectoryControl.new(disp_text, value, hint)
 	_add_ctrl(key, ctrl)
 	ctrl.dialog.file_mode = ctrl.dialog.FILE_MODE_OPEN_FILE
@@ -70,7 +70,7 @@ func _add_file(key, value, disp_text, hint=''):
 	return ctrl
 
 
-func _add_save_file_anywhere(key, value, disp_text, hint=''):
+func _add_save_file_anywhere(key, value, disp_text, hint = ''):
 	var ctrl = PanelControls.DirectoryControl.new(disp_text, value, hint)
 	_add_ctrl(key, ctrl)
 	ctrl.dialog.file_mode = ctrl.dialog.FILE_MODE_SAVE_FILE
@@ -79,7 +79,7 @@ func _add_save_file_anywhere(key, value, disp_text, hint=''):
 	return ctrl
 
 
-func _add_color(key, value, disp_text, hint=''):
+func _add_color(key, value, disp_text, hint = ''):
 	var ctrl = PanelControls.ColorControl.new(disp_text, value, hint)
 	_add_ctrl(key, ctrl)
 	return ctrl
@@ -119,9 +119,9 @@ func get_config_issues():
 	for i in range(DIRS_TO_LIST):
 		var key = str('directory_', i)
 		var path = _cfg_ctrls[key].value
-		if(path != null and path != ''):
+		if (path != null and path != ''):
 			has_directory = true
-			if(!DirAccess.dir_exists_absolute(path)):
+			if (!DirAccess.dir_exists_absolute(path)):
 				_cfg_ctrls[key].mark_invalid(true)
 				to_return.append(str('Test directory ', path, ' does not exist.'))
 			else:
@@ -129,13 +129,13 @@ func get_config_issues():
 		else:
 			_cfg_ctrls[key].mark_invalid(false)
 
-	if(!has_directory):
+	if (!has_directory):
 		to_return.append('You do not have any directories set.')
 		_titles.dirs.mark_invalid(true)
 	else:
 		_titles.dirs.mark_invalid(false)
 
-	if(!_cfg_ctrls.suffix.value.ends_with('.gd')):
+	if (!_cfg_ctrls.suffix.value.ends_with('.gd')):
 		_cfg_ctrls.suffix.mark_invalid(true)
 		to_return.append("Script suffix must end in '.gd'")
 	else:
@@ -162,7 +162,6 @@ func save_file(path):
 	gcfg.save_file(path)
 
 
-
 func load_file(path):
 	var gcfg = GutConfig.new()
 	gcfg.load_options(path)
@@ -179,7 +178,7 @@ func load_file(path):
 #
 # Also, we can't just skip adding the controls because other things are looking
 # for them and things start to blow up if you don't add them.
-var hide_this = null :
+var hide_this = null:
 	set(val):
 		val.visible = false
 
@@ -242,12 +241,12 @@ func set_options(opts):
 		"Include subdirectories of the directories configured below.")
 
 	var dirs_to_load = options.configured_dirs
-	if(options.dirs.size() > dirs_to_load.size()):
+	if (options.dirs.size() > dirs_to_load.size()):
 		dirs_to_load = options.dirs
 
 	for i in range(DIRS_TO_LIST):
 		var value = ''
-		if(dirs_to_load.size() > i):
+		if (dirs_to_load.size() > i):
 			value = dirs_to_load[i]
 
 		var test_dir = _add_directory(str('directory_', i), value, str(i))
@@ -285,7 +284,6 @@ func set_options(opts):
 	_cfg_ctrls.paint_after.value = options.paint_after
 
 
-
 func get_options(base_opts):
 	var to_return = base_opts.duplicate()
 
@@ -319,9 +317,9 @@ func get_options(base_opts):
 	for i in range(DIRS_TO_LIST):
 		var key = str('directory_', i)
 		var ctrl = _cfg_ctrls[key]
-		if(ctrl.value != '' and ctrl.value != null):
+		if (ctrl.value != '' and ctrl.value != null):
 			configured_dirs.append(ctrl.value)
-			if(ctrl.enabled_button.button_pressed):
+			if (ctrl.enabled_button.button_pressed):
 				dirs.append(ctrl.value)
 	to_return.dirs = dirs
 	to_return.configured_dirs = configured_dirs

@@ -1,4 +1,5 @@
 @tool
+# TODO: rename to base_node editor
 # TODO: prefix with Parley
 class_name NodeEditor extends VBoxContainer
 
