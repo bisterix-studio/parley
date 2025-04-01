@@ -7,6 +7,7 @@ const ParleyImportPlugin: Script = preload("./import_plugin.gd")
 # const ParleyInspectorPlugin: Script = preload("./inspector_plugin.gd")
 const StoresEditor: PackedScene = preload("./stores/stores_editor.tscn")
 const NodeEditor: PackedScene = preload("./views/node_editor.tscn")
+const EdgesEditor: PackedScene = preload("./views/edges_editor.tscn")
 const MainPanel: PackedScene = preload("./main_panel.tscn")
 
 const PARLEY_MANAGER_SINGLETON = "ParleyManager"
@@ -17,6 +18,7 @@ var import_plugin: EditorImportPlugin
 # var inspector_plugin: EditorInspectorPlugin
 var stores_editor: PanelContainer
 var node_editor: PanelContainer
+var edges_editor: PanelContainer
 
 func _enter_tree():
 	if Engine.is_editor_hint():
@@ -32,12 +34,16 @@ func _enter_tree():
 		
 		# Stores Editor Dock
 		stores_editor = StoresEditor.instantiate()
-		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_UL, stores_editor)
+		add_control_to_dock(DockSlot.DOCK_SLOT_LEFT_UR, stores_editor)
 
 		# Node Editor Dock
 		node_editor = NodeEditor.instantiate()
 		node_editor.node_changed.connect(_on_node_editor_node_changed)
-		add_control_to_dock(DockSlot.DOCK_SLOT_LEFT_UR, node_editor)
+		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_UL, node_editor)
+
+		# Edges Editor Dock
+		edges_editor = EdgesEditor.instantiate()
+		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_BL, edges_editor)
 
 		# Main Panel
 		main_panel_instance = MainPanel.instantiate()
@@ -55,10 +61,19 @@ func _on_node_editor_node_changed(node_ast: NodeAst) -> void:
 func _on_main_panel_node_selected(node_ast: NodeAst) -> void:
 	if node_editor:
 		node_editor.node_ast = node_ast
+	_set_edges()
+
+func _set_edges() -> void:
+	if node_editor and edges_editor and node_editor.dialogue_sequence_ast and node_editor.node_ast:
+		var node_ast: NodeAst = node_editor.node_ast
+		var dialogue_sequence_ast: DialogueAst = node_editor.dialogue_sequence_ast
+		var edges: Array[EdgeAst] = dialogue_sequence_ast.edges
+		edges_editor.set_edges(edges, node_ast.id)
 
 func _on_main_panel_dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst) -> void:
 	if node_editor:
 		node_editor.dialogue_sequence_ast = dialogue_sequence_ast
+	_set_edges()
 
 func _exit_tree():
 	if is_instance_valid(main_panel_instance):
@@ -76,6 +91,10 @@ func _exit_tree():
 	if node_editor:
 		remove_control_from_docks(node_editor)
 		node_editor = null
+
+	if edges_editor:
+		remove_control_from_docks(edges_editor)
+		edges_editor = null
 
 	if stores_editor:
 		remove_control_from_docks(stores_editor)
