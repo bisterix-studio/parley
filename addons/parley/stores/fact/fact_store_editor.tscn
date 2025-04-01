@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhcdx3h8xtn5"]
+
+[ext_resource type="Script" uid="uid://y48wrseks5vu" path="res://addons/parley/stores/fact/fact_store_editor.gd" id="1_55agi"]
+
+[node name="FactStoreEditor" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_55agi")
+
+[node name="FactStoreMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="FactStores" type="OptionButton" parent="FactStoreMarginContainer"]
+layout_mode = 2
+
+[node name="FactsContainer" type="VBoxContainer" parent="FactStoreMarginContainer"]
+layout_mode = 2

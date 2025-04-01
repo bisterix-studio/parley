@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name ParleyGraphView extends GraphEdit
 
 @export var ast: DialogueAst

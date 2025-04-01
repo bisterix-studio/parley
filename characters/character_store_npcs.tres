@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CharacterStore" load_steps=5 format=3 uid="uid://dpkl3t3evbgg2"]
+
+[ext_resource type="Script" uid="uid://cr1va2oab5tn5" path="res://addons/parley/models/character.gd" id="1_24hpo"]
+[ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="2_xikki"]
+
+[sub_resource type="Resource" id="Resource_r7byi"]
+script = ExtResource("1_24hpo")
+id = "npcs:carol"
+name = "Carol"
+metadata/_custom_type_script = "uid://cr1va2oab5tn5"
+
+[sub_resource type="Resource" id="Resource_iwv5x"]
+script = ExtResource("1_24hpo")
+id = "npcs:dave"
+name = "Dave"
+metadata/_custom_type_script = "uid://cr1va2oab5tn5"
+
+[resource]
+script = ExtResource("2_xikki")
+characters = Array[ExtResource("1_24hpo")]([SubResource("Resource_r7byi"), SubResource("Resource_iwv5x")])
+id = "npcs"
+metadata/_custom_type_script = "uid://cbi8x2vk7bku1"

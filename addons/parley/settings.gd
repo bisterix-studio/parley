@@ -4,13 +4,16 @@ extends Node
 const ParleyConstants = preload("./constants.gd")
 
 ### Editor config
-
 const DEFAULT_SETTINGS = {
 	# Dialogue
 	ParleyConstants.DIALOGUE_BALLOON_PATH: preload("./components/default_balloon.tscn").resource_path,
 	# Stores
+	# TODO: remove
 	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
+	# TODO: remove
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",
+	ParleyConstants.CHARACTER_STORE_PATHS: [],
+	# TODO: remove
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
@@ -18,14 +21,18 @@ const DEFAULT_SETTINGS = {
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: "res://addons/parley/views/test_dialogue_sequence_scene.tscn"
 }
 
+# TODO: Consider checking the following with helpful error messages if they are not populated
+# - Character store paths
+# - Fact store paths
+# - Action store paths
 
-static func prepare() -> void:
+static func prepare(save = true) -> void:
 	# Set up initial settings
 	for setting_name in DEFAULT_SETTINGS:
 		if not validate_setting_key(setting_name):
 			continue
 		if not ProjectSettings.has_setting(setting_name):
-			set_setting(setting_name, DEFAULT_SETTINGS[setting_name])
+			set_setting(setting_name, DEFAULT_SETTINGS[setting_name], save)
 		ProjectSettings.set_initial_value(setting_name, DEFAULT_SETTINGS[setting_name])
 		if setting_name.ends_with("_path"):
 			ProjectSettings.add_property_info({
@@ -43,8 +50,8 @@ static func prepare() -> void:
 		]:
 			set_user_value(key, null)
 
-	ProjectSettings.save()
-
+	if save:
+		ProjectSettings.save()
 
 static func get_user_config() -> Dictionary:
 	var user_config: Dictionary = {
@@ -57,29 +64,23 @@ static func get_user_config() -> Dictionary:
 
 	return user_config
 
-
 static func save_user_config(user_config: Dictionary) -> void:
 	var file: FileAccess = FileAccess.open(ParleyConstants.USER_CONFIG_PATH, FileAccess.WRITE)
 	file.store_string(JSON.stringify(user_config))
-
 
 static func set_user_value(key: String, value) -> void:
 	var user_config: Dictionary = get_user_config()
 	user_config[key] = value
 	save_user_config(user_config)
 
-
 static func get_user_value(key: String, default = null):
 	return get_user_config().get(key, default)
 
-
-static func set_setting(key: String, value) -> void:
+static func set_setting(key: String, value, save = true) -> void:
 	if not validate_setting_key(key):
 		return
 	ProjectSettings.set_setting(key, value)
 	ProjectSettings.set_initial_value(key, DEFAULT_SETTINGS[key])
-	ProjectSettings.save()
-
 
 static func get_setting(key: String, default = null):
 	if not validate_setting_key(key):
@@ -90,7 +91,6 @@ static func get_setting(key: String, default = null):
 	if default:
 		return default
 	return DEFAULT_SETTINGS.get(key)
-
 
 static func validate_setting_key(key: String) -> bool:
 	if not key.begins_with("parley/"):

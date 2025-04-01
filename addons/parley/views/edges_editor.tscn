@@ -1,10 +1,45 @@
-[gd_scene load_steps=2 format=3 uid="uid://brdgm6uqjhaxq"]
+[gd_scene load_steps=3 format=3 uid="uid://brdgm6uqjhaxq"]
 
 [ext_resource type="Script" uid="uid://c6hnlb23dr6a3" path="res://addons/parley/views/edges_editor.gd" id="1_5t3tj"]
 
-[node name="EdgesEditor" type="VBoxContainer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vou20"]
+bg_color = Color(0.115533, 0.193601, 0.311096, 1)
+
+[node name="EdgesEditor" type="PanelContainer"]
+offset_right = 60.0
+offset_bottom = 29.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_5t3tj")
 
-[node name="Edges" type="Label" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="EdgesEditorContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="EdgesLabelPanel" type="PanelContainer" parent="MarginContainer/EdgesEditorContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vou20")
+
+[node name="EdgesLabelMarginContainer" type="MarginContainer" parent="MarginContainer/EdgesEditorContainer/EdgesLabelPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 1
+
+[node name="Edges" type="Label" parent="MarginContainer/EdgesEditorContainer/EdgesLabelPanel/EdgesLabelMarginContainer"]
 layout_mode = 2
 text = "Edges:"
+
+[node name="EdgesScrollContainer" type="ScrollContainer" parent="MarginContainer/EdgesEditorContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="EdgesContainer" type="VBoxContainer" parent="MarginContainer/EdgesEditorContainer/EdgesScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

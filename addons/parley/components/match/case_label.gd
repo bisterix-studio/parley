@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name CaseLabel extends MarginContainer
 
 @export var case: String = "": set = _on_set_case

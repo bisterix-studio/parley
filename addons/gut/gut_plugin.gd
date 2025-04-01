@@ -4,10 +4,10 @@ extends EditorPlugin
 var _bottom_panel = null
 
 func _version_conversion():
-	var EditorGlobals = load("res://addons/gut/gui/editor_globals.gd")
+	var EditorGlobals = preload("res://addons/gut/gui/editor_globals.gd")
 	EditorGlobals.create_temp_directory()
 
-	var VersionConversion = load("res://addons/gut/version_conversion.gd")
+	var VersionConversion = preload("res://addons/gut/version_conversion.gd")
 	VersionConversion.convert()
 
 func _enter_tree():

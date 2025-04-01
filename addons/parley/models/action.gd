@@ -1,7 +1,9 @@
 @tool
+# TODO: prefix with Parley
 class_name Action extends Resource
 
 
+# TODO: make a string
 ## The unique ID of the Action. It is unique within the scope of the Parley plugin
 ## Example: 1
 @export var id: int

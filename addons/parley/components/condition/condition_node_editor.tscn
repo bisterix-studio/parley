@@ -4,20 +4,19 @@
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_rqlcg"]
 
 [node name="ConditionNodeEditor" instance=ExtResource("1_rqlcg")]
-visible = false
 script = ExtResource("1_fipku")
 description = ""
 condition = 0
 conditions = []
 type = 2
 
-[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer" index="0"]
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Condition [ID: ]"
 
-[node name="ConditionDescriptionContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
+[node name="ConditionDescriptionContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="0"]
 layout_mode = 2
 
-[node name="ConditionDescription" type="TextEdit" parent="BodyMarginContainer/BodyContainer/ConditionDescriptionContainer" index="0"]
+[node name="ConditionDescription" type="TextEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionDescriptionContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Clues 1 and 2 are both found"
@@ -26,47 +25,48 @@ scroll_past_end_of_file = true
 scroll_fit_content_height = true
 use_default_word_separators = false
 
-[node name="HSeparator" type="HSeparator" parent="BodyMarginContainer/BodyContainer/ConditionDescriptionContainer" index="1"]
+[node name="HSeparator" type="HSeparator" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionDescriptionContainer" index="1"]
 layout_mode = 2
 
-[node name="ConditionTrueContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="1"]
+[node name="ConditionTrueContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
 
-[node name="ConditionLabel" type="Label" parent="BodyMarginContainer/BodyContainer/ConditionTrueContainer" index="0"]
+[node name="ConditionLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionTrueContainer" index="0"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Condition
 "
 
-[node name="ConditionOption" type="OptionButton" parent="BodyMarginContainer/BodyContainer/ConditionTrueContainer" index="1"]
+[node name="ConditionOption" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionTrueContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 selected = 0
 item_count = 2
 popup/item_0/text = "All"
+popup/item_0/id = 0
 popup/item_1/text = "Any"
 popup/item_1/id = 1
 
-[node name="ConditionsContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="2"]
+[node name="ConditionsContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="2"]
 layout_mode = 2
 
-[node name="Conditions" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer/ConditionsContainer" index="0"]
+[node name="Conditions" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionsContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="AddCondition" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer/ConditionsContainer" index="1"]
+[node name="AddCondition" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionsContainer" index="1"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="BodyMarginContainer/BodyContainer/ConditionsContainer/AddCondition" index="0"]
+[node name="HSeparator" type="HSeparator" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionsContainer/AddCondition" index="0"]
 layout_mode = 2
 
-[node name="AddConditionButton" type="Button" parent="BodyMarginContainer/BodyContainer/ConditionsContainer/AddCondition" index="1"]
+[node name="AddConditionButton" type="Button" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionsContainer/AddCondition" index="1"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Add Condition"
 
-[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/ConditionDescriptionContainer/ConditionDescription" to="." method="_on_condition_description_text_changed"]
-[connection signal="item_selected" from="BodyMarginContainer/BodyContainer/ConditionTrueContainer/ConditionOption" to="." method="_on_condition_option_item_selected"]
-[connection signal="pressed" from="BodyMarginContainer/BodyContainer/ConditionsContainer/AddCondition/AddConditionButton" to="." method="_on_add_condition_button_pressed"]
+[connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionDescriptionContainer/ConditionDescription" to="." method="_on_condition_description_text_changed"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionTrueContainer/ConditionOption" to="." method="_on_condition_option_item_selected"]
+[connection signal="pressed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionsContainer/AddCondition/AddConditionButton" to="." method="_on_add_condition_button_pressed"]

@@ -1,6 +1,20 @@
 {
   "cSpell.words": [
+    "autofree",
+    "bitmask",
+    "cmdln",
+    "Color",
+    "containsn",
+    "Dialog",
+    "dlog",
+    "glog",
+    "npcs",
+    "onready",
     "printerr",
     "printwarn"
-  ]
+  ],
+  "files.associations": {
+    "*.djson": "json",
+    "*.dlog": "json"
+  }
 }

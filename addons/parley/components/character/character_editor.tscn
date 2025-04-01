@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3 uid="uid://flwypkn36737"]
+
+[ext_resource type="Script" uid="uid://cqhy2t5enyx3m" path="res://addons/parley/components/character/character_editor.gd" id="1_6dg7t"]
+[ext_resource type="PackedScene" uid="uid://dcaqonk76b5qj" path="res://addons/parley/components/editor/string_editor.tscn" id="2_ri8y5"]
+
+[node name="CharacterEditor" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_6dg7t")
+
+[node name="CharacterEditorMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="CharacterEditorContainer" type="VBoxContainer" parent="CharacterEditorMarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="IdEditor" parent="CharacterEditorMarginContainer/CharacterEditorContainer" instance=ExtResource("2_ri8y5")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "id"
+
+[node name="NameEditor" parent="CharacterEditorMarginContainer/CharacterEditorContainer" instance=ExtResource("2_ri8y5")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "name"
+
+[connection signal="value_changed" from="CharacterEditorMarginContainer/CharacterEditorContainer/IdEditor" to="." method="_on_id_editor_value_changed"]
+[connection signal="value_changed" from="CharacterEditorMarginContainer/CharacterEditorContainer/NameEditor" to="." method="_on_name_editor_value_changed"]

@@ -7,5 +7,5 @@
 script = ExtResource("1_shjdk")
 type = 4
 
-[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer" index="0"]
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Start [ID: ]"

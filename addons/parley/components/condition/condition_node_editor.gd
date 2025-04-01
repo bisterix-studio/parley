@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name ConditionNodeEditor extends NodeEditor
 
 @export var description: String = ""
@@ -11,32 +12,32 @@ class_name ConditionNodeEditor extends NodeEditor
 
 const condition_scene: PackedScene = preload('./condition.tscn')
 
-signal condition_node_changed
+signal condition_node_changed(id: String, description: String, condition: ConditionNodeAst.Combiner, conditions: Array)
 
-#############
-# Lifecycle #
-#############
 func _ready() -> void:
+	set_title()
 	condition_option.clear()
 	for key in ConditionNodeAst.Combiner:
 		condition_option.add_item(key.capitalize(), ConditionNodeAst.Combiner[key])
 	update(id, description, condition, conditions)
 
-
+# TODO: this is very intertwined - it needs a refactor to use the setter pattern
 func update(p_id: String, p_description: String, p_condition: ConditionNodeAst.Combiner, p_conditions: Array) -> void:
 	id = p_id
 	description = p_description
-	description_editor.text = description
+	if description_editor:
+		description_editor.text = description
 	condition = p_condition
-	condition_option.selected = condition
-	var condition_children = conditions_editor.get_children()
+	if condition_option:
+		condition_option.selected = condition
+	if conditions_editor:
+		var condition_children = conditions_editor.get_children()
+		for child in condition_children:
+			conditions_editor.remove_child(child)
 	var conditions_clone = p_conditions.duplicate(true)
 	conditions = []
-	for child in condition_children:
-		conditions_editor.remove_child(child)
 	for item in p_conditions:
 		add_condition(item['fact_name'], item['operator'], item['value'])
-
 
 func add_condition(p_fact_name: String = "", p_operator: ConditionNodeAst.Combiner = ConditionNodeAst.Combiner.ALL, p_value: String = "") -> VBoxContainer:
 	# TODO: dupe: is this needed?
@@ -53,29 +54,25 @@ func add_condition(p_fact_name: String = "", p_operator: ConditionNodeAst.Combin
 		'operator': new_condition.operator,
 		'value': new_condition.value,
 	})
-	conditions_editor.add_child(new_condition)
+	if conditions_editor:
+		conditions_editor.add_child(new_condition)
 	return new_condition
-
 
 func emit_condition_node_changed() -> void:
 	condition_node_changed.emit(id, description, condition, conditions)
-
 
 #region SIGNALS
 func _on_condition_description_text_changed() -> void:
 	description = description_editor.text
 	emit_condition_node_changed()
 
-
 func _on_add_condition_button_pressed() -> void:
 	add_condition()
 	emit_condition_node_changed()
 
-
 func _on_condition_option_item_selected(p_condition: int) -> void:
 	condition = p_condition
 	emit_condition_node_changed()
-
 
 func _on_condition_changed(id: int, new_fact_name: String, new_operator: ConditionNodeAst.Combiner, new_value: String) -> void:
 	# TODO: when we add delete, this will need to be refactored

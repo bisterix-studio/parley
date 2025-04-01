@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://dil4p8wvfe0y3"]
+
+[ext_resource type="Script" uid="uid://bg4e1jywm04ml" path="res://addons/parley/stores/action/action_store_editor.gd" id="1_kjlpr"]
+
+[node name="ActionStoreEditor" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_kjlpr")
+
+[node name="ActionStoreMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="ActionStores" type="OptionButton" parent="ActionStoreMarginContainer"]
+layout_mode = 2
+
+[node name="ActionsContainer" type="VBoxContainer" parent="ActionStoreMarginContainer"]
+layout_mode = 2

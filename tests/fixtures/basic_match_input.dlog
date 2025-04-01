@@ -243,5 +243,13 @@
       "to_node": "2",
       "to_slot": 0
     }
-  ]
+  ],
+  "stores": {
+    "character": [
+      {
+        "id": "main",
+        "ref": "res://characters/character_store.tres"
+      }
+    ]
+  }
 }

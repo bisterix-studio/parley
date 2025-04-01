@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://cxdbr384p80pg" path="res://addons/parley/components/end/end_node_editor.gd" id="2_oqdss"]
 
 [node name="EndNodeEditor" instance=ExtResource("1_5tahe")]
-visible = false
 script = ExtResource("2_oqdss")
 type = 5
+
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
+text = "End [ID: ]"

@@ -1,41 +1,38 @@
 @tool
+# TODO: prefix with Parley
 class_name DialogueAst extends Resource
 
-
-## The title of the Dialogue AST
+## The title of the Dialogue Sequence AST
 @export var title: String
 
-
-### The edges of the Dialogue AST
+### The edges of the Dialogue Sequence AST
 @export var edges: Array[EdgeAst]
 
-
-## The nodes of the Dialogue AST
+## The nodes of the Dialogue Sequence AST
 @export var nodes: Array[NodeAst]
 
+## The stores of the Dialogue Sequence AST
+@export var stores: StoresAst
 
 ## The type of the Dialogue AST Node
 ## Example: "DialogueAstNodeType.DIALOGUE"
 enum Type {DIALOGUE, DIALOGUE_OPTION, CONDITION, ACTION, START, END, GROUP, MATCH, UNKNOWN}
 
-
 var is_ready: bool = false
-
 
 # TODO: add types here. However it may be causing circular dep issues
 signal dialogue_updated(new_dialogue_ast: Variant)
 signal dialogue_ended(dialogue_ast: Variant)
 
-
-func _init(p_title: String = "", p_nodes: Array = [], p_edges: Array = []) -> void:
-	title = p_title
+func _init(_title: String = "", _nodes: Array = [], _edges: Array = [], _stores: Dictionary = {}) -> void:
+	title = _title
 	# TODO: add validation to ensure IDs are globally unique within the context of the dialogue
-	for node in p_nodes:
+	for node in _nodes:
 		add_ast_node(node)
-	for edge in p_edges:
+	for edge in _edges:
 		add_ast_edge(edge)
+	add_ast_stores(_stores)
 	is_ready = true
-
 
 #region BUILDING DIALOGUE
 ## Add a node to the list of nodes from an AST
@@ -73,7 +70,6 @@ func add_ast_node(node: Dictionary) -> void:
 			return
 	ast_node.position = position
 	nodes.push_back(ast_node)
-	_emit_dialogue_updated()
 
 
 ## Add a new node to the list of nodes
@@ -105,7 +101,6 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO):
 	_emit_dialogue_updated()
 	return ast_node
 
-
 ## Update Node AST position
 func update_node_position(ast_node_id: String, position: Vector2) -> void:
 	for node in nodes:
@@ -114,30 +109,61 @@ func update_node_position(ast_node_id: String, position: Vector2) -> void:
 			break
 	_emit_dialogue_updated()
 
-
 ## Add an edge to the list of edges from an AST
 func add_ast_edge(edge: Dictionary) -> void:
 	# TODO: add validation before instantiation to ensure that
 	# all values are defined
-	add_new_edge(
+	add_edge(
 		edge.get('from_node'),
 		edge.get('from_slot'),
 		edge.get('to_node'),
 		edge.get('to_slot'),
+		false
 	)
-	_emit_dialogue_updated()
 
+## Add a store to from an AST
+func add_ast_stores(_stores: Dictionary) -> void:
+	# TODO: add validation before instantiation to ensure that
+	# all values are defined
+	var character_store: Array = _stores.get('character', [])
+	stores = StoresAst.new(character_store)
 
-## Add a new edge to the list of edges
-func add_new_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
-	edges.push_back(EdgeAst.new(
+## Add a new edge to the list of edges. It will not add an edge if it already exists
+## It returns the number of edges added (1 or 0).
+## dialogue_ast.add_edge("1", 0, "2", 1)
+func add_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit = true) -> int:
+	var new_edge: EdgeAst = EdgeAst.new(
 		from_node,
 		from_slot,
 		to_node,
 		to_slot,
-	))
-	_emit_dialogue_updated()
+	)
+	var has_existing_edge: bool = edges.filter(func(edge: EdgeAst) -> bool:
+		return (
+			edge.from_node == new_edge.from_node and
+			edge.from_slot == new_edge.from_slot and
+			edge.to_node == new_edge.to_node and
+			edge.to_slot == new_edge.to_slot
+		)
+	).size() > 0
+	if not has_existing_edge:
+		edges.push_back(new_edge)
+		if emit:
+			_emit_dialogue_updated()
+	return 1 if not has_existing_edge else 0
 
+## Remove edges to the list of edges.
+## It returns the number of edges added.
+## dialogue_ast.add_edges([EdgeAst("1", 0, "2", 1).new()])
+func add_edges(edges_to_create: Array[EdgeAst], emit = true) -> int:
+	var added: int = 0
+	for edge: EdgeAst in edges_to_create:
+		added += add_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
+	if added > 0 and emit:
+		_emit_dialogue_updated()
+	return added
+
+# TODO: also remove edges if there are any
 ## Remove a node from the list of nodes
 func remove_node(node_id: String) -> void:
 	var index: int = 0
@@ -163,8 +189,10 @@ func find_node_by_id(id: String) -> NodeAst:
 	return filtered_nodes.front()
 
 
-## Remove an edge from the list of edges
-func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
+## Remove an edge from the list of edges. It will log an error if an edge does not exist
+## It returns the number of edges removed (1 or 0).
+## dialogue_ast.remove_edge("1", 0, "2", 1)
+func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit = true) -> int:
 	var index: int = 0
 	var removed = false
 	for edge in edges:
@@ -178,7 +206,20 @@ func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: in
 		index += 1
 	if not removed:
 		_print("Unable to remove edge: %s-%s:%s-%s" % [from_node, from_slot, to_node, to_slot])
-	_emit_dialogue_updated()
+	if removed and emit:
+		_emit_dialogue_updated()
+	return 1 if removed else 0
+
+## Remove edges from the list of edges.
+## It returns the number of edges removed.
+## dialogue_ast.remove_edges([EdgeAst("1", 0, "2", 1).new()])
+func remove_edges(edges_to_remove: Array[EdgeAst], emit = true) -> int:
+	var removed: int = 0
+	for edge: EdgeAst in edges_to_remove:
+		removed += remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
+	if removed > 0 and emit:
+		_emit_dialogue_updated()
+	return removed
 #endregion
 
 
@@ -295,6 +336,8 @@ func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, 
 		var value = condition_def.get('value')
 		var fact: FactInterface = load(fact_ref).new()
 		var result = fact.execute(ctx, [])
+		# TODO: create a wrapper for this
+		fact.call_deferred("free")
 		var evaluated_value = _evaluate_value(value)
 		match operator:
 			ConditionNodeAst.Operator.EQUAL:
@@ -320,6 +363,8 @@ func _process_match_node(ctx: Dictionary, match_node: MatchNodeAst) -> int:
 	var fact_ref: String = match_node.fact_ref
 	var fact: FactInterface = load(fact_ref).new()
 	var result: Variant = fact.execute(ctx, [])
+	# TODO: create a wrapper for this
+	fact.call_deferred("free")
 	var evaluated_result: Variant = _evaluate_value(result)
 	var cases: Array = match_node.cases
 	var case_index: int = cases.map(func(case: Variant) -> Variant: return _map_value(case)).find(evaluated_result)
@@ -391,7 +436,8 @@ func to_dict() -> Dictionary:
 	return {
 		'title': title,
 		'nodes': nodes.map(func(node: NodeAst) -> Dictionary: return node.to_dict()),
-		'edges': edges.map(func(edge: EdgeAst) -> Dictionary: return edge.to_dict())
+		'edges': edges.map(func(edge: EdgeAst) -> Dictionary: return edge.to_dict()),
+		'stores': stores.to_dict()
 	}
 
 
@@ -477,6 +523,8 @@ func _generate_id() -> String:
 
 
 func _emit_dialogue_updated() -> void:
+	# TODO: this seems to be called a lot - investigate
+	# It's unclear what the purpose of this is any more
 	if is_ready:
 		dialogue_updated.emit(self)
 #endregion

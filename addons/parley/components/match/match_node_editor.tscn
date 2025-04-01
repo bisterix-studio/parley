@@ -13,13 +13,13 @@ fact_name = ""
 cases = []
 type = 7
 
-[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer" index="0"]
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Match [ID: ]"
 
-[node name="MatchDescriptionContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
+[node name="MatchDescriptionContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="0"]
 layout_mode = 2
 
-[node name="MatchDescription" type="TextEdit" parent="BodyMarginContainer/BodyContainer/MatchDescriptionContainer" index="0"]
+[node name="MatchDescription" type="TextEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/MatchDescriptionContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Alice's coffee status"
@@ -28,18 +28,18 @@ scroll_past_end_of_file = true
 scroll_fit_content_height = true
 use_default_word_separators = false
 
-[node name="HSeparator" type="HSeparator" parent="BodyMarginContainer/BodyContainer" index="1"]
+[node name="HSeparator" type="HSeparator" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
 
-[node name="FactContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="2"]
+[node name="FactContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="2"]
 layout_mode = 2
 
-[node name="FactLabel" type="Label" parent="BodyMarginContainer/BodyContainer/FactContainer" index="0"]
+[node name="FactLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/FactContainer" index="0"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Fact:"
 
-[node name="FactSelector" type="OptionButton" parent="BodyMarginContainer/BodyContainer/FactContainer" index="1"]
+[node name="FactSelector" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/FactContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 item_count = 4
@@ -52,35 +52,35 @@ popup/item_2/id = 2
 popup/item_3/text = "Snooker balls"
 popup/item_3/id = 3
 
-[node name="HSeparator2" type="HSeparator" parent="BodyMarginContainer/BodyContainer" index="3"]
+[node name="HSeparator2" type="HSeparator" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="3"]
 layout_mode = 2
 
-[node name="CasesContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="4"]
+[node name="CasesContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="4"]
 layout_mode = 2
 
-[node name="CasesLabel" type="Label" parent="BodyMarginContainer/BodyContainer/CasesContainer" index="0"]
+[node name="CasesLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CasesContainer" index="0"]
 layout_mode = 2
 text = "Cases:"
 
-[node name="CasesEditor" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer/CasesContainer" index="1"]
+[node name="CasesEditor" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CasesContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HSeparator3" type="HSeparator" parent="BodyMarginContainer/BodyContainer" index="5"]
+[node name="HSeparator3" type="HSeparator" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="5"]
 layout_mode = 2
 
-[node name="AddCaseButton" type="Button" parent="BodyMarginContainer/BodyContainer" index="6"]
+[node name="AddCaseButton" type="Button" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="6"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Add Case"
 
-[node name="AddFallbackCaseButton" type="Button" parent="BodyMarginContainer/BodyContainer" index="7"]
+[node name="AddFallbackCaseButton" type="Button" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="7"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Add Fallback Case"
 icon = ExtResource("3_uceht")
 
-[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/MatchDescriptionContainer/MatchDescription" to="." method="_on_match_description_text_changed"]
-[connection signal="item_selected" from="BodyMarginContainer/BodyContainer/FactContainer/FactSelector" to="." method="_on_fact_selector_item_selected"]
-[connection signal="pressed" from="BodyMarginContainer/BodyContainer/AddCaseButton" to="." method="_on_add_case_button_pressed"]
-[connection signal="pressed" from="BodyMarginContainer/BodyContainer/AddFallbackCaseButton" to="." method="_on_add_fallback_case_button_pressed"]
+[connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/MatchDescriptionContainer/MatchDescription" to="." method="_on_match_description_text_changed"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/FactContainer/FactSelector" to="." method="_on_fact_selector_item_selected"]
+[connection signal="pressed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/AddCaseButton" to="." method="_on_add_case_button_pressed"]
+[connection signal="pressed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/AddFallbackCaseButton" to="." method="_on_add_fallback_case_button_pressed"]

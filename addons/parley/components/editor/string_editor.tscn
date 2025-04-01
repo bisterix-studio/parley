@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcaqonk76b5qj"]
+
+[ext_resource type="Script" uid="uid://dl1srgeyxyjhp" path="res://addons/parley/components/editor/string_editor.gd" id="1_lyc73"]
+
+[node name="StringEditor" type="HBoxContainer"]
+script = ExtResource("1_lyc73")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = ":"
+
+[node name="ValueEdit" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="text_changed" from="ValueEdit" to="." method="_on_value_edit_text_changed"]

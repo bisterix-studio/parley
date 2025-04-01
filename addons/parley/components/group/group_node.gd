@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name GroupNode extends ParleyGraphNode
 
 ## The name associated with the Group Node AST

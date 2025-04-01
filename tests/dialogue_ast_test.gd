@@ -1,6 +1,5 @@
 extends GutTest
 
-
 class Test_process_next:
 	extends GutTest
 
@@ -105,3 +104,285 @@ class Test_process_next:
 		d.erase('@path')
 		d.erase('@subpath')
 		return d
+
+class Test_add_edge:
+	extends GutTest
+	var test_add_edge_cases: Array[Dictionary] = [
+		{
+			"current_edges": [],
+			"edge": {"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			"expected": {
+				"added": 1,
+				"emitted": true,
+				"edges": [
+					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				]
+			},
+		},
+		{
+			"current_edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"edge": {"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			"expected": {
+				"added": 0,
+				"emitted": false,
+				"edges": [
+					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				]
+			},
+		},
+	]
+	
+	func test_add_edge(params: Dictionary = use_parameters(test_add_edge_cases)) -> void:
+		# Arrange
+		var current_edges: Array = params.get('current_edges', [])
+		var edge: Dictionary = params.get('edge', {})
+		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
+		var from_node: String = edge.get('from_node')
+		var from_slot: int = edge.get('from_slot')
+		var to_node: String = edge.get('to_node')
+		var to_slot: int = edge.get('to_slot')
+		var expected: Dictionary = params.get('expected', {})
+		var expected_added: int = expected.get('added')
+		var expected_edges: Array = expected.get('edges')
+		var expected_emitted: bool = expected.get('emitted')
+		watch_signals(dialogue_ast)
+		
+		# Act
+		var result: int = dialogue_ast.add_edge(from_node, from_slot, to_node, to_slot)
+
+		# Assert
+		assert_eq(result, expected_added)
+		var updated_edges: Array = dialogue_ast.to_dict().get('edges')
+		assert_eq_deep(updated_edges, expected_edges)
+		if expected_emitted:
+			assert_signal_emitted(dialogue_ast, 'dialogue_updated')
+
+class Test_add_edges:
+	extends GutTest
+	var test_add_edges_cases: Array[Dictionary] = [
+		{
+			"current_edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"edges": [
+				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"expected": {
+				"added": 2,
+				"emitted": true,
+				"edges": [
+					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+					{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				]
+			},
+		},
+		{
+			"current_edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			],
+			"edges": [
+				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"expected": {
+				"added": 1,
+				"emitted": true,
+				"edges": [
+					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+					{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				]
+			},
+		},
+		{
+			"current_edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			],
+			"edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"expected": {
+				"added": 0,
+				"emitted": false,
+				"edges": [
+					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+					{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				]
+			},
+		},
+	]
+	
+	func test_add_edges(params: Dictionary = use_parameters(test_add_edges_cases)) -> void:
+		# Arrange
+		var current_edges: Array = params.get('current_edges', [])
+		var raw_edges: Array = params.get('edges', [])
+		var edges: Array[EdgeAst] = []
+		for edge: Dictionary in raw_edges:
+			var from_node: String = edge.get('from_node')
+			var from_slot: int = edge.get('from_slot')
+			var to_node: String = edge.get('to_node')
+			var to_slot: int = edge.get('to_slot')
+			edges.append(EdgeAst.new(from_node, from_slot, to_node, to_slot))
+		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
+		var expected: Dictionary = params.get('expected', {})
+		var expected_added: int = expected.get('added')
+		var expected_edges: Array = expected.get('edges')
+		var expected_emitted: bool = expected.get('emitted')
+		watch_signals(dialogue_ast)
+		
+		# Act
+		var result: int = dialogue_ast.add_edges(edges)
+
+		# Assert
+		assert_eq(result, expected_added)
+		var updated_edges: Array = dialogue_ast.to_dict().get('edges')
+		assert_eq_deep(updated_edges, expected_edges)
+		if expected_emitted:
+			assert_signal_emitted(dialogue_ast, 'dialogue_updated')
+
+
+class Test_remove_edge:
+	extends GutTest
+	var test_remove_edge_cases: Array[Dictionary] = [
+		{
+			"current_edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"edge": {"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			"expected": {
+				"removed": 1,
+				"emitted": true,
+				"edges": []
+			},
+		},
+		{
+			"current_edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"edge": {"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			"expected": {
+				"removed": 0,
+				"emitted": false,
+				"edges": [
+					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				]
+			},
+		},
+	]
+	
+	func test_remove_edge(params: Dictionary = use_parameters(test_remove_edge_cases)) -> void:
+		# Arrange
+		var current_edges: Array = params.get('current_edges', [])
+		var edge: Dictionary = params.get('edge', {})
+		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
+		var from_node: String = edge.get('from_node')
+		var from_slot: int = edge.get('from_slot')
+		var to_node: String = edge.get('to_node')
+		var to_slot: int = edge.get('to_slot')
+		var expected: Dictionary = params.get('expected', {})
+		var expected_removed: int = expected.get('removed')
+		var expected_edges: Array = expected.get('edges')
+		var expected_emitted: bool = expected.get('emitted')
+		watch_signals(dialogue_ast)
+		
+		# Act
+		var result: int = dialogue_ast.remove_edge(from_node, from_slot, to_node, to_slot)
+
+		# Assert
+		assert_eq(result, expected_removed)
+		var updated_edges: Array = dialogue_ast.to_dict().get('edges')
+		assert_eq_deep(updated_edges, expected_edges)
+		if expected_emitted:
+			assert_signal_emitted(dialogue_ast, 'dialogue_updated')
+
+class Test_remove_edges:
+	extends GutTest
+	var test_remove_edges_cases: Array[Dictionary] = [
+		{
+			"current_edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"expected": {
+				"removed": 2,
+				"emitted": true,
+				"edges": [
+					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				]
+			},
+		},
+		{
+			"current_edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"expected": {
+				"removed": 1,
+				"emitted": true,
+				"edges": [
+					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				]
+			},
+		},
+		{
+			"current_edges": [
+				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"edges": [
+				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+			],
+			"expected": {
+				"removed": 0,
+				"emitted": false,
+				"edges": [
+					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				]
+			},
+		},
+	]
+	
+	func test_remove_edges(params: Dictionary = use_parameters(test_remove_edges_cases)) -> void:
+		# Arrange
+		var current_edges: Array = params.get('current_edges', [])
+		var raw_edges: Array = params.get('edges', [])
+		var edges: Array[EdgeAst] = []
+		for edge: Dictionary in raw_edges:
+			var from_node: String = edge.get('from_node')
+			var from_slot: int = edge.get('from_slot')
+			var to_node: String = edge.get('to_node')
+			var to_slot: int = edge.get('to_slot')
+			edges.append(EdgeAst.new(from_node, from_slot, to_node, to_slot))
+		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
+		var expected: Dictionary = params.get('expected', {})
+		var expected_removed: int = expected.get('removed')
+		var expected_edges: Array = expected.get('edges')
+		var expected_emitted: bool = expected.get('emitted')
+		watch_signals(dialogue_ast)
+		
+		# Act
+		var result: int = dialogue_ast.remove_edges(edges)
+
+		# Assert
+		assert_eq(result, expected_removed)
+		var updated_edges: Array = dialogue_ast.to_dict().get('edges')
+		assert_eq_deep(updated_edges, expected_edges)
+		if expected_emitted:
+			assert_signal_emitted(dialogue_ast, 'dialogue_updated')

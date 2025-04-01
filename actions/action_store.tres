@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cel0yoviy6eqi" path="res://addons/parley/models/action.gd" id="1_qwxcu"]
 [ext_resource type="Script" uid="uid://cc7stjcigkq7f" path="res://actions/advance_time_action.gd" id="2_vdqi4"]
-[ext_resource type="Script" uid="uid://b3tj6amhgmct6" path="res://addons/parley/stores/action_store.gd" id="3_6b0df"]
+[ext_resource type="Script" uid="uid://b3tj6amhgmct6" path="res://addons/parley/stores/action/action_store.gd" id="3_6b0df"]
 
 [sub_resource type="Resource" id="Resource_6wvxp"]
 script = ExtResource("1_qwxcu")

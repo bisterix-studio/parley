@@ -1,4 +1,5 @@
 @tool
+# TODO: prefix with Parley
 class_name ActionNode extends ParleyGraphNode
 
 @export var description: String = "": set = _on_description_changed

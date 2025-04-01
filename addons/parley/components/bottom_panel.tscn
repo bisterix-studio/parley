@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cjgxxvotxhj1g"]
+[gd_scene load_steps=4 format=3 uid="uid://cjgxxvotxhj1g"]
 
 [ext_resource type="Texture2D" uid="uid://dlihv0kxy1b" path="res://addons/parley/assets/Back.svg" id="1_58233"]
 [ext_resource type="Script" uid="uid://gu5an32ya6bh" path="res://addons/parley/components/bottom_panel.gd" id="1_v1no1"]
+[ext_resource type="Texture2D" uid="uid://c1dfvshie0lee" path="res://addons/parley/assets/Forward.svg" id="3_8txdc"]
 
 [node name="BottomPanel" type="MarginContainer"]
 size_flags_horizontal = 3
@@ -25,4 +26,11 @@ flat = true
 [node name="RightContainer" type="HBoxContainer" parent="BottomPanelContainer"]
 layout_mode = 2
 
+[node name="ToggleEditorButton" type="Button" parent="BottomPanelContainer/RightContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_8txdc")
+flat = true
+
 [connection signal="pressed" from="BottomPanelContainer/LeftContainer/ToggleSidebarButton" to="." method="_on_toggle_sidebar_button_pressed"]
+[connection signal="pressed" from="BottomPanelContainer/RightContainer/ToggleEditorButton" to="." method="_on_toggle_editor_button_pressed"]

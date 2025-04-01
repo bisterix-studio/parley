@@ -4,43 +4,34 @@
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_okdx1"]
 
 [node name="DialogueNodeEditor" instance=ExtResource("1_okdx1")]
-visible = false
 script = ExtResource("1_ad3ky")
 character = ""
 dialogue = ""
 type = 0
 
-[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer" index="0"]
+[node name="TitleLabel" parent="TitleContainer/TitlePanelContainer/TitleMarginContainer/TitlePartsContainer" index="0"]
 text = "Dialogue [ID: ]"
 
-[node name="CharacterEditorContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyContainer" index="0"]
+[node name="CharacterEditorContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="0"]
 layout_mode = 2
 
-[node name="CharacterEditorLabel" type="Label" parent="BodyMarginContainer/BodyContainer/CharacterEditorContainer" index="0"]
+[node name="CharacterEditorLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterEditorContainer" index="0"]
 layout_mode = 2
 text = "Character: "
 
-[node name="CharacterEditor" type="OptionButton" parent="BodyMarginContainer/BodyContainer/CharacterEditorContainer" index="1"]
+[node name="CharacterEditor" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterEditorContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 4
-popup/item_0/text = "Bob"
-popup/item_1/text = "Alice"
-popup/item_1/id = 1
-popup/item_2/text = "Carol"
-popup/item_2/id = 2
-popup/item_3/text = "Dave"
-popup/item_3/id = 3
 
-[node name="DialogueEditorContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyContainer" index="1"]
+[node name="DialogueEditorContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="DialogueEditorLabel" type="Label" parent="BodyMarginContainer/BodyContainer/DialogueEditorContainer" index="0"]
+[node name="DialogueEditorLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/DialogueEditorContainer" index="0"]
 layout_mode = 2
 text = "Text: "
 
-[node name="DialogueEditor" type="TextEdit" parent="BodyMarginContainer/BodyContainer/DialogueEditorContainer" index="1"]
+[node name="DialogueEditor" type="TextEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/DialogueEditorContainer" index="1"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -48,5 +39,5 @@ size_flags_vertical = 3
 placeholder_text = "Dialogue goes here.."
 wrap_mode = 1
 
-[connection signal="item_selected" from="BodyMarginContainer/BodyContainer/CharacterEditorContainer/CharacterEditor" to="." method="_on_character_editor_item_selected"]
-[connection signal="text_changed" from="BodyMarginContainer/BodyContainer/DialogueEditorContainer/DialogueEditor" to="." method="_on_dialogue_editor_text_changed"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterEditorContainer/CharacterEditor" to="." method="_on_character_editor_item_selected"]
+[connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/DialogueEditorContainer/DialogueEditor" to="." method="_on_dialogue_editor_text_changed"]
