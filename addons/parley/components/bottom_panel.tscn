@@ -28,6 +28,7 @@ layout_mode = 2
 
 [node name="ToggleEditorButton" type="Button" parent="BottomPanelContainer/RightContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 icon = ExtResource("3_8txdc")
 flat = true

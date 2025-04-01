@@ -54,7 +54,4 @@ locale/locale_filter_mode=1
 
 [parley]
 
-stores/action_store_path="uid://bfwohwb0ftpuq"
-stores/character_store_path="uid://ceouii84qmu0w"
-stores/fact_store_path="uid://c3c7k7lljjqv3"
-stores/character_store_paths=["res://characters/character_store_main.tres", "res://characters/character_store_npcs.tres"]
+stores/character_store_paths=["uid://6le1e46jcwbp", "uid://dpkl3t3evbgg2"]

@@ -1,10 +1,15 @@
 @tool
-extends Node
+class_name ParleySettings extends Node
 
 const ParleyConstants = preload("./constants.gd")
 
 ### Editor config
-const DEFAULT_SETTINGS = {
+enum GraphEditorMode {
+	DOCK,
+	SIDE_BAR,
+}
+
+static var DEFAULT_SETTINGS = {
 	# Dialogue
 	ParleyConstants.DIALOGUE_BALLOON_PATH: preload("./components/default_balloon.tscn").resource_path,
 	# Stores
@@ -18,7 +23,56 @@ const DEFAULT_SETTINGS = {
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
 	# hardcode it for now but allow people to edit it in settings
-	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: "res://addons/parley/views/test_dialogue_sequence_scene.tscn"
+	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: preload("./views/test_dialogue_sequence_scene.tscn").resource_path,
+	# Editor
+	ParleyConstants.EDITOR_GRAPH_EDITOR_MODE: GraphEditorMode.keys()[GraphEditorMode.DOCK].capitalize()
+}
+
+static var editor_graph_editor_mode: get = _get_editor_graph_editor_mode
+
+static func _get_editor_graph_editor_mode() -> GraphEditorMode:
+	var capitalised_value: String = get_setting(ParleyConstants.EDITOR_GRAPH_EDITOR_MODE)
+	var key: String = capitalised_value.to_snake_case().to_upper()
+	return GraphEditorMode.get(key, DEFAULT_SETTINGS[ParleyConstants.EDITOR_GRAPH_EDITOR_MODE])
+
+static var TYPES: Dictionary = {
+	ParleyConstants.EDITOR_GRAPH_EDITOR_MODE: {
+		"name": ParleyConstants.EDITOR_GRAPH_EDITOR_MODE,
+		"type": TYPE_STRING,
+		"hint": PROPERTY_HINT_ENUM,
+		"hint_string": ",".join(GraphEditorMode.keys().map(func(key: String) -> String: return "%s" % [key.capitalize()]))
+	},
+	ParleyConstants.DIALOGUE_BALLOON_PATH: {
+		"name": ParleyConstants.DIALOGUE_BALLOON_PATH,
+		"type": TYPE_STRING,
+		"hint": PROPERTY_HINT_FILE,
+	},
+	ParleyConstants.ACTION_STORE_PATH: {
+		"name": ParleyConstants.ACTION_STORE_PATH,
+		"type": TYPE_STRING,
+		"hint": PROPERTY_HINT_FILE,
+	},
+	ParleyConstants.CHARACTER_STORE_PATH: {
+		"name": ParleyConstants.CHARACTER_STORE_PATH,
+		"type": TYPE_STRING,
+		"hint": PROPERTY_HINT_FILE,
+	},
+	ParleyConstants.CHARACTER_STORE_PATHS: {
+		"name": ParleyConstants.CHARACTER_STORE_PATHS,
+		"type": TYPE_ARRAY,
+		"hint": PROPERTY_HINT_ARRAY_TYPE,
+		"hint_string": "%d/%d:*.tres" % [TYPE_STRING, PROPERTY_HINT_FILE]
+	},
+	ParleyConstants.FACT_STORE_PATH: {
+		"name": ParleyConstants.FACT_STORE_PATH,
+		"type": TYPE_STRING,
+		"hint": PROPERTY_HINT_FILE,
+	},
+	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: {
+		"name": ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH,
+		"type": TYPE_STRING,
+		"hint": PROPERTY_HINT_FILE,
+	}
 }
 
 # TODO: Consider checking the following with helpful error messages if they are not populated
@@ -34,12 +88,9 @@ static func prepare(save = true) -> void:
 		if not ProjectSettings.has_setting(setting_name):
 			set_setting(setting_name, DEFAULT_SETTINGS[setting_name], save)
 		ProjectSettings.set_initial_value(setting_name, DEFAULT_SETTINGS[setting_name])
-		if setting_name.ends_with("_path"):
-			ProjectSettings.add_property_info({
-				"name": setting_name,
-				"type": TYPE_STRING,
-				"hint": PROPERTY_HINT_FILE,
-			})
+		var info = TYPES.get(setting_name)
+		if info:
+			ProjectSettings.add_property_info(info)
 	
 	# Reset some user values upon load that might cause weirdness:
 		for key in [

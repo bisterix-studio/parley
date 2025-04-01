@@ -9,6 +9,9 @@ const PARLEY_PLUGIN_METADATA = "ParleyManager"
 #endregion
 
 #region Editor
+# Project settings
+const EDITOR_GRAPH_EDITOR_MODE = "parley/editor/graph_editor_mode"
+
 # User settings
 const EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH = "parley/editor/current_dialogue_sequence_path"
 #endregion

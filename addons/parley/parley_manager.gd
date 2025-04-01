@@ -17,6 +17,8 @@ var character_stores: Array[String]: get = _get_character_stores
 
 var current_dialogue_ast: DialogueAst
 
+var settings = ParleySettings
+
 # TODO: expose settings in here to avoid circular dependencies
 
 signal dialogue_imported(source_file_path: String)
