@@ -41,7 +41,7 @@ func add_ast_node(node: Dictionary) -> void:
 	var id = node.get('id')
 	var position: Vector2 = _parse_position_from_raw_node_ast(node)
 	if not id or not is_instance_of(id, TYPE_STRING):
-		_printerr("Unable to import Parley AST node without a valid string id field: %s" % [id])
+		_push_error("Unable to import Parley AST node without a valid string id field: %s" % [id])
 		return
 	var ast_node: NodeAst
 	match type:
@@ -66,7 +66,7 @@ func add_ast_node(node: Dictionary) -> void:
 			var size: Vector2 = _parse_group_size_from_raw_node_ast(node)
 			ast_node = GroupNodeAst.new(id, position, node.get('name', ''), node.get('node_ids', []), colour, size)
 		_:
-			_printerr("Unable to import Parley AST node of type: %s" % [type])
+			_push_error("Unable to import Parley AST node of type: %s" % [type])
 			return
 	ast_node.position = position
 	nodes.push_back(ast_node)
@@ -95,7 +95,7 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO):
 		Type.GROUP:
 			ast_node = GroupNodeAst.new(new_id, position)
 		_:
-			_printerr("Unable to create new Parley AST node of type: %s" % [type])
+			_push_error("Unable to create new Parley AST node of type: %s" % [type])
 			return
 	nodes.push_back(ast_node)
 	_emit_dialogue_updated()
@@ -377,9 +377,9 @@ func _print(message: String, dry_run: bool = false) -> void:
 	if not dry_run:
 		print("PARLEY_DBG: %s" % [message])
 
-func _printerr(message: String, dry_run: bool = false) -> void:
+func _push_error(message: String, dry_run: bool = false) -> void:
 	if not dry_run:
-		printerr("PARLEY_ERR: %s" % [message])
+		push_error("PARLEY_ERR: %s" % [message])
 
 func _printwarn(message: String, dry_run: bool = false) -> void:
 	if not dry_run:
@@ -422,10 +422,10 @@ func _sort_by_y_position(a: NodeAst, b: NodeAst) -> bool:
 func _get_start_node(dry_run: bool) -> Variant:
 	var filtered_nodes: Array[NodeAst] = nodes.filter(func(node: NodeAst) -> bool: return node.type == Type.START)
 	if filtered_nodes.size() == 0:
-		_printerr("No Start Nodes found. Unable to start the dialogue.", dry_run)
+		_push_error("No Start Nodes found. Unable to start the dialogue.", dry_run)
 		return
 	if filtered_nodes.size() > 1:
-		_printerr("Multiple Start Nodes found. Unable to start the dialogue.", dry_run)
+		_push_error("Multiple Start Nodes found. Unable to start the dialogue.", dry_run)
 	return filtered_nodes.front()
 #endregion
 

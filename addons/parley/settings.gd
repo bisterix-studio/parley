@@ -18,6 +18,7 @@ static var DEFAULT_SETTINGS = {
 	# TODO: remove
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",
 	ParleyConstants.CHARACTER_STORE_PATHS: [],
+	ParleyConstants.FACT_STORE_PATHS: [],
 	# TODO: remove
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
 	# Test Dialogue Sequence
@@ -59,6 +60,12 @@ static var TYPES: Dictionary = {
 	},
 	ParleyConstants.CHARACTER_STORE_PATHS: {
 		"name": ParleyConstants.CHARACTER_STORE_PATHS,
+		"type": TYPE_ARRAY,
+		"hint": PROPERTY_HINT_ARRAY_TYPE,
+		"hint_string": "%d/%d:*.tres" % [TYPE_STRING, PROPERTY_HINT_FILE]
+	},
+	ParleyConstants.FACT_STORE_PATHS: {
+		"name": ParleyConstants.FACT_STORE_PATHS,
 		"type": TYPE_ARRAY,
 		"hint": PROPERTY_HINT_ARRAY_TYPE,
 		"hint_string": "%d/%d:*.tres" % [TYPE_STRING, PROPERTY_HINT_FILE]
@@ -145,6 +152,6 @@ static func get_setting(key: String, default = null):
 
 static func validate_setting_key(key: String) -> bool:
 	if not key.begins_with("parley/"):
-		printerr("PARLEY_ERR: Invalid Parley setting key. Key %s does not start with the correct scope: parley/")
+		push_error("PARLEY_ERR: Invalid Parley setting key. Key %s does not start with the correct scope: parley/")
 		return false
 	return true

@@ -1,17 +1,85 @@
-[gd_scene load_steps=2 format=3 uid="uid://bhcdx3h8xtn5"]
+[gd_scene load_steps=5 format=3 uid="uid://bhcdx3h8xtn5"]
 
 [ext_resource type="Script" uid="uid://y48wrseks5vu" path="res://addons/parley/stores/fact/fact_store_editor.gd" id="1_55agi"]
+[ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="2_irk8n"]
+[ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_kh15r"]
+[ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="4_bhutp"]
 
 [node name="FactStoreEditor" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_55agi")
 
 [node name="FactStoreMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 
-[node name="FactStores" type="OptionButton" parent="FactStoreMarginContainer"]
+[node name="FactStoreContainer" type="VBoxContainer" parent="FactStoreMarginContainer"]
 layout_mode = 2
 
-[node name="FactsContainer" type="VBoxContainer" parent="FactStoreMarginContainer"]
+[node name="AvailableStoresContainer" type="HBoxContainer" parent="FactStoreMarginContainer/FactStoreContainer"]
 layout_mode = 2
+
+[node name="AvailableFactStoresLabel" type="Label" parent="FactStoreMarginContainer/FactStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Available:"
+
+[node name="AvailableFactStores" type="MenuButton" parent="FactStoreMarginContainer/FactStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = false
+text = "0/1 Selected"
+flat = false
+item_count = 1
+popup/item_0/text = "Main"
+popup/item_0/checkable = 1
+popup/item_0/id = 0
+
+[node name="SaveFactStoreButton" type="Button" parent="FactStoreMarginContainer/FactStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("2_irk8n")
+flat = true
+
+[node name="NewFactStoreButton" type="Button" parent="FactStoreMarginContainer/FactStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+icon = ExtResource("3_kh15r")
+flat = true
+
+[node name="FactStoreSelectorContainer" type="HBoxContainer" parent="FactStoreMarginContainer/FactStoreContainer"]
+layout_mode = 2
+
+[node name="FactStoreSelectorLabel" type="Label" parent="FactStoreMarginContainer/FactStoreContainer/FactStoreSelectorContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Selected:"
+
+[node name="FactStoreSelector" type="OptionButton" parent="FactStoreMarginContainer/FactStoreContainer/FactStoreSelectorContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 1
+popup/item_0/text = "All"
+popup/item_0/id = 0
+
+[node name="FilterFacts" type="LineEdit" parent="FactStoreMarginContainer/FactStoreContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Filter Facts"
+clear_button_enabled = true
+right_icon = ExtResource("4_bhutp")
+
+[node name="FactsScrollContainer" type="ScrollContainer" parent="FactStoreMarginContainer/FactStoreContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FactsContainer" type="VBoxContainer" parent="FactStoreMarginContainer/FactStoreContainer/FactsScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 5

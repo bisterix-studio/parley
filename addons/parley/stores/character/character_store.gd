@@ -21,6 +21,7 @@ func get_character_id_by_index(index: int) -> String:
 	return character.id if character else _generate_id('unknown')
 
 #region HELPERS
+# TODO: utils
 # TODO: figure out how to make this global
 func _generate_id(name: String = "") -> String:
 	var local_id: String
@@ -29,7 +30,7 @@ func _generate_id(name: String = "") -> String:
 	else:
 		local_id = name.to_snake_case().to_lower()
 	return "%s:%s" % [id.to_snake_case().to_lower(), local_id]
-#endregion
 
 func _to_string() -> String:
 	return "CharacterStore<%s>" % [str(to_dict())]
+#endregion

@@ -9,28 +9,29 @@
 
 [sub_resource type="Resource" id="Resource_ouyu8"]
 script = ExtResource("1_57q5a")
-id = 0
+id = "main:alice_gave_coffee"
 name = "Alice gave coffee"
 ref = ExtResource("2_tgdog")
 
 [sub_resource type="Resource" id="Resource_3247g"]
 script = ExtResource("1_57q5a")
-id = 1
+id = "main:bob_has_coffee"
 name = "Bob has coffee"
 ref = ExtResource("3_47mgl")
 
 [sub_resource type="Resource" id="Resource_1ayml"]
 script = ExtResource("1_57q5a")
-id = 2
+id = "main:alice_coffee_status"
 name = "Alice coffee status"
 ref = ExtResource("4_81jjj")
 
 [sub_resource type="Resource" id="Resource_e1sw2"]
 script = ExtResource("1_57q5a")
-id = 3
+id = "main:snooker_balls"
 name = "Snooker balls"
 ref = ExtResource("5_d3w1r")
 
 [resource]
 script = ExtResource("2_685c7")
 facts = Array[ExtResource("1_57q5a")]([SubResource("Resource_ouyu8"), SubResource("Resource_3247g"), SubResource("Resource_1ayml"), SubResource("Resource_e1sw2")])
+id = "main"

@@ -14,6 +14,7 @@ var fact_store: FactStore = FactStore.new()
 
 # TODO: rename to character store paths
 var character_stores: Array[String]: get = _get_character_stores
+var fact_stores: Array[String]: get = _get_fact_stores
 
 var current_dialogue_ast: DialogueAst
 
@@ -47,7 +48,7 @@ func start_dialogue(ctx: Dictionary, dialogue_ast: DialogueAst, start_node: Node
 	var balloon: Node = dialogue_balloon_scene.instantiate()
 	current_scene.add_child(balloon)
 	if not current_dialogue_ast:
-		printerr("PARLEY_ERR: No active Dialogue AST set, exiting.")
+		push_error("PARLEY_ERR: No active Dialogue AST set, exiting.")
 		return balloon
 	if balloon.has_method(&"start"):
 		balloon.start(ctx, current_dialogue_ast, start_node)
@@ -70,6 +71,13 @@ var get_current_scene: Callable = func() -> Node:
 # TODO: add check for these at startup
 func _get_character_stores() -> Array[String]:
 	var _paths = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATHS)
+	var paths: Array[String] = []
+	for path: String in _paths:
+		paths.append(path)
+	return paths
+
+func _get_fact_stores() -> Array[String]:
+	var _paths = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATHS)
 	var paths: Array[String] = []
 	for path: String in _paths:
 		paths.append(path)

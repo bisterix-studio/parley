@@ -93,7 +93,7 @@ func _render_match_node_editor() -> void:
 	# TODO: get this from the node itself and ultimately the JSON definition
 	match_node_editor.fact_store = ParleyManager.fact_store
 	var fact: Fact = ParleyManager.fact_store.get_fact_by_ref(match_node_ast.fact_ref)
-	if fact.id == -1:
+	if fact.id == "":
 		push_error("PARLEY_ERR: Unable to find Fact with ref %s in the store" % [match_node_ast.fact_ref])
 		return
 	match_node_editor.fact_name = fact.name
@@ -181,7 +181,7 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: MatchNodeAst = node_ast.duplicate(true)
 	var fact: Fact = ParleyManager.fact_store.get_fact_by_name(fact_name)
-	if fact.id == -1:
+	if fact.id == "":
 		push_error("PARLEY_ERR: Unable to find Fact with name %s in the store" % [fact_name])
 		return
 	# Handle any necessary edge changes

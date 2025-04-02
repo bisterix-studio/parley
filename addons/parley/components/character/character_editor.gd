@@ -26,12 +26,6 @@ func _render_id_editor() -> void:
 func _render_name_editor() -> void:
 	if name_editor:
 		name_editor.value = character_name
-
-func _add_string_edit(key: String, value: String) -> void:
-	var character_edit = StringEditor.instantiate()
-	character_edit.key = key
-	character_edit.value = value
-	character_editor_container.add_child(character_edit)
 	
 func _clear() -> void:
 	for child: Node in get_children():

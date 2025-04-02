@@ -327,8 +327,8 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 	var ast_node: MatchNodeAst = _ast_node
 	var selected_node: MatchNode = _selected_node
 	var fact: Fact = ParleyManager.fact_store.get_fact_by_name(fact_name)
-	if fact.id == -1:
-		_printerr("Unable to find Fact with name %s in the store" % [fact_name])
+	if fact.id == "":
+		_push_error("Unable to find Fact with name %s in the store" % [fact_name])
 		return
 	# Handle any necessary edge changes
 	var edges_to_delete: Array[EdgeAst] = []
@@ -373,7 +373,7 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 		return
 	var action = ParleyManager.action_store.get_action_by_name(action_script_name)
 	if action.id == -1:
-		_printerr("Unable to find Action with script name %s in the store" % [action_script_name])
+		_push_error("Unable to find Action with script name %s in the store" % [action_script_name])
 		return
 	if ast_node is ActionNodeAst:
 		ast_node.update(description, action_type, action.ref.resource_path, values)
@@ -503,6 +503,6 @@ func _clear_editor() -> void:
 func _print(message) -> void:
 	print("PARLEY_DBG: %s" % [message])
 
-func _printerr(message) -> void:
-	printerr("PARLEY_ERR: %s" % [message])
+func _push_error(message) -> void:
+	push_error("PARLEY_ERR: %s" % [message])
 #endregion

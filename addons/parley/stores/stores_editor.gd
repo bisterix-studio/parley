@@ -41,7 +41,7 @@ func _set_current_store(new_current_store: Store) -> void:
 		Store.CHARACTER: _set_character_store()
 		Store.FACT: _set_fact_store()
 		Store.ACTION: _set_action_store()
-		_: printerr('PARLEY_ERR: Unsupported store selected: %s' % [current_store])
+		_: push_error('PARLEY_ERR: Unsupported store selected: %s' % [current_store])
 
 func _set_character_store() -> void:
 	if show_character_store_button and not show_character_store_button.button_pressed:
