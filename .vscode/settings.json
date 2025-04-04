@@ -15,6 +15,6 @@
   ],
   "files.associations": {
     "*.djson": "json",
-    "*.dlog": "json"
+    "*.ds": "json"
   }
 }

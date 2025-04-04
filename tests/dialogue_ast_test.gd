@@ -15,7 +15,7 @@ class Test_process_next:
 					expected.append(found.front())
 		return expected
 
-	var test_dialogue_ast: DialogueAst = load('res://tests/fixtures/basic_ast_node_generation_input.dlog')
+	var test_dialogue_ast: DialogueAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
 	
 	var test_process_next_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "3", "expected_ids": ["4"]},
@@ -45,7 +45,7 @@ class Test_process_next:
 		assert_eq_deep(result.map(map_to_dict), expected.map(map_to_dict))
 
 
-	var test_dialogue_ast_sort_cases: DialogueAst = load('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.dlog')
+	var test_dialogue_ast_sort_cases: DialogueAst = load('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds')
 
 	var test_process_next_sort_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "6", "expected_ids": ["9", "10", "11"]},
@@ -65,7 +65,7 @@ class Test_process_next:
 		assert_eq_deep(result.map(func(i: DialogueOptionNodeAst) -> String: return i.text), ['Top', 'Middle', 'Bottom'])
 		assert_eq_deep(result.map(map_to_dict), expected.map(map_to_dict))
 
-	var test_dialogue_ast_with_match_node: DialogueAst = load('res://tests/fixtures/basic_match_input.dlog')
+	var test_dialogue_ast_with_match_node: DialogueAst = load('res://tests/fixtures/basic_match_input.ds')
 	
 	var test_process_next_with_match_node_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "1", "expected_ids": ["16"]},

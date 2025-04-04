@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_ast_compiler_0.2.0"
+type="Resource"
+uid="uid://dm0pdramhs72h"
+path="res://.godot/imported/basic_ast_node_generation_input.ds-e6c3d4af2101c76cc961679693f6ea43.tres"
+
+[deps]
+
+source_file="res://tests/fixtures/basic_ast_node_generation_input.ds"
+dest_files=["res://.godot/imported/basic_ast_node_generation_input.ds-e6c3d4af2101c76cc961679693f6ea43.tres"]
+
+[params]
+

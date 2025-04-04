@@ -138,9 +138,10 @@ func _render_facts() -> void:
 #endregion
 
 #region SIGNALS
-func _on_fact_changed(id: String, name: String, fact: Fact) -> void:
+func _on_fact_changed(id: String, name: String, resource: Resource, fact: Fact) -> void:
 	fact.id = id
 	fact.name = name
+	fact.ref = resource
 	fact.emit_changed()
 
 func _on_available_fact_store_pressed(id: int) -> void:

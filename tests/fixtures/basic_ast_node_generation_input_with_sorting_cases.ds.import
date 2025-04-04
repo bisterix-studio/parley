@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_ast_compiler_0.2.0"
+type="Resource"
+uid="uid://dqh153gfjmr6u"
+path="res://.godot/imported/basic_ast_node_generation_input_with_sorting_cases.ds-2ac0307d1d5479373174392cd9472887.tres"
+
+[deps]
+
+source_file="res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds"
+dest_files=["res://.godot/imported/basic_ast_node_generation_input_with_sorting_cases.ds-2ac0307d1d5479373174392cd9472887.tres"]
+
+[params]
+

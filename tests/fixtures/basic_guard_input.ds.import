@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_ast_compiler_0.2.0"
+type="Resource"
+uid="uid://j3wm3bnq8nn4"
+path="res://.godot/imported/basic_guard_input.ds-ea8a82276b3918b2d60dab3de9181ce9.tres"
+
+[deps]
+
+source_file="res://tests/fixtures/basic_guard_input.ds"
+dest_files=["res://.godot/imported/basic_guard_input.ds-ea8a82276b3918b2d60dab3de9181ce9.tres"]
+
+[params]
+

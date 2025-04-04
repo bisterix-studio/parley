@@ -8,7 +8,7 @@ func _recognize(resource: Resource) -> bool:
 
 ## Returns whether the given resource object can be saved by this saver.
 func _get_recognized_extensions(resource: Resource) -> PackedStringArray:
-	return PackedStringArray(["dlog"])
+	return PackedStringArray(["ds"])
 
 ## Saves the given resource object to a file at the target path.
 ## flags is a bitmask composed with SaverFlags constants.

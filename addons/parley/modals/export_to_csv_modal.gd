@@ -15,9 +15,9 @@ var export_path: String
 func render() -> void:
 	base_path = "res://exports".trim_suffix('/')
 	var timestamp: String = str(int(Time.get_unix_time_from_system()))
-	var dialogue_ast_path: String = dialogue_ast.resource_path if dialogue_ast.resource_path else "dialogue.dlog"
+	var dialogue_ast_path: String = dialogue_ast.resource_path if dialogue_ast.resource_path else "dialogue.ds"
 	var dialogue_ast_path_parts: PackedStringArray = dialogue_ast_path.split('/')
-	var dialogue_sequence_name: String = dialogue_ast_path_parts[dialogue_ast_path_parts.size() - 1].to_snake_case().replace('.dlog', '')
+	var dialogue_sequence_name: String = dialogue_ast_path_parts[dialogue_ast_path_parts.size() - 1].to_snake_case().replace('.ds', '')
 	export_path = "%s/export_%s_%s.csv" % [base_path, timestamp, dialogue_sequence_name]
 	path_editor.text = export_path
 	show()

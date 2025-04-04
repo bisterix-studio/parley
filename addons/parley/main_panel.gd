@@ -195,7 +195,7 @@ func _on_file_id_pressed(id: int) -> void:
 		1:
 			open_file_dialogue.show()
 			# TODO: get this from config (note, see the Node inspector as well)
-			open_file_dialogue.current_dir = "res://dialogue"
+			open_file_dialogue.current_dir = "res://dialogue_sequences"
 		2:
 			export_to_csv_modal.dialogue_ast = dialogue_ast
 			export_to_csv_modal.render()

@@ -19,7 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://1alef4tqlskn" path="res://addons/parley/modals/new_dialogue_modal.tscn" id="12_v8y8i"]
 [ext_resource type="Texture2D" uid="uid://dngyydvxiwyvs" path="res://addons/parley/assets/Reload.svg" id="13_oy825"]
 [ext_resource type="PackedScene" uid="uid://bl5g47dhb7hmk" path="res://addons/parley/components/sidebar.tscn" id="18_re0cy"]
-[ext_resource type="Resource" uid="uid://b5472y72kql2r" path="res://dialogue_sequences/all.dlog" id="18_xjep8"]
+[ext_resource type="Resource" uid="uid://b5472y72kql2r" path="res://dialogue_sequences/all.ds" id="18_xjep8"]
 [ext_resource type="PackedScene" uid="uid://dcdua1f2ah8xa" path="res://addons/parley/views/parley_graph_view.tscn" id="20_8yxrj"]
 [ext_resource type="PackedScene" uid="uid://3qf7f1yxgk3o" path="res://addons/parley/views/node_editor.tscn" id="22_7jaih"]
 [ext_resource type="PackedScene" uid="uid://ly3ifjds4qun" path="res://addons/parley/stores/stores_editor.tscn" id="23_exp1x"]
@@ -288,7 +288,7 @@ size = Vector2i(1000, 750)
 min_size = Vector2i(1000, 750)
 ok_button_text = "Open"
 file_mode = 0
-filters = PackedStringArray("*.dlog")
+filters = PackedStringArray("*.ds")
 
 [node name="NewDialogueModal" parent="." instance=ExtResource("12_v8y8i")]
 unique_name_in_owner = true

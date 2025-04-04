@@ -4,7 +4,6 @@
 
 [node name="ResourceEditor" type="HBoxContainer"]
 script = ExtResource("1_xqeic")
-base_type = null
 
 [node name="Label" type="Label" parent="."]
 unique_name_in_owner = true
