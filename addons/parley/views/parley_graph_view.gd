@@ -64,7 +64,7 @@ func _register_node(ast_node: NodeAst) -> ParleyGraphNode:
 		DialogueAst.Type.GROUP:
 			graph_node = _create_group_node(ast_node)
 		_:
-			print("PARLEY_DBG: AST Node {type} is not supported".format({"type": type}))
+			ParleyUtils.log.info("AST Node {type} is not supported".format({"type": type}))
 			return
 	var ast_node_id: String = ast_node.id
 	# TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
@@ -111,10 +111,12 @@ func _get_nodes_by_ids(ids: Array) -> Array[ParleyGraphNode]:
 
 ## Finds a Graph Node by ID.
 ## Example: graph_view.find_node_by_id("2")
-func find_node_by_id(id: String) -> ParleyGraphNode:
-	for child in get_children():
-		if child is ParleyGraphNode and child.id == id:
-			return child
+func find_node_by_id(id: String) -> Variant:
+	for _child: Node in get_children():
+		if _child is ParleyGraphNode:
+			var child: ParleyGraphNode = _child
+			if child.id == id:
+				return child
 	return null
 
 

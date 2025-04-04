@@ -376,6 +376,7 @@
         "id": "npcs",
         "ref": "res://characters/character_store_npcs.tres"
       }
-    ]
+    ],
+    "fact": []
   }
 }

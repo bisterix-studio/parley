@@ -1,5 +1,14 @@
 @tool
-
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
 static var GutUserPreferences = load("res://addons/gut/gui/gut_user_preferences.gd")
 static var temp_directory = 'user://gut_temp_directory'
 
@@ -26,22 +35,21 @@ static var editor_run_json_results_path = 'gut_editor.json':
 	set(v): pass
 
 
-static var editor_shortcuts_path = 'gut_editor_shortcuts.cfg' :
+static var editor_shortcuts_path = 'gut_editor_shortcuts.cfg':
 	get: return temp_directory.path_join(editor_shortcuts_path)
 	set(v): pass
 
 
 static var _user_prefs = null
-static var user_prefs = _user_prefs :
+static var user_prefs = _user_prefs:
 	# workaround not being able to reference EditorInterface when not in
 	# the editor.  This shouldn't be referenced by anything not in the
 	# editor.
 	get:
-		if(_user_prefs == null and Engine.is_editor_hint()):
+		if (_user_prefs == null and Engine.is_editor_hint()):
 			_user_prefs = GutUserPreferences.new(EditorInterface.get_editor_settings())
 		return _user_prefs
 
 
 static func create_temp_directory():
 	DirAccess.make_dir_recursive_absolute(temp_directory)
-

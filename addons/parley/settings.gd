@@ -1,5 +1,5 @@
 @tool
-class_name ParleySettings extends Node
+class_name ParleySettings
 
 const ParleyConstants = preload("./constants.gd")
 
@@ -9,7 +9,7 @@ enum GraphEditorMode {
 	SIDE_BAR,
 }
 
-static var DEFAULT_SETTINGS = {
+static var DEFAULT_SETTINGS: Dictionary = {
 	# Dialogue
 	ParleyConstants.DIALOGUE_BALLOON_PATH: preload("./components/default_balloon.tscn").resource_path,
 	# Stores
@@ -26,10 +26,10 @@ static var DEFAULT_SETTINGS = {
 	# hardcode it for now but allow people to edit it in settings
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: preload("./views/test_dialogue_sequence_scene.tscn").resource_path,
 	# Editor
-	ParleyConstants.EDITOR_GRAPH_EDITOR_MODE: GraphEditorMode.keys()[GraphEditorMode.DOCK].capitalize()
+	ParleyConstants.EDITOR_GRAPH_EDITOR_MODE: str(GraphEditorMode.keys()[GraphEditorMode.DOCK]).capitalize()
 }
 
-static var editor_graph_editor_mode: get = _get_editor_graph_editor_mode
+static var editor_graph_editor_mode: GraphEditorMode: get = _get_editor_graph_editor_mode
 
 static func _get_editor_graph_editor_mode() -> GraphEditorMode:
 	var capitalised_value: String = get_setting(ParleyConstants.EDITOR_GRAPH_EDITOR_MODE)
@@ -87,20 +87,21 @@ static var TYPES: Dictionary = {
 # - Fact store paths
 # - Action store paths
 
-static func prepare(save = true) -> void:
+static func prepare(save: bool = true) -> void:
 	# Set up initial settings
-	for setting_name in DEFAULT_SETTINGS:
+	for setting_name: String in DEFAULT_SETTINGS:
 		if not validate_setting_key(setting_name):
 			continue
 		if not ProjectSettings.has_setting(setting_name):
 			set_setting(setting_name, DEFAULT_SETTINGS[setting_name], save)
 		ProjectSettings.set_initial_value(setting_name, DEFAULT_SETTINGS[setting_name])
-		var info = TYPES.get(setting_name)
-		if info:
+		var _info: Variant = TYPES.get(setting_name)
+		if is_instance_of(_info, TYPE_DICTIONARY):
+			var info: Dictionary = _info
 			ProjectSettings.add_property_info(info)
 	
 	# Reset some user values upon load that might cause weirdness:
-		for key in [
+		for key: String in [
 			ParleyConstants.TEST_DIALOGUE_SEQUENCE_IS_RUNNING_DIALOGUE_TEST,
 			ParleyConstants.TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH,
 			ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START,
@@ -109,7 +110,9 @@ static func prepare(save = true) -> void:
 			set_user_value(key, null)
 
 	if save:
-		ProjectSettings.save()
+		var result: int = ProjectSettings.save()
+		if result != OK:
+			ParleyUtils.log.error("Unable to save Parley project settings: %d" % [result])
 
 static func get_user_config() -> Dictionary:
 	var user_config: Dictionary = {
@@ -118,29 +121,32 @@ static func get_user_config() -> Dictionary:
 
 	if FileAccess.file_exists(ParleyConstants.USER_CONFIG_PATH):
 		var file: FileAccess = FileAccess.open(ParleyConstants.USER_CONFIG_PATH, FileAccess.READ)
-		user_config.merge(JSON.parse_string(file.get_as_text()), true)
+		var parsed_string: Dictionary = JSON.parse_string(file.get_as_text())
+		user_config.merge(parsed_string, true)
 
 	return user_config
 
 static func save_user_config(user_config: Dictionary) -> void:
 	var file: FileAccess = FileAccess.open(ParleyConstants.USER_CONFIG_PATH, FileAccess.WRITE)
-	file.store_string(JSON.stringify(user_config))
+	var result: bool = file.store_string(JSON.stringify(user_config))
+	if not result:
+		ParleyUtils.log.error("Unable to save Parley user config")
 
-static func set_user_value(key: String, value) -> void:
+static func set_user_value(key: String, value: Variant) -> void:
 	var user_config: Dictionary = get_user_config()
 	user_config[key] = value
 	save_user_config(user_config)
 
-static func get_user_value(key: String, default = null):
+static func get_user_value(key: String, default: Variant = null) -> Variant:
 	return get_user_config().get(key, default)
 
-static func set_setting(key: String, value, save = true) -> void:
+static func set_setting(key: String, value: Variant, _save: bool = true) -> void:
 	if not validate_setting_key(key):
 		return
 	ProjectSettings.set_setting(key, value)
 	ProjectSettings.set_initial_value(key, DEFAULT_SETTINGS[key])
 
-static func get_setting(key: String, default = null):
+static func get_setting(key: String, default: Variant = null) -> Variant:
 	if not validate_setting_key(key):
 		return
 
@@ -152,6 +158,6 @@ static func get_setting(key: String, default = null):
 
 static func validate_setting_key(key: String) -> bool:
 	if not key.begins_with("parley/"):
-		push_error("PARLEY_ERR: Invalid Parley setting key. Key %s does not start with the correct scope: parley/")
+		ParleyUtils.log.error("Invalid Parley setting key. Key %s does not start with the correct scope: parley/")
 		return false
 	return true

@@ -1,5 +1,5 @@
 @tool
-extends HBoxContainer
+class_name ParleyResourceEditor extends HBoxContainer
 
 #region DEFS
 @export var key: String = "": set = _set_key
@@ -7,7 +7,7 @@ extends HBoxContainer
 @export var resource: Resource: set = _set_resource
 
 @onready var _label: Label = %Label
-var _resource_picker
+var _resource_picker: EditorResourcePicker
 
 signal resource_changed(resource: Resource)
 signal resource_selected(resource: Resource, inspect: bool)
@@ -19,8 +19,8 @@ func _ready() -> void:
 		_resource_picker = EditorResourcePicker.new()
 		_resource_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_resource_picker.base_type = base_type
-		_resource_picker.resource_selected.connect(_on_resource_picker_resource_selected)
-		_resource_picker.resource_changed.connect(_on_resource_picker_resource_changed)
+		ParleyUtils.safe_connect(_resource_picker.resource_selected, _on_resource_picker_resource_selected)
+		ParleyUtils.safe_connect(_resource_picker.resource_changed, _on_resource_picker_resource_changed)
 		add_child(_resource_picker)
 	_render_key()
 	_render_base_type()
@@ -61,6 +61,6 @@ func _on_resource_picker_resource_changed(new_resource: Resource) -> void:
 	resource = new_resource
 	resource_changed.emit(resource)
 
-func _on_resource_picker_resource_selected(resource: Resource, inspect: bool) -> void:
-	resource_selected.emit(resource, inspect)
+func _on_resource_picker_resource_selected(selected_resource: Resource, inspect: bool) -> void:
+	resource_selected.emit(selected_resource, inspect)
 #endregion

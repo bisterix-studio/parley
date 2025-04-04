@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://3qf7f1yxgk3o"]
 
-[ext_resource type="Script" uid="uid://c0jpfihewyxqt" path="res://addons/parley/views/node_editor.gd" id="1_g0lvf"]
+[ext_resource type="Script" uid="uid://c0jpfihewyxqt" path="res://addons/parley/views/parley_node.gd" id="1_g0lvf"]
 
-[node name="NodeEditor" type="PanelContainer"]
+[node name="ParleyNode" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3

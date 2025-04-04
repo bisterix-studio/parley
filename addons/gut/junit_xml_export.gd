@@ -1,3 +1,16 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
+@warning_ignore_start('INTEGER_DIVISION')
 ## Creates an export of a test run in the JUnit XML format.
 ##
 ## More words needed?
@@ -21,10 +34,10 @@ func _export_test_result(test):
 
 	# Right now the pending and failure messages won't fit in the message
 	# attribute because they can span multiple lines and need to be escaped.
-	if(test.status == 'pending'):
+	if (test.status == 'pending'):
 		var skip_tag = str("<skipped message=\"pending\">", test.pending[0], "</skipped>")
 		to_return += skip_tag
-	elif(test.status == 'fail'):
+	elif (test.status == 'fail'):
 		var fail_tag = str("<failure message=\"failed\">", test.failing[0], "</failure>")
 		to_return += fail_tag
 
@@ -52,7 +65,7 @@ func _export_tests(script_result, classname):
 	return to_return
 
 
-func _sum_test_time(script_result, classname)->float:
+func _sum_test_time(script_result, classname) -> float:
 	var to_return := 0.0
 
 	for key in script_result.keys():
@@ -71,7 +84,7 @@ func _export_scripts(exp_results):
 		to_return += add_attr("tests", s.props.tests)
 		to_return += add_attr("failures", s.props.failures)
 		to_return += add_attr("skipped", s.props.pending)
-		to_return += add_attr("time", _sum_test_time(s.tests, key) )
+		to_return += add_attr("time", _sum_test_time(s.tests, key))
 		to_return += ">\n"
 
 		to_return += indent(_export_tests(s.tests, key), "    ")
@@ -104,9 +117,8 @@ func write_file(gut, path):
 	var xml = get_results_xml(gut)
 
 	var f_result = GutUtils.write_file(path, xml)
-	if(f_result != OK):
+	if (f_result != OK):
 		var msg = str("Error:  ", f_result, ".  Could not create export file ", path)
 		GutUtils.get_logger().error(msg)
 
 	return f_result
-

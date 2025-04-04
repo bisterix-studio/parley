@@ -1,16 +1,25 @@
-[gd_scene load_steps=7 format=3 uid="uid://bl5g47dhb7hmk"]
+[gd_scene load_steps=11 format=3 uid="uid://bl5g47dhb7hmk"]
 
 [ext_resource type="Script" uid="uid://dbqp7dc5s5e3n" path="res://addons/parley/components/sidebar.gd" id="1_d0u7e"]
 [ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="2_sqyhy"]
 [ext_resource type="Script" uid="uid://cjo7uxv32sr14" path="res://addons/parley/models/edge_ast.gd" id="2_vb3pr"]
 [ext_resource type="Script" uid="uid://3nqtsewsmim0" path="res://addons/parley/models/node_ast.gd" id="3_1dc5p"]
 [ext_resource type="Script" uid="uid://btn7s5anok7p4" path="res://addons/parley/models/dialogue_ast.gd" id="4_jvowb"]
+[ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="5_h3i27"]
+[ext_resource type="Script" uid="uid://ob0am6au6mmt" path="res://addons/parley/stores/fact/fact_store.gd" id="6_po0m3"]
+[ext_resource type="Script" uid="uid://dlvt1tv8850a" path="res://addons/parley/models/stores_ast.gd" id="7_jgjj0"]
+
+[sub_resource type="Resource" id="Resource_8ikb7"]
+script = ExtResource("7_jgjj0")
+character = Array[ExtResource("5_h3i27")]([])
+fact = Array[ExtResource("6_po0m3")]([])
 
 [sub_resource type="Resource" id="Resource_kmloq"]
 script = ExtResource("4_jvowb")
 title = ""
 edges = Array[ExtResource("2_vb3pr")]([])
 nodes = Array[ExtResource("3_1dc5p")]([])
+stores = SubResource("Resource_8ikb7")
 
 [node name="Sidebar" type="VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)

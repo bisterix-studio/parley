@@ -1,4 +1,14 @@
 @tool
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
 extends Control
 
 const RUNNER_JSON_PATH = 'res://.gut_editor_config.json'
@@ -11,7 +21,7 @@ var _config = GutConfig.new()
 var _config_gui = null
 var _gut_runner = GutRunnerScene.instantiate()
 var _has_connected = false
-var _tree_root : TreeItem = null
+var _tree_root: TreeItem = null
 
 var _script_icon = load('res://addons/gut/images/Script.svg')
 var _folder_icon = load('res://addons/gut/images/Folder.svg')
@@ -31,11 +41,11 @@ const TREE_DIR = 'Directory'
 	bg = $Bg
 }
 
-@export var bg_color : Color = Color(.36, .36, .36) :
+@export var bg_color: Color = Color(.36, .36, .36):
 	get: return bg_color
 	set(val):
 		bg_color = val
-		if(is_inside_tree()):
+		if (is_inside_tree()):
 			$Bg.color = bg_color
 
 
@@ -62,7 +72,7 @@ func _draw():
 		return
 
 	var gut = _gut_runner.get_gut()
-	if(!gut.is_running()):
+	if (!gut.is_running()):
 		var r = Rect2(Vector2(0, 0), get_rect().size)
 		draw_rect(r, Color.BLACK, false, 2)
 
@@ -74,7 +84,7 @@ func _post_ready():
 	_refresh_tree_and_settings()
 
 
-func _set_meta_for_script_tree_item(item, script, test=null):
+func _set_meta_for_script_tree_item(item, script, test = null):
 	var meta = {
 		type = TREE_SCRIPT,
 		script = script.path,
@@ -82,7 +92,7 @@ func _set_meta_for_script_tree_item(item, script, test=null):
 		test = ''
 	}
 
-	if(test != null):
+	if (test != null):
 		meta.test = test.name
 
 	item.set_metadata(0, meta)
@@ -98,7 +108,7 @@ func _set_meta_for_directory_tree_item(item, path, temp_item):
 
 
 func _get_script_tree_item(script, parent_item):
-	if(!_tree_scripts.has(script.path)):
+	if (!_tree_scripts.has(script.path)):
 		var item = _ctrls.test_tree.create_item(parent_item)
 		item.set_text(0, script.path.get_file())
 		item.set_icon(0, _script_icon)
@@ -110,10 +120,9 @@ func _get_script_tree_item(script, parent_item):
 
 func _get_directory_tree_item(path):
 	var parent = _tree_root
-	if(!_tree_directories.has(path)):
-
-		var item : TreeItem = null
-		if(parent != _tree_root):
+	if (!_tree_directories.has(path)):
+		var item: TreeItem = null
+		if (parent != _tree_root):
 			item = parent.create_child(0)
 		else:
 			item = parent.create_child()
@@ -141,12 +150,12 @@ func _find_dir_item_to_move_before(path):
 	# Go through all the directory items finding the one that has the longest
 	# path that contains our path.
 	for key in _tree_directories.keys():
-		if(path != key and path.begins_with(key) and key.length() > max_matching_len):
+		if (path != key and path.begins_with(key) and key.length() > max_matching_len):
 				max_matching_len = key.length()
 				best_parent = _tree_directories[key]
 
 	var to_return = null
-	if(best_parent != null):
+	if (best_parent != null):
 		to_return = best_parent.get_metadata(0).temp_item
 	return to_return
 
@@ -158,7 +167,7 @@ func _reorder_dir_items():
 		var to_move = _tree_directories[key]
 		to_move.collapsed = false
 		var move_before = _find_dir_item_to_move_before(key)
-		if(move_before != null):
+		if (move_before != null):
 			to_move.move_before(move_before)
 			var new_text = key.substr(move_before.get_parent().get_metadata(0).path.length())
 			to_move.set_text(0, new_text)
@@ -171,7 +180,7 @@ func _remove_dir_temp_items():
 
 
 func _add_dir_and_script_tree_items():
-	var tree : Tree = _ctrls.test_tree
+	var tree: Tree = _ctrls.test_tree
 	tree.clear()
 	_tree_root = _ctrls.test_tree.create_item()
 
@@ -180,7 +189,7 @@ func _add_dir_and_script_tree_items():
 		var dir_item = _get_directory_tree_item(script.path.get_base_dir())
 		var item = _get_script_tree_item(script, dir_item)
 
-		if(script.inner_class_name != ''):
+		if (script.inner_class_name != ''):
 			var inner_item = tree.create_item(item)
 			inner_item.set_text(0, script.inner_class_name)
 			_set_meta_for_script_tree_item(inner_item, script)
@@ -256,7 +265,7 @@ func run_all():
 
 
 func run_tests(options = null):
-	if(options == null):
+	if (options == null):
 		_config.options = _config_gui.get_options(_config.options)
 	else:
 		_config.options = options
@@ -268,16 +277,16 @@ func run_tests(options = null):
 
 func run_selected():
 	var sel_item = _ctrls.test_tree.get_selected()
-	if(sel_item == null):
+	if (sel_item == null):
 		return
 
 	var options = _config_gui.get_options(_config.options)
 	var meta = sel_item.get_metadata(0)
-	if(meta.type == TREE_SCRIPT):
+	if (meta.type == TREE_SCRIPT):
 		options.selected = meta.script.get_file()
 		options.inner_class_name = meta.inner_class
 		options.unit_test_name = meta.test
-	elif(meta.type == TREE_DIR):
+	elif (meta.type == TREE_DIR):
 		options.dirs = [meta.path]
 		options.include_subdirectories = true
 		options.selected = ''

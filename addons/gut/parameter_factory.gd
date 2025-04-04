@@ -1,3 +1,16 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
+@warning_ignore_start('INTEGER_DIVISION')
 ## Creates parameter structures for parameterized tests.
 ##
 ## This is a static class accessible in a `GutTest` script through
@@ -11,8 +24,6 @@
 ## [li]File.  IDK what it would look like.  csv maybe.[/li]
 ## [li]Random values within a range?[/li]
 ## [li]All int values in a range or add an optioanal step.[/li]
-
-
 
 
 ## Creates an array of dictionaries.  It pairs up the names array with each set
@@ -43,18 +54,17 @@ static func named_parameters(names, values):
 		var entry = {}
 
 		var parray = values[i]
-		if(typeof(parray) != TYPE_ARRAY):
+		if (typeof(parray) != TYPE_ARRAY):
 			parray = [values[i]]
 
 		for j in range(names.size()):
-			if(j >= parray.size()):
+			if (j >= parray.size()):
 				entry[names[j]] = null
 			else:
 				entry[names[j]] = parray[j]
 		named.append(entry)
 
 	return named
-
 
 
 # ##############################################################################

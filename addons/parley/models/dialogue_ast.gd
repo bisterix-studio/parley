@@ -375,15 +375,15 @@ func _process_match_node(ctx: Dictionary, match_node: MatchNodeAst) -> int:
 
 func _print(message: String, dry_run: bool = false) -> void:
 	if not dry_run:
-		print("PARLEY_DBG: %s" % [message])
+		ParleyUtils.log.info(message)
 
 func _push_error(message: String, dry_run: bool = false) -> void:
 	if not dry_run:
-		push_error("PARLEY_ERR: %s" % [message])
+		ParleyUtils.log.error(message)
 
 func _printwarn(message: String, dry_run: bool = false) -> void:
 	if not dry_run:
-		print("PARLEY_WRN: %s" % [message])
+		ParleyUtils.log.warn(message)
 
 
 func _evaluate_value(value_expr: Variant) -> Variant:
@@ -527,4 +527,7 @@ func _emit_dialogue_updated() -> void:
 	# It's unclear what the purpose of this is any more
 	if is_ready:
 		dialogue_updated.emit(self)
+
+func _to_string() -> String:
+	return "DialogueAst<nodes=%d edges=%d>" % [nodes.size(), edges.size()]
 #endregion

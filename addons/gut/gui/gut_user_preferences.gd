@@ -1,3 +1,10 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
 class GutEditorPref:
 	var gut_pref_prefix = 'gut/'
 	var pname = '__not_set__'
@@ -19,7 +26,7 @@ class GutEditorPref:
 		_settings.set_setting(_prefstr(), value)
 
 	func load_it():
-		if(_settings.has_setting(_prefstr())):
+		if (_settings.has_setting(_prefstr())):
 			value = _settings.get_setting(_prefstr())
 		else:
 			value = default
@@ -36,7 +43,7 @@ var output_font_size = null
 var hide_result_tree = null
 var hide_output_text = null
 var hide_settings = null
-var use_colors = null	# ? might be output panel
+var use_colors = null # ? might be output panel
 
 # var shortcut_run_all = null
 # var shortcut_run_current_script = null
@@ -62,19 +69,19 @@ func _init(editor_settings):
 func save_it():
 	for prop in get_property_list():
 		var val = get(prop.name)
-		if(val is GutEditorPref):
+		if (val is GutEditorPref):
 			val.save_it()
 
 
 func load_it():
 	for prop in get_property_list():
 		var val = get(prop.name)
-		if(val is GutEditorPref):
+		if (val is GutEditorPref):
 			val.load_it()
 
 
 func erase_all():
 	for prop in get_property_list():
 		var val = get(prop.name)
-		if(val is GutEditorPref):
+		if (val is GutEditorPref):
 			val.erase()

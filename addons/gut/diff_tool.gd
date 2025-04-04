@@ -1,3 +1,14 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
 extends 'res://addons/gut/compare_result.gd'
 const INDENT = '    '
 enum {
@@ -22,7 +33,7 @@ func set_are_equal(val):
 	_block_set('are_equal', val)
 
 func get_are_equal():
-	if(!_valid):
+	if (!_valid):
 		return null
 	else:
 		return differences.size() == 0
@@ -37,14 +48,14 @@ func get_summary():
 func get_different_count():
 	return differences.size()
 
-func  get_total_count():
+func get_total_count():
 	return _total_count
 
 func get_short_summary():
 	var text = str(_strutils.truncate_string(str(_value_1), 50),
 		' ', _compare.get_compare_symbol(are_equal), ' ',
 		_strutils.truncate_string(str(_value_2), 50))
-	if(!are_equal):
+	if (!are_equal):
 		text += str('  ', get_different_count(), ' of ', get_total_count(),
 			' ', _desc_things, ' do not match.')
 	return text
@@ -59,7 +70,7 @@ func _invalidate():
 	differences = null
 
 
-func _init(v1,v2,diff_type=DEEP):
+func _init(v1, v2, diff_type = DEEP):
 	_value_1 = v1
 	_value_2 = v2
 	_diff_type = diff_type
@@ -68,13 +79,13 @@ func _init(v1,v2,diff_type=DEEP):
 
 
 func _find_differences(v1, v2):
-	if(GutUtils.are_datatypes_same(v1, v2)):
-		if(typeof(v1) == TYPE_ARRAY):
-			_brackets = {'open':'[', 'close':']'}
+	if (GutUtils.are_datatypes_same(v1, v2)):
+		if (typeof(v1) == TYPE_ARRAY):
+			_brackets = {'open': '[', 'close': ']'}
 			_desc_things = 'indexes'
 			_diff_array(v1, v2)
-		elif(typeof(v2) == TYPE_DICTIONARY):
-			_brackets = {'open':'{', 'close':'}'}
+		elif (typeof(v2) == TYPE_DICTIONARY):
+			_brackets = {'open': '{', 'close': '}'}
 			_desc_things = 'keys'
 			_diff_dictionary(v1, v2)
 		else:
@@ -89,18 +100,18 @@ func _diff_array(a1, a2):
 	_total_count = max(a1.size(), a2.size())
 	for i in range(a1.size()):
 		var result = null
-		if(i < a2.size()):
-			if(_diff_type == DEEP):
+		if (i < a2.size()):
+			if (_diff_type == DEEP):
 				result = _compare.deep(a1[i], a2[i])
 			else:
 				result = _compare.simple(a1[i], a2[i])
 		else:
 			result = _compare.simple(a1[i], _compare.MISSING, 'index')
 
-		if(!result.are_equal):
+		if (!result.are_equal):
 			differences[i] = result
 
-	if(a1.size() < a2.size()):
+	if (a1.size() < a2.size()):
 		for i in range(a1.size(), a2.size()):
 			differences[i] = _compare.simple(_compare.MISSING, a2[i], 'index')
 
@@ -112,18 +123,18 @@ func _diff_dictionary(d1, d2):
 	# Process all the keys in d1
 	_total_count += d1_keys.size()
 	for key in d1_keys:
-		if(!d2.has(key)):
+		if (!d2.has(key)):
 			differences[key] = _compare.simple(d1[key], _compare.MISSING, 'key')
 		else:
 			d2_keys.remove_at(d2_keys.find(key))
 
 			var result = null
-			if(_diff_type == DEEP):
+			if (_diff_type == DEEP):
 				result = _compare.deep(d1[key], d2[key])
 			else:
 				result = _compare.simple(d1[key], d2[key])
 
-			if(!result.are_equal):
+			if (!result.are_equal):
 				differences[key] = result
 
 	# Process all the keys in d2 that didn't exist in d1
@@ -135,7 +146,7 @@ func _diff_dictionary(d1, d2):
 func summarize():
 	var summary = ''
 
-	if(are_equal):
+	if (are_equal):
 		summary = get_short_summary()
 	else:
 		var formatter = load('res://addons/gut/diff_formatter.gd').new()

@@ -1,4 +1,14 @@
 @tool
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
 extends Window
 
 var GutEditorGlobals = load('res://addons/gut/gui/editor_globals.gd')
@@ -21,7 +31,7 @@ func _ready():
 		sc_button.connect('end_edit', _on_edit_end)
 
 	# show dialog when running scene from editor.
-	if(get_parent() == get_tree().root):
+	if (get_parent() == get_tree().root):
 		popup_centered()
 
 
@@ -42,7 +52,7 @@ func _on_Hide_pressed():
 func _on_edit_start(which):
 	for key in _ctrls:
 		var sc_button = _ctrls[key]
-		if(sc_button != which):
+		if (sc_button != which):
 			sc_button.disable_set(true)
 			sc_button.disable_clear(true)
 
@@ -107,7 +117,7 @@ func _load_shortcut_from_pref(user_pref):
 	var to_return = Shortcut.new()
 	# value with be _user_prefs.EMPTY which is a string when the value
 	# has not been set.
-	if(typeof(user_pref.value) == TYPE_DICTIONARY):
+	if (typeof(user_pref.value) == TYPE_DICTIONARY):
 		to_return.events.append(user_pref.value.shortcut[0])
 		# to_return = user_pref.value
 	return to_return

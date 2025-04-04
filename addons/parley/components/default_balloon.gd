@@ -68,7 +68,7 @@ func _build_next_children(current_children: Array[Node], current_node_ast: NodeA
 	elif current_node_asts.filter(func(n): return is_instance_of(current_node_ast, DialogueOptionNodeAst)).size() == current_node_asts.size():
 		next_children.append_array(_build_next_dialogue_option_children(current_children))
 	else:
-		push_error("PARLEY_ERR: Invalid dialogue balloon nodes")
+		ParleyUtils.log.error("Invalid dialogue balloon nodes")
 		return []
 	return next_children
 

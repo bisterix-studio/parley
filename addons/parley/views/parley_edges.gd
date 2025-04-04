@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name EdgesEditor extends PanelContainer
+class_name ParleyEdgesEditor extends PanelContainer
 
 @export var edges: Array[EdgeAst] = []
 @export var node_id: String = ""

@@ -1,8 +1,8 @@
 @tool
-extends HBoxContainer
+class_name ParleyStringEditor extends HBoxContainer
 
-@export var key: String = "" : set = _set_key
-@export var value: String = "" : set = _set_value
+@export var key: String = "": set = _set_key
+@export var value: String = "": set = _set_value
 
 @onready var label: Label = %Label
 @onready var value_edit: LineEdit = %ValueEdit

@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://brdgm6uqjhaxq"]
 
-[ext_resource type="Script" uid="uid://c6hnlb23dr6a3" path="res://addons/parley/views/edges_editor.gd" id="1_5t3tj"]
+[ext_resource type="Script" uid="uid://c6hnlb23dr6a3" path="res://addons/parley/views/parley_edges.gd" id="1_5t3tj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vou20"]
 bg_color = Color(0.115533, 0.193601, 0.311096, 1)
 
-[node name="EdgesEditor" type="PanelContainer"]
+[node name="ParleyEdges" type="PanelContainer"]
 offset_right = 60.0
 offset_bottom = 29.0
 size_flags_horizontal = 3

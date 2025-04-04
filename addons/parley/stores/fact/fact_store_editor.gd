@@ -1,11 +1,12 @@
 @tool
-extends PanelContainer
+class_name ParleyFactStoreEditor extends PanelContainer
 
-#region VARIABLES
-const FactEditor = preload("../../components/fact/fact_editor.tscn")
+#region DEFS
+const FactEditor: PackedScene = preload("../../components/fact/fact_editor.tscn")
 
 var available_fact_store_paths: Array[String]: get = _get_available_fact_store_paths
 var available_fact_stores: Array[FactStore] = []
+var dialogue_sequence_ast: DialogueAst: set = _set_dialogue_sequence_ast
 var selected_fact_stores: Array[FactStore] = []: set = _set_selected_fact_stores
 var facts: Array[Fact] = []: set = _set_facts
 var filtered_facts: Array[Fact] = []
@@ -17,18 +18,23 @@ var fact_filter: String = "": set = _set_fact_filter
 @onready var fact_store_selector: OptionButton = %FactStoreSelector
 @onready var facts_filter: LineEdit = %FilterFacts
 @onready var facts_container: VBoxContainer = %FactsContainer
+@onready var dialogue_sequence_container: ParleyResourceEditor = %DialogueSequenceContainer
+
+signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
+signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
 #endregion
 
 #region LIFECYCLE
 func _ready() -> void:
 	_setup()
 	_render_available_fact_store_menu()
+	_render_dialogue_sequence()
 	_render_selected_fact_stores()
 	_update_facts()
 	_render_facts()
 
 func _setup() -> void:
-	for fact_store_path in available_fact_store_paths:
+	for fact_store_path: String in available_fact_store_paths:
 		available_fact_stores.append(load(fact_store_path))
 
 func _clear_facts() -> void:
@@ -50,16 +56,22 @@ func _update_facts() -> void:
 			var selected_fact_store: FactStore = selected_fact_stores[fact_store_selector.selected - 1]
 			facts = selected_fact_store.facts
 
+func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: DialogueAst) -> void:
+	if dialogue_sequence_ast != new_dialogue_sequence_ast:
+		dialogue_sequence_ast = new_dialogue_sequence_ast
+		_render_dialogue_sequence()
+
 func _set_selected_fact_stores(new_selected_fact_stores: Array[FactStore]) -> void:
-	selected_fact_stores = new_selected_fact_stores
-	_render_available_fact_store_menu()
-	_render_selected_fact_stores()
-	_update_facts()
+	if selected_fact_stores != new_selected_fact_stores:
+		selected_fact_stores = new_selected_fact_stores
+		_render_available_fact_store_menu()
+		_render_selected_fact_stores()
+		_update_facts()
 
 func _set_selected_fact_store(index: int) -> void:
-	var new_fact_stores = selected_fact_stores
-	var selected_fact_store = available_fact_stores[index]
-	var selected_fact_store_index = selected_fact_stores.find(selected_fact_store)
+	var new_fact_stores: Array[FactStore] = selected_fact_stores
+	var selected_fact_store: FactStore = available_fact_stores[index]
+	var selected_fact_store_index: int = selected_fact_stores.find(selected_fact_store)
 	if selected_fact_store_index == -1:
 		new_fact_stores.append(selected_fact_store)
 	else:
@@ -67,13 +79,14 @@ func _set_selected_fact_store(index: int) -> void:
 	selected_fact_stores = new_fact_stores
 
 func _set_facts(new_facts: Array[Fact]) -> void:
-	facts = new_facts
-	filtered_facts = []
-	for fact in facts:
-		var raw_fact_string = str(inst_to_dict(fact))
-		if not fact_filter or raw_fact_string.containsn(fact_filter):
-			filtered_facts.append(fact)
-	_render_facts()
+	if facts != new_facts:
+		facts = new_facts
+		filtered_facts = []
+		for fact: Fact in facts:
+			var raw_fact_string: String = str(inst_to_dict(fact))
+			if not fact_filter or raw_fact_string.containsn(fact_filter):
+				filtered_facts.append(fact)
+		_render_facts()
 
 func _set_fact_filter(new_fact_filter: String) -> void:
 	fact_filter = new_fact_filter
@@ -87,17 +100,20 @@ func _render_available_fact_store_menu() -> void:
 	var popup: PopupMenu = available_fact_store_menu.get_popup()
 	popup.clear()
 	var index: int = 0
-	for available_fact_store in available_fact_stores:
+	for available_fact_store: FactStore in available_fact_stores:
 		popup.add_check_item(str(available_fact_store.id).capitalize())
 		var checked: bool = selected_fact_stores.filter(func(c: FactStore) -> bool: return c.id == available_fact_store.id).size() > 0
 		popup.set_item_checked(index, checked)
 		index += 1
-	if not popup.id_pressed.is_connected(_on_available_fact_store_pressed):
-		popup.id_pressed.connect(_on_available_fact_store_pressed)
+	ParleyUtils.safe_connect(popup.id_pressed, _on_available_fact_store_pressed)
 	popup.hide_on_checkable_item_selection = false
 	available_fact_store_label.text = "Available:"
 	available_fact_store_menu.text = "%s/%s Selected" % [selected_fact_stores.size(), available_fact_stores.size()]
 	fact_store_selector_label.text = "Selected:"
+
+func _render_dialogue_sequence() -> void:
+	if dialogue_sequence_container and dialogue_sequence_ast and dialogue_sequence_ast.resource_path:
+		dialogue_sequence_container.resource = dialogue_sequence_ast
 
 func _render_available_fact_stores() -> void:
 	if not fact_store_selector:
@@ -125,11 +141,11 @@ func _render_facts() -> void:
 		_clear_facts()
 		var index: int = 0
 		for fact: Fact in filtered_facts:
-			var fact_editor = FactEditor.instantiate()
+			var fact_editor: ParleyFactEditor = FactEditor.instantiate()
 			fact_editor.fact_id = fact.id
 			fact_editor.fact_name = fact.name
 			fact_editor.fact_ref = fact.ref
-			fact_editor.fact_changed.connect(_on_fact_changed.bind(fact))
+			ParleyUtils.safe_connect(fact_editor.fact_changed, _on_fact_changed.bind(fact))
 			facts_container.add_child(fact_editor)
 			if index != filtered_facts.size() - 1:
 				var horizontal_separator: HSeparator = HSeparator.new()
@@ -138,10 +154,10 @@ func _render_facts() -> void:
 #endregion
 
 #region SIGNALS
-func _on_fact_changed(id: String, name: String, resource: Resource, fact: Fact) -> void:
-	fact.id = id
-	fact.name = name
-	fact.ref = resource
+func _on_fact_changed(new_id: String, new_name: String, new_resource: Resource, fact: Fact) -> void:
+	fact.id = new_id
+	fact.name = new_name
+	fact.ref = new_resource
 	fact.emit_changed()
 
 func _on_available_fact_store_pressed(id: int) -> void:
@@ -150,7 +166,7 @@ func _on_available_fact_store_pressed(id: int) -> void:
 	popup.set_item_checked(index, not popup.is_item_checked(index))
 	_set_selected_fact_store(index)
 
-func _on_fact_store_selector_item_selected(index: int) -> void:
+func _on_fact_store_selector_item_selected(_index: int) -> void:
 	_update_facts()
 
 func _on_filter_facts_text_changed(new_fact_filter: String) -> void:
@@ -160,11 +176,26 @@ func _on_save_fact_store_button_pressed() -> void:
 	if fact_store_selector and fact_store_selector.selected != -1:
 		if fact_store_selector.selected == 0:
 			for fact_store: FactStore in selected_fact_stores:
-				ResourceSaver.save(fact_store)
+				var result: int = ResourceSaver.save(fact_store)
+				if result != OK:
+					ParleyUtils.log.error("Error saving fact store [ID: %s]. Code: %d" % [fact_store.id, result])
+					return
 		else:
 			var fact_store: FactStore = selected_fact_stores[fact_store_selector.selected - 1]
 			# TODO: maybe use emit changed at the resource level?
-			ResourceSaver.save(fact_store)
+			var result: int = ResourceSaver.save(fact_store)
+			if result != OK:
+				ParleyUtils.log.error("Error saving fact store [ID: %s]. Code: %d" % [fact_store.id, result])
+				return
+
+func _on_dialogue_sequence_container_resource_changed(new_dialogue_sequence_ast: Resource) -> void:
+	if new_dialogue_sequence_ast is DialogueAst:
+		dialogue_sequence_ast = new_dialogue_sequence_ast
+		dialogue_sequence_ast_changed.emit(dialogue_sequence_ast)
+
+func _on_dialogue_sequence_container_resource_selected(selected_dialogue_sequence_ast: Resource, _inspect: bool) -> void:
+	if dialogue_sequence_ast is DialogueAst:
+		dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
 #endregion
 
 #region UTILS

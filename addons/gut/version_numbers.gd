@@ -1,35 +1,48 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
+@warning_ignore_start('INTEGER_DIVISION')
+@warning_ignore_start('UNREACHABLE_CODE')
 # ##############################################################################
 #
 # ##############################################################################
 class VerNumTools:
-
 	static func _make_version_array_from_string(v):
 		var parts = Array(v.split('.'))
 		for i in range(parts.size()):
 			var int_val = parts[i].to_int()
-			if(str(int_val) == parts[i]):
+			if (str(int_val) == parts[i]):
 				parts[i] = parts[i].to_int()
 		return parts
 
 
 	static func make_version_array(v):
 		var to_return = []
-		if(typeof(v) == TYPE_STRING):
+		if (typeof(v) == TYPE_STRING):
 			to_return = _make_version_array_from_string(v)
-		elif(typeof(v) == TYPE_DICTIONARY):
+		elif (typeof(v) == TYPE_DICTIONARY):
 			return [v.major, v.minor, v.patch]
-		elif(typeof(v) == TYPE_ARRAY):
+		elif (typeof(v) == TYPE_ARRAY):
 			to_return = v
 		return to_return
 
 
 	static func make_version_string(version_parts):
 		var to_return = 'x.x.x'
-		if(typeof(version_parts) == TYPE_ARRAY):
-			to_return =  ".".join(version_parts)
-		elif(typeof(version_parts) == TYPE_DICTIONARY):
-			to_return = str(version_parts.major,  '.',  version_parts.minor,  '.',  version_parts.patch)
-		elif(typeof(version_parts) == TYPE_STRING):
+		if (typeof(version_parts) == TYPE_ARRAY):
+			to_return = ".".join(version_parts)
+		elif (typeof(version_parts) == TYPE_DICTIONARY):
+			to_return = str(version_parts.major, '.', version_parts.minor, '.', version_parts.patch)
+		elif (typeof(version_parts) == TYPE_STRING):
 			to_return = version_parts
 		return to_return
 
@@ -40,10 +53,10 @@ class VerNumTools:
 		var r = make_version_array(required)
 
 		var idx = 0
-		while(is_ok == null and idx < v.size() and idx < r.size()):
-			if(v[idx] > r[idx]):
+		while (is_ok == null and idx < v.size() and idx < r.size()):
+			if (v[idx] > r[idx]):
 				is_ok = true
-			elif(v[idx] < r[idx]):
+			elif (v[idx] < r[idx]):
 				is_ok = false
 
 			idx += 1
@@ -56,13 +69,13 @@ class VerNumTools:
 		var version_array = make_version_array(version)
 		var expected_array = make_version_array(expected)
 
-		if(expected_array.size() > version_array.size()):
+		if (expected_array.size() > version_array.size()):
 			return false
 
 		var is_version = true
 		var i = 0
-		while(i < expected_array.size() and i < version_array.size() and is_version):
-			if(expected_array[i] == version_array[i]):
+		while (i < expected_array.size() and i < version_array.size() and is_version):
+			if (expected_array[i] == version_array[i]):
 				i += 1
 			else:
 				is_version = false
@@ -76,8 +89,6 @@ class VerNumTools:
 
 	static func is_godot_version_gte(expected):
 		return VerNumTools.is_version_gte(Engine.get_version_info(), expected)
-
-
 
 
 # ##############################################################################
@@ -96,8 +107,8 @@ func _init(gut_v = gut_version, required_godot_v = required_godot_version):
 # ------------------------------------------------------------------------------
 func get_version_text():
 	var v_info = Engine.get_version_info()
-	var gut_version_info =  str('GUT version:  ', gut_version)
-	var godot_version_info  = str('Godot version:  ', v_info.major,  '.',  v_info.minor,  '.',  v_info.patch)
+	var gut_version_info = str('GUT version:  ', gut_version)
+	var godot_version_info = str('Godot version:  ', v_info.major, '.', v_info.minor, '.', v_info.patch)
 	return godot_version_info + "\n" + gut_version_info
 
 

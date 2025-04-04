@@ -1,17 +1,16 @@
 @tool
-extends PanelContainer
+class_name ParleyFactEditor extends PanelContainer
 
 #region DEFS
-const StringEditor = preload("../editor/string_editor.tscn")
+const StringEditor: PackedScene = preload("../editor/string_editor.tscn")
 
 @export var fact_id: String = ""
 @export var fact_name: String = ""
 @export var fact_ref: Resource: set = _on_set_fact_ref
 
-@onready var _fact_editor_container: VBoxContainer = %FactEditorContainer
-@onready var _id_editor = %IdEditor
-@onready var _name_editor = %NameEditor
-@onready var _resource_editor = %ResourceEditor
+@onready var _id_editor: ParleyStringEditor = %IdEditor
+@onready var _name_editor: ParleyStringEditor = %NameEditor
+@onready var _resource_editor: ParleyResourceEditor = %ResourceEditor
 
 signal fact_changed(id: String, name: String, fact_ref: String)
 #endregion
@@ -59,16 +58,18 @@ func _on_name_editor_value_changed(new_name: String) -> void:
 	fact_name = new_name
 	_emit_fact_changed()
 
-func _on_resource_picker_fact_ref_changed(resource: Resource) -> void:
+func _on_resource_picker_fact_ref_changed(_resource: Resource) -> void:
 	_emit_fact_changed()
 
 func _on_resource_editor_resource_changed(resource: Resource) -> void:
 	fact_ref = resource
 	_emit_fact_changed()
 
-func _on_resource_editor_resource_selected(resource: Resource, inspect: bool) -> void:
-	if resource is Script:
+func _on_resource_editor_resource_selected(_resource: Resource, _inspect: bool) -> void:
+	if _resource is Script:
+		var resource: Script = _resource
 		EditorInterface.edit_script(resource)
+		EditorInterface.set_main_screen_editor('Script')
 
 func _emit_fact_changed() -> void:
 	fact_changed.emit(fact_id, fact_name, fact_ref)

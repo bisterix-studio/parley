@@ -1,3 +1,14 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
 # ------------------------------------------------------------------------------
 # Used to keep track of info about each test ran.
 # ------------------------------------------------------------------------------
@@ -11,18 +22,18 @@ var has_printed_name = false
 var arg_count = 0
 
 # the time it took to execute the test in seconds
-var time_taken : float = 0
+var time_taken: float = 0
 
 # The number of asserts in the test.  Converted to a property for backwards
 # compatibility.  This now reflects the text sizes instead of being a value
 # that can be altered externally.
-var assert_count = 0 :
+var assert_count = 0:
 	get: return pass_texts.size() + fail_texts.size()
 	set(val): pass
 
 # Converted to propety for backwards compatibility.  This now cannot be set
 # externally
-var pending = false :
+var pending = false:
 	get: return is_pending()
 	set(val): pass
 
@@ -31,7 +42,7 @@ var line_number = -1
 
 # Set internally by Gut using whatever reason Gut wants to use to set this.
 # Gut will skip these marked true and the test will be listed as risky.
-var should_skip = false  # -- Currently not used by GUT don't believe ^
+var should_skip = false # -- Currently not used by GUT don't believe ^
 
 var pass_texts = []
 var fail_texts = []
@@ -84,15 +95,15 @@ func did_something():
 func get_status_text():
 	var to_return = GutUtils.TEST_STATUSES.NO_ASSERTS
 
-	if(should_skip):
+	if (should_skip):
 		to_return = GutUtils.TEST_STATUSES.SKIPPED
-	elif(!was_run):
+	elif (!was_run):
 		to_return = GutUtils.TEST_STATUSES.NOT_RUN
-	elif(pending_texts.size() > 0):
+	elif (pending_texts.size() > 0):
 		to_return = GutUtils.TEST_STATUSES.PENDING
-	elif(fail_texts.size() > 0):
+	elif (fail_texts.size() > 0):
 		to_return = GutUtils.TEST_STATUSES.FAILED
-	elif(pass_texts.size() > 0):
+	elif (pass_texts.size() > 0):
 		to_return = GutUtils.TEST_STATUSES.PASSED
 
 	return to_return
@@ -114,5 +125,3 @@ func to_s():
 	for i in range(pass_texts.size()):
 		to_return += str(pad, 'Pass:  ', pass_texts[i], "\n")
 	return to_return
-
-

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bhcdx3h8xtn5"]
+[gd_scene load_steps=6 format=3 uid="uid://bhcdx3h8xtn5"]
 
 [ext_resource type="Script" uid="uid://y48wrseks5vu" path="res://addons/parley/stores/fact/fact_store_editor.gd" id="1_55agi"]
 [ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="2_irk8n"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_kh15r"]
 [ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="4_bhutp"]
+[ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="4_kh15r"]
 
 [node name="FactStoreEditor" type="PanelContainer"]
 offset_right = 40.0
@@ -50,6 +51,12 @@ disabled = true
 icon = ExtResource("3_kh15r")
 flat = true
 
+[node name="DialogueSequenceContainer" parent="FactStoreMarginContainer/FactStoreContainer" instance=ExtResource("4_kh15r")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "Dialogue Sequence"
+base_type = "DialogueAst"
+
 [node name="FactStoreSelectorContainer" type="HBoxContainer" parent="FactStoreMarginContainer/FactStoreContainer"]
 layout_mode = 2
 
@@ -83,3 +90,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 5
+
+[connection signal="resource_changed" from="FactStoreMarginContainer/FactStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_changed"]
+[connection signal="resource_selected" from="FactStoreMarginContainer/FactStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_selected"]

@@ -1,3 +1,14 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
 var _strutils = GutUtils.Strutils.new()
 const INDENT = '    '
 var _max_to_display = 30
@@ -5,14 +16,14 @@ const ABSOLUTE_MAX_DISPLAYED = 10000
 const UNLIMITED = -1
 
 
-func _single_diff(diff, depth=0):
+func _single_diff(diff, depth = 0):
 	var to_return = ""
 	var brackets = diff.get_brackets()
 
-	if(brackets != null and !diff.are_equal):
+	if (brackets != null and !diff.are_equal):
 		to_return = ''
 		to_return += str(brackets.open, "\n",
-			_strutils.indent_text(differences_to_s(diff.differences, depth), depth+1, INDENT), "\n",
+			_strutils.indent_text(differences_to_s(diff.differences, depth), depth + 1, INDENT), "\n",
 			brackets.close)
 	else:
 		to_return = str(diff)
@@ -22,18 +33,18 @@ func _single_diff(diff, depth=0):
 
 func make_it(diff):
 	var to_return = ''
-	if(diff.are_equal):
+	if (diff.are_equal):
 		to_return = diff.summary
 	else:
-		if(_max_to_display ==  ABSOLUTE_MAX_DISPLAYED):
+		if (_max_to_display == ABSOLUTE_MAX_DISPLAYED):
 			to_return = str(diff.get_value_1(), ' != ', diff.get_value_2())
 		else:
 			to_return = diff.get_short_summary()
-		to_return +=  str("\n", _strutils.indent_text(_single_diff(diff, 0), 1, '  '))
+		to_return += str("\n", _strutils.indent_text(_single_diff(diff, 0), 1, '  '))
 	return to_return
 
 
-func differences_to_s(differences, depth=0):
+func differences_to_s(differences, depth = 0):
 	var to_return = ''
 	var keys = differences.keys()
 	keys.sort()
@@ -43,10 +54,10 @@ func differences_to_s(differences, depth=0):
 		var key = keys[i]
 		to_return += str(key, ":  ", _single_diff(differences[key], depth))
 
-		if(i != limit -1):
+		if (i != limit - 1):
 			to_return += "\n"
 
-	if(differences.size() > _max_to_display):
+	if (differences.size() > _max_to_display):
 		to_return += str("\n\n... ", differences.size() - _max_to_display, " more.")
 
 	return to_return
@@ -58,6 +69,5 @@ func get_max_to_display():
 
 func set_max_to_display(max_to_display):
 	_max_to_display = max_to_display
-	if(_max_to_display == UNLIMITED):
+	if (_max_to_display == UNLIMITED):
 		_max_to_display = ABSOLUTE_MAX_DISPLAYED
-

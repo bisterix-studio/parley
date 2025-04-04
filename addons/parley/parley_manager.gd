@@ -42,13 +42,13 @@ func start_dialogue(ctx: Dictionary, dialogue_ast: DialogueAst, start_node: Node
 	var current_scene: Node = get_current_scene.call()
 	var dialogue_balloon_path: String = ParleySettings.get_setting(ParleyConstants.DIALOGUE_BALLOON_PATH)
 	if not ResourceLoader.exists(dialogue_balloon_path):
-		print("PARLEY_DBG: Dialogue balloon does not exist at: %s. Falling back to default balloon." % [dialogue_balloon_path])
+		ParleyUtils.log.info("Dialogue balloon does not exist at: %s. Falling back to default balloon." % [dialogue_balloon_path])
 		dialogue_balloon_path = ParleySettings.DEFAULT_SETTINGS[ParleyConstants.DIALOGUE_BALLOON_PATH]
 	var dialogue_balloon_scene: PackedScene = load(dialogue_balloon_path)
 	var balloon: Node = dialogue_balloon_scene.instantiate()
 	current_scene.add_child(balloon)
 	if not current_dialogue_ast:
-		push_error("PARLEY_ERR: No active Dialogue AST set, exiting.")
+		ParleyUtils.log.error("No active Dialogue AST set, exiting.")
 		return balloon
 	if balloon.has_method(&"start"):
 		balloon.start(ctx, current_dialogue_ast, start_node)
@@ -119,13 +119,15 @@ func set_current_dialogue_sequence(path: String) -> void:
 	ParleySettings.set_user_value(ParleyConstants.EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH, path)
 
 ## Plugin use only
-func load_current_dialogue_sequence() -> DialogueAst:
+func load_current_dialogue_sequence() -> Variant:
 	if not Engine.is_editor_hint():
 		return DialogueAst.new()
-	var current_dialogue_sequence_path = ParleySettings.get_user_value(ParleyConstants.EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH)
-	if current_dialogue_sequence_path and ResourceLoader.exists(current_dialogue_sequence_path):
-		return load(current_dialogue_sequence_path)
-	return DialogueAst.new()
+	var current_dialogue_sequence_path: Variant = ParleySettings.get_user_value(ParleyConstants.EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH)
+	if current_dialogue_sequence_path:
+		var path: String = current_dialogue_sequence_path
+		if ResourceLoader.exists(path):
+			return load(path)
+	return null
 
 ## Plugin use only
 func load_test_dialogue_sequence() -> DialogueAst:

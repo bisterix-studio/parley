@@ -1,3 +1,14 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
 extends Window
 
 @onready var rtl = $TextDisplay/RichTextLabel
@@ -5,7 +16,7 @@ extends Window
 func _get_file_as_text(path):
 	var to_return = null
 	var f = FileAccess.open(path, FileAccess.READ)
-	if(f != null):
+	if (f != null):
 		to_return = f.get_as_text()
 	else:
 		to_return = str('ERROR:  Could not open file.  Error code ', FileAccess.get_open_error())
@@ -25,7 +36,7 @@ func _on_Close_pressed():
 
 func show_file(path):
 	var text = _get_file_as_text(path)
-	if(text == ''):
+	if (text == ''):
 		text = '<Empty File>'
 	rtl.set_text(text)
 	self.window_title = path
@@ -41,7 +52,7 @@ func _on_Home_pressed():
 	rtl.scroll_to_line(0)
 
 func _on_End_pressed():
-	rtl.scroll_to_line(rtl.get_line_count() -1)
+	rtl.scroll_to_line(rtl.get_line_count() - 1)
 
 func _on_Copy_pressed():
 	return

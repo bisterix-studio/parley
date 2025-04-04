@@ -1,3 +1,16 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
+@warning_ignore_start('INTEGER_DIVISION')
 class_name GutStringUtils
 
 # Hash containing all the built in types in Godot.  This provides an English
@@ -67,7 +80,7 @@ func _get_filename(path):
 func _get_obj_filename(thing):
 	var filename = null
 
-	if(thing == null or
+	if (thing == null or
 		GutUtils.is_native_class(thing) or
 		!is_instance_valid(thing) or
 		str(thing) == '<Object#null>' or
@@ -75,17 +88,17 @@ func _get_obj_filename(thing):
 		GutUtils.is_double(thing)):
 		return
 
-	if(thing.get_script() == null):
-		if(thing is PackedScene):
+	if (thing.get_script() == null):
+		if (thing is PackedScene):
 			filename = _get_filename(thing.resource_path)
 		else:
 			# If it isn't a packed scene and it doesn't have a script then
 			# we do nothing.  This just reads better.
 			pass
-	elif(!GutUtils.is_native_class(thing)):
+	elif (!GutUtils.is_native_class(thing)):
 		var dict = inst_to_dict(thing)
 		filename = _get_filename(dict['@path'])
-		if(str(dict['@subpath']) != ''):
+		if (str(dict['@subpath']) != ''):
 			filename += str('/', dict['@subpath'])
 
 	return filename
@@ -98,46 +111,46 @@ func type2str(thing):
 	var filename = _get_obj_filename(thing)
 	var str_thing = str(thing)
 
-	if(thing == null):
+	if (thing == null):
 		# According to str there is a difference between null and an Object
 		# that is somehow null.  To avoid getting '[Object:null]' as output
 		# always set it to str(null) instead of str(thing).  A null object
 		# will pass typeof(thing) == TYPE_OBJECT check so this has to be
 		# before that.
 		str_thing = str(null)
-	elif(typeof(thing) == TYPE_FLOAT):
-		if(!'.' in str_thing):
+	elif (typeof(thing) == TYPE_FLOAT):
+		if (!'.' in str_thing):
 			str_thing += '.0'
-	elif(typeof(thing) == TYPE_STRING):
+	elif (typeof(thing) == TYPE_STRING):
 		str_thing = str('"', thing, '"')
-	elif(typeof(thing) in _str_ignore_types):
+	elif (typeof(thing) in _str_ignore_types):
 		# do nothing b/c we already have str(thing) in
 		# to_return.  I think this just reads a little
 		# better this way.
 		pass
-	elif(typeof(thing) == TYPE_OBJECT):
-		if(GutUtils.is_native_class(thing)):
+	elif (typeof(thing) == TYPE_OBJECT):
+		if (GutUtils.is_native_class(thing)):
 			str_thing = GutUtils.get_native_class_name(thing)
-		elif(GutUtils.is_double(thing)):
+		elif (GutUtils.is_double(thing)):
 			var double_path = _get_filename(thing.__gutdbl.thepath)
-			if(thing.__gutdbl.subpath != ''):
+			if (thing.__gutdbl.subpath != ''):
 				double_path += str('/', thing.__gutdbl.subpath)
-			elif(thing.__gutdbl.from_singleton != ''):
+			elif (thing.__gutdbl.from_singleton != ''):
 				double_path = thing.__gutdbl.from_singleton + " Singleton"
 
 			var double_type = "double"
-			if(thing.__gutdbl.is_partial):
+			if (thing.__gutdbl.is_partial):
 				double_type = "partial-double"
 
 			str_thing += str("(", double_type, " of ", double_path, ")")
 
 			filename = null
-	elif(types.has(typeof(thing))):
-		if(!str_thing.begins_with('(')):
+	elif (types.has(typeof(thing))):
+		if (!str_thing.begins_with('(')):
 			str_thing = '(' + str_thing + ')'
 		str_thing = str(types[typeof(thing)], str_thing)
 
-	if(filename != null):
+	if (filename != null):
 		str_thing += str('(', filename, ')')
 	return str_thing
 
@@ -148,8 +161,8 @@ func type2str(thing):
 # ------------------------------------------------------------------------------
 func truncate_string(src, max_size):
 	var to_return = src
-	if(src.length() > max_size - 10 and max_size != -1):
-		to_return = str(src.substr(0, max_size - 10), '...',  src.substr(src.length() - 10, src.length()))
+	if (src.length() > max_size - 10 and max_size != -1):
+		to_return = str(src.substr(0, max_size - 10), '...', src.substr(src.length() - 10, src.length()))
 	return to_return
 
 
@@ -161,15 +174,15 @@ func _get_indent_text(times, pad):
 	return to_return
 
 func indent_text(text, times, pad):
-	if(times == 0):
+	if (times == 0):
 		return text
 
 	var to_return = text
 	var ending_newline = ''
 
-	if(text.ends_with("\n")):
+	if (text.ends_with("\n")):
 		ending_newline = "\n"
-		to_return = to_return.left(to_return.length() -1)
+		to_return = to_return.left(to_return.length() - 1)
 
 	var padding = _get_indent_text(times, pad)
 	to_return = to_return.replace("\n", "\n" + padding)

@@ -1,3 +1,11 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
 extends Control
 # ##############################################################################
 # This is the decoupled GUI for gut.gd
@@ -18,8 +26,8 @@ var _ctrls = {
 	path_file = null,
 	prog_script = null,
 	prog_test = null,
-	rtl = null,                 # optional
-	rtl_bg = null,              # required if rtl exists
+	rtl = null, # optional
+	rtl_bg = null, # required if rtl exists
 	switch_modes = null,
 	time_label = null,
 	title = null,
@@ -53,7 +61,7 @@ func _ready():
 
 
 func _process(_delta):
-	if(_gut != null and _gut.is_running()):
+	if (_gut != null and _gut.is_running()):
 		set_elapsed_time(_gut.get_elapsed_time())
 
 
@@ -82,36 +90,35 @@ func _populate_ctrls():
 
 
 func _get_first_child_named(obj_name, parent_obj):
-	if(parent_obj == null):
+	if (parent_obj == null):
 		return null
 
 	var kids = parent_obj.get_children()
 	var index = 0
 	var to_return = null
 
-	while(index < kids.size() and to_return == null):
-		if(str(kids[index]).find(str(obj_name, ':')) != -1):
+	while (index < kids.size() and to_return == null):
+		if (str(kids[index]).find(str(obj_name, ':')) != -1):
 			to_return = kids[index]
 		else:
 			to_return = _get_first_child_named(obj_name, kids[index])
-			if(to_return == null):
+			if (to_return == null):
 				index += 1
 
 	return to_return
 
 
-
 # ------------------
 # Events
 # ------------------
-func _on_title_bar_input(event : InputEvent):
-	if(event is InputEventMouseMotion):
-		if(_title_mouse.down):
+func _on_title_bar_input(event: InputEvent):
+	if (event is InputEventMouseMotion):
+		if (_title_mouse.down):
 			position += event.relative
 			position.x = clamp(position.x, 0, _max_position.x)
 			position.y = clamp(position.y, 0, _max_position.y)
-	elif(event is InputEventMouseButton):
-		if(event.button_index == MOUSE_BUTTON_LEFT):
+	elif (event is InputEventMouseButton):
+		if (event.button_index == MOUSE_BUTTON_LEFT):
 			_title_mouse.down = event.pressed
 
 
@@ -120,7 +127,7 @@ func _on_continue_pressed():
 
 
 func _on_gut_start_run():
-	if(_ctrls.rtl != null):
+	if (_ctrls.rtl != null):
 		_ctrls.rtl.clear()
 	set_num_scripts(_gut.get_test_collector().scripts.size())
 
@@ -183,7 +190,7 @@ func pause_before_teardown():
 
 
 func set_gut(g):
-	if(_gut == g):
+	if (_gut == g):
 		return
 	_gut = g
 	g.start_run.connect(_on_gut_start_run)
@@ -227,6 +234,6 @@ func to_bottom_right():
 
 func align_right():
 	var win_size = get_display_size()
-	self.position.x = win_size.x - self.size.x -5
+	self.position.x = win_size.x - self.size.x - 5
 	self.position.y = 5
 	self.size.y = win_size.y - 10

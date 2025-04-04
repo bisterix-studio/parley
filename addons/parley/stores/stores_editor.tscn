@@ -1,12 +1,12 @@
 [gd_scene load_steps=11 format=3 uid="uid://ly3ifjds4qun"]
 
-[ext_resource type="Script" uid="uid://cxap1x025hpxx" path="res://addons/parley/stores/stores.gd" id="1_fhhtb"]
-[ext_resource type="Texture2D" uid="uid://dowsayd8imiw2" path="res://addons/parley/assets/Character.svg" id="2_1vuku"]
-[ext_resource type="Texture2D" uid="uid://cwpe018tuojmx" path="res://addons/parley/assets/Condition.svg" id="3_yjgfu"]
-[ext_resource type="Texture2D" uid="uid://batwytcx6oxfd" path="res://addons/parley/assets/Action.svg" id="4_08gxt"]
-[ext_resource type="PackedScene" uid="uid://b282u3bhn7ncf" path="res://addons/parley/stores/character/character_store_editor.tscn" id="5_lsgh8"]
-[ext_resource type="PackedScene" uid="uid://bhcdx3h8xtn5" path="res://addons/parley/stores/fact/fact_store_editor.tscn" id="6_bg5k7"]
-[ext_resource type="PackedScene" uid="uid://dil4p8wvfe0y3" path="res://addons/parley/stores/action/action_store_editor.tscn" id="7_j05cm"]
+[ext_resource type="Script" uid="uid://cxap1x025hpxx" path="res://addons/parley/stores/stores_editor.gd" id="1_85s87"]
+[ext_resource type="Texture2D" uid="uid://dowsayd8imiw2" path="res://addons/parley/assets/Character.svg" id="2_07rcw"]
+[ext_resource type="Texture2D" uid="uid://cwpe018tuojmx" path="res://addons/parley/assets/Condition.svg" id="3_mc0hd"]
+[ext_resource type="Texture2D" uid="uid://batwytcx6oxfd" path="res://addons/parley/assets/Action.svg" id="4_i7cik"]
+[ext_resource type="PackedScene" uid="uid://b282u3bhn7ncf" path="res://addons/parley/stores/character/character_store_editor.tscn" id="5_y0gnh"]
+[ext_resource type="PackedScene" uid="uid://bhcdx3h8xtn5" path="res://addons/parley/stores/fact/fact_store_editor.tscn" id="6_y6udr"]
+[ext_resource type="PackedScene" uid="uid://dil4p8wvfe0y3" path="res://addons/parley/stores/action/action_store_editor.tscn" id="7_0phdc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lsyok"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -20,7 +20,7 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [node name="ParleyStores" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_fhhtb")
+script = ExtResource("1_85s87")
 
 [node name="StoresMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -40,7 +40,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_lsyok")
 toggle_mode = true
 button_pressed = true
 text = "Character"
-icon = ExtResource("2_1vuku")
+icon = ExtResource("2_07rcw")
 
 [node name="ShowFactStoreButton" type="Button" parent="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer"]
 unique_name_in_owner = true
@@ -49,7 +49,7 @@ size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxFlat_axuh1")
 toggle_mode = true
 text = "Fact"
-icon = ExtResource("3_yjgfu")
+icon = ExtResource("3_mc0hd")
 
 [node name="ShowActionStoreButton" type="Button" parent="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer"]
 unique_name_in_owner = true
@@ -58,22 +58,22 @@ size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxFlat_0qi85")
 toggle_mode = true
 text = "Action"
-icon = ExtResource("4_08gxt")
+icon = ExtResource("4_i7cik")
 
 [node name="StoresContainer" type="VBoxContainer" parent="StoresMarginContainer/StoresEditorContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CharacterStoreEditor" parent="StoresMarginContainer/StoresEditorContainer/StoresContainer" instance=ExtResource("5_lsgh8")]
+[node name="CharacterStoreEditor" parent="StoresMarginContainer/StoresEditorContainer/StoresContainer" instance=ExtResource("5_y0gnh")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FactStoreEditor" parent="StoresMarginContainer/StoresEditorContainer/StoresContainer" instance=ExtResource("6_bg5k7")]
+[node name="FactStoreEditor" parent="StoresMarginContainer/StoresEditorContainer/StoresContainer" instance=ExtResource("6_y6udr")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="ActionStoreEditor" parent="StoresMarginContainer/StoresEditorContainer/StoresContainer" instance=ExtResource("7_j05cm")]
+[node name="ActionStoreEditor" parent="StoresMarginContainer/StoresEditorContainer/StoresContainer" instance=ExtResource("7_0phdc")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -81,3 +81,5 @@ layout_mode = 2
 [connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowCharacterStoreButton" to="." method="_on_show_character_store_button_toggled"]
 [connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowFactStoreButton" to="." method="_on_show_fact_store_button_toggled"]
 [connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowActionStoreButton" to="." method="_on_show_action_store_button_toggled"]
+[connection signal="dialogue_sequence_ast_changed" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/FactStoreEditor" to="." method="_on_fact_store_editor_dialogue_sequence_ast_changed"]
+[connection signal="dialogue_sequence_ast_selected" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/FactStoreEditor" to="." method="_on_fact_store_editor_dialogue_sequence_ast_selected"]

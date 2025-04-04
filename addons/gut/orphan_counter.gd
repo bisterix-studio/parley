@@ -1,3 +1,16 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
+@warning_ignore_start('INTEGER_DIVISION')
 # ------------------------------------------------------------------------------
 # This is used to track the change in orphans over different intervals.
 # You use this by adding a counter at the start of an interval and then
@@ -29,16 +42,15 @@ func get_count(name):
 func print_orphans(name, lgr):
 	var count = get_orphans_since(name)
 
-	if(count > 0):
+	if (count > 0):
 		var o = 'orphan'
-		if(count > 1):
+		if (count > 1):
 			o = 'orphans'
 		lgr.orphan(str(count, ' new ', o, ' in ', name, '.'))
 
 func print_all():
 	var msg = str("Total Orphans ", orphan_count(), "\n", JSON.stringify(_counters, "    "))
 	print(msg)
-
 
 
 # ##############################################################################

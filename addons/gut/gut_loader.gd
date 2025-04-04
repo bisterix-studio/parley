@@ -1,3 +1,15 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
 # ------------------------------------------------------------------------------
 # This script should be loaded as soon as possible when running tests.  This
 # will disable warnings and then load all scripts that are registered with the
@@ -22,10 +34,10 @@
 #
 # This script should conform to, or ignore, the strictest warning settings.
 # ------------------------------------------------------------------------------
-const WARNING_PATH : String = 'debug/gdscript/warnings/'
+const WARNING_PATH: String = 'debug/gdscript/warnings/'
 
 
-static var were_addons_disabled : bool = true
+static var were_addons_disabled: bool = true
 
 
 @warning_ignore("unsafe_method_access")
@@ -48,13 +60,13 @@ static func _static_init() -> void:
 	# With the warnings manager disabled and gut_default warnings:
 	#	test_warnings_manager.gd 	-> 46 errors
 	#	full run 					-> 165 errors.
-	if(WarningsManager.disabled):
+	if (WarningsManager.disabled):
 		ProjectSettings.set(str(WARNING_PATH, 'exclude_addons'), were_addons_disabled)
 
 	# Force a reference to utils.gd by path.  Using the class_name would cause
 	# utils.gd to load when this script loads, before we could turn off the
 	# warnings.
-	var _utils : Object = load('res://addons/gut/utils.gd')
+	var _utils: Object = load('res://addons/gut/utils.gd')
 
 	# Since load_all exists on the LazyLoader, it should be done now so nothing
 	# sneaks in later...This essentially defeats the "lazy" part of the
@@ -71,8 +83,6 @@ static func _static_init() -> void:
 # was set to before this script disabled it.
 static func restore_ignore_addons() -> void:
 	ProjectSettings.set(str(WARNING_PATH, 'exclude_addons'), were_addons_disabled)
-
-
 
 
 # ##############################################################################

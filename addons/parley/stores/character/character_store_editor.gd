@@ -1,8 +1,8 @@
 @tool
-extends PanelContainer
+class_name ParleyCharacterStoreEditor extends PanelContainer
 
 #region VARIABLES
-const CharacterEditor = preload("../../components/character/character_editor.tscn")
+const CharacterEditor: PackedScene = preload("../../components/character/character_editor.tscn")
 
 var available_character_store_paths: Array[String]: get = _get_available_character_store_paths
 var available_character_stores: Array[CharacterStore] = []
@@ -28,7 +28,7 @@ func _ready() -> void:
 	_render_characters()
 
 func _setup() -> void:
-	for character_store_path in available_character_store_paths:
+	for character_store_path: String in available_character_store_paths:
 		available_character_stores.append(load(character_store_path))
 
 func _clear_characters() -> void:
