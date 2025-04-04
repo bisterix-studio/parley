@@ -3,9 +3,7 @@ extends EditorPlugin
 
 const ParleyConstants = preload("./constants.gd")
 const ParleyImportPlugin: Script = preload("./import_plugin.gd")
-# TODO: remove
-# const ParleyInspectorPlugin: Script = preload("./inspector_plugin.gd")
-const StoresEditor: PackedScene = preload("./stores/stores_editor.tscn")
+const StoresEditor: PackedScene = preload("./stores/stores.tscn")
 const NodeEditor: PackedScene = preload("./views/node_editor.tscn")
 const EdgesEditor: PackedScene = preload("./views/edges_editor.tscn")
 const MainPanel: PackedScene = preload("./main_panel.tscn")
@@ -14,8 +12,6 @@ const PARLEY_MANAGER_SINGLETON = "ParleyManager"
 
 var main_panel_instance: Node
 var import_plugin: EditorImportPlugin
-# TODO: remove
-# var inspector_plugin: EditorInspectorPlugin
 var stores_editor: PanelContainer
 var node_editor: PanelContainer
 var edges_editor: PanelContainer
@@ -27,10 +23,6 @@ func _enter_tree():
 		# Import plugin setup
 		import_plugin = ParleyImportPlugin.new()
 		add_import_plugin(import_plugin)
-		
-		# TODO: remove
-		# inspector_plugin = ParleyInspectorPlugin.new()
-		# add_inspector_plugin(inspector_plugin)
 		
 		# Stores Editor Dock
 		stores_editor = StoresEditor.instantiate()
