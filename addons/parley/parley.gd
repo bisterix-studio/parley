@@ -50,6 +50,9 @@ func _enter_tree() -> void:
 		# Edges Editor Dock
 		edges_editor = ParleyEdges.instantiate()
 		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_BL, edges_editor)
+		ParleyUtils.safe_connect(edges_editor.edge_deleted, _on_edges_editor_edge_deleted)
+		ParleyUtils.safe_connect(edges_editor.mouse_entered_edge, _on_edges_editor_mouse_entered_edge)
+		ParleyUtils.safe_connect(edges_editor.mouse_exited_edge, _on_edges_editor_mouse_exited_edge)
 
 		# Main Panel
 		main_panel_instance = MainPanelScene.instantiate()
@@ -63,14 +66,17 @@ func _enter_tree() -> void:
 		_make_visible(false)
 
 
+#region SETTERS
 func _set_edges() -> void:
 	if node_editor and edges_editor and node_editor.dialogue_sequence_ast and node_editor.node_ast:
 		var node_ast: NodeAst = node_editor.node_ast
 		var dialogue_sequence_ast: DialogueAst = node_editor.dialogue_sequence_ast
 		var edges: Array[EdgeAst] = dialogue_sequence_ast.edges
 		edges_editor.set_edges(edges, node_ast.id)
+#endregion
 
 
+#region SIGNALS
 func _on_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: DialogueAst, component: Component) -> void:
 	if component != Component.MainPanel:
 		main_panel_instance.dialogue_ast = new_dialogue_sequence_ast
@@ -91,6 +97,21 @@ func _on_node_editor_node_changed(node_ast: NodeAst) -> void:
 		main_panel_instance.selected_node_ast = node_ast
 
 
+func _on_edges_editor_mouse_entered_edge(edge: EdgeAst) -> void:
+	if main_panel_instance:
+		main_panel_instance.focus_edge(edge)
+
+
+func _on_edges_editor_mouse_exited_edge(edge: EdgeAst) -> void:
+	if main_panel_instance:
+		main_panel_instance.defocus_edge(edge)
+
+
+func _on_edges_editor_edge_deleted(edge: EdgeAst) -> void:
+	if main_panel_instance:
+		main_panel_instance.remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot)
+
+
 func _on_main_panel_node_selected(node_ast: NodeAst) -> void:
 	if node_editor:
 		node_editor.dialogue_sequence_ast = main_panel_instance.dialogue_ast
@@ -103,6 +124,7 @@ func _on_main_panel_dialogue_sequence_ast_selected(dialogue_sequence_ast: Dialog
 		node_editor.dialogue_sequence_ast = dialogue_sequence_ast
 		stores_editor.dialogue_ast = dialogue_sequence_ast
 	_set_edges()
+#endregion
 
 
 func _exit_tree() -> void:

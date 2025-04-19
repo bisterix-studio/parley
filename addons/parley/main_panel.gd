@@ -354,13 +354,14 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 
 
 func _on_group_node_editor_group_node_changed(id: String, group_name: String, colour: Color) -> void:
-	var ast_node = dialogue_ast.find_node_by_id(id)
-	var selected_node = graph_view.find_node_by_id(id)
+	var ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
+	var selected_node: Variant = graph_view.find_node_by_id(id)
 	if ast_node is not GroupNodeAst or not _is_selected_node(GroupNode, selected_node, id):
 		return
 	if ast_node is GroupNodeAst:
-		ast_node.name = group_name
-		ast_node.colour = colour
+		var group_node: GroupNodeAst = ast_node
+		group_node.name = group_name
+		group_node.colour = colour
 	if selected_node is GroupNode:
 		selected_node.group_name = group_name
 		selected_node.colour = colour
@@ -373,25 +374,21 @@ func _on_graph_view_connection_request(from_node_name: StringName, from_slot: in
 func _on_graph_view_disconnection_request(from_node: StringName, from_slot: int, to_node: StringName, to_slot: int) -> void:
 	var from_node_id: String = from_node.split('-')[1]
 	var to_node_id: String = to_node.split('-')[1]
-	_remove_edge(from_node_id, from_slot, to_node_id, to_slot)
+	remove_edge(from_node_id, from_slot, to_node_id, to_slot)
 
 
-func _on_edges_editor_edge_deleted(edge: EdgeAst) -> void:
-	_remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot)
-
-
-func _on_edges_editor_mouse_entered_edge(edge: EdgeAst) -> void:
+func focus_edge(edge: EdgeAst) -> void:
 	var nodes: Array[ParleyGraphNode] = graph_view.get_nodes_for_edge(edge)
-	for node in nodes:
+	for node: ParleyGraphNode in nodes:
 		if node.id == edge.from_node:
 			node.select_from_slot(edge.from_slot)
 		if node.id == edge.to_node:
 			node.select_to_slot(edge.to_slot)
 
 
-func _on_edges_editor_mouse_exited_edge(edge: EdgeAst) -> void:
+func defocus_edge(edge: EdgeAst) -> void:
 	var nodes: Array[ParleyGraphNode] = graph_view.get_nodes_for_edge(edge)
-	for node in nodes:
+	for node: ParleyGraphNode in nodes:
 		if node.id == edge.from_node:
 			node.unselect_from_slot(edge.from_slot)
 		if node.id == edge.to_node:
@@ -431,8 +428,9 @@ func _on_bottom_panel_sidebar_toggled(is_sidebar_open: bool) -> void:
 
 
 #region HELPERS
-func _remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
-	dialogue_ast.remove_edge(from_node, from_slot, to_node, to_slot)
+func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
+	var _result: int = dialogue_ast.remove_edge(from_node, from_slot, to_node, to_slot)
+	# TODO: handle result
 	graph_view.ast = dialogue_ast
 	graph_view.generate_edges()
 

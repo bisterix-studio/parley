@@ -215,7 +215,6 @@ split_offset = 400
 unique_name_in_owner = true
 layout_mode = 2
 current_dialogue_ast = ExtResource("18_waveq")
-dialogue_asts = Array[ExtResource("32_pogw7")]([ExtResource("18_waveq")])
 
 [node name="GraphContainer" type="VBoxContainer" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView"]
 layout_mode = 2
