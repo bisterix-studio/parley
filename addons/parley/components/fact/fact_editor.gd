@@ -13,6 +13,7 @@ const StringEditor: PackedScene = preload("../editor/string_editor.tscn")
 @onready var _resource_editor: ParleyResourceEditor = %ResourceEditor
 
 signal fact_changed(id: String, name: String, fact_ref: String)
+signal fact_removed(id: String)
 #endregion
 
 #region LIFECYCLE
@@ -70,6 +71,9 @@ func _on_resource_editor_resource_selected(_resource: Resource, _inspect: bool) 
 		var resource: Script = _resource
 		EditorInterface.edit_script(resource)
 		EditorInterface.set_main_screen_editor('Script')
+
+func _on_delete_button_pressed() -> void:
+	fact_removed.emit(fact_id)
 
 func _emit_fact_changed() -> void:
 	fact_changed.emit(fact_id, fact_name, fact_ref)

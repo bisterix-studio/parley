@@ -70,7 +70,6 @@ popup/item_0/text = "All"
 popup/item_0/id = 0
 
 [node name="FilterCharacters" type="LineEdit" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Filter Characters"
 clear_button_enabled = true

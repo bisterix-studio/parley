@@ -1,7 +1,6 @@
-[gd_scene load_steps=34 format=3 uid="uid://ckubjbp3e7yy3"]
+[gd_scene load_steps=31 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
-[ext_resource type="Resource" uid="uid://d2883lul36r1d" path="res://dialogue_sequences/all.ds" id="2_xjep8"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_4ui00"]
 [ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="3_qx68p"]
 [ext_resource type="Texture2D" uid="uid://cs83fq73m01l3" path="res://addons/parley/assets/Dialogue.svg" id="4_f842u"]
@@ -10,7 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://b2wgt8tna8evo" path="res://addons/parley/assets/DialogueOption.svg" id="5_8bgxb"]
 [ext_resource type="Texture2D" uid="uid://c2a7qe81k3qlg" path="res://addons/parley/assets/TestDialogue.svg" id="5_u6vvd"]
 [ext_resource type="Texture2D" uid="uid://cwpe018tuojmx" path="res://addons/parley/assets/Condition.svg" id="6_pb8ro"]
-[ext_resource type="PackedScene" uid="uid://brdgm6uqjhaxq" path="res://addons/parley/views/parley_edges.tscn" id="7_inrk5"]
 [ext_resource type="Texture2D" uid="uid://batwytcx6oxfd" path="res://addons/parley/assets/Action.svg" id="7_lxbr4"]
 [ext_resource type="Texture2D" uid="uid://b1waalrtryrol" path="res://addons/parley/assets/Start.svg" id="8_2fjw0"]
 [ext_resource type="Texture2D" uid="uid://df6gs4fjg2fbo" path="res://addons/parley/assets/TestDialogueFromSelected.svg" id="9_dmt7g"]
@@ -20,9 +18,8 @@
 [ext_resource type="PackedScene" uid="uid://1alef4tqlskn" path="res://addons/parley/modals/new_dialogue_modal.tscn" id="12_v8y8i"]
 [ext_resource type="Texture2D" uid="uid://dngyydvxiwyvs" path="res://addons/parley/assets/Reload.svg" id="13_oy825"]
 [ext_resource type="PackedScene" uid="uid://bl5g47dhb7hmk" path="res://addons/parley/components/sidebar.tscn" id="18_re0cy"]
+[ext_resource type="Resource" uid="uid://d2883lul36r1d" path="res://dialogue_sequences/all.ds" id="18_waveq"]
 [ext_resource type="PackedScene" uid="uid://dcdua1f2ah8xa" path="res://addons/parley/views/parley_graph_view.tscn" id="20_8yxrj"]
-[ext_resource type="PackedScene" uid="uid://3qf7f1yxgk3o" path="res://addons/parley/views/parley_node.tscn" id="22_7jaih"]
-[ext_resource type="PackedScene" uid="uid://ly3ifjds4qun" path="res://addons/parley/stores/stores_editor.tscn" id="23_exp1x"]
 [ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="28_anq7l"]
 [ext_resource type="PackedScene" uid="uid://c6cagjh7y5wn4" path="res://addons/parley/modals/export_to_csv_modal.tscn" id="29_wngpy"]
 [ext_resource type="Script" uid="uid://dlvt1tv8850a" path="res://addons/parley/models/stores_ast.gd" id="29_xjep8"]
@@ -44,7 +41,7 @@ edges = Array[ExtResource("30_rspbv")]([])
 nodes = Array[ExtResource("31_tp54n")]([])
 stores = SubResource("Resource_7jaih")
 
-[node name="MainPanel" type="VBoxContainer" node_paths=PackedStringArray("edges_editor", "save_button", "arrange_nodes_button", "refresh_button", "open_file_dialogue")]
+[node name="MainPanel" type="VBoxContainer" node_paths=PackedStringArray("save_button", "arrange_nodes_button", "refresh_button", "open_file_dialogue")]
 clip_contents = true
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,7 +51,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_06n3w")
-edges_editor = NodePath("MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer/EdgesEditor")
+dialogue_ast = ExtResource("18_waveq")
 save_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/SaveButton")
 arrange_nodes_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/ArrangeNodesButton")
 refresh_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/RefreshButton")
@@ -217,7 +214,8 @@ split_offset = 400
 [node name="Sidebar" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView" instance=ExtResource("18_re0cy")]
 unique_name_in_owner = true
 layout_mode = 2
-current_dialogue_ast = ExtResource("2_xjep8")
+current_dialogue_ast = ExtResource("18_waveq")
+dialogue_asts = Array[ExtResource("32_pogw7")]([ExtResource("18_waveq")])
 
 [node name="GraphContainer" type="VBoxContainer" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView"]
 layout_mode = 2
@@ -226,62 +224,11 @@ size_flags_horizontal = 3
 [node name="GraphView" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("20_8yxrj")]
 unique_name_in_owner = true
 layout_mode = 2
-ast = ExtResource("2_xjep8")
+ast = ExtResource("18_waveq")
 
 [node name="BottomPanel" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("29_xxhvx")]
 unique_name_in_owner = true
 layout_mode = 2
-
-[node name="EditorPanel" type="PanelContainer" parent="MarginContainer/MainContainer/HSplitContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MainContainer/HSplitContainer/EditorPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 1
-theme_override_constants/margin_top = 1
-theme_override_constants/margin_right = 1
-theme_override_constants/margin_bottom = 1
-
-[node name="TabContainer" type="TabContainer" parent="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/side_margin = 0
-current_tab = 0
-
-[node name="Node" type="MarginContainer" parent="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 1
-theme_override_constants/margin_top = 1
-theme_override_constants/margin_right = 1
-theme_override_constants/margin_bottom = 0
-metadata/_tab_index = 0
-
-[node name="EditorContainer" type="VBoxContainer" parent="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node"]
-layout_mode = 2
-
-[node name="EditorDetailsContainer" type="VSplitContainer" parent="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-split_offset = 200
-
-[node name="NodeEditor" parent="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer" instance=ExtResource("22_7jaih")]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
-[node name="EdgesEditor" parent="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer" instance=ExtResource("7_inrk5")]
-visible = false
-layout_mode = 2
-
-[node name="Stores" parent="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer" instance=ExtResource("23_exp1x")]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-metadata/_tab_index = 1
 
 [node name="OpenFileDialog" type="FileDialog" parent="."]
 title = "Open a File"
@@ -312,11 +259,6 @@ dialogue_ast = SubResource("Resource_7hjis")
 [connection signal="disconnection_request" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_disconnection_request"]
 [connection signal="node_deselected" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_node_deselected"]
 [connection signal="node_selected" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_node_selected"]
-[connection signal="editor_toggled" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/BottomPanel" to="." method="_on_bottom_panel_editor_toggled"]
 [connection signal="sidebar_toggled" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/BottomPanel" to="." method="_on_bottom_panel_sidebar_toggled"]
-[connection signal="node_changed" from="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer/NodeEditor" to="." method="_on_node_editor_node_changed"]
-[connection signal="edge_deleted" from="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer/EdgesEditor" to="." method="_on_edges_editor_edge_deleted"]
-[connection signal="mouse_entered_edge" from="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer/EdgesEditor" to="." method="_on_edges_editor_mouse_entered_edge"]
-[connection signal="mouse_exited_edge" from="MarginContainer/MainContainer/HSplitContainer/EditorPanel/MarginContainer/TabContainer/Node/EditorContainer/EditorDetailsContainer/EdgesEditor" to="." method="_on_edges_editor_mouse_exited_edge"]
 [connection signal="file_selected" from="OpenFileDialog" to="." method="_on_open_dialog_file_selected"]
 [connection signal="dialogue_ast_created" from="NewDialogueModal" to="." method="_on_new_dialogue_modal_dialogue_ast_created"]

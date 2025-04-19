@@ -17,7 +17,7 @@ func add_character(name: String = "") -> Character:
 	return character
 
 func get_character_id_by_index(index: int) -> String:
-	var character = characters.get(index)
+	var character: Variant = characters.get(index)
 	return character.id if character else _generate_id('unknown')
 
 #region HELPERS

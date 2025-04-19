@@ -377,6 +377,11 @@
         "ref": "res://characters/character_store_npcs.tres"
       }
     ],
-    "fact": []
+    "fact": [
+      {
+        "id": "main",
+        "ref": "res://facts/fact_store_main.tres"
+      }
+    ]
   }
 }

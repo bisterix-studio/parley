@@ -1,14 +1,14 @@
 @tool
-extends PanelContainer
+class_name ParleyCharacterEditor extends PanelContainer
 
-const StringEditor = preload("../editor/string_editor.tscn")
+const StringEditor: PackedScene = preload("../editor/string_editor.tscn")
 
 @export var character_id: String = ""
 @export var character_name: String = ""
 
 @onready var character_editor_container: VBoxContainer = %CharacterEditorContainer
-@onready var id_editor = %IdEditor
-@onready var name_editor = %NameEditor
+@onready var id_editor: ParleyStringEditor = %IdEditor
+@onready var name_editor: ParleyStringEditor = %NameEditor
 
 signal character_changed(id: String, name: String)
 

@@ -6,67 +6,35 @@ const back_icon: Texture2D = preload('res://addons/parley/assets/Back.svg')
 const forward_icon: Texture2D = preload('res://addons/parley/assets/Forward.svg')
 
 @onready var toggle_sidebar_button: Button = %ToggleSidebarButton
-@onready var toggle_editor_button: Button = %ToggleEditorButton
 
 var is_sidebar_open: bool = true: set = _is_sidebar_open_setter
-var is_editor_open: bool = true: set = _is_editor_open_setter
-var has_editor: bool = false: set = _set_has_editor
 
 signal sidebar_toggled(is_sidebar_open: bool)
-signal editor_toggled(is_editor_open: bool)
 #endregion
 
 #region LIFECYCLE
 func _ready() -> void:
 	# TODO: set from config
 	is_sidebar_open = true
-	is_editor_open = true
-	_render_editor()
 #endregion
 
 #region SETTERS
-func _set_has_editor(new_value: bool) -> void:
-	has_editor = new_value
-	_render_editor()
-
-func _render_editor() -> void:
-	if toggle_editor_button:
-		if has_editor:
-			toggle_editor_button.show()
-		else:
-			toggle_editor_button.hide()
-
 func _is_sidebar_open_setter(new_value: bool) -> void:
 	is_sidebar_open = new_value
 	_render_sidebar_button()
 	sidebar_toggled.emit(is_sidebar_open)
-
-func _is_editor_open_setter(new_value: bool) -> void:
-	is_editor_open = new_value
-	_render_editor_button()
-	editor_toggled.emit(is_editor_open)
 #endregion
 
 #region RENDERERS
 func _render_sidebar_button() -> void:
-	if toggle_editor_button:
+	if toggle_sidebar_button:
 		if is_sidebar_open:
 			toggle_sidebar_button.icon = back_icon
 		else:
 			toggle_sidebar_button.icon = forward_icon
-
-func _render_editor_button() -> void:
-	if toggle_editor_button:
-		if is_editor_open:
-			toggle_editor_button.icon = forward_icon
-		else:
-			toggle_editor_button.icon = back_icon
 #endregion
 
 #region SIGNALS
 func _on_toggle_sidebar_button_pressed() -> void:
 	is_sidebar_open = !is_sidebar_open
-
-func _on_toggle_editor_button_pressed() -> void:
-	is_editor_open = !is_editor_open
 #endregion

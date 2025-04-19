@@ -15,7 +15,6 @@ var character_filter: String = "": set = _set_character_filter
 @onready var available_character_store_menu: MenuButton = %AvailableCharacterStores
 @onready var character_store_selector_label: Label = %CharacterStoreSelectorLabel
 @onready var character_store_selector: OptionButton = %CharacterStoreSelector
-@onready var characters_filter: LineEdit = %FilterCharacters
 @onready var characters_container: VBoxContainer = %CharactersContainer
 #endregion
 
@@ -57,9 +56,9 @@ func _set_selected_character_stores(new_selected_character_stores: Array[Charact
 	_update_characters()
 
 func _set_selected_character_store(index: int) -> void:
-	var new_character_stores = selected_character_stores
-	var selected_character_store = available_character_stores[index]
-	var selected_character_store_index = selected_character_stores.find(selected_character_store)
+	var new_character_stores: Array[CharacterStore] = selected_character_stores
+	var selected_character_store: CharacterStore = available_character_stores[index]
+	var selected_character_store_index: int = selected_character_stores.find(selected_character_store)
 	if selected_character_store_index == -1:
 		new_character_stores.append(selected_character_store)
 	else:
@@ -69,8 +68,8 @@ func _set_selected_character_store(index: int) -> void:
 func _set_characters(new_characters: Array[Character]) -> void:
 	characters = new_characters
 	filtered_characters = []
-	for character in characters:
-		var raw_character_string = str(inst_to_dict(character))
+	for character: Character in characters:
+		var raw_character_string: String = str(inst_to_dict(character))
 		if not character_filter or raw_character_string.containsn(character_filter):
 			filtered_characters.append(character)
 	_render_characters()
@@ -87,13 +86,12 @@ func _render_available_character_store_menu() -> void:
 	var popup: PopupMenu = available_character_store_menu.get_popup()
 	popup.clear()
 	var index: int = 0
-	for available_character_store in available_character_stores:
+	for available_character_store: CharacterStore in available_character_stores:
 		popup.add_check_item(str(available_character_store.id).capitalize())
 		var checked: bool = selected_character_stores.filter(func(c: CharacterStore) -> bool: return c.id == available_character_store.id).size() > 0
 		popup.set_item_checked(index, checked)
 		index += 1
-	if not popup.id_pressed.is_connected(_on_available_character_store_pressed):
-		popup.id_pressed.connect(_on_available_character_store_pressed)
+	ParleyUtils.safe_connect(popup.id_pressed, _on_available_character_store_pressed)
 	popup.hide_on_checkable_item_selection = false
 	available_character_store_label.text = "Available:"
 	available_character_store_menu.text = "%s/%s Selected" % [selected_character_stores.size(), available_character_stores.size()]
@@ -125,10 +123,10 @@ func _render_characters() -> void:
 		_clear_characters()
 		var index: int = 0
 		for character: Character in filtered_characters:
-			var character_editor = CharacterEditor.instantiate()
+			var character_editor: ParleyCharacterEditor = CharacterEditor.instantiate()
 			character_editor.character_id = character.id
 			character_editor.character_name = character.name
-			character_editor.character_changed.connect(_on_character_changed.bind(character))
+			ParleyUtils.safe_connect(character_editor.character_changed, _on_character_changed.bind(character))
 			characters_container.add_child(character_editor)
 			if index != filtered_characters.size() - 1:
 				var horizontal_separator: HSeparator = HSeparator.new()
@@ -137,9 +135,9 @@ func _render_characters() -> void:
 #endregion
 
 #region SIGNALS
-func _on_character_changed(id: String, name: String, character: Character) -> void:
+func _on_character_changed(id: String, new_name: String, character: Character) -> void:
 	character.id = id
-	character.name = name
+	character.name = new_name
 	character.emit_changed()
 
 func _on_available_character_store_pressed(id: int) -> void:
@@ -148,7 +146,7 @@ func _on_available_character_store_pressed(id: int) -> void:
 	popup.set_item_checked(index, not popup.is_item_checked(index))
 	_set_selected_character_store(index)
 
-func _on_character_store_selector_item_selected(index: int) -> void:
+func _on_character_store_selector_item_selected(_index: int) -> void:
 	_update_characters()
 
 func _on_filter_characters_text_changed(new_character_filter: String) -> void:
@@ -158,11 +156,13 @@ func _on_save_character_store_button_pressed() -> void:
 	if character_store_selector and character_store_selector.selected != -1:
 		if character_store_selector.selected == 0:
 			for character_store: CharacterStore in selected_character_stores:
-				ResourceSaver.save(character_store)
+				var _save_result: int = ResourceSaver.save(character_store)
+				# TODO: handle save result
 		else:
 			var character_store: CharacterStore = selected_character_stores[character_store_selector.selected - 1]
 			# TODO: maybe use emit changed at the resource level?
-			ResourceSaver.save(character_store)
+			var _save_result: int = ResourceSaver.save(character_store)
+			# TODO: handle save result
 #endregion
 
 #region UTILS

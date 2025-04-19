@@ -74,22 +74,35 @@ popup/item_0/text = "All"
 popup/item_0/id = 0
 
 [node name="FilterFacts" type="LineEdit" parent="FactStoreMarginContainer/FactStoreContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Filter Facts"
 clear_button_enabled = true
 right_icon = ExtResource("4_bhutp")
 
-[node name="FactsScrollContainer" type="ScrollContainer" parent="FactStoreMarginContainer/FactStoreContainer"]
+[node name="FactsScroll" type="ScrollContainer" parent="FactStoreMarginContainer/FactStoreContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="FactsContainer" type="VBoxContainer" parent="FactStoreMarginContainer/FactStoreContainer/FactsScrollContainer"]
+[node name="FactsScrollContainer" type="VBoxContainer" parent="FactStoreMarginContainer/FactStoreContainer/FactsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FactsContainer" type="VBoxContainer" parent="FactStoreMarginContainer/FactStoreContainer/FactsScroll/FactsScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
 theme_override_constants/separation = 5
 
+[node name="AddFactButton" type="Button" parent="FactStoreMarginContainer/FactStoreContainer/FactsScroll/FactsScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Add Fact to the currently selected store. If no store is explicitly set, this button will not be activated."
+disabled = true
+text = "Add Fact"
+
+[connection signal="pressed" from="FactStoreMarginContainer/FactStoreContainer/AvailableStoresContainer/SaveFactStoreButton" to="." method="_on_save_fact_store_button_pressed"]
 [connection signal="resource_changed" from="FactStoreMarginContainer/FactStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_changed"]
 [connection signal="resource_selected" from="FactStoreMarginContainer/FactStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_selected"]
+[connection signal="item_selected" from="FactStoreMarginContainer/FactStoreContainer/FactStoreSelectorContainer/FactStoreSelector" to="." method="_on_fact_store_selector_item_selected"]
+[connection signal="text_changed" from="FactStoreMarginContainer/FactStoreContainer/FilterFacts" to="." method="_on_filter_facts_text_changed"]
+[connection signal="pressed" from="FactStoreMarginContainer/FactStoreContainer/FactsScroll/FactsScrollContainer/AddFactButton" to="." method="_on_add_fact_button_pressed"]

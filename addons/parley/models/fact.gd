@@ -22,3 +22,7 @@ func _init(p_id: String = "", p_name: String = "", p_ref: Resource = null) -> vo
 	id = p_id
 	name = p_name
 	ref = p_ref
+
+
+func _to_string() -> String:
+	return "Fact<id=%s name=%s ref=%s>" % [id || "Unknown", name || "Unknown", ref || "Unknown"]

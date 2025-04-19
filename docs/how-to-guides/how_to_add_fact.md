@@ -27,7 +27,7 @@ Condition Node in the corresponding
 ## Instructions
 
 > **Note:** it is assumed that the default Parley settings are used for the fact
-> store and it is stored at: `res://facts/fact_store.tres`
+> store and it is stored at: `res://facts/fact_store_main.tres`
 
 - Create a Fact script (ensure that it extends the `FactInterface` class) at:
   `res://facts/alice_gave_coffee_fact.gd`
@@ -68,8 +68,8 @@ func available_values() -> Array[Ball]:
 	]
 ```
 
-- Open up the inspector for `res://facts/fact_store.tres` in the Godot Editor
-  and click `Add Element`:
+- Open up the inspector for `res://facts/fact_store_main.tres` in the Godot
+  Editor and click `Add Element`:
 
 ![Add Element](./images/how_to_add_fact/add_element.png)
 

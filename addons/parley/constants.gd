@@ -6,13 +6,10 @@ const USER_CONFIG_PATH: String = "user://parley_user_config.json"
 
 #region Parley Plugin
 const PLUGIN_NAME: String = "Parley"
-const PARLEY_PLUGIN_METADATA: String = "ParleyManager"
+const PARLEY_PLUGIN_METADATA: String = "ParleyPlugin"
 #endregion
 
 #region Editor
-# Project settings
-const EDITOR_GRAPH_EDITOR_MODE: String = "parley/editor/graph_editor_mode"
-
 # User settings
 const EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH: String = "parley/editor/current_dialogue_sequence_path"
 #endregion

@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_kdtf2"]
 [ext_resource type="Script" uid="uid://cqwma84t2j4tb" path="res://addons/parley/components/match/match_node_editor.gd" id="2_jun7c"]
-[ext_resource type="Resource" uid="uid://c3c7k7lljjqv3" path="res://facts/fact_store.tres" id="3_3oe1j"]
+[ext_resource type="Resource" uid="uid://c3c7k7lljjqv3" path="res://facts/fact_store_main.tres" id="3_3oe1j"]
 [ext_resource type="Texture2D" uid="uid://oqt4tn7c8fd" path="res://addons/parley/assets/Fallback.svg" id="3_uceht"]
 
 [node name="MatchNodeEditor" instance=ExtResource("1_kdtf2")]

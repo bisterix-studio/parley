@@ -20,7 +20,6 @@ const group_node_icon: CompressedTexture2D = preload("./assets/Group.svg")
 # Although... does this even need to be a global if everything is now defined in the DS AST?
 
 # TODO: use unique name (%)
-@export var edges_editor: ParleyEdgesEditor
 @onready var graph_view: ParleyGraphView = %GraphView
 @export var save_button: Button
 @export var arrange_nodes_button: Button
@@ -32,10 +31,7 @@ const group_node_icon: CompressedTexture2D = preload("./assets/Group.svg")
 @onready var new_dialogue_modal: Window = %NewDialogueModal
 @onready var export_to_csv_modal: Window = %ExportToCsvModal
 @onready var editor: HSplitContainer = %EditorView
-@onready var editor_panel: PanelContainer = %EditorPanel
 @onready var sidebar: ParleySidebar = %Sidebar
-@onready var stores_editor: ParleyStoresEditor = %Stores
-@onready var node_editor: PanelContainer = %NodeEditor
 @onready var bottom_panel: MarginContainer = %BottomPanel
 
 # TODO: remove this
@@ -74,9 +70,6 @@ func _exit_tree() -> void:
 	# 	if ParleyManager.dialogue_imported.is_connected(_on_parley_manager_dialogue_imported):
 	# 		ParleyManager.dialogue_imported.disconnect(_on_parley_manager_dialogue_imported)
 
-func _should_render_side_editor() -> bool:
-	return ParleyManager.settings.editor_graph_editor_mode == ParleyManager.settings.GraphEditorMode.SIDE_BAR
-
 func _set_dialogue_ast(new_dialogue_ast) -> void:
 	# TODO: regenerate
 	if dialogue_ast != new_dialogue_ast:
@@ -87,8 +80,6 @@ func _set_dialogue_ast(new_dialogue_ast) -> void:
 			dialogue_ast.dialogue_updated.connect(_on_dialogue_ast_changed)
 			if sidebar:
 				sidebar.add_dialogue_ast(dialogue_ast)
-			if stores_editor:
-				stores_editor.dialogue_ast = dialogue_ast
 			dialogue_ast_selected.emit(dialogue_ast)
 			await refresh()
 
@@ -130,16 +121,6 @@ func _setup() -> void:
 	_setup_file_menu()
 	_setup_insert_menu()
 	_setup_theme()
-	if _should_render_side_editor():
-		editor_panel.show()
-		bottom_panel.has_editor = true
-		node_editor.show()
-		edges_editor.show()
-	else:
-		editor_panel.hide()
-		bottom_panel.has_editor = false
-		node_editor.hide()
-		edges_editor.hide()
 	var _current_dialogue_sequence: Variant = ParleyManager.load_current_dialogue_sequence()
 	if _current_dialogue_sequence is DialogueAst:
 		var current_dialogue_ast: DialogueAst = _current_dialogue_sequence
@@ -206,13 +187,6 @@ func _on_graph_view_node_selected(node: Node) -> void:
 	if selected_node_id == node.id:
 		return
 	var node_ast: NodeAst = dialogue_ast.find_node_by_id(node.id)
-	if _should_render_side_editor():
-		node_editor.dialogue_sequence_ast = dialogue_ast
-		node_editor.node_ast = node_ast
-		# TODO: delete support
-		#current_node_editor.delete_node_button_pressed.connect(_on_delete_node_button_pressed)
-		edges_editor.set_edges(dialogue_ast.edges, node.id)
-		edges_editor.show()
 	node_selected.emit(node_ast)
 	selected_node_id = node.id
 
@@ -257,7 +231,6 @@ func _save_dialogue() -> void:
 
 func _on_arrange_nodes_button_pressed() -> void:
 	selected_node_id = null
-	_clear_editor()
 	await refresh()
 
 
@@ -401,8 +374,6 @@ func _on_graph_view_disconnection_request(from_node: StringName, from_slot: int,
 	var from_node_id: String = from_node.split('-')[1]
 	var to_node_id: String = to_node.split('-')[1]
 	_remove_edge(from_node_id, from_slot, to_node_id, to_slot)
-	if selected_node_id == from_node_id or selected_node_id == to_node_id:
-		edges_editor.set_edges(dialogue_ast.edges, selected_node_id)
 
 
 func _on_edges_editor_edge_deleted(edge: EdgeAst) -> void:
@@ -438,7 +409,6 @@ func _on_delete_node_button_pressed(id: String) -> void:
 	var selected_node = graph_view.find_node_by_id(selected_node_id)
 	graph_view.remove_child(selected_node)
 	dialogue_ast.remove_node(selected_node_id)
-	_clear_editor()
 	selected_node_id = null
 
 
@@ -457,13 +427,6 @@ func _on_bottom_panel_sidebar_toggled(is_sidebar_open: bool) -> void:
 			sidebar.show()
 		else:
 			sidebar.hide()
-
-func _on_bottom_panel_editor_toggled(is_editor_open: bool) -> void:
-	if editor_panel:
-		if is_editor_open:
-			editor_panel.show()
-		else:
-			editor_panel.hide()
 #endregion
 
 
@@ -478,17 +441,10 @@ func _add_edge(from_node_name: StringName, from_slot: int, to_node_name: StringN
 	var to_node_id: String = to_node_name.split('-')[1]
 	dialogue_ast.add_edge(from_node_id, from_slot, to_node_id, to_slot)
 	graph_view.connect_node(from_node_name, from_slot, to_node_name, to_slot)
-	if selected_node_id and (selected_node_id == from_node_id or selected_node_id == to_node_id):
-		edges_editor.set_edges(dialogue_ast.edges, selected_node_id)
 
 func _is_selected_node(type: Object, selected_node: Variant, id: String) -> bool:
 	var is_selected_node: bool = selected_node and is_instance_of(selected_node, type) and selected_node_id == id
 	if not is_selected_node:
 		ParleyUtils.log.info("Selected node {selected_node} is not a valid node for ID: {id}".format({'selected_node': selected_node, 'id': id}))
 	return is_selected_node
-
-
-func _clear_editor() -> void:
-	edges_editor.clear()
-	edges_editor.hide()
 #endregion

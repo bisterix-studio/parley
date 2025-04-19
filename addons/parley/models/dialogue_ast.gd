@@ -14,6 +14,9 @@ class_name DialogueAst extends Resource
 ## The stores of the Dialogue Sequence AST
 @export var stores: StoresAst
 
+## The type name of the Dialogue Sequence AST
+const type_name: String = "DialogueAst"
+
 ## The type of the Dialogue AST Node
 ## Example: "DialogueAstNodeType.DIALOGUE"
 enum Type {DIALOGUE, DIALOGUE_OPTION, CONDITION, ACTION, START, END, GROUP, MATCH, UNKNOWN}
@@ -27,9 +30,9 @@ signal dialogue_ended(dialogue_ast: Variant)
 func _init(_title: String = "", _nodes: Array = [], _edges: Array = [], _stores: Dictionary = {}) -> void:
 	title = _title
 	# TODO: add validation to ensure IDs are globally unique within the context of the dialogue
-	for node in _nodes:
+	for node: Dictionary in _nodes:
 		add_ast_node(node)
-	for edge in _edges:
+	for edge: Dictionary in _edges:
 		add_ast_edge(edge)
 	add_ast_stores(_stores)
 	is_ready = true
@@ -38,17 +41,22 @@ func _init(_title: String = "", _nodes: Array = [], _edges: Array = [], _stores:
 ## Add a node to the list of nodes from an AST
 func add_ast_node(node: Dictionary) -> void:
 	var type: Type = Type.get(node.get('type'), Type.UNKNOWN)
-	var id = node.get('id')
+	var id_variant: Variant = node.get('id')
 	var position: Vector2 = _parse_position_from_raw_node_ast(node)
-	if not id or not is_instance_of(id, TYPE_STRING):
-		_push_error("Unable to import Parley AST node without a valid string id field: %s" % [id])
+	if not id_variant or not is_instance_of(id_variant, TYPE_STRING):
+		_push_error("Unable to import Parley AST node without a valid string id field: %s" % [id_variant])
 		return
 	var ast_node: NodeAst
+	var id: String = id_variant
 	match type:
 		Type.DIALOGUE:
-			ast_node = DialogueNodeAst.new(id, position, node.get('character'), node.get('text'))
+			var character: String = node.get('character', '')
+			var text: String = node.get('text', '')
+			ast_node = DialogueNodeAst.new(id, position, character, text)
 		Type.DIALOGUE_OPTION:
-			ast_node = DialogueOptionNodeAst.new(id, position, node.get('character'), node.get('text'))
+			var character: String = node.get('character', '')
+			var text: String = node.get('text', '')
+			ast_node = DialogueOptionNodeAst.new(id, position, character, text)
 		Type.CONDITION:
 			var condition = ConditionNodeAst.Combiner.get(node.get('condition'))
 			ast_node = ConditionNodeAst.new(id, position, node.get('description'), condition, node.get('conditions'))
@@ -103,7 +111,7 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO):
 
 ## Update Node AST position
 func update_node_position(ast_node_id: String, position: Vector2) -> void:
-	for node in nodes:
+	for node: NodeAst in nodes:
 		if node.id == ast_node_id:
 			node.position = position
 			break
@@ -126,12 +134,14 @@ func add_ast_stores(_stores: Dictionary) -> void:
 	# TODO: add validation before instantiation to ensure that
 	# all values are defined
 	var character_store: Array = _stores.get('character', [])
-	stores = StoresAst.new(character_store)
+	var fact_store: Array = _stores.get('fact', [])
+	var action_store: Array = _stores.get('action', [])
+	stores = StoresAst.new(character_store, fact_store, action_store)
 
 ## Add a new edge to the list of edges. It will not add an edge if it already exists
 ## It returns the number of edges added (1 or 0).
 ## dialogue_ast.add_edge("1", 0, "2", 1)
-func add_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit = true) -> int:
+func add_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit: bool = true) -> int:
 	var new_edge: EdgeAst = EdgeAst.new(
 		from_node,
 		from_slot,
@@ -155,7 +165,7 @@ func add_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, 
 ## Remove edges to the list of edges.
 ## It returns the number of edges added.
 ## dialogue_ast.add_edges([EdgeAst("1", 0, "2", 1).new()])
-func add_edges(edges_to_create: Array[EdgeAst], emit = true) -> int:
+func add_edges(edges_to_create: Array[EdgeAst], emit: bool = true) -> int:
 	var added: int = 0
 	for edge: EdgeAst in edges_to_create:
 		added += add_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
@@ -167,8 +177,8 @@ func add_edges(edges_to_create: Array[EdgeAst], emit = true) -> int:
 ## Remove a node from the list of nodes
 func remove_node(node_id: String) -> void:
 	var index: int = 0
-	var removed = false
-	for node in nodes:
+	var removed: bool = false
+	for node: NodeAst in nodes:
 		if node.id == node_id:
 			nodes.remove_at(index)
 			removed = true
@@ -182,7 +192,7 @@ func remove_node(node_id: String) -> void:
 ## Find a Node AST by its ID.
 ## Example: ast.find_node_by_id("1")
 func find_node_by_id(id: String) -> NodeAst:
-	var filtered_nodes = nodes.filter(func(node): return str(node.id) == str(id))
+	var filtered_nodes: Array = nodes.filter(func(node: NodeAst) -> bool: return str(node.id) == str(id))
 	if filtered_nodes.size() != 1:
 		_print("No AST Node found with ID: {id}".format({'id': id}))
 		return null
@@ -192,10 +202,10 @@ func find_node_by_id(id: String) -> NodeAst:
 ## Remove an edge from the list of edges. It will log an error if an edge does not exist
 ## It returns the number of edges removed (1 or 0).
 ## dialogue_ast.remove_edge("1", 0, "2", 1)
-func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit = true) -> int:
+func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit: bool = true) -> int:
 	var index: int = 0
-	var removed = false
-	for edge in edges:
+	var removed: bool = false
+	for edge: EdgeAst in edges:
 		if (edge.from_node == from_node and
 			edge.from_slot == from_slot and
 			edge.to_node == to_node and
@@ -213,7 +223,7 @@ func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: in
 ## Remove edges from the list of edges.
 ## It returns the number of edges removed.
 ## dialogue_ast.remove_edges([EdgeAst("1", 0, "2", 1).new()])
-func remove_edges(edges_to_remove: Array[EdgeAst], emit = true) -> int:
+func remove_edges(edges_to_remove: Array[EdgeAst], emit: bool = true) -> int:
 	var removed: int = 0
 	for edge: EdgeAst in edges_to_remove:
 		removed += remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
@@ -228,27 +238,28 @@ func remove_edges(edges_to_remove: Array[EdgeAst], emit = true) -> int:
 ## Get the next node that can be rendered and perform any necessary processing
 func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool = false) -> Array[NodeAst]:
 	if not current_node:
-		var start_node = _get_start_node(dry_run)
+		var start_node: Variant = _get_start_node(dry_run)
 		if not start_node:
 			return []
 		current_node = start_node
 		
 	var id: String = current_node.id
 	# TODO: this won't work for conditionals, need to account for multiple slots
-	var next_edges: Array[EdgeAst] = edges.filter(func(edge): return str(edge.from_node) == id)
+	var next_edges: Array[EdgeAst] = edges.filter(func(edge: EdgeAst) -> bool: return str(edge.from_node) == id)
 	# TODO: the Dialogue AST should have a generate new unique ID function
-	var end = EndNodeAst.new(_generate_id())
 	if next_edges.size() == 0:
 		return _process_end(dry_run)
 	var next_nodes: Array[NodeAst] = []
 	var condition_result: bool
 	var match_result: int
 	if current_node.type == Type.CONDITION:
-		condition_result = _process_condition_node(ctx, current_node, dry_run)
+		var condition_node: ConditionNodeAst = current_node
+		condition_result = _process_condition_node(ctx, condition_node, dry_run)
 	if current_node.type == Type.MATCH:
-		match_result = _process_match_node(ctx, current_node)
+		var match_node: MatchNodeAst = current_node
+		match_result = _process_match_node(ctx, match_node)
 	
-	for next_edge in next_edges:
+	for next_edge: EdgeAst in next_edges:
 		if current_node.type == Type.CONDITION:
 			var next_slot: int = 0 if condition_result else 1
 			if next_edge.from_slot != next_slot:
@@ -261,7 +272,7 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 
 		var next_id: String = str(next_edge.to_node)
 		# TODO: warn when multiple nodes are found for the edge
-		var filtered_next_nodes = nodes.filter(func(node): return node.id == next_id)
+		var filtered_next_nodes: Array = nodes.filter(func(node: NodeAst) -> bool: return node.id == next_id)
 		if filtered_next_nodes.size() == 0:
 			_printwarn('Node: {id} not found for Edge: {edge}'.format({'id': next_id, 'edge': next_edge}), dry_run)
 			continue
@@ -292,7 +303,7 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 	var types: Array[Type] = []
 	# TODO: check for multiple of Dialogue
 	# TODO: check for multiple of End
-	for next_node in next_nodes:
+	for next_node: NodeAst in next_nodes:
 		var type: Type = next_node.type
 		if type not in types:
 			types.append(type)
@@ -310,7 +321,7 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 		return _process_end(dry_run)
 
 	if is_instance_of(next_nodes.front(), EndNodeAst):
-		_process_end(dry_run) # Don't return as we want to use the existing End Node ID
+		var _end: Array[NodeAst] = _process_end(dry_run) # Don't return as we want to use the existing End Node ID
 	next_nodes.sort_custom(_sort_by_y_position)
 	return next_nodes
 	

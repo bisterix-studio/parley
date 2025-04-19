@@ -3,11 +3,6 @@ class_name ParleySettings
 
 const ParleyConstants = preload("./constants.gd")
 
-### Editor config
-enum GraphEditorMode {
-	DOCK,
-	SIDE_BAR,
-}
 
 static var DEFAULT_SETTINGS: Dictionary = {
 	# Dialogue
@@ -20,29 +15,15 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	ParleyConstants.CHARACTER_STORE_PATHS: [],
 	ParleyConstants.FACT_STORE_PATHS: [],
 	# TODO: remove
-	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
+	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store_main.tres",
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
 	# hardcode it for now but allow people to edit it in settings
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: preload("./views/test_dialogue_sequence_scene.tscn").resource_path,
-	# Editor
-	ParleyConstants.EDITOR_GRAPH_EDITOR_MODE: str(GraphEditorMode.keys()[GraphEditorMode.DOCK]).capitalize()
 }
 
-static var editor_graph_editor_mode: GraphEditorMode: get = _get_editor_graph_editor_mode
-
-static func _get_editor_graph_editor_mode() -> GraphEditorMode:
-	var capitalised_value: String = get_setting(ParleyConstants.EDITOR_GRAPH_EDITOR_MODE)
-	var key: String = capitalised_value.to_snake_case().to_upper()
-	return GraphEditorMode.get(key, DEFAULT_SETTINGS[ParleyConstants.EDITOR_GRAPH_EDITOR_MODE])
 
 static var TYPES: Dictionary = {
-	ParleyConstants.EDITOR_GRAPH_EDITOR_MODE: {
-		"name": ParleyConstants.EDITOR_GRAPH_EDITOR_MODE,
-		"type": TYPE_STRING,
-		"hint": PROPERTY_HINT_ENUM,
-		"hint_string": ",".join(GraphEditorMode.keys().map(func(key: String) -> String: return "%s" % [key.capitalize()]))
-	},
 	ParleyConstants.DIALOGUE_BALLOON_PATH: {
 		"name": ParleyConstants.DIALOGUE_BALLOON_PATH,
 		"type": TYPE_STRING,
@@ -114,6 +95,7 @@ static func prepare(save: bool = true) -> void:
 		if result != OK:
 			ParleyUtils.log.error("Unable to save Parley project settings: %d" % [result])
 
+
 static func get_user_config() -> Dictionary:
 	var user_config: Dictionary = {
 		run_resource_path = "",
@@ -126,25 +108,30 @@ static func get_user_config() -> Dictionary:
 
 	return user_config
 
+
 static func save_user_config(user_config: Dictionary) -> void:
 	var file: FileAccess = FileAccess.open(ParleyConstants.USER_CONFIG_PATH, FileAccess.WRITE)
 	var result: bool = file.store_string(JSON.stringify(user_config))
 	if not result:
 		ParleyUtils.log.error("Unable to save Parley user config")
 
+
 static func set_user_value(key: String, value: Variant) -> void:
 	var user_config: Dictionary = get_user_config()
 	user_config[key] = value
 	save_user_config(user_config)
 
+
 static func get_user_value(key: String, default: Variant = null) -> Variant:
 	return get_user_config().get(key, default)
+
 
 static func set_setting(key: String, value: Variant, _save: bool = true) -> void:
 	if not validate_setting_key(key):
 		return
 	ProjectSettings.set_setting(key, value)
 	ProjectSettings.set_initial_value(key, DEFAULT_SETTINGS[key])
+
 
 static func get_setting(key: String, default: Variant = null) -> Variant:
 	if not validate_setting_key(key):
@@ -155,6 +142,7 @@ static func get_setting(key: String, default: Variant = null) -> Variant:
 	if default:
 		return default
 	return DEFAULT_SETTINGS.get(key)
+
 
 static func validate_setting_key(key: String) -> bool:
 	if not key.begins_with("parley/"):
