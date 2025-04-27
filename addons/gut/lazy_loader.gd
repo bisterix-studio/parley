@@ -1,4 +1,14 @@
 @tool
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
 # ------------------------------------------------------------------------------
 # Static
 # ------------------------------------------------------------------------------
@@ -27,8 +37,7 @@ func _init(path):
 
 
 func get_loaded():
-	if(_loaded == null):
+	if (_loaded == null):
 		_loaded = WarningsManager.load_script_ignoring_all_warnings(_path)
 	usage_counter.add(self)
 	return _loaded
-

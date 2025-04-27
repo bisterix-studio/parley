@@ -39,7 +39,7 @@ func select_from_slot(from_slot: int) -> void:
 		1:
 			slot = 2
 		_:
-			print("PARLEY_DBG: Unknown from slot: %s" % [from_slot])
+			ParleyUtils.log.info("Unknown from slot: %s" % [from_slot])
 			return
 	set_slot_color_right(slot, Color.CORNFLOWER_BLUE)
 
@@ -56,6 +56,6 @@ func unselect_from_slot(from_slot: int) -> void:
 			slot = 2
 			colour = Color.FIREBRICK
 		_:
-			print("PARLEY_DBG: Unknown from slot: %s" % [from_slot])
+			ParleyUtils.log.info("Unknown from slot: %s" % [from_slot])
 			return
 	set_slot_color_right(slot, colour)

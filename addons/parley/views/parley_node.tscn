@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://3qf7f1yxgk3o"]
+
+[ext_resource type="Script" uid="uid://c0jpfihewyxqt" path="res://addons/parley/views/parley_node.gd" id="1_g0lvf"]
+
+[node name="ParleyNode" type="PanelContainer"]
+auto_translate_mode = 1
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_g0lvf")
+
+[node name="NodeMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="NodeEditorContainer" type="VBoxContainer" parent="NodeMarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2

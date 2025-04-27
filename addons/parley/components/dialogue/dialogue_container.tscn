@@ -1,15 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://h2um32nfoi50"]
+[gd_scene load_steps=3 format=3 uid="uid://h2um32nfoi50"]
 
 [ext_resource type="Script" uid="uid://bd5ar2queljgh" path="res://addons/parley/components/dialogue/dialogue_container.gd" id="1_akamh"]
-[ext_resource type="Script" uid="uid://bkxi1l3vjrwmj" path="res://addons/parley/models/dialogue_node_ast.gd" id="2_ci3u3"]
-
-[sub_resource type="Resource" id="Resource_jkloq"]
-script = ExtResource("2_ci3u3")
-character = ""
-text = ""
-id = ""
-type = 0
-position = Vector2(0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_umhml"]
 bg_color = Color(0, 0, 0, 1)
@@ -32,7 +23,6 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 script = ExtResource("1_akamh")
-dialogue_node = SubResource("Resource_jkloq")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2

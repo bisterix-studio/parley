@@ -1,0 +1,56 @@
+[gd_scene load_steps=5 format=3 uid="uid://c0nvv4uo2jlmb"]
+
+[ext_resource type="Script" uid="uid://c6j5rmpxkf2u3" path="res://addons/parley/components/fact/fact_editor.gd" id="1_nwov8"]
+[ext_resource type="PackedScene" uid="uid://dcaqonk76b5qj" path="res://addons/parley/components/editor/string_editor.tscn" id="2_ssxt6"]
+[ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="3_loo7q"]
+[ext_resource type="Texture2D" uid="uid://dres8tr2nd82o" path="res://addons/parley/assets/Remove.svg" id="4_xv1ff"]
+
+[node name="FactEditor" type="PanelContainer"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_nwov8")
+
+[node name="FactEditorMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="FactEditorContainer" type="HBoxContainer" parent="FactEditorMarginContainer"]
+layout_mode = 2
+
+[node name="DataContainer" type="VBoxContainer" parent="FactEditorMarginContainer/FactEditorContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="IdEditor" parent="FactEditorMarginContainer/FactEditorContainer/DataContainer" instance=ExtResource("2_ssxt6")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "id"
+
+[node name="NameEditor" parent="FactEditorMarginContainer/FactEditorContainer/DataContainer" instance=ExtResource("2_ssxt6")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "name"
+
+[node name="ResourceEditor" parent="FactEditorMarginContainer/FactEditorContainer/DataContainer" instance=ExtResource("3_loo7q")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "ref"
+base_type = "GDScript"
+
+[node name="ActionContainer" type="VBoxContainer" parent="FactEditorMarginContainer/FactEditorContainer"]
+layout_mode = 2
+
+[node name="DeleteButton" type="Button" parent="FactEditorMarginContainer/FactEditorContainer/ActionContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("4_xv1ff")
+
+[connection signal="value_changed" from="FactEditorMarginContainer/FactEditorContainer/DataContainer/IdEditor" to="." method="_on_id_editor_value_changed"]
+[connection signal="value_changed" from="FactEditorMarginContainer/FactEditorContainer/DataContainer/NameEditor" to="." method="_on_name_editor_value_changed"]
+[connection signal="resource_changed" from="FactEditorMarginContainer/FactEditorContainer/DataContainer/ResourceEditor" to="." method="_on_resource_editor_resource_changed"]
+[connection signal="resource_selected" from="FactEditorMarginContainer/FactEditorContainer/DataContainer/ResourceEditor" to="." method="_on_resource_editor_resource_selected"]
+[connection signal="pressed" from="FactEditorMarginContainer/FactEditorContainer/ActionContainer/DeleteButton" to="." method="_on_delete_button_pressed"]

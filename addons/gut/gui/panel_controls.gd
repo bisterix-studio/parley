@@ -1,3 +1,15 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 class BaseGutPanelControl:
@@ -12,7 +24,7 @@ class BaseGutPanelControl:
 
 	signal changed
 
-	func _init(title, val, hint=""):
+	func _init(title, val, hint = ""):
 		size_flags_horizontal = SIZE_EXPAND_FILL
 		mouse_filter = MOUSE_FILTER_PASS
 
@@ -32,7 +44,7 @@ class BaseGutPanelControl:
 		label.tooltip_text = hint
 
 
-	func mark_unsaved(is_it=true):
+	func mark_unsaved(is_it = true):
 		_lbl_unsaved.visible = is_it
 
 
@@ -57,7 +69,7 @@ class NumberControl:
 
 	var value_ctrl = SpinBox.new()
 
-	func _init(title, val, v_min, v_max, hint=""):
+	func _init(title, val, v_min, v_max, hint = ""):
 		super._init(title, val, hint)
 
 		value_ctrl.value = val
@@ -85,7 +97,7 @@ class StringControl:
 
 	var value_ctrl = LineEdit.new()
 
-	func _init(title, val, hint=""):
+	func _init(title, val, hint = ""):
 		super._init(title, val, hint)
 
 		value_ctrl.size_flags_horizontal = value_ctrl.SIZE_EXPAND_FILL
@@ -104,7 +116,6 @@ class StringControl:
 		value_ctrl.text = val
 
 
-
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 class BooleanControl:
@@ -112,7 +123,7 @@ class BooleanControl:
 
 	var value_ctrl = CheckBox.new()
 
-	func _init(title, val, hint=""):
+	func _init(title, val, hint = ""):
 		super._init(title, val, hint)
 
 		value_ctrl.button_pressed = val
@@ -138,17 +149,17 @@ class SelectControl:
 
 	var value_ctrl = OptionButton.new()
 
-	var text = '' :
+	var text = '':
 		get: return value_ctrl.get_item_text(value_ctrl.selected)
 		set(val): pass
 
-	func _init(title, val, choices, hint=""):
+	func _init(title, val, choices, hint = ""):
 		super._init(title, val, hint)
 
 		var select_idx = 0
 		for i in range(choices.size()):
 			value_ctrl.add_item(choices[i])
-			if(val == choices[i]):
+			if (val == choices[i]):
 				select_idx = i
 		value_ctrl.selected = select_idx
 		value_ctrl.size_flags_horizontal = value_ctrl.SIZE_EXPAND_FILL
@@ -172,7 +183,7 @@ class ColorControl:
 
 	var value_ctrl = ColorPickerButton.new()
 
-	func _init(title, val, hint=""):
+	func _init(title, val, hint = ""):
 		super._init(title, val, hint)
 		value_ctrl.size_flags_horizontal = value_ctrl.SIZE_EXPAND_FILL
 		value_ctrl.color = val
@@ -196,7 +207,7 @@ class DirectoryControl:
 
 	var _btn_dir := Button.new()
 
-	func _init(title, val, hint=""):
+	func _init(title, val, hint = ""):
 		super._init(title, val, hint)
 
 		label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -229,7 +240,7 @@ class DirectoryControl:
 
 
 	func _ready():
-		if(Engine.is_editor_hint()):
+		if (Engine.is_editor_hint()):
 			dialog.size = Vector2(1000, 700)
 		else:
 			dialog.size = Vector2(500, 350)
@@ -260,23 +271,23 @@ class DirectoryControl:
 class FileDialogSuperPlus:
 	extends FileDialog
 
-	var show_diretory_types = true :
-		set(val) :
+	var show_diretory_types = true:
+		set(val):
 			show_diretory_types = val
 			_update_display()
 
-	var show_res = true :
-		set(val) :
+	var show_res = true:
+		set(val):
 			show_res = val
 			_update_display()
 
-	var show_user = true :
-		set(val) :
+	var show_user = true:
+		set(val):
 			show_user = val
 			_update_display()
 
-	var show_os = true :
-		set(val) :
+	var show_os = true:
+		set(val):
 			show_os = val
 			_update_display()
 
@@ -319,7 +330,7 @@ class FileDialogSuperPlus:
 
 
 	func _update_display():
-		if(is_inside_tree()):
+		if (is_inside_tree()):
 			_dir_type_hbox.visible = show_diretory_types
 			_btn_res.visible = show_res
 			_btn_user.visible = show_user
@@ -367,7 +378,7 @@ class SaveLoadControl:
 
 
 	func _ready():
-		if(Engine.is_editor_hint()):
+		if (Engine.is_editor_hint()):
 			dlg_load.size = Vector2(1000, 700)
 			dlg_save.size = Vector2(1000, 700)
 		else:

@@ -1,12 +1,24 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
 var _registry = {}
 
 
 func _create_reg_entry(base_path, subpath):
 	var to_return = {
-		"base_path":base_path,
-		"subpath":subpath,
-		"base_resource":load(base_path),
-		"full_path":str("'", base_path, "'", subpath)
+		"base_path": base_path,
+		"subpath": subpath,
+		"base_resource": load(base_path),
+		"full_path": str("'", base_path, "'", subpath)
 	}
 	return to_return
 
@@ -15,11 +27,11 @@ func _register_inners(base_path, obj, prev_inner = ''):
 	var consts = const_map.keys()
 	var const_idx = 0
 
-	while(const_idx < consts.size()):
+	while (const_idx < consts.size()):
 		var key = consts[const_idx]
 		var thing = const_map[key]
 
-		if(typeof(thing) == TYPE_OBJECT):
+		if (typeof(thing) == TYPE_OBJECT):
 			var cur_inner = str(prev_inner, ".", key)
 			_registry[thing] = _create_reg_entry(base_path, cur_inner)
 			_register_inners(base_path, thing, cur_inner)
@@ -33,7 +45,7 @@ func register(base_script):
 
 
 func get_extends_path(inner_class):
-	if(_registry.has(inner_class)):
+	if (_registry.has(inner_class)):
 		return _registry[inner_class].full_path
 	else:
 		return null
@@ -41,13 +53,13 @@ func get_extends_path(inner_class):
 # returns the subpath for the inner class.  This includes the leading "." in
 # the path.
 func get_subpath(inner_class):
-	if(_registry.has(inner_class)):
+	if (_registry.has(inner_class)):
 		return _registry[inner_class].subpath
 	else:
 		return ''
 
 func get_base_path(inner_class):
-	if(_registry.has(inner_class)):
+	if (_registry.has(inner_class)):
 		return _registry[inner_class].base_path
 
 
@@ -56,7 +68,7 @@ func has(inner_class):
 
 
 func get_base_resource(inner_class):
-	if(_registry.has(inner_class)):
+	if (_registry.has(inner_class)):
 		return _registry[inner_class].base_resource
 
 

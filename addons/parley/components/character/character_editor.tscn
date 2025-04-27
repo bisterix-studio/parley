@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://flwypkn36737"]
+[gd_scene load_steps=4 format=3 uid="uid://flwypkn36737"]
 
 [ext_resource type="Script" uid="uid://cqhy2t5enyx3m" path="res://addons/parley/components/character/character_editor.gd" id="1_6dg7t"]
 [ext_resource type="PackedScene" uid="uid://dcaqonk76b5qj" path="res://addons/parley/components/editor/string_editor.tscn" id="2_ri8y5"]
+[ext_resource type="Texture2D" uid="uid://dres8tr2nd82o" path="res://addons/parley/assets/Remove.svg" id="3_lfdvh"]
 
 [node name="CharacterEditor" type="PanelContainer"]
 offset_right = 40.0
@@ -15,20 +16,32 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="CharacterEditorContainer" type="VBoxContainer" parent="CharacterEditorMarginContainer"]
-unique_name_in_owner = true
+[node name="CharacterEditorContainer" type="HBoxContainer" parent="CharacterEditorMarginContainer"]
 layout_mode = 2
+
+[node name="DataContainer" type="VBoxContainer" parent="CharacterEditorMarginContainer/CharacterEditorContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="IdEditor" parent="CharacterEditorMarginContainer/CharacterEditorContainer" instance=ExtResource("2_ri8y5")]
+[node name="IdEditor" parent="CharacterEditorMarginContainer/CharacterEditorContainer/DataContainer" instance=ExtResource("2_ri8y5")]
 unique_name_in_owner = true
 layout_mode = 2
 key = "id"
 
-[node name="NameEditor" parent="CharacterEditorMarginContainer/CharacterEditorContainer" instance=ExtResource("2_ri8y5")]
+[node name="NameEditor" parent="CharacterEditorMarginContainer/CharacterEditorContainer/DataContainer" instance=ExtResource("2_ri8y5")]
 unique_name_in_owner = true
 layout_mode = 2
 key = "name"
 
-[connection signal="value_changed" from="CharacterEditorMarginContainer/CharacterEditorContainer/IdEditor" to="." method="_on_id_editor_value_changed"]
-[connection signal="value_changed" from="CharacterEditorMarginContainer/CharacterEditorContainer/NameEditor" to="." method="_on_name_editor_value_changed"]
+[node name="ActionContainer" type="VBoxContainer" parent="CharacterEditorMarginContainer/CharacterEditorContainer"]
+layout_mode = 2
+
+[node name="DeleteButton" type="Button" parent="CharacterEditorMarginContainer/CharacterEditorContainer/ActionContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("3_lfdvh")
+
+[connection signal="value_changed" from="CharacterEditorMarginContainer/CharacterEditorContainer/DataContainer/IdEditor" to="." method="_on_id_editor_value_changed"]
+[connection signal="value_changed" from="CharacterEditorMarginContainer/CharacterEditorContainer/DataContainer/NameEditor" to="." method="_on_name_editor_value_changed"]
+[connection signal="pressed" from="CharacterEditorMarginContainer/CharacterEditorContainer/ActionContainer/DeleteButton" to="." method="_on_delete_button_pressed"]

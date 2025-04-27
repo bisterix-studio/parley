@@ -1,0 +1,108 @@
+[gd_scene load_steps=5 format=3 uid="uid://msdptt8ygebm"]
+
+[ext_resource type="Script" uid="uid://85wkenyryluy" path="res://addons/parley/stores/action/register_store_modal.gd" id="1_sngxt"]
+[ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="2_bbxl3"]
+[ext_resource type="PackedScene" uid="uid://dcaqonk76b5qj" path="res://addons/parley/components/editor/string_editor.tscn" id="2_u6kwa"]
+[ext_resource type="Texture2D" uid="uid://d4d8bblglcblx" path="res://addons/parley/assets/Folder.svg" id="3_u6kwa"]
+
+[node name="RegisterStoreModal" type="Window"]
+initial_position = 2
+size = Vector2i(1000, 600)
+min_size = Vector2i(1000, 600)
+script = ExtResource("1_sngxt")
+
+[node name="NewDialogueMarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="NewDialogueContainer" type="VBoxContainer" parent="NewDialogueMarginContainer"]
+layout_mode = 2
+
+[node name="IdEditor" parent="NewDialogueMarginContainer/NewDialogueContainer" instance=ExtResource("2_u6kwa")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "Id"
+minimum_x = 250.0
+placeholder = "Define the unique ID for the store (e.g. main)"
+
+[node name="ResourceEditor" parent="NewDialogueMarginContainer/NewDialogueContainer" instance=ExtResource("2_bbxl3")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "Character Store"
+base_type = "CharacterStore"
+minimum_x = 250.0
+
+[node name="PathContainer" type="HBoxContainer" parent="NewDialogueMarginContainer/NewDialogueContainer"]
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="NewDialogueMarginContainer/NewDialogueContainer/PathContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "Path:"
+
+[node name="PathEdit" type="LineEdit" parent="NewDialogueMarginContainer/NewDialogueContainer/PathContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Set the store resource path"
+expand_to_text_length = true
+
+[node name="ChoosePathButton" type="Button" parent="NewDialogueMarginContainer/NewDialogueContainer/PathContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_u6kwa")
+flat = true
+
+[node name="Status" type="RichTextLabel" parent="NewDialogueMarginContainer/NewDialogueContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[color=#dc143cff]
+[ul]  ID is valid[/ul][/color][color=#dc143cff]
+[ul]  Script/path name is valid[/ul][/color][color=#dc143cff]
+[ul]  Will create or register an Character Store[/ul][/color]"
+fit_content = true
+
+[node name="ActionButonContainer" type="HBoxContainer" parent="NewDialogueMarginContainer/NewDialogueContainer"]
+layout_mode = 2
+
+[node name="CancelContainer" type="MarginContainer" parent="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CancelButton" type="Button" parent="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer/CancelContainer"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="RegisterContainer" type="MarginContainer" parent="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RegisterButton" type="Button" parent="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer/RegisterContainer"]
+layout_mode = 2
+text = "Register"
+
+[node name="ChoosePathModal" type="FileDialog" parent="."]
+unique_name_in_owner = true
+auto_translate_mode = 1
+title = "Open Dialogue / Choose Location"
+initial_position = 2
+size = Vector2i(1000, 750)
+ok_button_text = "Open"
+
+[connection signal="value_changed" from="NewDialogueMarginContainer/NewDialogueContainer/IdEditor" to="." method="_on_id_editor_value_changed"]
+[connection signal="resource_changed" from="NewDialogueMarginContainer/NewDialogueContainer/ResourceEditor" to="." method="_on_resource_editor_resource_changed"]
+[connection signal="pressed" from="NewDialogueMarginContainer/NewDialogueContainer/PathContainer/ChoosePathButton" to="." method="_on_choose_path_button_pressed"]
+[connection signal="pressed" from="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer/CancelContainer/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer/RegisterContainer/RegisterButton" to="." method="_on_register_button_pressed"]
+[connection signal="file_selected" from="ChoosePathModal" to="." method="_on_choose_path_modal_file_selected"]

@@ -1,3 +1,6 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
 # ##############################################################################
 #(G)odot (U)nit (T)est class
 #
@@ -32,8 +35,8 @@ var _to_free = []
 var _to_queue_free = []
 
 func add_free(thing):
-	if(typeof(thing) == TYPE_OBJECT):
-		if(!thing is RefCounted):
+	if (typeof(thing) == TYPE_OBJECT):
+		if (!thing is RefCounted):
 			_to_free.append(thing)
 
 func add_queue_free(thing):
@@ -47,11 +50,11 @@ func get_free_count():
 
 func free_all():
 	for i in range(_to_free.size()):
-		if(is_instance_valid(_to_free[i])):
+		if (is_instance_valid(_to_free[i])):
 			_to_free[i].free()
 	_to_free.clear()
 
 	for i in range(_to_queue_free.size()):
-		if(is_instance_valid(_to_queue_free[i])):
+		if (is_instance_valid(_to_queue_free[i])):
 			_to_queue_free[i].queue_free()
 	_to_queue_free.clear()

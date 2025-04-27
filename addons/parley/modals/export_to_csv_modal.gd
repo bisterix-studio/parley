@@ -15,9 +15,9 @@ var export_path: String
 func render() -> void:
 	base_path = "res://exports".trim_suffix('/')
 	var timestamp: String = str(int(Time.get_unix_time_from_system()))
-	var dialogue_ast_path: String = dialogue_ast.resource_path if dialogue_ast.resource_path else "dialogue.dlog"
+	var dialogue_ast_path: String = dialogue_ast.resource_path if dialogue_ast.resource_path else "dialogue.ds"
 	var dialogue_ast_path_parts: PackedStringArray = dialogue_ast_path.split('/')
-	var dialogue_sequence_name: String = dialogue_ast_path_parts[dialogue_ast_path_parts.size() - 1].to_snake_case().replace('.dlog', '')
+	var dialogue_sequence_name: String = dialogue_ast_path_parts[dialogue_ast_path_parts.size() - 1].to_snake_case().replace('.ds', '')
 	export_path = "%s/export_%s_%s.csv" % [base_path, timestamp, dialogue_sequence_name]
 	path_editor.text = export_path
 	show()
@@ -25,7 +25,7 @@ func render() -> void:
 
 func _on_export_button_pressed() -> void:
 	if not dialogue_ast:
-		printerr("PARLEY_ERR: No Dialogue AST associated with export.")
+		ParleyUtils.log.error("No Dialogue AST associated with export.")
 		return
 	var csv_lines: Array[PackedStringArray] = dialogue_ast.to_csv_lines()
 	var dir = DirAccess.open(base_path)
@@ -39,10 +39,10 @@ func _on_export_button_pressed() -> void:
 				file.store_csv_line(line)
 			file.close()
 		else:
-			printerr("PARLEY_ERR: An error occurred while exporting Dialogue to CSV at path: %s." % [export_path])
+			ParleyUtils.log.error("An error occurred while exporting Dialogue to CSV at path: %s." % [export_path])
 			
 	else:
-		printerr("PARLEY_ERR: An error occurred when trying to access the base path: %s." % [base_path])
+		ParleyUtils.log.error("An error occurred when trying to access the base path: %s." % [base_path])
 	hide()
 
 

@@ -1,26 +1,34 @@
 @tool
 extends EditorPlugin
 
+
+#region DEFS
 const ParleyConstants = preload("./constants.gd")
-const ParleyImportPlugin: Script = preload("./import_plugin.gd")
-# TODO: remove
-# const ParleyInspectorPlugin: Script = preload("./inspector_plugin.gd")
-const StoresEditor: PackedScene = preload("./stores/stores_editor.tscn")
-const NodeEditor: PackedScene = preload("./views/node_editor.tscn")
-const EdgesEditor: PackedScene = preload("./views/edges_editor.tscn")
-const MainPanel: PackedScene = preload("./main_panel.tscn")
+const ParleyImportPlugin: GDScript = preload("./import_plugin.gd")
+const StoresEditorScene: PackedScene = preload("./stores/stores_editor.tscn")
+const ParleyNodeScene: PackedScene = preload("./views/parley_node.tscn")
+const ParleyEdges: PackedScene = preload("./views/parley_edges.tscn")
+const MainPanelScene: PackedScene = preload("./main_panel.tscn")
 
-const PARLEY_MANAGER_SINGLETON = "ParleyManager"
 
-var main_panel_instance: Node
+const PARLEY_MANAGER_SINGLETON: String = "ParleyManager"
+
+
+var main_panel_instance: ParleyMainPanel
 var import_plugin: EditorImportPlugin
-# TODO: remove
-# var inspector_plugin: EditorInspectorPlugin
-var stores_editor: PanelContainer
-var node_editor: PanelContainer
-var edges_editor: PanelContainer
+var stores_editor: ParleyStoresEditor
+var node_editor: ParleyNodeEditor
+var edges_editor: ParleyEdgesEditor
 
-func _enter_tree():
+
+enum Component {
+  MainPanel,
+  StoresEditor
+}
+#endregion
+
+
+func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		Engine.set_meta(ParleyConstants.PARLEY_PLUGIN_METADATA, self)
 
@@ -28,65 +36,104 @@ func _enter_tree():
 		import_plugin = ParleyImportPlugin.new()
 		add_import_plugin(import_plugin)
 		
-		# TODO: remove
-		# inspector_plugin = ParleyInspectorPlugin.new()
-		# add_inspector_plugin(inspector_plugin)
-		
 		# Stores Editor Dock
-		stores_editor = StoresEditor.instantiate()
+		stores_editor = StoresEditorScene.instantiate()
+		ParleyUtils.safe_connect(stores_editor.dialogue_sequence_ast_changed, _on_dialogue_sequence_ast_changed.bind(Component.StoresEditor))
+		ParleyUtils.safe_connect(stores_editor.dialogue_sequence_ast_selected, _on_dialogue_sequence_ast_selected.bind(Component.StoresEditor))
 		add_control_to_dock(DockSlot.DOCK_SLOT_LEFT_UR, stores_editor)
 
 		# Node Editor Dock
-		node_editor = NodeEditor.instantiate()
-		node_editor.node_changed.connect(_on_node_editor_node_changed)
+		node_editor = ParleyNodeScene.instantiate()
+		ParleyUtils.safe_connect(node_editor.node_changed, _on_node_editor_node_changed)
 		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_UL, node_editor)
 
 		# Edges Editor Dock
-		edges_editor = EdgesEditor.instantiate()
+		edges_editor = ParleyEdges.instantiate()
 		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_BL, edges_editor)
+		ParleyUtils.safe_connect(edges_editor.edge_deleted, _on_edges_editor_edge_deleted)
+		ParleyUtils.safe_connect(edges_editor.mouse_entered_edge, _on_edges_editor_mouse_entered_edge)
+		ParleyUtils.safe_connect(edges_editor.mouse_exited_edge, _on_edges_editor_mouse_exited_edge)
 
 		# Main Panel
-		main_panel_instance = MainPanel.instantiate()
-		main_panel_instance.node_selected.connect(_on_main_panel_node_selected)
-		main_panel_instance.dialogue_ast_selected.connect(_on_main_panel_dialogue_sequence_ast_selected)
+		main_panel_instance = MainPanelScene.instantiate()
+		ParleyUtils.safe_connect(main_panel_instance.node_selected, _on_main_panel_node_selected)
+		ParleyUtils.safe_connect(main_panel_instance.dialogue_ast_selected, _on_main_panel_dialogue_sequence_ast_selected)
+		if main_panel_instance.dialogue_ast:
+			_on_dialogue_sequence_ast_changed(main_panel_instance.dialogue_ast, Component.MainPanel)
 		EditorInterface.get_editor_main_screen().add_child(main_panel_instance)
 
 		# Hide the main panel. Very much required.
 		_make_visible(false)
 
-func _on_node_editor_node_changed(node_ast: NodeAst) -> void:
-	if main_panel_instance:
-		main_panel_instance.selected_node_ast = node_ast
 
-func _on_main_panel_node_selected(node_ast: NodeAst) -> void:
-	if node_editor:
-		node_editor.node_ast = node_ast
-	_set_edges()
-
+#region SETTERS
 func _set_edges() -> void:
 	if node_editor and edges_editor and node_editor.dialogue_sequence_ast and node_editor.node_ast:
 		var node_ast: NodeAst = node_editor.node_ast
 		var dialogue_sequence_ast: DialogueAst = node_editor.dialogue_sequence_ast
 		var edges: Array[EdgeAst] = dialogue_sequence_ast.edges
 		edges_editor.set_edges(edges, node_ast.id)
+#endregion
+
+
+#region SIGNALS
+func _on_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: DialogueAst, component: Component) -> void:
+	if component != Component.MainPanel:
+		main_panel_instance.dialogue_ast = new_dialogue_sequence_ast
+	if component != Component.StoresEditor:
+		stores_editor.dialogue_ast = new_dialogue_sequence_ast
+
+
+func _on_dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: DialogueAst, component: Component) -> void:
+	if component != Component.MainPanel:
+		main_panel_instance.dialogue_ast = selected_dialogue_sequence_ast
+		EditorInterface.set_main_screen_editor(ParleyConstants.PLUGIN_NAME)
+	if component != Component.StoresEditor:
+		stores_editor.dialogue_ast = selected_dialogue_sequence_ast
+
+
+func _on_node_editor_node_changed(node_ast: NodeAst) -> void:
+	if main_panel_instance:
+		main_panel_instance.selected_node_ast = node_ast
+
+
+func _on_edges_editor_mouse_entered_edge(edge: EdgeAst) -> void:
+	if main_panel_instance:
+		main_panel_instance.focus_edge(edge)
+
+
+func _on_edges_editor_mouse_exited_edge(edge: EdgeAst) -> void:
+	if main_panel_instance:
+		main_panel_instance.defocus_edge(edge)
+
+
+func _on_edges_editor_edge_deleted(edge: EdgeAst) -> void:
+	if main_panel_instance:
+		main_panel_instance.remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot)
+
+
+func _on_main_panel_node_selected(node_ast: NodeAst) -> void:
+	if node_editor:
+		node_editor.dialogue_sequence_ast = main_panel_instance.dialogue_ast
+		node_editor.node_ast = node_ast
+	_set_edges()
+
 
 func _on_main_panel_dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst) -> void:
 	if node_editor:
 		node_editor.dialogue_sequence_ast = dialogue_sequence_ast
+		stores_editor.dialogue_ast = dialogue_sequence_ast
 	_set_edges()
+#endregion
 
-func _exit_tree():
+
+func _exit_tree() -> void:
 	if is_instance_valid(main_panel_instance):
 		main_panel_instance.queue_free()
 		
 	if import_plugin:
 		remove_import_plugin(import_plugin)
 		import_plugin = null
-
-	# TODO: remove
-	# if inspector_plugin:
-	# 	remove_inspector_plugin(inspector_plugin)
-	# 	inspector_plugin = null
 		
 	if node_editor:
 		remove_control_from_docks(node_editor)
@@ -103,24 +150,30 @@ func _exit_tree():
 	if Engine.has_meta(ParleyConstants.PARLEY_PLUGIN_METADATA):
 		Engine.remove_meta(ParleyConstants.PARLEY_PLUGIN_METADATA)
 
-func _has_main_screen():
+
+func _has_main_screen() -> bool:
 	return true
 
-func _make_visible(visible):
+
+func _make_visible(visible: bool) -> void:
 	if main_panel_instance:
 		main_panel_instance.visible = visible
 		if visible:
 			await main_panel_instance.refresh()
 
-func _get_plugin_name():
+
+func _get_plugin_name() -> String:
 	return "Parley"
 
-func _get_plugin_icon():
+
+func _get_plugin_icon() -> Texture2D:
 	# Must return some kind of Texture for the icon.
 	return EditorInterface.get_editor_theme().get_icon("Node", "EditorIcons")
 
-func _enable_plugin():
+
+func _enable_plugin() -> void:
 	add_autoload_singleton(PARLEY_MANAGER_SINGLETON, "./parley_manager.gd")
 
-func _disable_plugin():
+
+func _disable_plugin() -> void:
 	remove_autoload_singleton(PARLEY_MANAGER_SINGLETON)

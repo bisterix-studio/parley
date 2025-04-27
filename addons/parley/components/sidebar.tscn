@@ -1,21 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://bl5g47dhb7hmk"]
+[gd_scene load_steps=3 format=3 uid="uid://bl5g47dhb7hmk"]
 
 [ext_resource type="Script" uid="uid://dbqp7dc5s5e3n" path="res://addons/parley/components/sidebar.gd" id="1_d0u7e"]
 [ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="2_sqyhy"]
-[ext_resource type="Script" uid="uid://cjo7uxv32sr14" path="res://addons/parley/models/edge_ast.gd" id="2_vb3pr"]
-[ext_resource type="Script" uid="uid://3nqtsewsmim0" path="res://addons/parley/models/node_ast.gd" id="3_1dc5p"]
-[ext_resource type="Script" uid="uid://btn7s5anok7p4" path="res://addons/parley/models/dialogue_ast.gd" id="4_jvowb"]
-
-[sub_resource type="Resource" id="Resource_kmloq"]
-script = ExtResource("4_jvowb")
-title = ""
-edges = Array[ExtResource("2_vb3pr")]([])
-nodes = Array[ExtResource("3_1dc5p")]([])
 
 [node name="Sidebar" type="VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 script = ExtResource("1_d0u7e")
-current_dialogue_ast = SubResource("Resource_kmloq")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="."]
 layout_mode = 2

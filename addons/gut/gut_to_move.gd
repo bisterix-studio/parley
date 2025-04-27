@@ -1,3 +1,15 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
 # Temporary base script for gut.gd to hold the things to be remvoed and added
 # to some utility somewhere.
 extends Node
@@ -9,7 +21,7 @@ func directory_delete_files(path):
 	var d = DirAccess.open(path)
 
 	# SHORTCIRCUIT
-	if(d == null):
+	if (d == null):
 		return
 
 	# Traversing a directory is kinda odd.  You have to start the process of listing
@@ -18,10 +30,10 @@ func directory_delete_files(path):
 	d.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 	var thing = d.get_next() # could be a dir or a file or something else maybe?
 	var full_path = ''
-	while(thing != ''):
+	while (thing != ''):
 		full_path = path + "/" + thing
 		# file_exists returns fasle for directories
-		if(d.file_exists(full_path)):
+		if (d.file_exists(full_path)):
 			d.remove(full_path)
 		thing = d.get_next()
 
@@ -32,7 +44,7 @@ func directory_delete_files(path):
 # ------------------------------------------------------------------------------
 func file_delete(path):
 	var d = DirAccess.open(path.get_base_dir())
-	if(d != null):
+	if (d != null):
 		d.remove(path)
 
 # ------------------------------------------------------------------------------
@@ -42,7 +54,7 @@ func is_file_empty(path):
 	var f = FileAccess.open(path, FileAccess.READ)
 	var result = FileAccess.get_open_error()
 	var empty = true
-	if(result == OK):
+	if (result == OK):
 		empty = f.get_length() == 0
 	f = null
 	return empty
@@ -79,7 +91,7 @@ func simulate(obj, times, delta, check_is_processing: bool = false):
 			)
 		):
 			obj._process(delta)
-		if(
+		if (
 			obj.has_method("_physics_process")
 			and (
 				not check_is_processing

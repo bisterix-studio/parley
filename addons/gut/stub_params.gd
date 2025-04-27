@@ -1,6 +1,19 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
+@warning_ignore_start('INTEGER_DIVISION')
 
 var _lgr = GutUtils.get_logger()
-var logger = _lgr :
+var logger = _lgr:
 	get: return _lgr
 	set(val): _lgr = val
 
@@ -33,29 +46,29 @@ var _parameter_override_only = true
 
 const NOT_SET = '|_1_this_is_not_set_1_|'
 
-func _init(target=null, method=null, _subpath=null):
+func _init(target = null, method = null, _subpath = null):
 	stub_target = target
 	stub_method = method
 
-	if(typeof(target) == TYPE_CALLABLE):
+	if (typeof(target) == TYPE_CALLABLE):
 		stub_target = target.get_object()
 		stub_method = target.get_method()
 		parameters = target.get_bound_arguments()
-		if(parameters.size() == 0):
+		if (parameters.size() == 0):
 			parameters = null
-	elif(typeof(target) == TYPE_STRING):
-		if(target.is_absolute_path()):
+	elif (typeof(target) == TYPE_STRING):
+		if (target.is_absolute_path()):
 			stub_target = load(str(target))
 		else:
 			_lgr.warn(str(target, ' is not a valid path'))
 
-	if(stub_target is PackedScene):
+	if (stub_target is PackedScene):
 		stub_target = GutUtils.get_scene_script_object(stub_target)
 
 	# this is used internally to stub default parameters for everything that is
 	# doubled...or something.  Look for stub_defaults_from_meta for usage.  This
 	# behavior is not to be used by end users.
-	if(typeof(method) == TYPE_DICTIONARY):
+	if (typeof(method) == TYPE_DICTIONARY):
 		_load_defaults_from_metadata(method)
 
 
@@ -69,7 +82,7 @@ func _load_defaults_from_metadata(meta):
 
 
 func to_return(val):
-	if(stub_method == '_init'):
+	if (stub_method == '_init'):
 		_lgr.error("You cannot stub _init to do nothing.  Super's _init is always called.")
 	else:
 		return_val = val
@@ -89,16 +102,16 @@ func to_call_super():
 	return self
 
 
-func to_call(callable : Callable):
+func to_call(callable: Callable):
 	call_this = callable
 	return self
 
 
-func when_passed(p1=NOT_SET,p2=NOT_SET,p3=NOT_SET,p4=NOT_SET,p5=NOT_SET,p6=NOT_SET,p7=NOT_SET,p8=NOT_SET,p9=NOT_SET,p10=NOT_SET):
-	parameters = [p1,p2,p3,p4,p5,p6,p7,p8,p9,p10]
+func when_passed(p1 = NOT_SET, p2 = NOT_SET, p3 = NOT_SET, p4 = NOT_SET, p5 = NOT_SET, p6 = NOT_SET, p7 = NOT_SET, p8 = NOT_SET, p9 = NOT_SET, p10 = NOT_SET):
+	parameters = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10]
 	var idx = 0
-	while(idx < parameters.size()):
-		if(str(parameters[idx]) == NOT_SET):
+	while (idx < parameters.size()):
+		if (str(parameters[idx]) == NOT_SET):
 			parameters.remove_at(idx)
 		else:
 			idx += 1
@@ -122,7 +135,7 @@ func has_param_override():
 
 func is_param_override_only():
 	var ret_val = false
-	if(has_param_override()):
+	if (has_param_override()):
 		ret_val = _parameter_override_only
 	return ret_val
 
@@ -130,21 +143,21 @@ func is_param_override_only():
 func to_s():
 	var base_string = str(stub_target, '.', stub_method)
 
-	if(has_param_override()):
+	if (has_param_override()):
 		base_string += str(' (param count override=', parameter_count, ' defaults=', parameter_defaults)
-		if(is_param_override_only()):
+		if (is_param_override_only()):
 			base_string += " ONLY"
-		if(is_script_default):
+		if (is_script_default):
 			base_string += " script default"
 		base_string += ') '
 
-	if(call_super):
+	if (call_super):
 		base_string += " to call SUPER"
 
-	if(call_this != null):
+	if (call_this != null):
 		base_string += str(" to call ", call_this)
 
-	if(parameters != null):
+	if (parameters != null):
 		base_string += str(' with params (', parameters, ') returns ', return_val)
 	else:
 		base_string += str(' returns ', return_val)

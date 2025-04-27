@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b282u3bhn7ncf"]
+[gd_scene load_steps=7 format=3 uid="uid://b282u3bhn7ncf"]
 
 [ext_resource type="Script" uid="uid://d2kl6i115lxk" path="res://addons/parley/stores/character/character_store_editor.gd" id="1_6ff4i"]
 [ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="2_hnfne"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_hnfne"]
+[ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="4_6q5xl"]
+[ext_resource type="PackedScene" uid="uid://msdptt8ygebm" path="res://addons/parley/stores/action/register_store_modal.tscn" id="5_885rw"]
 [ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="7_kbaov"]
 
 [node name="CharacterStoreEditor" type="PanelContainer"]
@@ -49,9 +51,14 @@ flat = true
 [node name="NewCharacterStoreButton" type="Button" parent="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-disabled = true
 icon = ExtResource("3_hnfne")
 flat = true
+
+[node name="DialogueSequenceContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer" instance=ExtResource("4_6q5xl")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "Dialogue Sequence"
+base_type = "DialogueAst"
 
 [node name="CharacterStoreSelectorContainer" type="HBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
 layout_mode = 2
@@ -70,7 +77,6 @@ popup/item_0/text = "All"
 popup/item_0/id = 0
 
 [node name="FilterCharacters" type="LineEdit" parent="CharacterStoreMarginContainer/CharacterStoreContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Filter Characters"
 clear_button_enabled = true
@@ -80,13 +86,34 @@ right_icon = ExtResource("7_kbaov")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CharactersContainer" type="VBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer/CharactersScrollContainer"]
+[node name="CharactersScrollContainer" type="VBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer/CharactersScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CharactersContainer" type="VBoxContainer" parent="CharacterStoreMarginContainer/CharacterStoreContainer/CharactersScrollContainer/CharactersScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 5
 
+[node name="AddCharacterButton" type="Button" parent="CharacterStoreMarginContainer/CharacterStoreContainer/CharactersScrollContainer/CharactersScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Add Character to the currently selected store. If no store is explicitly set, this button will not be activated."
+disabled = true
+text = "Add Character"
+
+[node name="RegisterCharacterStoreModal" parent="." instance=ExtResource("5_885rw")]
+unique_name_in_owner = true
+title = "Register Character Store"
+visible = false
+
 [connection signal="pressed" from="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer/SaveCharacterStoreButton" to="." method="_on_save_character_store_button_pressed"]
+[connection signal="pressed" from="CharacterStoreMarginContainer/CharacterStoreContainer/AvailableStoresContainer/NewCharacterStoreButton" to="." method="_on_new_character_store_button_pressed"]
+[connection signal="resource_changed" from="CharacterStoreMarginContainer/CharacterStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_changed"]
+[connection signal="resource_selected" from="CharacterStoreMarginContainer/CharacterStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_selected"]
 [connection signal="item_selected" from="CharacterStoreMarginContainer/CharacterStoreContainer/CharacterStoreSelectorContainer/CharacterStoreSelector" to="." method="_on_character_store_selector_item_selected"]
 [connection signal="text_changed" from="CharacterStoreMarginContainer/CharacterStoreContainer/FilterCharacters" to="." method="_on_filter_characters_text_changed"]
+[connection signal="pressed" from="CharacterStoreMarginContainer/CharacterStoreContainer/CharactersScrollContainer/CharactersScrollContainer/AddCharacterButton" to="." method="_on_add_character_button_pressed"]
+[connection signal="store_registered" from="RegisterCharacterStoreModal" to="." method="_on_register_character_store_modal_store_registered"]

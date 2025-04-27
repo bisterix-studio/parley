@@ -1,3 +1,15 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
 # ------------------------------------------------------------------------------
 # Description
 # -----------
@@ -14,25 +26,23 @@ func _init() -> void:
 	var max_iter := 20
 	var iter := 0
 
-	var Loader : Object = load("res://addons/gut/gut_loader.gd")
+	var Loader: Object = load("res://addons/gut/gut_loader.gd")
 
 	# Not seen this wait more than 1.
-	while(Engine.get_main_loop() == null and iter < max_iter):
+	while (Engine.get_main_loop() == null and iter < max_iter):
 		await create_timer(.01).timeout
 		iter += 1
 
-	if(Engine.get_main_loop() == null):
+	if (Engine.get_main_loop() == null):
 		push_error('Main loop did not start in time.')
 		quit(0)
 		return
 
-	var cli : Node = load('res://addons/gut/cli/gut_cli.gd').new()
+	var cli: Node = load('res://addons/gut/cli/gut_cli.gd').new()
 	get_root().add_child(cli)
 
 	Loader.restore_ignore_addons()
 	cli.main()
-
-
 
 
 # ##############################################################################

@@ -1,3 +1,16 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
+@warning_ignore_start('INTEGER_DIVISION')
 # ------------------------------------------------------------------------------
 # Interface and some basic functionality for all printers.
 # ------------------------------------------------------------------------------
@@ -13,15 +26,15 @@ class Printer:
 	func set_format_enabled(format_enabled):
 		_format_enabled = format_enabled
 
-	func send(text, fmt=null):
-		if(_disabled):
+	func send(text, fmt = null):
+		if (_disabled):
 			return
 
 		var formatted = text
-		if(fmt != null and _format_enabled):
+		if (fmt != null and _format_enabled):
 			formatted = format_text(text, fmt)
 
-		if(_show_name):
+		if (_show_name):
 			formatted = str('(', _printer_name, ')') + formatted
 
 		_output(formatted)
@@ -80,14 +93,14 @@ class GutGuiPrinter:
 	# are in the output.  Good luck, and I hope I typed enough to not go too
 	# far that rabbit hole before finding out it's not worth it.
 	func format_text(text, fmt):
-		if(_textbox == null):
+		if (_textbox == null):
 			return
 
-		if(fmt == 'bold'):
+		if (fmt == 'bold'):
 			_textbox.push_bold()
-		elif(fmt == 'underline'):
+		elif (fmt == 'underline'):
 			_textbox.push_underline()
-		elif(_colors.has(fmt)):
+		elif (_colors.has(fmt)):
 			_textbox.push_color(_colors[fmt])
 		else:
 			# just pushing something to pop.
@@ -99,7 +112,7 @@ class GutGuiPrinter:
 		return ''
 
 	func _output(text):
-		if(_textbox == null):
+		if (_textbox == null):
 			return
 
 		_textbox.add_text(text)
@@ -136,8 +149,8 @@ class ConsolePrinter:
 	# suppresses output until it encounters a newline to keep things
 	# inline as much as possible.
 	func _output(text):
-		if(text.ends_with("\n")):
-			print(_buffer + text.left(text.length() -1))
+		if (text.ends_with("\n")):
+			print(_buffer + text.left(text.length() - 1))
 			_buffer = ''
 		else:
 			_buffer += text
@@ -149,7 +162,7 @@ class TerminalPrinter:
 	extends Printer
 
 	var escape = PackedByteArray([0x1b]).get_string_from_ascii()
-	var cmd_colors  = {
+	var cmd_colors = {
 		red = escape + '[31m',
 		yellow = escape + '[33m',
 		green = escape + '[32m',

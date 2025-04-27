@@ -1,55 +1,41 @@
 @tool
-extends VBoxContainer
+class_name ParleyMainPanel extends VBoxContainer
 
-const new_file_icon = preload("./assets/New.svg")
-const load_file_icon = preload("./assets/Load.svg")
-const export_to_csv_icon = preload("./assets/Export.svg")
-const insert_after_icon = preload("./assets/InsertAfter.svg")
-const dialogue_icon = preload("./assets/Dialogue.svg")
-const dialogue_option_icon = preload("./assets/DialogueOption.svg")
-const condition_icon = preload("./assets/Condition.svg")
-const action_icon = preload("./assets/Action.svg")
-const start_node_icon = preload("./assets/Start.svg")
-const end_node_icon = preload("./assets/End.svg")
-const group_node_icon = preload("./assets/Group.svg")
+const new_file_icon: CompressedTexture2D = preload("./assets/New.svg")
+const load_file_icon: CompressedTexture2D = preload("./assets/Load.svg")
+const export_to_csv_icon: CompressedTexture2D = preload("./assets/Export.svg")
+const insert_after_icon: CompressedTexture2D = preload("./assets/InsertAfter.svg")
+const dialogue_icon: CompressedTexture2D = preload("./assets/Dialogue.svg")
+const dialogue_option_icon: CompressedTexture2D = preload("./assets/DialogueOption.svg")
+const condition_icon: CompressedTexture2D = preload("./assets/Condition.svg")
+const action_icon: CompressedTexture2D = preload("./assets/Action.svg")
+const start_node_icon: CompressedTexture2D = preload("./assets/Start.svg")
+const end_node_icon: CompressedTexture2D = preload("./assets/End.svg")
+const group_node_icon: CompressedTexture2D = preload("./assets/Group.svg")
 
-const DialogueNodeEditor: PackedScene = preload('./components/dialogue/dialogue_node_editor.tscn')
-const DialogueOptionNodeEditor: PackedScene = preload('./components/dialogue_option/dialogue_option_node_editor.tscn')
-const ConditionNodeEditor: PackedScene = preload('./components/condition/condition_node_editor.tscn')
-const ActionNodeEditor: PackedScene = preload('./components/action/action_node_editor.tscn')
-const MatchNodeEditor: PackedScene = preload('./components/match/match_node_editor.tscn')
-const StartNodeEditor: PackedScene = preload('./components/start/start_node_editor.tscn')
-const EndNodeEditor: PackedScene = preload('./components/end/end_node_editor.tscn')
-const GroupNodeEditor: PackedScene = preload('./components/group/group_node_editor.tscn')
-
-@export var dialogue_ast: DialogueAst: set = _set_dialogue_ast
+var dialogue_ast: DialogueAst: set = _set_dialogue_ast
 
 # TODO: check all uses of globals and ensure that these are used minimally
 # Ideally we only want to be referencing ParleyManager
 # Although... does this even need to be a global if everything is now defined in the DS AST?
 
 # TODO: use unique name (%)
-@export var edges_editor: EdgesEditor
 @onready var graph_view: ParleyGraphView = %GraphView
 @export var save_button: Button
 @export var arrange_nodes_button: Button
 @export var refresh_button: Button
 @export var open_file_dialogue: FileDialog
 
-@onready var node_editor_container: VBoxContainer = %NodeEditorContainer
 @onready var file_menu: MenuButton = %FileMenu
 @onready var insert_menu: MenuButton = %InsertMenu
 @onready var new_dialogue_modal: Window = %NewDialogueModal
 @onready var export_to_csv_modal: Window = %ExportToCsvModal
-@onready var editor = %EditorView
-@onready var editor_panel = %EditorPanel
+@onready var editor: HSplitContainer = %EditorView
 @onready var sidebar: ParleySidebar = %Sidebar
-@onready var stores_editor: ParleyStoresEditor = %Stores
+@onready var bottom_panel: MarginContainer = %BottomPanel
 
-# TODO: add setter that frees the previous and adds a new child
-var current_node_editor: NodeEditor: set = _set_current_node_editor
 # TODO: remove this
-var selected_node_id
+var selected_node_id: Variant
 var selected_node_ast: NodeAst: set = _set_selected_node_ast
 
 signal dialogue_ast_selected(dialogue_ast: DialogueAst)
@@ -57,9 +43,9 @@ signal node_selected(node_ast: NodeAst)
 
 #region SETUP
 func _ready() -> void:
-	await _setup()
+	_setup()
 	# TODO: figure this out at a later date
-	# ParleyManager.dialogue_imported.connect(_on_parley_manager_dialogue_imported)
+	# ParleyUtils.safe_connect(ParleyManager.dialogue_imported, _on_parley_manager_dialogue_imported)
 
 # func _on_parley_manager_dialogue_imported(source_file_path):
 # 	if dialogue_ast and source_file_path == dialogue_ast.resource_path:
@@ -69,31 +55,33 @@ func refresh(arrange: bool = false) -> void:
 	if graph_view:
 		graph_view.ast = dialogue_ast
 		await graph_view.generate(arrange)
-	if selected_node_id:
-		var selected_node = graph_view.find_node_by_id(selected_node_id)
-		if selected_node:
-			graph_view.set_selected(selected_node)
+	if selected_node_id and is_instance_of(selected_node_id, TYPE_STRING):
+		var id: String = selected_node_id
+		var selected_node: Variant = graph_view.find_node_by_id(id)
+		if selected_node and selected_node is Node:
+			var node: Node = selected_node
+			graph_view.set_selected(node)
 
 func _exit_tree() -> void:
 	if dialogue_ast and dialogue_ast.dialogue_updated.is_connected(_on_dialogue_ast_changed):
-		dialogue_ast.dialogue_updated.disconnect(_on_dialogue_ast_changed)
+		ParleyUtils.safe_disconnect(dialogue_ast.dialogue_updated, _on_dialogue_ast_changed)
 	dialogue_ast = null
 	# if Engine.is_editor_hint():
 	# 	if ParleyManager.dialogue_imported.is_connected(_on_parley_manager_dialogue_imported):
 	# 		ParleyManager.dialogue_imported.disconnect(_on_parley_manager_dialogue_imported)
 
-
-func _set_dialogue_ast(new_dialogue_ast) -> void:
-	dialogue_ast = new_dialogue_ast
-	if dialogue_ast:
-		if dialogue_ast.dialogue_updated.is_connected(_on_dialogue_ast_changed):
-			dialogue_ast.dialogue_updated.disconnect(_on_dialogue_ast_changed)
-		dialogue_ast.dialogue_updated.connect(_on_dialogue_ast_changed)
-		if sidebar:
-			sidebar.add_dialogue_ast(dialogue_ast)
-		if stores_editor:
-			stores_editor.dialogue_ast = dialogue_ast
-		dialogue_ast_selected.emit(dialogue_ast)
+func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
+	# TODO: regenerate
+	if dialogue_ast != new_dialogue_ast:
+		dialogue_ast = new_dialogue_ast
+		if dialogue_ast:
+			if dialogue_ast.dialogue_updated.is_connected(_on_dialogue_ast_changed):
+				dialogue_ast.dialogue_updated.disconnect(_on_dialogue_ast_changed)
+			ParleyUtils.safe_connect(dialogue_ast.dialogue_updated, _on_dialogue_ast_changed)
+			if sidebar:
+				sidebar.add_dialogue_ast(dialogue_ast)
+			dialogue_ast_selected.emit(dialogue_ast)
+			await refresh()
 
 func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:
 	selected_node_ast = new_selected_node_ast
@@ -119,15 +107,8 @@ func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:
 			var group_node_ast: GroupNodeAst = selected_node_ast
 			_on_group_node_editor_group_node_changed(group_node_ast.id, group_node_ast.name, group_node_ast.colour)
 		_:
-			push_error("PARLEY_ERR: Unsupported Node type: %s for Node with ID: %s" % [DialogueAst.get_type_name(selected_node_ast.type), selected_node_ast.id])
+			ParleyUtils.log.error("Unsupported Node type: %s for Node with ID: %s" % [DialogueAst.get_type_name(selected_node_ast.type), selected_node_ast.id])
 			return
-
-func _set_current_node_editor(new_current_node_editor: NodeEditor) -> void:
-	if current_node_editor:
-		current_node_editor.queue_free()
-	current_node_editor = new_current_node_editor
-	if node_editor_container:
-		node_editor_container.add_child(current_node_editor)
 
 # TODO: move to the correct region in this file
 func _on_dialogue_ast_changed(new_dialogue_ast: DialogueAst) -> void:
@@ -140,9 +121,9 @@ func _setup() -> void:
 	_setup_file_menu()
 	_setup_insert_menu()
 	_setup_theme()
-	dialogue_ast = ParleyManager.load_current_dialogue_sequence()
-	await refresh()
-
+	var dialogue_sequence_variant: Variant = ParleyManager.load_current_dialogue_sequence()
+	if dialogue_sequence_variant is DialogueAst:
+		dialogue_ast = dialogue_sequence_variant
 
 func _setup_theme() -> void:
 	# TODO: we might need to register this dynamically at a later date
@@ -160,7 +141,7 @@ func _setup_file_menu() -> void:
 	popup.add_icon_item(load_file_icon, "Open Dialogue Sequence...", 1)
 	popup.add_separator("Export")
 	popup.add_icon_item(export_to_csv_icon, "Export to CSV...", 2)
-	popup.id_pressed.connect(_on_file_id_pressed)
+	ParleyUtils.safe_connect(popup.id_pressed, _on_file_id_pressed)
 
 
 ## Set up the insert menu
@@ -179,7 +160,7 @@ func _setup_insert_menu() -> void:
 	popup.add_icon_item(start_node_icon, DialogueAst.get_type_name(DialogueAst.Type.START), DialogueAst.Type.START)
 	popup.add_icon_item(end_node_icon, DialogueAst.get_type_name(DialogueAst.Type.END), DialogueAst.Type.END)
 	popup.add_icon_item(group_node_icon, DialogueAst.get_type_name(DialogueAst.Type.GROUP), DialogueAst.Type.GROUP)
-	popup.id_pressed.connect(_on_insert_id_pressed)
+	ParleyUtils.safe_connect(popup.id_pressed, _on_insert_id_pressed)
 #endregion
 
 
@@ -191,12 +172,12 @@ func _on_file_id_pressed(id: int) -> void:
 		1:
 			open_file_dialogue.show()
 			# TODO: get this from config (note, see the Node inspector as well)
-			open_file_dialogue.current_dir = "res://dialogue"
+			open_file_dialogue.current_dir = "res://dialogue_sequences"
 		2:
 			export_to_csv_modal.dialogue_ast = dialogue_ast
 			export_to_csv_modal.render()
 		_:
-			_print("Unknown option ID pressed: {id}".format({'id': id}))
+			ParleyUtils.log.info("Unknown option ID pressed: {id}".format({'id': id}))
 
 
 func _on_graph_view_node_selected(node: Node) -> void:
@@ -204,94 +185,12 @@ func _on_graph_view_node_selected(node: Node) -> void:
 		ParleyManager.set_test_dialogue_sequence_start_node(node.id)
 	if selected_node_id == node.id:
 		return
-	node_selected.emit(dialogue_ast.find_node_by_id(node.id))
-	_clear_editor()
-	if is_instance_of(node, DialogueNode):
-		# TODO: create from ast
-		var dialogue_node_editor: DialogueNodeEditor = DialogueNodeEditor.instantiate()
-		dialogue_node_editor.id = node.id
-		dialogue_node_editor.selected_character_stores = dialogue_ast.stores.character
-		dialogue_node_editor.character = node.character
-		dialogue_node_editor.dialogue = node.dialogue
-		dialogue_node_editor.dialogue_node_changed.connect(_on_dialogue_node_editor_dialogue_node_changed)
-		current_node_editor = dialogue_node_editor
-	elif is_instance_of(node, DialogueOptionNode):
-		# TODO: create from ast
-		var dialogue_option_node_editor: DialogueOptionNodeEditor = DialogueOptionNodeEditor.instantiate()
-		dialogue_option_node_editor.id = node.id
-		dialogue_option_node_editor.selected_character_stores = dialogue_ast.stores.character
-		dialogue_option_node_editor.character = node.character
-		dialogue_option_node_editor.option = node.option
-		dialogue_option_node_editor.dialogue_option_node_changed.connect(_on_dialogue_option_node_editor_dialogue_option_node_changed)
-		current_node_editor = dialogue_option_node_editor
-	elif is_instance_of(node, ConditionNode):
-		# TODO: create from ast
-		var ast_node = dialogue_ast.find_node_by_id(node.id)
-		if not ast_node:
-			_printerr("Unable to find AST Node with ID: %s" % [node.id])
-			return
-		var condition: ConditionNodeAst.Combiner = ast_node.condition
-		# Create a separation between layers by duplicating
-		var conditions: Array = ast_node.conditions.duplicate(true).map(
-			func(condition): return {
-				'fact_name': ParleyManager.fact_store.get_fact_by_ref(condition['fact_ref']).name,
-				'operator': condition['operator'],
-				'value': condition['value'],
-			}
-		)
-		var condition_node_editor: ConditionNodeEditor = ConditionNodeEditor.instantiate()
-		condition_node_editor.update(node.id, node.description, condition, conditions)
-		condition_node_editor.condition_node_changed.connect(_on_condition_node_editor_condition_node_changed)
-		current_node_editor = condition_node_editor
-	elif is_instance_of(node, MatchNode):
-		# TODO: create from ast
-		var match_node_editor: MatchNodeEditor = MatchNodeEditor.instantiate()
-		match_node_editor.id = node.id
-		match_node_editor.description = node.description
-		# TODO: get this from the node itself and ultimately the JSON definition
-		match_node_editor.fact_store = ParleyManager.fact_store
-		match_node_editor.fact_name = node.fact_name
-		match_node_editor.cases = node.cases
-		match_node_editor.match_node_changed.connect(_on_match_node_editor_match_node_changed)
-		current_node_editor = match_node_editor
-	elif is_instance_of(node, ActionNode):
-		# TODO: create from ast
-		var action_node_editor: ActionNodeEditor = ActionNodeEditor.instantiate()
-		action_node_editor.id = node.id
-		action_node_editor.description = node.description
-		action_node_editor.action_type = node.action_type
-		action_node_editor.action_script_name = node.action_script_name
-		action_node_editor.values = node.values
-		action_node_editor.action_node_changed.connect(_on_action_node_editor_action_node_changed)
-		current_node_editor = action_node_editor
-	elif is_instance_of(node, StartNode):
-		# TODO: create from ast
-		var start_node_editor: StartNodeEditor = StartNodeEditor.instantiate()
-		start_node_editor.id = node.id
-		current_node_editor = start_node_editor
-	elif is_instance_of(node, EndNode):
-		# TODO: create from ast
-		var end_node_editor: EndNodeEditor = EndNodeEditor.instantiate()
-		end_node_editor.id = node.id
-		current_node_editor = end_node_editor
-	elif is_instance_of(node, GroupNode):
-		# TODO: create from ast
-		var group_node_editor: GroupNodeEditor = GroupNodeEditor.instantiate()
-		group_node_editor.id = node.id
-		group_node_editor.group_name = node.group_name
-		group_node_editor.colour = node.colour
-		group_node_editor.group_node_changed.connect(_on_group_node_editor_group_node_changed)
-		current_node_editor = group_node_editor
-	else:
-		_print("Unsupported Graph Node selected with ID: %s" % [node.id])
-		return
-	current_node_editor.delete_node_button_pressed.connect(_on_delete_node_button_pressed)
-	edges_editor.set_edges(dialogue_ast.edges, node.id)
-	edges_editor.show()
+	var node_ast: NodeAst = dialogue_ast.find_node_by_id(node.id)
+	node_selected.emit(node_ast)
 	selected_node_id = node.id
 
 
-func _on_graph_view_node_deselected(node: Node) -> void:
+func _on_graph_view_node_deselected(_node: Node) -> void:
 	if not ParleyManager.is_test_dialogue_sequence_running():
 		ParleyManager.set_test_dialogue_sequence_start_node(null)
 #endregion
@@ -301,7 +200,6 @@ func _on_graph_view_node_deselected(node: Node) -> void:
 func _on_open_dialog_file_selected(path: String) -> void:
 	dialogue_ast = load(path)
 	ParleyManager.set_current_dialogue_sequence(path)
-	refresh()
 
 
 func _on_new_dialogue_modal_dialogue_ast_created(new_dialogue_ast: DialogueAst) -> void:
@@ -311,7 +209,7 @@ func _on_new_dialogue_modal_dialogue_ast_created(new_dialogue_ast: DialogueAst) 
 
 
 func _on_insert_id_pressed(type: DialogueAst.Type) -> void:
-	var ast_node = dialogue_ast.add_new_node(type, (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom)
+	var ast_node: Variant = dialogue_ast.add_new_node(type, (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom)
 	if ast_node:
 		await refresh()
 
@@ -325,14 +223,16 @@ func _on_save_pressed() -> void:
 
 
 func _save_dialogue() -> void:
-	ResourceSaver.save(dialogue_ast)
+	var ok: int = ResourceSaver.save(dialogue_ast)
+	if ok != OK:
+		ParleyUtils.log.warn("Error saving the Dialogue AST: %d" % [ok])
+		return
 	# This is needed to correctly reload upon file saves
 	if Engine.is_editor_hint():
 		EditorInterface.get_resource_filesystem().reimport_files([dialogue_ast.resource_path])
 
 func _on_arrange_nodes_button_pressed() -> void:
 	selected_node_id = null
-	_clear_editor()
 	await refresh()
 
 
@@ -353,6 +253,9 @@ func _on_test_dialogue_from_selected_button_pressed() -> void:
 
 
 #region SIGNALS
+func _on_node_editor_node_changed(new_node_ast: NodeAst) -> void:
+	selected_node_ast = new_node_ast
+
 # TODO: remove ast stuff
 func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: String, new_dialogue_text: String) -> void:
 	var ast_node = dialogue_ast.find_node_by_id(id)
@@ -395,8 +298,8 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 	var ast_node: MatchNodeAst = _ast_node
 	var selected_node: MatchNode = _selected_node
 	var fact: Fact = ParleyManager.fact_store.get_fact_by_name(fact_name)
-	if fact.id == -1:
-		_printerr("Unable to find Fact with name %s in the store" % [fact_name])
+	if fact.id == "":
+		ParleyUtils.log.error("Unable to find Fact with name %s in the store" % [fact_name])
 		return
 	# Handle any necessary edge changes
 	var edges_to_delete: Array[EdgeAst] = []
@@ -435,16 +338,17 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 
 # TODO: remove ast stuff
 func _on_action_node_editor_action_node_changed(id: String, description: String, action_type: ActionNodeAst.ActionType, action_script_name: String, values: Array) -> void:
-	var ast_node = dialogue_ast.find_node_by_id(id)
-	var selected_node = graph_view.find_node_by_id(id)
+	var ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
+	var selected_node: Variant = graph_view.find_node_by_id(id)
 	if ast_node is not ActionNodeAst or not _is_selected_node(ActionNode, selected_node, id):
 		return
-	var action = ParleyManager.action_store.get_action_by_name(action_script_name)
-	if action.id == -1:
-		_printerr("Unable to find Action with script name %s in the store" % [action_script_name])
+	var action: Action = ParleyManager.action_store.get_action_by_name(action_script_name)
+	if action.id == "":
+		ParleyUtils.log.error("Unable to find Action with script name %s in the store" % [action_script_name])
 		return
 	if ast_node is ActionNodeAst:
-		ast_node.update(description, action_type, action.ref.resource_path, values)
+		var action_node_ast: ActionNodeAst = ast_node
+		action_node_ast.update(description, action_type, action.ref.resource_path, values)
 	if selected_node is ActionNode:
 		selected_node.description = description
 		selected_node.action_type = action_type
@@ -453,13 +357,14 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 
 
 func _on_group_node_editor_group_node_changed(id: String, group_name: String, colour: Color) -> void:
-	var ast_node = dialogue_ast.find_node_by_id(id)
-	var selected_node = graph_view.find_node_by_id(id)
+	var ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
+	var selected_node: Variant = graph_view.find_node_by_id(id)
 	if ast_node is not GroupNodeAst or not _is_selected_node(GroupNode, selected_node, id):
 		return
 	if ast_node is GroupNodeAst:
-		ast_node.name = group_name
-		ast_node.colour = colour
+		var group_node: GroupNodeAst = ast_node
+		group_node.name = group_name
+		group_node.colour = colour
 	if selected_node is GroupNode:
 		selected_node.group_name = group_name
 		selected_node.colour = colour
@@ -472,27 +377,21 @@ func _on_graph_view_connection_request(from_node_name: StringName, from_slot: in
 func _on_graph_view_disconnection_request(from_node: StringName, from_slot: int, to_node: StringName, to_slot: int) -> void:
 	var from_node_id: String = from_node.split('-')[1]
 	var to_node_id: String = to_node.split('-')[1]
-	_remove_edge(from_node_id, from_slot, to_node_id, to_slot)
-	if selected_node_id == from_node_id or selected_node_id == to_node_id:
-		edges_editor.set_edges(dialogue_ast.edges, selected_node_id)
+	remove_edge(from_node_id, from_slot, to_node_id, to_slot)
 
 
-func _on_edges_editor_edge_deleted(edge: EdgeAst) -> void:
-	_remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot)
-
-
-func _on_edges_editor_mouse_entered_edge(edge: EdgeAst) -> void:
+func focus_edge(edge: EdgeAst) -> void:
 	var nodes: Array[ParleyGraphNode] = graph_view.get_nodes_for_edge(edge)
-	for node in nodes:
+	for node: ParleyGraphNode in nodes:
 		if node.id == edge.from_node:
 			node.select_from_slot(edge.from_slot)
 		if node.id == edge.to_node:
 			node.select_to_slot(edge.to_slot)
 
 
-func _on_edges_editor_mouse_exited_edge(edge: EdgeAst) -> void:
+func defocus_edge(edge: EdgeAst) -> void:
 	var nodes: Array[ParleyGraphNode] = graph_view.get_nodes_for_edge(edge)
-	for node in nodes:
+	for node: ParleyGraphNode in nodes:
 		if node.id == edge.from_node:
 			node.unselect_from_slot(edge.from_slot)
 		if node.id == edge.to_node:
@@ -500,17 +399,19 @@ func _on_edges_editor_mouse_exited_edge(edge: EdgeAst) -> void:
 
 
 func _on_delete_node_button_pressed(id: String) -> void:
-	if not selected_node_id:
-		_print("No node is selected, not deleting anything")
+	if not selected_node_id or is_instance_of(selected_node_id, TYPE_STRING):
+		ParleyUtils.log.info("No node is selected, not deleting anything")
 		return
 	if id != selected_node_id:
-		_print("Node ID to delete does not match the selected Node ID, not deleting anything")
+		ParleyUtils.log.info("Node ID to delete does not match the selected Node ID, not deleting anything")
 		return
 		
-	var selected_node = graph_view.find_node_by_id(selected_node_id)
-	graph_view.remove_child(selected_node)
-	dialogue_ast.remove_node(selected_node_id)
-	_clear_editor()
+	var valid_selected_node_id: String = selected_node_id
+	var selected_node_variant: Variant = graph_view.find_node_by_id(valid_selected_node_id)
+	if selected_node_variant is Node:
+		var selected_node: Node = selected_node_variant
+		graph_view.remove_child(selected_node)
+	dialogue_ast.remove_node(valid_selected_node_id)
 	selected_node_id = null
 
 
@@ -521,7 +422,6 @@ func _on_sidebar_node_selected(node: NodeAst) -> void:
 func _on_sidebar_dialogue_ast_selected(selected_dialogue_ast: DialogueAst) -> void:
 	if dialogue_ast.resource_path != selected_dialogue_ast.resource_path:
 		dialogue_ast = selected_dialogue_ast
-		await refresh()
 
 
 func _on_bottom_panel_sidebar_toggled(is_sidebar_open: bool) -> void:
@@ -530,47 +430,25 @@ func _on_bottom_panel_sidebar_toggled(is_sidebar_open: bool) -> void:
 			sidebar.show()
 		else:
 			sidebar.hide()
-
-func _on_bottom_panel_editor_toggled(is_editor_open: bool) -> void:
-	if editor_panel:
-		if is_editor_open:
-			editor_panel.show()
-		else:
-			editor_panel.hide()
 #endregion
 
 
 #region HELPERS
-func _remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
-	dialogue_ast.remove_edge(from_node, from_slot, to_node, to_slot)
+func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
+	var _result: int = dialogue_ast.remove_edge(from_node, from_slot, to_node, to_slot)
+	# TODO: handle result
 	graph_view.ast = dialogue_ast
 	graph_view.generate_edges()
 
 func _add_edge(from_node_name: StringName, from_slot: int, to_node_name: StringName, to_slot: int) -> void:
 	var from_node_id: String = from_node_name.split('-')[1]
 	var to_node_id: String = to_node_name.split('-')[1]
-	dialogue_ast.add_edge(from_node_id, from_slot, to_node_id, to_slot)
-	graph_view.connect_node(from_node_name, from_slot, to_node_name, to_slot)
-	if selected_node_id and (selected_node_id == from_node_id or selected_node_id == to_node_id):
-		edges_editor.set_edges(dialogue_ast.edges, selected_node_id)
+	var _added: int = dialogue_ast.add_edge(from_node_id, from_slot, to_node_id, to_slot)
+	var _connected: int = graph_view.connect_node(from_node_name, from_slot, to_node_name, to_slot)
 
 func _is_selected_node(type: Object, selected_node: Variant, id: String) -> bool:
 	var is_selected_node: bool = selected_node and is_instance_of(selected_node, type) and selected_node_id == id
 	if not is_selected_node:
-		_print("Selected node {selected_node} is not a valid node for ID: {id}".format({'selected_node': selected_node, 'id': id}))
+		ParleyUtils.log.info("Selected node {selected_node} is not a valid node for ID: {id}".format({'selected_node': selected_node, 'id': id}))
 	return is_selected_node
-
-
-func _clear_editor() -> void:
-	edges_editor.clear()
-	edges_editor.hide()
-#endregion
-
-# TODO: move to shared utils
-#region UTILS
-func _print(message) -> void:
-	print("PARLEY_DBG: %s" % [message])
-
-func _printerr(message) -> void:
-	printerr("PARLEY_ERR: %s" % [message])
 #endregion

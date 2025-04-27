@@ -2,6 +2,7 @@
 # TODO: prefix with Parley
 class_name StoreAst extends Resource
 
+
 ## The Unique ID of the Store AST.
 ## Example: "1"
 @export var id: String = ""

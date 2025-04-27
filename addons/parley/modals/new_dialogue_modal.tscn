@@ -38,7 +38,7 @@ text = "Path:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "res://dialogue/new_dialogue.dlog"
+text = "res://dialogue_sequences/new_dialogue.ds"
 expand_to_text_length = true
 
 [node name="ChoosePathButton" type="Button" parent="NewDialogueMarginContainer/NewDialogueContainer/PathContainer"]
@@ -83,7 +83,7 @@ title = "Open Dialogue / Choose Location"
 initial_position = 2
 size = Vector2i(1000, 750)
 ok_button_text = "Open"
-filters = PackedStringArray("*.dlog")
+filters = PackedStringArray("*.ds")
 
 [connection signal="pressed" from="NewDialogueMarginContainer/NewDialogueContainer/PathContainer/ChoosePathButton" to="." method="_on_choose_path_button_pressed"]
 [connection signal="pressed" from="NewDialogueMarginContainer/NewDialogueContainer/ActionButonContainer/CancelContainer/CancelButton" to="." method="_on_cancel_button_pressed"]

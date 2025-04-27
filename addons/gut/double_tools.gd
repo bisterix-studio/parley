@@ -1,3 +1,14 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
 var thepath = ''
 var subpath = ''
 var stubber = null
@@ -8,8 +19,8 @@ var is_partial = null
 var double = null
 
 const NO_DEFAULT_VALUE = '!__gut__no__default__value__!'
-func _init(values=null):
-	if(values != null):
+func _init(values = null):
+	if (values != null):
 		double = values.double
 		thepath = values.thepath
 		subpath = values.subpath
@@ -19,57 +30,57 @@ func _init(values=null):
 		from_singleton = values.from_singleton
 		is_partial = values.is_partial
 
-	if(gut != null):
+	if (gut != null):
 		gut.get_autofree().add_free(double)
 
 
 func _get_stubbed_method_to_call(method_name, called_with):
 	var method = stubber.get_call_this(double, method_name, called_with)
-	if(method != null):
+	if (method != null):
 		method = method.bindv(called_with)
 		return method
 	return method
 
 
 func from_id(inst_id):
-	if(inst_id ==  -1):
+	if (inst_id == -1):
 		return null
 	else:
 		return instance_from_id(inst_id)
 
 
 func is_stubbed_to_call_super(method_name, called_with):
-	if(stubber != null):
+	if (stubber != null):
 		return stubber.should_call_super(double, method_name, called_with)
 	else:
 		return false
 
 
 func handle_other_stubs(method_name, called_with):
-	if(stubber == null):
+	if (stubber == null):
 		return
 
 	var method = _get_stubbed_method_to_call(method_name, called_with)
-	if(method != null):
+	if (method != null):
 		return await method.call()
 	else:
 		return stubber.get_return(double, method_name, called_with)
 
 
 func spy_on(method_name, called_with):
-	if(spy != null):
+	if (spy != null):
 		spy.add_call(double, method_name, called_with)
 
 
-func default_val(method_name, p_index, default_val=NO_DEFAULT_VALUE):
-	if(stubber != null):
+func default_val(method_name, p_index, default_val = NO_DEFAULT_VALUE):
+	if (stubber != null):
 		return stubber.get_default_value(double, method_name, p_index)
 	else:
 		return null
 
 
 func vararg_warning():
-	if(gut != null):
+	if (gut != null):
 		gut.get_logger().warn(
 			"This method contains a vararg argument and the paramter count was not stubbed.  " + \
 			"GUT adds extra parameters to this method which should fill most needs.  " + \

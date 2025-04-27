@@ -41,8 +41,8 @@ func _init(
 ## Convert this resource into a Dictionary for storage
 func to_dict() -> Dictionary:
 	var node_dict: Dictionary = inst_to_dict(self)
-	node_dict.erase('@path')
-	node_dict.erase('@subpath')
+	var _at_path_discarded: bool = node_dict.erase('@path')
+	var _sub_path_discarded: bool = node_dict.erase('@subpath')
 	node_dict['condition'] = str(Combiner.find_key(node_dict['condition']))
 	node_dict['type'] = str(DialogueAst.Type.find_key(node_dict['type']))
 	return node_dict
@@ -54,13 +54,16 @@ func update(p_description: String, p_condition_combiner: Combiner, p_conditions:
 	description = p_description
 	condition = p_condition_combiner
 	conditions = []
-	for condition in p_conditions.duplicate(true):
-		add_condition(condition['fact_ref'], condition['operator'], condition['value'])
+	for p_condition: Dictionary in p_conditions.duplicate(true):
+		var fact_ref: String = p_condition['fact_ref']
+		var operator: ConditionNodeAst.Operator = p_condition['operator']
+		var value: Variant = p_condition['value']
+		add_condition(fact_ref, operator, value)
 
 
 ## Add a condition to the Condition Node AST.
 ## Example: node.add_condition("res://facts/alice_gave_coffee_fact.gd", Operator.EQUAL, true)
-func add_condition(fact_ref: String, operator: Operator, value) -> void:
+func add_condition(fact_ref: String, operator: Operator, value: Variant) -> void:
 	conditions.append({
 		# TODO: create type for this
 		'fact_ref': fact_ref,

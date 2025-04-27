@@ -83,7 +83,7 @@ title = "Open Dialogue / Choose Location"
 initial_position = 2
 size = Vector2i(1000, 750)
 ok_button_text = "Open"
-filters = PackedStringArray("*.dlog")
+filters = PackedStringArray("*.ds")
 
 [connection signal="pressed" from="ExportToCsvMarginContainer/ExportToCsvContainer/PathContainer/ChoosePathButton" to="." method="_on_choose_path_button_pressed"]
 [connection signal="pressed" from="ExportToCsvMarginContainer/ExportToCsvContainer/ActionButonContainer/CancelContainer/CancelButton" to="." method="_on_cancel_button_pressed"]

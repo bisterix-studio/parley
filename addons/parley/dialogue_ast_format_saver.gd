@@ -8,7 +8,7 @@ func _recognize(resource: Resource) -> bool:
 
 ## Returns whether the given resource object can be saved by this saver.
 func _get_recognized_extensions(resource: Resource) -> PackedStringArray:
-	return PackedStringArray(["dlog"])
+	return PackedStringArray(["ds"])
 
 ## Saves the given resource object to a file at the target path.
 ## flags is a bitmask composed with SaverFlags constants.
@@ -17,14 +17,14 @@ func _save(resource: Resource, path: String, flags: int) -> Error:
 	if not resource:
 		return ERR_INVALID_PARAMETER
 	if not _recognize(resource):
-		push_error("PARLEY_ERR: Unable to save resource, not a DialogueAst instance.")
+		ParleyUtils.log.error("Unable to save resource, not a DialogueAst instance.")
 		return ERR_FILE_UNRECOGNIZED
 	var dialogue_ast: DialogueAst = resource
 	var raw_file: Variant = FileAccess.open(path, FileAccess.WRITE)
 	if not raw_file:
 		var err = FileAccess.get_open_error()
 		if err != OK:
-			push_error("PARLEY_ERR: Cannot save GDScript file %s." % path)
+			ParleyUtils.log.error("Cannot save GDScript file %s." % path)
 			return err
 		return ERR_CANT_CREATE
 	var file: FileAccess = raw_file

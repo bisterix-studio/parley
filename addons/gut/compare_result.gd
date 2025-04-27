@@ -1,26 +1,37 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
 var _are_equal = false
-var are_equal = false :
+var are_equal = false:
 	get:
 		return get_are_equal()
 	set(val):
 		set_are_equal(val)
 
 var _summary = null
-var summary = null :
+var summary = null:
 	get:
 		return get_summary()
 	set(val):
 		set_summary(val)
 
 var _max_differences = 30
-var max_differences = 30 :
+var max_differences = 30:
 	get:
 		return get_max_differences()
 	set(val):
 		set_max_differences(val)
 
 var _differences = {}
-var differences :
+var differences:
 	get:
 		return get_differences()
 	set(val):
@@ -67,4 +78,3 @@ func set_differences(diffs):
 
 func get_brackets():
 	return null
-

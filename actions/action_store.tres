@@ -6,7 +6,7 @@
 
 [sub_resource type="Resource" id="Resource_6wvxp"]
 script = ExtResource("1_qwxcu")
-id = 0
+id = "main:advance_time"
 name = "Advance Time"
 ref = ExtResource("2_vdqi4")
 metadata/_custom_type_script = "uid://cel0yoviy6eqi"
@@ -14,4 +14,5 @@ metadata/_custom_type_script = "uid://cel0yoviy6eqi"
 [resource]
 script = ExtResource("3_6b0df")
 actions = Array[ExtResource("1_qwxcu")]([SubResource("Resource_6wvxp")])
+id = "main"
 metadata/_custom_type_script = "uid://b3tj6amhgmct6"

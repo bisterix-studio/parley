@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dlqqxs60xui5w"]
+
+[ext_resource type="Script" uid="uid://behpdnx34u6d7" path="res://addons/parley/components/editor/resource_editor.gd" id="1_xqeic"]
+
+[node name="ResourceEditor" type="HBoxContainer"]
+script = ExtResource("1_xqeic")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = ":"

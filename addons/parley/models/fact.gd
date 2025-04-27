@@ -4,8 +4,8 @@ class_name Fact extends Resource
 
 # TODO: make a string
 ## The unique ID of the Fact. It is unique within the scope of the Parley plugin
-## Example: 1
-@export var id: int
+## Example: "1"
+@export var id: String
 
 
 ## The unique name of the Fact.
@@ -18,7 +18,11 @@ class_name Fact extends Resource
 @export var ref: Resource
 
 
-func _init(p_id: int = 0, p_name: String = "", p_ref: Resource = null) -> void:
+func _init(p_id: String = "", p_name: String = "", p_ref: Resource = null) -> void:
 	id = p_id
 	name = p_name
 	ref = p_ref
+
+
+func _to_string() -> String:
+	return "Fact<id=%s name=%s ref=%s>" % [id || "Unknown", name || "Unknown", ref || "Unknown"]

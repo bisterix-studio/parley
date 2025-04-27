@@ -1,17 +1,117 @@
-[gd_scene load_steps=2 format=3 uid="uid://dil4p8wvfe0y3"]
+[gd_scene load_steps=7 format=3 uid="uid://dil4p8wvfe0y3"]
 
 [ext_resource type="Script" uid="uid://bg4e1jywm04ml" path="res://addons/parley/stores/action/action_store_editor.gd" id="1_kjlpr"]
+[ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="2_y3m6q"]
+[ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_1824u"]
+[ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="4_f1tkb"]
+[ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="5_s2qgp"]
+[ext_resource type="PackedScene" uid="uid://msdptt8ygebm" path="res://addons/parley/stores/action/register_store_modal.tscn" id="6_1824u"]
 
 [node name="ActionStoreEditor" type="PanelContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_kjlpr")
 
 [node name="ActionStoreMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 
-[node name="ActionStores" type="OptionButton" parent="ActionStoreMarginContainer"]
+[node name="ActionStoreContainer" type="VBoxContainer" parent="ActionStoreMarginContainer"]
 layout_mode = 2
 
-[node name="ActionsContainer" type="VBoxContainer" parent="ActionStoreMarginContainer"]
+[node name="AvailableStoresContainer" type="HBoxContainer" parent="ActionStoreMarginContainer/ActionStoreContainer"]
 layout_mode = 2
+
+[node name="AvailableActionStoresLabel" type="Label" parent="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Available:"
+
+[node name="AvailableActionStores" type="MenuButton" parent="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = false
+text = "0/1 Selected"
+flat = false
+item_count = 1
+popup/item_0/text = "Main"
+popup/item_0/checkable = 1
+popup/item_0/id = 0
+
+[node name="SaveActionStoreButton" type="Button" parent="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("2_y3m6q")
+flat = true
+
+[node name="NewActionStoreButton" type="Button" parent="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_1824u")
+flat = true
+
+[node name="DialogueSequenceContainer" parent="ActionStoreMarginContainer/ActionStoreContainer" instance=ExtResource("4_f1tkb")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "Dialogue Sequence"
+base_type = "DialogueAst"
+
+[node name="ActionStoreSelectorContainer" type="HBoxContainer" parent="ActionStoreMarginContainer/ActionStoreContainer"]
+layout_mode = 2
+
+[node name="ActionStoreSelectorLabel" type="Label" parent="ActionStoreMarginContainer/ActionStoreContainer/ActionStoreSelectorContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Selected:"
+
+[node name="ActionStoreSelector" type="OptionButton" parent="ActionStoreMarginContainer/ActionStoreContainer/ActionStoreSelectorContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 1
+popup/item_0/text = "All"
+popup/item_0/id = 0
+
+[node name="FilterActions" type="LineEdit" parent="ActionStoreMarginContainer/ActionStoreContainer"]
+layout_mode = 2
+placeholder_text = "Filter Actions"
+clear_button_enabled = true
+right_icon = ExtResource("5_s2qgp")
+
+[node name="ActionScroll" type="ScrollContainer" parent="ActionStoreMarginContainer/ActionStoreContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ActionsScrollContainer" type="VBoxContainer" parent="ActionStoreMarginContainer/ActionStoreContainer/ActionScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ActionsContainer" type="VBoxContainer" parent="ActionStoreMarginContainer/ActionStoreContainer/ActionScroll/ActionsScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[node name="AddActionButton" type="Button" parent="ActionStoreMarginContainer/ActionStoreContainer/ActionScroll/ActionsScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Add Action to the currently selected store. If no store is explicitly set, this button will not be activated."
+disabled = true
+text = "Add Action"
+
+[node name="RegisterActionStoreModal" parent="." instance=ExtResource("6_1824u")]
+unique_name_in_owner = true
+title = "Register Action Store"
+visible = false
+type = 2
+
+[connection signal="pressed" from="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer/SaveActionStoreButton" to="." method="_on_save_action_store_button_pressed"]
+[connection signal="pressed" from="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer/NewActionStoreButton" to="." method="_on_new_action_store_button_pressed"]
+[connection signal="resource_changed" from="ActionStoreMarginContainer/ActionStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_changed"]
+[connection signal="resource_selected" from="ActionStoreMarginContainer/ActionStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_selected"]
+[connection signal="item_selected" from="ActionStoreMarginContainer/ActionStoreContainer/ActionStoreSelectorContainer/ActionStoreSelector" to="." method="_on_action_store_selector_item_selected"]
+[connection signal="text_changed" from="ActionStoreMarginContainer/ActionStoreContainer/FilterActions" to="." method="_on_filter_actions_text_changed"]
+[connection signal="pressed" from="ActionStoreMarginContainer/ActionStoreContainer/ActionScroll/ActionsScrollContainer/AddActionButton" to="." method="_on_add_action_button_pressed"]
+[connection signal="store_registered" from="RegisterActionStoreModal" to="." method="_on_register_action_store_modal_store_registered"]

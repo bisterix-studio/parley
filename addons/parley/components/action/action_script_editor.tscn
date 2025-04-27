@@ -1,0 +1,56 @@
+[gd_scene load_steps=5 format=3 uid="uid://dswbt3yqp34bc"]
+
+[ext_resource type="Script" uid="uid://blp3obvqxbd2p" path="res://addons/parley/components/action/action_script_editor.gd" id="1_b7gwc"]
+[ext_resource type="PackedScene" uid="uid://dcaqonk76b5qj" path="res://addons/parley/components/editor/string_editor.tscn" id="1_ncn3y"]
+[ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="2_b7gwc"]
+[ext_resource type="Texture2D" uid="uid://dres8tr2nd82o" path="res://addons/parley/assets/Remove.svg" id="3_ubmjh"]
+
+[node name="ActionScriptEditor" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_b7gwc")
+
+[node name="ActionScriptEditorMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="ActionScriptEditorContainer" type="HBoxContainer" parent="ActionScriptEditorMarginContainer"]
+layout_mode = 2
+
+[node name="DataContainer" type="VBoxContainer" parent="ActionScriptEditorMarginContainer/ActionScriptEditorContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="IdEditor" parent="ActionScriptEditorMarginContainer/ActionScriptEditorContainer/DataContainer" instance=ExtResource("1_ncn3y")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "id"
+
+[node name="NameEditor" parent="ActionScriptEditorMarginContainer/ActionScriptEditorContainer/DataContainer" instance=ExtResource("1_ncn3y")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "name"
+
+[node name="ResourceEditor" parent="ActionScriptEditorMarginContainer/ActionScriptEditorContainer/DataContainer" instance=ExtResource("2_b7gwc")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "ref"
+base_type = "GDScript"
+
+[node name="ActionContainer" type="VBoxContainer" parent="ActionScriptEditorMarginContainer/ActionScriptEditorContainer"]
+layout_mode = 2
+
+[node name="DeleteButton" type="Button" parent="ActionScriptEditorMarginContainer/ActionScriptEditorContainer/ActionContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+icon = ExtResource("3_ubmjh")
+
+[connection signal="value_changed" from="ActionScriptEditorMarginContainer/ActionScriptEditorContainer/DataContainer/IdEditor" to="." method="_on_id_editor_value_changed"]
+[connection signal="value_changed" from="ActionScriptEditorMarginContainer/ActionScriptEditorContainer/DataContainer/NameEditor" to="." method="_on_name_editor_value_changed"]
+[connection signal="resource_changed" from="ActionScriptEditorMarginContainer/ActionScriptEditorContainer/DataContainer/ResourceEditor" to="." method="_on_resource_editor_resource_changed"]
+[connection signal="resource_selected" from="ActionScriptEditorMarginContainer/ActionScriptEditorContainer/DataContainer/ResourceEditor" to="." method="_on_resource_editor_resource_selected"]
+[connection signal="pressed" from="ActionScriptEditorMarginContainer/ActionScriptEditorContainer/ActionContainer/DeleteButton" to="." method="_on_delete_button_pressed"]

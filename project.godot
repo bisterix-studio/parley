@@ -21,13 +21,14 @@ ParleyManager="*res://addons/parley/./parley_manager.gd"
 
 [debug]
 
-gdscript/warnings/unused_signal=0
+gdscript/warnings/exclude_addons=false
 gdscript/warnings/untyped_declaration=1
 gdscript/warnings/inferred_declaration=1
 gdscript/warnings/unsafe_property_access=1
 gdscript/warnings/unsafe_method_access=1
 gdscript/warnings/unsafe_cast=1
 gdscript/warnings/unsafe_call_argument=1
+gdscript/warnings/return_value_discarded=1
 
 [display]
 
@@ -54,7 +55,6 @@ locale/locale_filter_mode=1
 
 [parley]
 
-stores/action_store_path="uid://bfwohwb0ftpuq"
-stores/character_store_path="uid://ceouii84qmu0w"
-stores/fact_store_path="uid://c3c7k7lljjqv3"
-stores/character_store_paths=["res://characters/character_store_main.tres", "res://characters/character_store_npcs.tres"]
+stores/character_store_paths=Array[String](["uid://6le1e46jcwbp", "uid://dpkl3t3evbgg2"])
+stores/fact_store_paths=Array[String](["uid://c3c7k7lljjqv3"])
+stores/action_store_paths=Array[String](["uid://bfwohwb0ftpuq"])

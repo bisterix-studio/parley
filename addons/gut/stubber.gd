@@ -1,3 +1,16 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
+@warning_ignore_start('INTEGER_DIVISION')
 # -------------
 # returns{} and parameters {} have the followin structure
 # -------------
@@ -27,12 +40,12 @@ func _init():
 func _make_crazy_dynamic_over_engineered_class_db_hash():
 	var text = "var all_the_classes: Dictionary = {\n"
 	for classname in ClassDB.get_class_list():
-		if(ClassDB.can_instantiate(classname)):
+		if (ClassDB.can_instantiate(classname)):
 			text += str('"', classname, '": ', classname, ", \n")
 		else:
 			text += str('# ', classname, "\n")
 	text += "}"
-	var inst =  GutUtils.create_script_from_source(text).new()
+	var inst = GutUtils.create_script_from_source(text).new()
 	return inst.all_the_classes
 
 
@@ -43,27 +56,27 @@ func _find_matches(obj, method):
 	# Search for what is passed in first.  This could be a class or an instance.
 	# We want to find the instance before we find the class.  If we do not have
 	# an entry for the instance then see if we have an entry for the class.
-	if(returns.has(obj) and returns[obj].has(method)):
+	if (returns.has(obj) and returns[obj].has(method)):
 		matches = returns[obj][method]
-	elif(GutUtils.is_instance(obj)):
+	elif (GutUtils.is_instance(obj)):
 		var parent = obj.get_script()
 		var found = false
-		while(parent != null and !found):
+		while (parent != null and !found):
 			found = returns.has(parent)
 
-			if(!found):
+			if (!found):
 				last_not_null_parent = parent
 				parent = parent.get_base_script()
 
 		# Could not find the script so check to see if a native class of this
 		# type was stubbed.
-		if(!found):
+		if (!found):
 			var base_type = last_not_null_parent.get_instance_base_type()
-			if(_class_db_name_hash.has(base_type)):
+			if (_class_db_name_hash.has(base_type)):
 				parent = _class_db_name_hash[base_type]
 				found = returns.has(parent)
 
-		if(found and returns[parent].has(method)):
+		if (found and returns[parent].has(method)):
 			matches = returns[parent][method]
 
 	return matches
@@ -73,11 +86,11 @@ func _find_matches(obj, method):
 # passed in obj is.
 #
 # obj can be an instance, class, or a path.
-func _find_stub(obj, method, parameters=null, find_overloads=false):
+func _find_stub(obj, method, parameters = null, find_overloads = false):
 	var to_return = null
 	var matches = _find_matches(obj, method)
 
-	if(matches == null):
+	if (matches == null):
 		return null
 
 	var param_match = null
@@ -86,29 +99,28 @@ func _find_stub(obj, method, parameters=null, find_overloads=false):
 
 	for i in range(matches.size()):
 		var cur_stub = matches[i]
-		if(cur_stub.parameters == parameters):
+		if (cur_stub.parameters == parameters):
 			param_match = cur_stub
 
-		if(cur_stub.parameters == null and !cur_stub.is_param_override_only()):
+		if (cur_stub.parameters == null and !cur_stub.is_param_override_only()):
 			null_match = cur_stub
 
-		if(cur_stub.has_param_override()):
-			if(overload_match == null || overload_match.is_script_default):
+		if (cur_stub.has_param_override()):
+			if (overload_match == null || overload_match.is_script_default):
 				overload_match = cur_stub
 
-	if(find_overloads and overload_match != null):
+	if (find_overloads and overload_match != null):
 		to_return = overload_match
 	# We have matching parameter values so return the stub value for that
-	elif(param_match != null):
+	elif (param_match != null):
 		to_return = param_match
 	# We found a case where the parameters were not specified so return
 	# parameters for that.  Only do this if the null match is not *just*
 	# a paramerter override stub.
-	elif(null_match != null):
+	elif (null_match != null):
 		to_return = null_match
 
 	return to_return
-
 
 
 # ##############
@@ -119,10 +131,10 @@ func add_stub(stub_params):
 	stub_params._lgr = _lgr
 	var key = stub_params.stub_target
 
-	if(!returns.has(key)):
+	if (!returns.has(key)):
 		returns[key] = {}
 
-	if(!returns[key].has(stub_params.stub_method)):
+	if (!returns[key].has(stub_params.stub_method)):
 		returns[key][stub_params.stub_method] = []
 
 	returns[key][stub_params.stub_method].append(stub_params)
@@ -143,27 +155,27 @@ func add_stub(stub_params):
 # obj:  this should be an instance of a doubled object.
 # method:  the method called
 # parameters:  optional array of parameter vales to find a return value for.
-func get_return(obj, method, parameters=null):
+func get_return(obj, method, parameters = null):
 	var stub_info = _find_stub(obj, method, parameters)
 
-	if(stub_info != null):
+	if (stub_info != null):
 		return stub_info.return_val
 	else:
 		_lgr.info(str('Call to [', method, '] was not stubbed for the supplied parameters ', parameters, '.  Null was returned.'))
 		return null
 
 
-func should_call_super(obj, method, parameters=null):
+func should_call_super(obj, method, parameters = null):
 	var stub_info = _find_stub(obj, method, parameters)
 
 	var is_partial = false
-	if(typeof(obj) != TYPE_STRING): # some stubber tests test with strings
+	if (typeof(obj) != TYPE_STRING): # some stubber tests test with strings
 		is_partial = obj.__gutdbl.is_partial
 	var should = is_partial
 
-	if(stub_info != null):
+	if (stub_info != null):
 		should = stub_info.call_super
-	elif(!is_partial):
+	elif (!is_partial):
 		# this log message is here because of how the generated doubled scripts
 		# are structured.  With this log msg here, you will only see one
 		# "unstubbed" info instead of multiple.
@@ -173,10 +185,10 @@ func should_call_super(obj, method, parameters=null):
 	return should
 
 
-func get_call_this(obj, method, parameters=null):
+func get_call_this(obj, method, parameters = null):
 	var stub_info = _find_stub(obj, method, parameters)
 
-	if(stub_info != null):
+	if (stub_info != null):
 		return stub_info.call_this
 
 
@@ -184,7 +196,7 @@ func get_parameter_count(obj, method):
 	var to_return = null
 	var stub_info = _find_stub(obj, method, null, true)
 
-	if(stub_info != null and stub_info.has_param_override()):
+	if (stub_info != null and stub_info.has_param_override()):
 		to_return = stub_info.parameter_count
 
 	return to_return
@@ -194,10 +206,9 @@ func get_default_value(obj, method, p_index):
 	var to_return = null
 	var stub_info = _find_stub(obj, method, null, true)
 
-	if(stub_info != null and
+	if (stub_info != null and
 		stub_info.parameter_defaults != null and
 		stub_info.parameter_defaults.size() > p_index):
-
 		to_return = stub_info.parameter_defaults[p_index]
 
 	return to_return
@@ -224,7 +235,7 @@ func to_s():
 			for i in range(returns[thing][method].size()):
 				text += "\t\t" + returns[thing][method][i].to_s() + "\n"
 
-	if(text == ''):
+	if (text == ''):
 		text = 'Stubber is empty';
 
 	return text

@@ -8,22 +8,26 @@
 
 [sub_resource type="Resource" id="Resource_mx15w"]
 script = ExtResource("1_oavai")
-id = 0
+id = "basic:fact_1"
 name = "Fact 1"
 ref = ExtResource("2_o0yu1")
+metadata/store = "res://tests/fixtures/basic_fact_store.tres"
 
 [sub_resource type="Resource" id="Resource_xkj64"]
 script = ExtResource("1_oavai")
-id = 1
+id = "basic:fact_2"
 name = "Fact 2"
 ref = ExtResource("3_syhfx")
+metadata/store = "res://tests/fixtures/basic_fact_store.tres"
 
 [sub_resource type="Resource" id="Resource_8vw6b"]
 script = ExtResource("1_oavai")
-id = 2
+id = "basic:fact_3"
 name = "Fact 3"
 ref = ExtResource("4_u3827")
+metadata/store = "res://tests/fixtures/basic_fact_store.tres"
 
 [resource]
 script = ExtResource("2_1bmlr")
 facts = Array[ExtResource("1_oavai")]([SubResource("Resource_mx15w"), SubResource("Resource_xkj64"), SubResource("Resource_8vw6b")])
+id = "basic"

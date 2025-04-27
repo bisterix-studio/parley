@@ -1,4 +1,14 @@
 @tool
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
 extends Control
 
 
@@ -40,11 +50,11 @@ func _ready():
 # ----------------
 func _set_editor(which):
 	_last_line = -1
-	if(_cur_editor != null and _cur_editor.get_ref()):
+	if (_cur_editor != null and _cur_editor.get_ref()):
 		# _cur_editor.get_ref().disconnect('cursor_changed',Callable(self,'_on_cursor_changed'))
 		_cur_editor.get_ref().caret_changed.disconnect(_on_cursor_changed)
 
-	if(which != null):
+	if (which != null):
 		_cur_editor = weakref(which)
 		which.caret_changed.connect(_on_cursor_changed.bind(which))
 		# which.connect('cursor_changed',Callable(self,'_on_cursor_changed'),[which])
@@ -80,7 +90,7 @@ func _update_size():
 # Events
 # ----------------
 func _on_cursor_changed(which):
-	if(which.get_caret_line() != _last_line):
+	if (which.get_caret_line() != _last_line):
 		_last_line = which.get_caret_line()
 		_last_info = _editors.get_line_info()
 		_update_buttons(_last_info)

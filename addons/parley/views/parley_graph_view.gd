@@ -1,18 +1,17 @@
 @tool
-# TODO: prefix with Parley
 class_name ParleyGraphView extends GraphEdit
 
-@export var ast: DialogueAst
+var ast: DialogueAst
 
 #region SETUP
-var DialogueNode = preload("../components/dialogue/dialogue_node.tscn")
-var DialogueOptionNode = preload("../components/dialogue_option/dialogue_option_node.tscn")
-var ActionNode = preload("../components/action/action_node.tscn")
-var ConditionNode = preload("../components/condition/condition_node.tscn")
-var MatchNode = preload("../components/match/match_node.tscn")
-var StartNode = preload("../components/start/start_node.tscn")
-var EndNode = preload("../components/end/end_node.tscn")
-var GroupNode = preload("../components/group/group_node.tscn")
+const dialogue_node_scene: PackedScene = preload("../components/dialogue/dialogue_node.tscn")
+const dialogue_option_node_scene: PackedScene = preload("../components/dialogue_option/dialogue_option_node.tscn")
+const action_node_scene: PackedScene = preload("../components/action/action_node.tscn")
+const condition_node_scene: PackedScene = preload("../components/condition/condition_node.tscn")
+const match_node_scene: PackedScene = preload("../components/match/match_node.tscn")
+const start_node_scene: PackedScene = preload("../components/start/start_node.tscn")
+const end_node_scene: PackedScene = preload("../components/end/end_node.tscn")
+const group_node_scene: PackedScene = preload("../components/group/group_node.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -22,23 +21,25 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	await clear()
+	ast = null
+	connections = []
 
 
 func generate(arrange: bool = false) -> void:
 	await clear()
-	await _generate_dialogue_nodes()
+	_generate_dialogue_nodes()
 	if arrange:
 		arrange_nodes()
 
 
-func clear():
+func clear() -> void:
 	clear_connections()
 	var children: Array[ParleyGraphNode] = []
-	for child in get_children():
+	for child: Node in get_children():
 		if child is ParleyGraphNode:
 			child.queue_free()
 			children.append(child)
-	for child in children:
+	for child: ParleyGraphNode in children:
 		await child.tree_exited
 #endregion
 
@@ -48,31 +49,32 @@ func _register_node(ast_node: NodeAst) -> ParleyGraphNode:
 	var graph_node: ParleyGraphNode
 	match type:
 		DialogueAst.Type.DIALOGUE:
-			graph_node = _create_dialogue_node(ast_node)
+			graph_node = _create_dialogue_node(ast_node as DialogueNodeAst)
 		DialogueAst.Type.DIALOGUE_OPTION:
-			graph_node = _create_dialogue_option_node(ast_node)
+			graph_node = _create_dialogue_option_node(ast_node as DialogueOptionNodeAst)
 		DialogueAst.Type.CONDITION:
-			graph_node = _create_condition_node(ast_node)
+			graph_node = _create_condition_node(ast_node as ConditionNodeAst)
 		DialogueAst.Type.MATCH:
-			graph_node = _create_match_node(ast_node)
+			graph_node = _create_match_node(ast_node as MatchNodeAst)
 		DialogueAst.Type.ACTION:
-			graph_node = _create_action_node(ast_node)
+			graph_node = _create_action_node(ast_node as ActionNodeAst)
 		DialogueAst.Type.START:
-			graph_node = _create_start_node(ast_node)
+			graph_node = _create_start_node(ast_node as StartNodeAst)
 		DialogueAst.Type.END:
-			graph_node = _create_end_node(ast_node)
+			graph_node = _create_end_node(ast_node as EndNodeAst)
 		DialogueAst.Type.GROUP:
-			graph_node = _create_group_node(ast_node)
+			graph_node = _create_group_node(ast_node as GroupNodeAst)
 		_:
-			print("PARLEY_DBG: AST Node {type} is not supported".format({"type": type}))
+			ParleyUtils.log.info("AST Node {type} is not supported".format({"type": type}))
 			return
 	var ast_node_id: String = ast_node.id
 	# TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
-	graph_node.position_offset_changed.connect(func():
-		if ast_node.type == DialogueAst.Type.GROUP:
+	ParleyUtils.safe_connect(graph_node.position_offset_changed, func() -> void:
+		if ast_node.type == DialogueAst.Type.GROUP and graph_node is GroupNode:
+			var group_graph_node: GroupNode = graph_node
 			var diff: Vector2 = graph_node.position_offset - ast_node.position
-			var nodes: Array[ParleyGraphNode] = _get_nodes_by_ids(graph_node.node_ids)
-			for sub_node in nodes:
+			var nodes: Array[ParleyGraphNode] = _get_nodes_by_ids(group_graph_node.node_ids)
+			for sub_node: ParleyGraphNode in nodes:
 				sub_node.position_offset = sub_node.position_offset + diff
 				# TODO: should do this via a signal
 				ast.update_node_position(sub_node.id, sub_node.position_offset)
@@ -86,13 +88,14 @@ func _register_node(ast_node: NodeAst) -> ParleyGraphNode:
 # TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
 func _update_nodes_covered_by_group_node(group_node: GroupNode, group_node_ast: GroupNodeAst) -> Array[ParleyGraphNode]:
 	var nodes: Array[ParleyGraphNode] = []
-	for child in get_children():
-		if child is ParleyGraphNode and child.id != group_node.id:
-			var is_within_horizontal = child.position_offset.x >= group_node.position_offset.x and child.position_offset.x <= (group_node.position_offset + group_node.size).x
-			var is_within_vertical = child.position_offset.y >= group_node.position_offset.y and child.position_offset.y <= (group_node.position_offset + group_node.size).y
+	for child: Node in get_children():
+		if child is ParleyGraphNode and (child as ParleyGraphNode).id != group_node.id:
+			var parley_graph_node: ParleyGraphNode = child
+			var is_within_horizontal: bool = parley_graph_node.position_offset.x >= group_node.position_offset.x and parley_graph_node.position_offset.x <= (group_node.position_offset + group_node.size).x
+			var is_within_vertical: bool = parley_graph_node.position_offset.y >= group_node.position_offset.y and parley_graph_node.position_offset.y <= (group_node.position_offset + group_node.size).y
 			if is_within_horizontal and is_within_vertical:
-				nodes.append(child)
-	var new_node_ids: Array = nodes.map(func(n): return n.id)
+				nodes.append(parley_graph_node)
+	var new_node_ids: Array = nodes.map(func(n: ParleyGraphNode) -> String: return n.id)
 	group_node.node_ids = new_node_ids
 	# TODO: should do this via a signal at the main panel level
 	# so the editor can also be changed at the same time
@@ -103,18 +106,20 @@ func _update_nodes_covered_by_group_node(group_node: GroupNode, group_node_ast: 
 
 func _get_nodes_by_ids(ids: Array) -> Array[ParleyGraphNode]:
 	var nodes: Array[ParleyGraphNode] = []
-	for child in get_children():
-		if child is ParleyGraphNode and ids.has(child.id):
+	for child: Node in get_children():
+		if child is ParleyGraphNode and ids.has((child as ParleyGraphNode).id):
 			nodes.append(child)
 	return nodes
 
 
 ## Finds a Graph Node by ID.
 ## Example: graph_view.find_node_by_id("2")
-func find_node_by_id(id: String) -> ParleyGraphNode:
-	for child in get_children():
-		if child is ParleyGraphNode and child.id == id:
-			return child
+func find_node_by_id(id: String) -> Variant:
+	for _child: Node in get_children():
+		if _child is ParleyGraphNode:
+			var child: ParleyGraphNode = _child
+			if child.id == id:
+				return child
 	return null
 
 
@@ -122,9 +127,9 @@ func _generate_dialogue_nodes() -> void:
 	var graph_nodes: Dictionary = {}
 	if not ast:
 		return
-	for ast_node in ast.nodes.filter(func(n): return n.type == DialogueAst.Type.GROUP):
+	for ast_node: NodeAst in ast.nodes.filter(func(n: NodeAst) -> bool: return n.type == DialogueAst.Type.GROUP):
 		_add_node(graph_nodes, ast_node)
-	for ast_node in ast.nodes.filter(func(n): return n.type != DialogueAst.Type.GROUP):
+	for ast_node: NodeAst in ast.nodes.filter(func(n: NodeAst) -> bool: return n.type != DialogueAst.Type.GROUP):
 		_add_node(graph_nodes, ast_node)
 
 	generate_edges(graph_nodes)
@@ -142,18 +147,20 @@ func generate_edges(graph_nodes: Dictionary = {}) -> void:
 	clear_connections()
 	var nodes: Dictionary
 	if graph_nodes.size() == 0:
-		for child in get_children():
+		for child: Node in get_children():
 			if child is ParleyGraphNode:
-				nodes[child.id] = child
+				var parley_graph_node: ParleyGraphNode = child
+				nodes[parley_graph_node.id] = parley_graph_node
 	else:
 		nodes = graph_nodes
 
-	for edge in ast.edges:
+	for edge: EdgeAst in ast.edges:
 #		TODO: this doesn't check if a slot exists, this will need sorting otherwise: big bugs people
 		if nodes.has(edge.from_node) and nodes.has(edge.to_node):
 			var from_node: ParleyGraphNode = nodes[edge.from_node]
 			var to_node: ParleyGraphNode = nodes[edge.to_node]
-			connect_node(from_node.name, edge.from_slot, to_node.name, edge.to_slot)
+			var _connected: int = connect_node(from_node.name, edge.from_slot, to_node.name, edge.to_slot)
+			# TODO: handle
 #endregion
 
 #region UTILS
@@ -163,7 +170,7 @@ func get_ast_node_name(ast_node: NodeAst) -> String:
 
 #region NODES
 func _create_dialogue_node(ast_node: DialogueNodeAst) -> ParleyGraphNode:
-	var node: DialogueNode = DialogueNode.instantiate()
+	var node: DialogueNode = dialogue_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	node.character = ast_node.character
@@ -172,7 +179,7 @@ func _create_dialogue_node(ast_node: DialogueNodeAst) -> ParleyGraphNode:
 
 
 func _create_dialogue_option_node(ast_node: DialogueOptionNodeAst) -> ParleyGraphNode:
-	var node: DialogueOptionNode = DialogueOptionNode.instantiate()
+	var node: DialogueOptionNode = dialogue_option_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	node.character = ast_node.character
@@ -181,7 +188,7 @@ func _create_dialogue_option_node(ast_node: DialogueOptionNodeAst) -> ParleyGrap
 
 
 func _create_action_node(ast_node: ActionNodeAst) -> ParleyGraphNode:
-	var node: ActionNode = ActionNode.instantiate()
+	var node: ActionNode = action_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	node.description = ast_node.description
@@ -192,7 +199,7 @@ func _create_action_node(ast_node: ActionNodeAst) -> ParleyGraphNode:
 
 
 func _create_match_node(ast_node: MatchNodeAst) -> ParleyGraphNode:
-	var node: MatchNode = MatchNode.instantiate()
+	var node: MatchNode = match_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	node.description = ast_node.description
@@ -205,54 +212,54 @@ func _create_match_node(ast_node: MatchNodeAst) -> ParleyGraphNode:
 
 
 func _create_start_node(ast_node: StartNodeAst) -> ParleyGraphNode:
-	var node: StartNode = StartNode.instantiate()
+	var node: StartNode = start_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	return node
 
 
 func _create_end_node(ast_node: EndNodeAst) -> ParleyGraphNode:
-	var node: EndNode = EndNode.instantiate()
+	var node: EndNode = end_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	return node
 
 
-func _create_group_node(ast_node: GroupNodeAst, should_regenerate: bool = false) -> ParleyGraphNode:
-	var node: GroupNode = GroupNode.instantiate()
+func _create_group_node(ast_node: GroupNodeAst, _should_regenerate: bool = false) -> ParleyGraphNode:
+	var node: GroupNode = group_node_scene.instantiate()
 	node.id = ast_node.id
 	node.group_name = ast_node.name if ast_node.name else get_ast_node_name(ast_node)
 	node.size = ast_node.size
 	node.colour = ast_node.colour
 	node.node_ids = ast_node.node_ids
 	# TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
-	node.resize_end.connect(func(new_size: Vector2):
+	ParleyUtils.safe_connect(node.resize_end, func(new_size: Vector2) -> void:
 		# TODO: should this really be done here?
 		node.size = new_size
 		ast_node.size = new_size
-		_update_nodes_covered_by_group_node(node, ast_node)
+		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
 	)
-	# TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
-	node.node_deselected.connect(func():
-		var nodes = _update_nodes_covered_by_group_node(node, ast_node)
+	# TODO: bad to change ast stuff here - refactor to avoid horrible bugs
+	ParleyUtils.safe_connect(node.node_deselected, func() -> void:
+		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
 		# This is to ensure that the sub nodes
 		# are always selectable within the group node
 		await generate()
 	)
-	# TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
-	node.node_selected.connect(func():
-		_update_nodes_covered_by_group_node(node, ast_node)
+	# TODO: bad to change ast stuff here - refactor to avoid horrible bugs
+	ParleyUtils.safe_connect(node.node_selected, func() -> void:
+		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
 	)
-	# TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
+	# TODO: bad to change ast stuff here - refactor to avoid horrible bugs
 	# EXPERIMENTAL: see how feedback goes. This is certainly a candidate to be put into settings
-	node.dragged.connect(func(from: Vector2, to: Vector2):
-		_update_nodes_covered_by_group_node(node, ast_node)
+	ParleyUtils.safe_connect(node.dragged, func(_from: Vector2, _to: Vector2) -> void:
+		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
 	)
 	return node
 
 
 func _create_condition_node(ast_node: ConditionNodeAst) -> ParleyGraphNode:
-	var node: ConditionNode = ConditionNode.instantiate()
+	var node: ConditionNode = condition_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	node.description = ast_node.description
@@ -263,144 +270,21 @@ func _create_condition_node(ast_node: ConditionNodeAst) -> ParleyGraphNode:
 ## Example: get_nodes_for_edge(edge)
 func get_nodes_for_edge(edge: EdgeAst) -> Array[ParleyGraphNode]:
 	var nodes: Array[ParleyGraphNode] = []
-	for node in get_children():
+	for node: Node in get_children():
 		if node is ParleyGraphNode:
-			if [edge.from_node, edge.to_node].has(node.id):
-				nodes.append(node)
+			var parley_graph_node: ParleyGraphNode = node
+			if [edge.from_node, edge.to_node].has(parley_graph_node.id):
+				nodes.append(parley_graph_node)
 	return nodes
 
 
-func set_selected_by_id(id: String, goto: bool = true) -> void:
-	for node in get_children():
-		if node is ParleyGraphNode and node.id == id:
+func set_selected_by_id(id: String, _goto: bool = true) -> void:
+	for node: Node in get_children():
+		if node is ParleyGraphNode and (node as ParleyGraphNode).id == id:
 			set_selected(node)
-			_goto_node(node)
+			_goto_node(node as ParleyGraphNode)
 			return
 #endregion
 
 func _goto_node(node: ParleyGraphNode) -> void:
 	scroll_offset = (node.position_offset + node.size * 0.5) * zoom - size * 0.5
-
-
-# TODO: remove
-#var lines = {
-  #"1": { "id": "1", "next_id": "2", "type": "title", "text": "demo" },
-  #"2": {
-	#"id": "2",
-	#"next_id": "4",
-	#"notes": "",
-	#"type": "dialogue",
-	#"tags": [],
-	#"character": "Narrator",
-	#"character_replacements": [],
-	#"text": "But he stands before you, just the same. Waiting; fixing you in his glare.",
-	#"text_replacements": [],
-	#"translation_key": "But he stands before you, just the same. Waiting; fixing you in his glare."
-  #},
-  #"4": {
-	#"id": "4",
-	#"next_id": "5",
-	#"notes": "",
-	#"type": "response",
-	#"tags": [],
-	#"character": "",
-	#"character_replacements": [],
-	#"text": "You're alive, too. And you look the same.",
-	#"responses": ["4", "9", "12"],
-	#"next_id_after": "14",
-	#"text_replacements": [],
-	#"translation_key": "You're alive, too. And you look the same."
-  #},
-  #"5": {
-	#"id": "5",
-	#"next_id": "6",
-	#"parent_id": "4",
-	#"notes": "",
-	#"type": "dialogue",
-	#"tags": [],
-	#"character": "Player",
-	#"character_replacements": [],
-	#"text": "I assure you, I am not the same. And neither are you.",
-	#"text_replacements": [],
-	#"translation_key": "I assure you, I am not the same. And neither are you."
-  #},
-  #"6": {
-	#"id": "6",
-	#"next_id": "7",
-	#"parent_id": "4",
-	#"notes": "",
-	#"type": "dialogue",
-	#"tags": [],
-	#"character": "Nathan",
-	#"character_replacements": [],
-	#"text": "I know we lost. At Brenna.",
-	#"text_replacements": [],
-	#"translation_key": "I know we lost. At Brenna."
-  #},
-  #"7": {
-	#"id": "7",
-	#"next_id": "14",
-	#"parent_id": "4",
-	#"notes": "",
-	#"type": "dialogue",
-	#"tags": [],
-	#"character": "Player",
-	#"character_replacements": [],
-	#"text": "We?",
-	#"text_replacements": [],
-	#"translation_key": "We?"
-  #},
-  #"9": {
-	#"id": "9",
-	#"next_id": "10",
-	#"notes": "",
-	#"type": "response",
-	#"tags": [],
-	#"character": "",
-	#"character_replacements": [],
-	#"text": "I don't know what to say.",
-	#"next_id_after": "14",
-	#"text_replacements": [],
-	#"translation_key": "I don't know what to say."
-  #},
-  #"10": {
-	#"id": "10",
-	#"next_id": "14",
-	#"parent_id": "9",
-	#"notes": "",
-	#"type": "dialogue",
-	#"tags": [],
-	#"character": "Nathan",
-	#"character_replacements": [],
-	#"text": "2",
-	#"text_replacements": [],
-	#"translation_key": "2"
-  #},
-  #"12": {
-	#"id": "12",
-	#"next_id": "13",
-	#"notes": "",
-	#"type": "response",
-	#"tags": [],
-	#"character": "",
-	#"character_replacements": [],
-	#"text": "Say nothing.",
-	#"next_id_after": "14",
-	#"text_replacements": [],
-	#"translation_key": "Say nothing."
-  #},
-  #"13": {
-	#"id": "13",
-	#"next_id": "14",
-	#"parent_id": "12",
-	#"notes": "",
-	#"type": "dialogue",
-	#"tags": [],
-	#"character": "Nathan",
-	#"character_replacements": [],
-	#"text": "3",
-	#"text_replacements": [],
-	#"translation_key": "3"
-  #},
-  #"14": { "id": "14", "next_id": "end", "type": "goto", "is_snippet": false }
-#}

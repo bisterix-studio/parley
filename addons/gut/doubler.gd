@@ -1,3 +1,14 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
 # ------------------------------------------------------------------------------
 # A stroke of genius if I do say so.  This allows for doubling a scene without
 # having  to write any files.  By overloading the "instantiate" method  we can
@@ -5,24 +16,24 @@
 # ------------------------------------------------------------------------------
 class PackedSceneDouble:
 	extends PackedScene
-	var _script =  null
+	var _script = null
 	var _scene = null
 
 	func set_script_obj(obj):
 		_script = obj
 
 	@warning_ignore("native_method_override")
-	func instantiate(edit_state=0):
+	func instantiate(edit_state = 0):
 		var inst = _scene.instantiate(edit_state)
 		var export_props = []
 		var script_export_flag = (PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_SCRIPT_VARIABLE)
 
-		if(_script !=  null):
-			if(inst.get_script() != null):
+		if (_script != null):
+			if (inst.get_script() != null):
 				# Get all the exported props and values so we can set them again
 				for prop in inst.get_property_list():
 					var is_export = prop.usage & (script_export_flag) == script_export_flag
-					if(is_export):
+					if (is_export):
 						export_props.append([prop.name, inst.get(prop.name)])
 
 			inst.set_script(_script)
@@ -33,8 +44,6 @@ class PackedSceneDouble:
 
 	func load_scene(path):
 		_scene = load(path)
-
-
 
 
 # ------------------------------------------------------------------------------
@@ -78,7 +87,7 @@ var _strategy = null
 func get_strategy():
 	return _strategy
 func set_strategy(strategy):
-	if(GutUtils.DOUBLE_STRATEGY.values().has(strategy)):
+	if (GutUtils.DOUBLE_STRATEGY.values().has(strategy)):
 		_strategy = strategy
 	else:
 		_lgr.error(str('doubler.gd:  invalid double strategy ', strategy))
@@ -95,7 +104,7 @@ func get_ignored_methods():
 # ###############
 # Private
 # ###############
-func _init(strategy=GutUtils.DOUBLE_STRATEGY.SCRIPT_ONLY):
+func _init(strategy = GutUtils.DOUBLE_STRATEGY.SCRIPT_ONLY):
 	set_logger(GutUtils.get_logger())
 	_strategy = strategy
 
@@ -108,7 +117,7 @@ func _get_indented_line(indents, text):
 
 
 func _stub_to_call_super(parsed, method_name):
-	if(!parsed.get_method(method_name).is_eligible_for_doubling()):
+	if (!parsed.get_method(method_name).is_eligible_for_doubling()):
 		return
 
 	var params = GutUtils.StubParams.new(parsed.script_path, method_name, parsed.subpath)
@@ -118,38 +127,38 @@ func _stub_to_call_super(parsed, method_name):
 
 func _get_base_script_text(parsed, override_path, partial, included_methods):
 	var path = parsed.script_path
-	if(override_path != null):
+	if (override_path != null):
 		path = override_path
 
 	var stubber_id = -1
-	if(_stubber != null):
+	if (_stubber != null):
 		stubber_id = _stubber.get_instance_id()
 
 	var spy_id = -1
-	if(_spy != null):
+	if (_spy != null):
 		spy_id = _spy.get_instance_id()
 
 	var gut_id = -1
-	if(_gut != null):
+	if (_gut != null):
 		gut_id = _gut.get_instance_id()
 
-	var extends_text  = parsed.get_extends_text()
+	var extends_text = parsed.get_extends_text()
 
 	var values = {
 		# Top  sections
-		"extends":extends_text,
-		"constants":'',#obj_info.get_constants_text(),
-		"properties":'',#obj_info.get_properties_text(),
+		"extends": extends_text,
+		"constants": '', # obj_info.get_constants_text(),
+		"properties": '', # obj_info.get_properties_text(),
 
 		# metadata values
-		"path":path,
-		"subpath":GutUtils.nvl(parsed.subpath, ''),
-		"stubber_id":stubber_id,
-		"spy_id":spy_id,
-		"gut_id":gut_id,
-		"singleton_name":'',#GutUtils.nvl(obj_info.get_singleton_name(), ''),
-		"is_partial":partial,
-		"doubled_methods":included_methods,
+		"path": path,
+		"subpath": GutUtils.nvl(parsed.subpath, ''),
+		"stubber_id": stubber_id,
+		"spy_id": spy_id,
+		"gut_id": gut_id,
+		"singleton_name": '', # GutUtils.nvl(obj_info.get_singleton_name(), ''),
+		"is_partial": partial,
+		"doubled_methods": included_methods,
 	}
 
 	return _base_script_text.format(values)
@@ -184,20 +193,20 @@ func _create_double(parsed, strategy, override_path, partial):
 	var included_methods = []
 
 	for method in parsed.get_local_methods():
-		if(_is_method_eligible_for_doubling(parsed, method)):
+		if (_is_method_eligible_for_doubling(parsed, method)):
 			included_methods.append(method.meta.name)
 			var mthd = parsed.get_local_method(method.meta.name)
-			if(parsed.is_native):
+			if (parsed.is_native):
 				dbl_src += _get_func_text(method.meta, parsed.resource)
 			else:
 				dbl_src += _get_func_text(method.meta, path)
 
-	if(strategy == GutUtils.DOUBLE_STRATEGY.INCLUDE_NATIVE):
+	if (strategy == GutUtils.DOUBLE_STRATEGY.INCLUDE_NATIVE):
 		for method in parsed.get_super_methods():
-			if(_is_method_eligible_for_doubling(parsed, method)):
+			if (_is_method_eligible_for_doubling(parsed, method)):
 				included_methods.append(method.meta.name)
 				_stub_to_call_super(parsed, method.meta.name)
-				if(parsed.is_native):
+				if (parsed.is_native):
 					dbl_src += _get_func_text(method.meta, parsed.resource)
 				else:
 					dbl_src += _get_func_text(method.meta, path)
@@ -206,11 +215,11 @@ func _create_double(parsed, strategy, override_path, partial):
 	dbl_src = base_script + "\n\n" + dbl_src
 
 
-	if(print_source):
+	if (print_source):
 		print(GutUtils.add_line_numbers(dbl_src))
 
 	var DblClass = _create_script_no_warnings(dbl_src)
-	if(_stubber != null):
+	if (_stubber != null):
 		_stub_method_default_values(DblClass, parsed, strategy)
 
 	return DblClass
@@ -218,9 +227,8 @@ func _create_double(parsed, strategy, override_path, partial):
 
 func _stub_method_default_values(which, parsed, strategy):
 	for method in parsed.get_local_methods():
-		if(method.is_eligible_for_doubling() and !_ignored_methods.has(parsed.resource, method.meta.name)):
+		if (method.is_eligible_for_doubling() and !_ignored_methods.has(parsed.resource, method.meta.name)):
 			_stubber.stub_defaults_from_meta(parsed.script_path, method.meta)
-
 
 
 func _double_scene_and_script(scene, strategy, partial):
@@ -228,9 +236,9 @@ func _double_scene_and_script(scene, strategy, partial):
 	to_return.load_scene(scene.get_path())
 
 	var script_obj = GutUtils.get_scene_script_object(scene)
-	if(script_obj != null):
+	if (script_obj != null):
 		var script_dbl = null
-		if(partial):
+		if (partial):
 			script_dbl = _partial_double(script_obj, strategy, scene.get_path())
 		else:
 			script_dbl = _double(script_obj, strategy, scene.get_path())
@@ -241,14 +249,14 @@ func _double_scene_and_script(scene, strategy, partial):
 
 func _get_inst_id_ref_str(inst):
 	var ref_str = 'null'
-	if(inst):
-		ref_str = str('instance_from_id(', inst.get_instance_id(),')')
+	if (inst):
+		ref_str = str('instance_from_id(', inst.get_instance_id(), ')')
 	return ref_str
 
 
 func _get_func_text(method_hash, path):
 	var override_count = null;
-	if(_stubber != null):
+	if (_stubber != null):
 		override_count = _stubber.get_parameter_count(path, method_hash.name)
 
 	var text = _method_maker.get_function_text(method_hash, override_count) + "\n"
@@ -259,8 +267,8 @@ func _get_func_text(method_hash, path):
 func _parse_script(obj):
 	var parsed = null
 
-	if(GutUtils.is_inner_class(obj)):
-		if(inner_class_registry.has(obj)):
+	if (GutUtils.is_inner_class(obj)):
+		if (inner_class_registry.has(obj)):
 			parsed = _script_collector.parse(inner_class_registry.get_base_resource(obj), obj)
 		else:
 			_lgr.error('Doubling Inner Classes requires you register them first.  Call register_inner_classes passing the script that contains the inner class.')
@@ -271,15 +279,15 @@ func _parse_script(obj):
 
 
 # Override path is used with scenes.
-func _double(obj, strategy, override_path=null):
+func _double(obj, strategy, override_path = null):
 	var parsed = _parse_script(obj)
-	if(parsed != null):
+	if (parsed != null):
 		return _create_double(parsed, strategy, override_path, false)
 
 
-func _partial_double(obj, strategy, override_path=null):
+func _partial_double(obj, strategy, override_path = null):
 	var parsed = _parse_script(obj)
-	if(parsed != null):
+	if (parsed != null):
 		return _create_double(parsed, strategy, override_path, true)
 
 
@@ -288,18 +296,18 @@ func _partial_double(obj, strategy, override_path=null):
 # -------------------------
 
 # double a script/object
-func double(obj, strategy=_strategy):
+func double(obj, strategy = _strategy):
 	return _double(obj, strategy)
 
-func partial_double(obj, strategy=_strategy):
+func partial_double(obj, strategy = _strategy):
 	return _partial_double(obj, strategy)
 
 
 # double a scene
-func double_scene(scene, strategy=_strategy):
+func double_scene(scene, strategy = _strategy):
 	return _double_scene_and_script(scene, strategy, false)
 
-func partial_double_scene(scene, strategy=_strategy):
+func partial_double_scene(scene, strategy = _strategy):
 	return _double_scene_and_script(scene, strategy, true)
 
 
@@ -310,19 +318,18 @@ func partial_double_gdnative(which):
 	return _partial_double(which, GutUtils.DOUBLE_STRATEGY.INCLUDE_NATIVE)
 
 
-func double_inner(parent, inner, strategy=_strategy):
+func double_inner(parent, inner, strategy = _strategy):
 	var parsed = _script_collector.parse(parent, inner)
 	return _create_double(parsed, strategy, null, false)
 
 
-func partial_double_inner(parent, inner, strategy=_strategy):
+func partial_double_inner(parent, inner, strategy = _strategy):
 	var parsed = _script_collector.parse(parent, inner)
 	return _create_double(parsed, strategy, null, true)
 
 
 func add_ignored_method(obj, method_name):
 	_ignored_methods.add(obj, method_name)
-
 
 
 # ##############################################################################

@@ -5,8 +5,8 @@ class_name Action extends Resource
 
 # TODO: make a string
 ## The unique ID of the Action. It is unique within the scope of the Parley plugin
-## Example: 1
-@export var id: int
+## Example: "1"
+@export var id: String
 
 
 ## The unique name of the Action.
@@ -19,7 +19,7 @@ class_name Action extends Resource
 @export var ref: Resource
 
 
-func _init(p_id: int = 0, p_name: String = "", p_ref: Resource = null) -> void:
+func _init(p_id: String = "", p_name: String = "", p_ref: Resource = null) -> void:
 	id = p_id
 	name = p_name
 	ref = p_ref

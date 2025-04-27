@@ -7,6 +7,7 @@
     "containsn",
     "Dialog",
     "dlog",
+    "gdscript",
     "glog",
     "npcs",
     "onready",
@@ -15,6 +16,6 @@
   ],
   "files.associations": {
     "*.djson": "json",
-    "*.dlog": "json"
+    "*.ds": "json"
   }
 }

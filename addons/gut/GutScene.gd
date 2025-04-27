@@ -1,3 +1,15 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
 extends Node2D
 # ##############################################################################
 # This is a wrapper around the normal and compact gui controls and serves as
@@ -7,7 +19,7 @@ extends Node2D
 @onready var _normal_gui = $Normal
 @onready var _compact_gui = $Compact
 
-var gut = null :
+var gut = null:
 	set(val):
 		gut = val
 		_set_gut(val)
@@ -25,7 +37,7 @@ func _ready():
 
 	use_compact_mode(false)
 
-	if(get_parent() == get_tree().root):
+	if (get_parent() == get_tree().root):
 		_test_running_setup()
 
 func _test_running_setup():
@@ -36,7 +48,7 @@ func _test_running_setup():
 # Private
 # ------------------------
 func _set_gut(val):
-	if(_normal_gui.get_gut() == val):
+	if (_normal_gui.get_gut() == val):
 		return
 	_normal_gui.set_gut(val)
 	_compact_gui.set_gut(val)
@@ -88,7 +100,7 @@ func set_font(font_name):
 
 
 func _set_font(rtl, font_name, custom_name):
-	if(font_name == null):
+	if (font_name == null):
 		rtl.remove_theme_font_override(custom_name)
 	else:
 		var dyn_font = FontFile.new()
@@ -97,7 +109,7 @@ func _set_font(rtl, font_name, custom_name):
 
 
 func _set_all_fonts_in_rtl(rtl, base_name):
-	if(base_name == 'Default'):
+	if (base_name == 'Default'):
 		_set_font(rtl, null, 'normal_font')
 		_set_font(rtl, null, 'bold_font')
 		_set_font(rtl, null, 'italics_font')
@@ -117,7 +129,7 @@ func set_background_color(color):
 	_normal_gui.set_bg_color(color)
 
 
-func use_compact_mode(should=true):
+func use_compact_mode(should = true):
 	_compact_gui.visible = should
 	_normal_gui.visible = !should
 

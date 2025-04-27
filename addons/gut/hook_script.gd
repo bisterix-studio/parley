@@ -1,3 +1,15 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
+@warning_ignore_start('UNUSED_SIGNAL')
 ## This script is the base for custom scripts to be used in pre and post
 ## run hooks.  Creating a hook script requires that you:[br]
 ## [li]Inherit [code skip-lint]GutHookScript[/code][/li]
@@ -14,12 +26,12 @@ var JunitXmlExport = load('res://addons/gut/junit_xml_export.gd')
 ## This is the instance of [GutMain] that is running the tests.  You can get
 ## information about the run from this object.  This is set by GUT when the
 ## script is instantiated.
-var gut  = null
+var gut = null
 
 # the exit code to be used by gut_cmdln.  See set method.
 var _exit_code = null
 
-var _should_abort =  false
+var _should_abort = false
 
 ## Virtual method that will be called by GUT after instantiating this script.
 ## This is where you put all of your logic.
@@ -30,8 +42,8 @@ func run():
 ## Set the exit code when running from the command line.  If not set then the
 ## default exit code will be returned (0 when no tests fail, 1 when any tests
 ## fail).
-func set_exit_code(code : int):
-	_exit_code  = code
+func set_exit_code(code: int):
+	_exit_code = code
 
 ## Returns the exit code set with [code skip-lint]set_exit_code[/code]
 func get_exit_code():

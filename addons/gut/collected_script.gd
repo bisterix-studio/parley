@@ -1,3 +1,14 @@
+@warning_ignore_start('UNTYPED_DECLARATION')
+@warning_ignore_start('INFERRED_DECLARATION')
+@warning_ignore_start('UNSAFE_METHOD_ACCESS')
+@warning_ignore_start('UNSAFE_CALL_ARGUMENT')
+@warning_ignore_start('RETURN_VALUE_DISCARDED')
+@warning_ignore_start('SHADOWED_VARIABLE')
+@warning_ignore_start('UNUSED_VARIABLE')
+@warning_ignore_start('UNSAFE_PROPERTY_ACCESS')
+@warning_ignore_start('UNUSED_PARAMETER')
+@warning_ignore_start('UNUSED_PRIVATE_CLASS_VARIABLE')
+@warning_ignore_start('SHADOWED_VARIABLE_BASE_CLASS')
 # ------------------------------------------------------------------------------
 # This holds all the meta information for a test script.  It contains the
 # name of the inner class and an array of CollectedTests.  This does not parse
@@ -15,8 +26,8 @@ var tests = []
 # One entry for before_all and after_all (maybe add before_each and after_each).
 # These are added by Gut when running before_all and after_all for the script.
 var setup_teardown_tests = []
-var inner_class_name:StringName
-var path:String
+var inner_class_name: StringName
+var path: String
 
 
 # Set externally by test_collector after it can verify that the script was
@@ -32,12 +43,12 @@ var skip_reason = ''
 var was_run = false
 
 
-var name = '' :
+var name = '':
 	get: return path
-	set(val):pass
+	set(val): pass
 
 
-func _init(logger=null):
+func _init(logger = null):
 	_lgr = logger
 
 
@@ -48,7 +59,7 @@ func get_new():
 func load_script():
 	var to_return = load(path)
 
-	if(inner_class_name != null and inner_class_name != ''):
+	if (inner_class_name != null and inner_class_name != ''):
 		# If we wanted to do inner classes in inner classses
 		# then this would have to become some kind of loop or recursive
 		# call to go all the way down the chain or this class would
@@ -61,7 +72,7 @@ func load_script():
 # script.gd.InnerClass
 func get_filename_and_inner():
 	var to_return = get_filename()
-	if(inner_class_name != ''):
+	if (inner_class_name != ''):
 		to_return += '.' + String(inner_class_name)
 	return to_return
 
@@ -69,7 +80,7 @@ func get_filename_and_inner():
 # res://foo/bar.gd.FooBar
 func get_full_name():
 	var to_return = path
-	if(inner_class_name != ''):
+	if (inner_class_name != ''):
 		to_return += '.' + String(inner_class_name)
 	return to_return
 
@@ -96,10 +107,10 @@ func export_to(config_file, section):
 
 func _remap_path(source_path):
 	var to_return = source_path
-	if(!FileAccess.file_exists(source_path)):
+	if (!FileAccess.file_exists(source_path)):
 		_lgr.debug('Checking for remap for:  ' + source_path)
 		var remap_path = source_path.get_basename() + '.gd.remap'
-		if(FileAccess.file_exists(remap_path)):
+		if (FileAccess.file_exists(remap_path)):
 			var cf = ConfigFile.new()
 			cf.load(remap_path)
 			to_return = cf.get_value('remap', 'path')
@@ -115,7 +126,7 @@ func import_from(config_file, section):
 	# get_value since it thinks you didn't send a default...then it spits
 	# out red text.  This works around that.
 	var inner_name = config_file.get_value(section, 'inner_class', 'Placeholder')
-	if(inner_name != 'Placeholder'):
+	if (inner_name != 'Placeholder'):
 		inner_class_name = inner_name
 	else: # just being explicit
 		inner_class_name = StringName("")
@@ -128,7 +139,7 @@ func get_test_named(test_name):
 func get_ran_test_count():
 	var count = 0
 	for t in tests:
-		if(t.was_run):
+		if (t.was_run):
 			count += 1
 	return count
 
@@ -172,7 +183,7 @@ func get_pending_count():
 func get_passing_test_count():
 	var count = 0
 	for t in tests:
-		if(t.is_passing()):
+		if (t.is_passing()):
 			count += 1
 	return count
 
@@ -180,25 +191,25 @@ func get_passing_test_count():
 func get_failing_test_count():
 	var count = 0
 	for t in tests:
-		if(t.is_failing()):
+		if (t.is_failing()):
 			count += 1
 	return count
 
 
 func get_risky_count():
 	var count = 0
-	if(was_skipped):
+	if (was_skipped):
 		count = 1
 	else:
 		for t in tests:
-			if(t.is_risky()):
+			if (t.is_risky()):
 				count += 1
 	return count
 
 
 func to_s():
 	var to_return = path
-	if(inner_class_name != null):
+	if (inner_class_name != null):
 		to_return += str('.', inner_class_name)
 	to_return += "\n"
 	for i in range(tests.size()):

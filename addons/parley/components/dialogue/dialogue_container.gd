@@ -7,7 +7,7 @@ class_name DialogueContainer extends MarginContainer
 
 
 ## The current dialogue node AST.
-@export var dialogue_node: DialogueNodeAst = DialogueNodeAst.new():
+var dialogue_node: DialogueNodeAst = DialogueNodeAst.new():
 	set(next_dialogue_node):
 		dialogue_node = next_dialogue_node
 		if dialogue_text_label:
