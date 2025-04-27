@@ -90,7 +90,46 @@ func register_action_store(store: ActionStore) -> void:
 		ParleySettings.set_setting(ParleyConstants.ACTION_STORE_PATHS, paths, true)
 		ParleyUtils.log.info("Registered new Action Store: %s" % [store])
 
+
+func register_fact_store(store: FactStore) -> void:
+	var _paths: Variant = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATHS)
+	var paths: Array[String] = []
+	for path: String in _paths:
+		paths.append(path)
+	if not store.resource_path:
+		ParleyUtils.log.error("Unable to register Fact Store: no resource path defined")
+		return
+	var id: int = ResourceLoader.get_resource_uid(store.resource_path)
+	if id == -1:
+		ParleyUtils.log.error("Unable to get UID for Fact Store with path: %s" % [store.resource_path])
+		return
+	var uid: String = ResourceUID.id_to_text(id)
+	if not paths.has(uid):
+		paths.append(uid)
+		ParleySettings.set_setting(ParleyConstants.FACT_STORE_PATHS, paths, true)
+		ParleyUtils.log.info("Registered new Fact Store: %s" % [store])
+
+
+func register_character_store(store: CharacterStore) -> void:
+	var _paths: Variant = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATHS)
+	var paths: Array[String] = []
+	for path: String in _paths:
+		paths.append(path)
+	if not store.resource_path:
+		ParleyUtils.log.error("Unable to register Character Store: no resource path defined")
+		return
+	var id: int = ResourceLoader.get_resource_uid(store.resource_path)
+	if id == -1:
+		ParleyUtils.log.error("Unable to get UID for Character Store with path: %s" % [store.resource_path])
+		return
+	var uid: String = ResourceUID.id_to_text(id)
+	if not paths.has(uid):
+		paths.append(uid)
+		ParleySettings.set_setting(ParleyConstants.CHARACTER_STORE_PATHS, paths, true)
+		ParleyUtils.log.info("Registered new Character Store: %s" % [store])
 #endregion
+
+
 #region GETTERS
 # TODO: add check for these at startup
 func _get_character_stores() -> Array[String]:

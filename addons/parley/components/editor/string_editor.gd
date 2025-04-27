@@ -5,6 +5,7 @@ class_name ParleyStringEditor extends HBoxContainer
 @export var key: String = "": set = _set_key
 @export var value: String = "": set = _set_value
 @export var minimum_x: float = 100 : set = _set_minimum_x
+@export var placeholder: String = "" : set = _set_placeholder
 
 
 @onready var label: Label = %Label
@@ -19,7 +20,6 @@ signal value_changed(new_value: String)
 func _ready() -> void:
 	_render_key()
 	_render_value()
-	_render_minimum_x()
 #endregion
 
 
@@ -36,7 +36,12 @@ func _set_value(new_value: String) -> void:
 
 func _set_minimum_x(new_value: float) -> void:
 	minimum_x = new_value
-	_render_minimum_x()
+	_render_key()
+
+
+func _set_placeholder(new_value: String) -> void:
+	placeholder = new_value
+	_render_value()
 #endregion
 
 
@@ -44,16 +49,16 @@ func _set_minimum_x(new_value: float) -> void:
 func _render_key() -> void:
 	if label:
 		label.text = "%s:" % [key.capitalize()]
+		if label.custom_minimum_size.x != minimum_x:
+			label.custom_minimum_size.x = minimum_x
 
 
 func _render_value() -> void:
-	if value_edit and value_edit.text != value:
-		value_edit.text = value
-
-
-func _render_minimum_x() -> void:
-	if label and label.custom_minimum_size.x != minimum_x:
-		label.custom_minimum_size.x = minimum_x
+	if value_edit:
+		if value_edit.text != value:
+			value_edit.text = value
+		if value_edit.placeholder_text != placeholder:
+			value_edit.placeholder_text = placeholder
 #endregion
 
 

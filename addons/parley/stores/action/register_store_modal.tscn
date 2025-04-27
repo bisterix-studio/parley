@@ -32,6 +32,7 @@ unique_name_in_owner = true
 layout_mode = 2
 key = "Id"
 minimum_x = 250.0
+placeholder = "Define the unique ID for the store (e.g. main)"
 
 [node name="ResourceEditor" parent="NewDialogueMarginContainer/NewDialogueContainer" instance=ExtResource("2_bbxl3")]
 unique_name_in_owner = true
@@ -52,6 +53,7 @@ text = "Path:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+placeholder_text = "Set the store resource path"
 expand_to_text_length = true
 
 [node name="ChoosePathButton" type="Button" parent="NewDialogueMarginContainer/NewDialogueContainer/PathContainer"]

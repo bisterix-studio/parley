@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://bhcdx3h8xtn5"]
+[gd_scene load_steps=7 format=3 uid="uid://bhcdx3h8xtn5"]
 
 [ext_resource type="Script" uid="uid://y48wrseks5vu" path="res://addons/parley/stores/fact/fact_store_editor.gd" id="1_55agi"]
 [ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="2_irk8n"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_kh15r"]
 [ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="4_bhutp"]
 [ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="4_kh15r"]
+[ext_resource type="PackedScene" uid="uid://msdptt8ygebm" path="res://addons/parley/stores/action/register_store_modal.tscn" id="6_bhutp"]
 
 [node name="FactStoreEditor" type="PanelContainer"]
 offset_right = 40.0
@@ -31,12 +32,8 @@ text = "Available:"
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = false
-text = "0/1 Selected"
+text = "0/0 Selected"
 flat = false
-item_count = 1
-popup/item_0/text = "Main"
-popup/item_0/checkable = 1
-popup/item_0/id = 0
 
 [node name="SaveFactStoreButton" type="Button" parent="FactStoreMarginContainer/FactStoreContainer/AvailableStoresContainer"]
 unique_name_in_owner = true
@@ -47,7 +44,6 @@ flat = true
 [node name="NewFactStoreButton" type="Button" parent="FactStoreMarginContainer/FactStoreContainer/AvailableStoresContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-disabled = true
 icon = ExtResource("3_kh15r")
 flat = true
 
@@ -100,9 +96,17 @@ tooltip_text = "Add Fact to the currently selected store. If no store is explici
 disabled = true
 text = "Add Fact"
 
+[node name="RegisterFactStoreModal" parent="." instance=ExtResource("6_bhutp")]
+unique_name_in_owner = true
+title = "Register Fact Store"
+visible = false
+type = 1
+
 [connection signal="pressed" from="FactStoreMarginContainer/FactStoreContainer/AvailableStoresContainer/SaveFactStoreButton" to="." method="_on_save_fact_store_button_pressed"]
+[connection signal="pressed" from="FactStoreMarginContainer/FactStoreContainer/AvailableStoresContainer/NewFactStoreButton" to="." method="_on_new_fact_store_button_pressed"]
 [connection signal="resource_changed" from="FactStoreMarginContainer/FactStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_changed"]
 [connection signal="resource_selected" from="FactStoreMarginContainer/FactStoreContainer/DialogueSequenceContainer" to="." method="_on_dialogue_sequence_container_resource_selected"]
 [connection signal="item_selected" from="FactStoreMarginContainer/FactStoreContainer/FactStoreSelectorContainer/FactStoreSelector" to="." method="_on_fact_store_selector_item_selected"]
 [connection signal="text_changed" from="FactStoreMarginContainer/FactStoreContainer/FilterFacts" to="." method="_on_filter_facts_text_changed"]
 [connection signal="pressed" from="FactStoreMarginContainer/FactStoreContainer/FactsScroll/FactsScrollContainer/AddFactButton" to="." method="_on_add_fact_button_pressed"]
+[connection signal="store_registered" from="RegisterFactStoreModal" to="." method="_on_register_fact_store_modal_store_registered"]

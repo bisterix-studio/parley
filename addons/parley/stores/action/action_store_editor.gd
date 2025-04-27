@@ -22,7 +22,7 @@ var filtered_actions: Array[Action] = []
 @onready var actions_container: VBoxContainer = %ActionsContainer
 @onready var dialogue_sequence_container: ParleyResourceEditor = %DialogueSequenceContainer
 @onready var add_action_button: Button = %AddActionButton
-@onready var register_action_store: ParleyRegisterStoreModal = %RegisterActionStore
+@onready var register_action_store: ParleyRegisterStoreModal = %RegisterActionStoreModal
 
 
 signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
@@ -140,6 +140,8 @@ func _render_available_action_store_menu() -> void:
 	for available_action_store: ActionStore in available_action_stores.values():
 		popup.add_check_item(str(available_action_store.id).capitalize())
 		var checked: bool = selected_action_stores.filter(func(ref: String) -> bool:
+				if not available_action_stores.has(ref):
+					return false
 				var action_store: ActionStore = available_action_stores.get(ref)
 				return action_store.id == available_action_store.id).size() > 0
 		popup.set_item_checked(index, checked)
@@ -289,7 +291,7 @@ func _on_dialogue_sequence_container_resource_selected(selected_dialogue_sequenc
 		dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
 
 
-func _on_register_action_store_store_registered(store: StoreAst) -> void:
+func _on_register_action_store_modal_store_registered(store: StoreAst) -> void:
 	_register_action_store(store, true)
 #endregion
 
@@ -321,7 +323,6 @@ func _save() -> void:
 		else:
 			var action_store_ref: String = selected_action_stores[action_store_selector.selected - 1]
 			var action_store: ActionStore = load(action_store_ref)
-			# TODO: maybe use emit changed at the resource level?
 			var result: int = ResourceSaver.save(action_store)
 			if result != OK:
 				ParleyUtils.log.error("Error saving action store [ID: %s]. Code: %d" % [action_store.id, result])

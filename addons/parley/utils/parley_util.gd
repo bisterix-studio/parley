@@ -26,14 +26,17 @@ static func safe_disconnect(signal_to_disconnect: Signal, callable: Callable, lo
 		log.error("Error disconnecting signal %s: %d" % [signal_to_disconnect.get_name(), connect_result])
 
 class log:
-	static func info(message: String) -> void:
-		print_rich("[color=web_gray]PARLEY_DBG: %s[/color]" % [message])
+	static func info(message: String, dry_run: bool = false) -> void:
+		if not dry_run:
+			print_rich("[color=web_gray]PARLEY_DBG: %s[/color]" % [message])
 
-	static func warn(message: String) -> void:
-		push_warning("PARLEY_WRN: %s" % [message])
+	static func warn(message: String, dry_run: bool = false) -> void:
+		if not dry_run:
+			push_warning("PARLEY_WRN: %s" % [message])
 
-	static func error(message: String) -> void:
-		push_error("PARLEY_ERR: %s" % [message])
+	static func error(message: String, dry_run: bool = false) -> void:
+		if not dry_run:
+			push_error("PARLEY_ERR: %s" % [message])
 
 
 class generate:

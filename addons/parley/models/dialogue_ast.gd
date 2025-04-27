@@ -44,7 +44,7 @@ func add_ast_node(node: Dictionary) -> void:
 	var id_variant: Variant = node.get('id')
 	var position: Vector2 = _parse_position_from_raw_node_ast(node)
 	if not id_variant or not is_instance_of(id_variant, TYPE_STRING):
-		_push_error("Unable to import Parley AST node without a valid string id field: %s" % [id_variant])
+		ParleyUtils.log.error("Unable to import Parley AST node without a valid string id field: %s" % [id_variant])
 		return
 	var ast_node: NodeAst
 	var id: String = id_variant
@@ -85,7 +85,7 @@ func add_ast_node(node: Dictionary) -> void:
 			var node_ids: Array = node.get('node_ids', [])
 			ast_node = GroupNodeAst.new(id, position, name, node_ids, colour, size)
 		_:
-			_push_error("Unable to import Parley AST node of type: %s" % [type])
+			ParleyUtils.log.error("Unable to import Parley AST node of type: %s" % [type])
 			return
 	ast_node.position = position
 	nodes.push_back(ast_node)
@@ -93,7 +93,7 @@ func add_ast_node(node: Dictionary) -> void:
 
 ## Add a new node to the list of nodes
 func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> Variant:
-	_print('Inserting new Node into the AST of type: %s' % [type])
+	ParleyUtils.log.info('Inserting new Node into the AST of type: %s' % [type])
 	var new_id: String = _generate_id()
 	var ast_node: NodeAst
 	match type:
@@ -114,7 +114,7 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> Variant:
 		Type.GROUP:
 			ast_node = GroupNodeAst.new(new_id, position)
 		_:
-			_push_error("Unable to create new Parley AST node of type: %s" % [type])
+			ParleyUtils.log.error("Unable to create new Parley AST node of type: %s" % [type])
 			return
 	nodes.push_back(ast_node)
 	_emit_dialogue_updated()
@@ -194,7 +194,7 @@ func remove_node(node_id: String) -> void:
 			break
 		index += 1
 	if not removed:
-		_print("Unable to remove node with ID: %s" % [node_id])
+		ParleyUtils.log.info("Unable to remove node with ID: %s" % [node_id])
 	_emit_dialogue_updated()
 
 
@@ -203,7 +203,7 @@ func remove_node(node_id: String) -> void:
 func find_node_by_id(id: String) -> NodeAst:
 	var filtered_nodes: Array = nodes.filter(func(node: NodeAst) -> bool: return str(node.id) == str(id))
 	if filtered_nodes.size() != 1:
-		_print("No AST Node found with ID: {id}".format({'id': id}))
+		ParleyUtils.log.info("No AST Node found with ID: {id}".format({'id': id}))
 		return null
 	return filtered_nodes.front()
 
@@ -224,7 +224,7 @@ func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: in
 			break
 		index += 1
 	if not removed:
-		_print("Unable to remove edge: %s-%s:%s-%s" % [from_node, from_slot, to_node, to_slot])
+		ParleyUtils.log.info("Unable to remove edge: %s-%s:%s-%s" % [from_node, from_slot, to_node, to_slot])
 	if removed and emit:
 		_emit_dialogue_updated()
 	return 1 if removed else 0
@@ -283,7 +283,7 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 		# TODO: warn when multiple nodes are found for the edge
 		var filtered_next_nodes: Array = nodes.filter(func(node: NodeAst) -> bool: return node.id == next_id)
 		if filtered_next_nodes.size() == 0:
-			_printwarn('Node: {id} not found for Edge: {edge}'.format({'id': next_id, 'edge': next_edge}), dry_run)
+			ParleyUtils.log.warn('Node: {id} not found for Edge: {edge}'.format({'id': next_id, 'edge': next_edge}), dry_run)
 			continue
 		var next_node: NodeAst = filtered_next_nodes.front()
 		var next_type: Type = next_node.type
@@ -306,7 +306,7 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 			Type.END:
 				next_nodes.append(next_node)
 			_:
-				_printwarn("AST Node {type} is not supported".format({"type": next_type}), dry_run)
+				ParleyUtils.log.warn("AST Node {type} is not supported".format({"type": next_type}), dry_run)
 				continue
 	
 	var types: Array[Type] = []
@@ -321,12 +321,12 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 		# Add this check here to ensure that conditions behave like guards
 		if current_node.type == Type.CONDITION:
 			return []
-		_print("No AST Node types found for Dialogue tree: {types}".format({"types": types}), dry_run)
+		ParleyUtils.log.info("No AST Node types found for Dialogue tree: {types}".format({"types": types}), dry_run)
 		return _process_end(dry_run)
 
 
 	if types.size() > 1:
-		_print("Multiple AST Node types found for Dialogue tree: {types}".format({"types": types}), dry_run)
+		ParleyUtils.log.info("Multiple AST Node types found for Dialogue tree: {types}".format({"types": types}), dry_run)
 		return _process_end(dry_run)
 
 	if is_instance_of(next_nodes.front(), EndNodeAst):
@@ -366,9 +366,9 @@ func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, 
 			ConditionNodeAst.Operator.NOT_EQUAL:
 				results.append(typeof(result) != typeof(evaluated_value) or result != _evaluate_value(value))
 			_:
-				_print("Operator of type %s is not supported" % [operator], dry_run)
+				ParleyUtils.log.info("Operator of type %s is not supported" % [operator], dry_run)
 	if results.size() == 0:
-		_print("No results evaluated", dry_run)
+		ParleyUtils.log.info("No results evaluated", dry_run)
 		return false
 	match combiner:
 		ConditionNodeAst.Combiner.ALL:
@@ -376,7 +376,7 @@ func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, 
 		ConditionNodeAst.Combiner.ANY:
 			return results.has(true)
 		_:
-			_print("Combiner of type %s is not supported" % [combiner], dry_run)
+			ParleyUtils.log.info("Combiner of type %s is not supported" % [combiner], dry_run)
 			return false
 
 
@@ -393,19 +393,6 @@ func _process_match_node(ctx: Dictionary, match_node: MatchNodeAst) -> int:
 	if case_index == -1:
 		return cases.find(MatchNodeAst.fallback_key)
 	return case_index
-
-
-func _print(message: String, dry_run: bool = false) -> void:
-	if not dry_run:
-		ParleyUtils.log.info(message)
-
-func _push_error(message: String, dry_run: bool = false) -> void:
-	if not dry_run:
-		ParleyUtils.log.error(message)
-
-func _printwarn(message: String, dry_run: bool = false) -> void:
-	if not dry_run:
-		ParleyUtils.log.warn(message)
 
 
 func _evaluate_value(value_expr: Variant) -> Variant:
@@ -444,10 +431,10 @@ func _sort_by_y_position(a: NodeAst, b: NodeAst) -> bool:
 func _get_start_node(dry_run: bool) -> Variant:
 	var filtered_nodes: Array[NodeAst] = nodes.filter(func(node: NodeAst) -> bool: return node.type == Type.START)
 	if filtered_nodes.size() == 0:
-		_push_error("No Start Nodes found. Unable to start the dialogue.", dry_run)
+		ParleyUtils.log.error("No Start Nodes found. Unable to start the dialogue.", dry_run)
 		return
 	if filtered_nodes.size() > 1:
-		_push_error("Multiple Start Nodes found. Unable to start the dialogue.", dry_run)
+		ParleyUtils.log.error("Multiple Start Nodes found. Unable to start the dialogue.", dry_run)
 	return filtered_nodes.front()
 #endregion
 

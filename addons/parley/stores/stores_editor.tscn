@@ -82,6 +82,8 @@ layout_mode = 2
 [connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowCharacterStoreButton" to="." method="_on_show_character_store_button_toggled"]
 [connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowFactStoreButton" to="." method="_on_show_fact_store_button_toggled"]
 [connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowActionStoreButton" to="." method="_on_show_action_store_button_toggled"]
+[connection signal="dialogue_sequence_ast_changed" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/CharacterStoreEditor" to="." method="_on_character_store_editor_dialogue_sequence_ast_changed"]
+[connection signal="dialogue_sequence_ast_selected" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/CharacterStoreEditor" to="." method="_on_character_store_editor_dialogue_sequence_ast_selected"]
 [connection signal="dialogue_sequence_ast_changed" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/FactStoreEditor" to="." method="_on_fact_store_editor_dialogue_sequence_ast_changed"]
 [connection signal="dialogue_sequence_ast_selected" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/FactStoreEditor" to="." method="_on_fact_store_editor_dialogue_sequence_ast_selected"]
 [connection signal="dialogue_sequence_ast_changed" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/ActionStoreEditor" to="." method="_on_action_store_editor_dialogue_sequence_ast_changed"]
