@@ -58,13 +58,22 @@ func add_ast_node(node: Dictionary) -> void:
 			var text: String = node.get('text', '')
 			ast_node = DialogueOptionNodeAst.new(id, position, character, text)
 		Type.CONDITION:
-			var condition = ConditionNodeAst.Combiner.get(node.get('condition'))
-			ast_node = ConditionNodeAst.new(id, position, node.get('description'), condition, node.get('conditions'))
+			var condition: ConditionNodeAst.Combiner = ConditionNodeAst.Combiner.get(node.get('condition'), ConditionNodeAst.Combiner.ALL)
+			var description: String = node.get('description', '')
+			var conditions: Array = node.get('conditions', [])
+			ast_node = ConditionNodeAst.new(id, position, description, condition, conditions)
 		Type.MATCH:
-			ast_node = MatchNodeAst.new(id, position, node.get('description'), node.get('fact_ref'), node.get('cases'))
+			var description: String = node.get('description', '')
+			var fact_ref: String = node.get('fact_ref', '')
+			var cases: Array = node.get('cases', [])
+			ast_node = MatchNodeAst.new(id, position, description, fact_ref, cases)
 		Type.ACTION:
-			var action_type = ActionNodeAst.ActionType.get(node.get('action_type'))
-			ast_node = ActionNodeAst.new(id, position, node.get('description'), action_type, node.get('action_script_ref'), node.get('values'))
+			var description: String = node.get('description', '')
+			var action_type_key: String = node.get('action_type', 'SCRIPT')
+			var action_type: ActionNodeAst.ActionType = ActionNodeAst.ActionType.get(action_type_key, ActionNodeAst.ActionType.SCRIPT)
+			var action_script_ref: String = node.get('action_script_ref', '')
+			var values: Array = node.get('values', [])
+			ast_node = ActionNodeAst.new(id, position, description, action_type, action_script_ref, values)
 		Type.START:
 			ast_node = StartNodeAst.new(id, position)
 		Type.END:
@@ -72,7 +81,9 @@ func add_ast_node(node: Dictionary) -> void:
 		Type.GROUP:
 			var colour: Color = _parse_group_colour_from_raw_node_ast(node)
 			var size: Vector2 = _parse_group_size_from_raw_node_ast(node)
-			ast_node = GroupNodeAst.new(id, position, node.get('name', ''), node.get('node_ids', []), colour, size)
+			var name: String = node.get('name', '')
+			var node_ids: Array = node.get('node_ids', [])
+			ast_node = GroupNodeAst.new(id, position, name, node_ids, colour, size)
 		_:
 			_push_error("Unable to import Parley AST node of type: %s" % [type])
 			return
@@ -81,9 +92,9 @@ func add_ast_node(node: Dictionary) -> void:
 
 
 ## Add a new node to the list of nodes
-func add_new_node(type: Type, position: Vector2 = Vector2.ZERO):
+func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> Variant:
 	_print('Inserting new Node into the AST of type: %s' % [type])
-	var new_id = _generate_id()
+	var new_id: String = _generate_id()
 	var ast_node: NodeAst
 	match type:
 		Type.DIALOGUE:
@@ -121,13 +132,11 @@ func update_node_position(ast_node_id: String, position: Vector2) -> void:
 func add_ast_edge(edge: Dictionary) -> void:
 	# TODO: add validation before instantiation to ensure that
 	# all values are defined
-	add_edge(
-		edge.get('from_node'),
-		edge.get('from_slot'),
-		edge.get('to_node'),
-		edge.get('to_slot'),
-		false
-	)
+	var from_node: String = edge.get('from_node')
+	var from_slot: int = edge.get('from_slot')
+	var to_node: String = edge.get('to_node')
+	var to_slot: int = edge.get('to_slot')
+	var _result: int = add_edge(from_node, from_slot, to_node, to_slot, false)
 
 ## Add a store to from an AST
 func add_ast_stores(_stores: Dictionary) -> void:
@@ -330,26 +339,27 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 ## Indicator for whether the node is at the end of the current dialogue sequence
 func is_at_end(ctx: Dictionary, current_node: NodeAst) -> bool:
 	# Perform a dry run to infer whether we are at the final node
-	var next_nodes = process_next(ctx, current_node, true)
+	var next_nodes: Array[NodeAst] = process_next(ctx, current_node, true)
 	if next_nodes.size() == 1 and next_nodes.front() is EndNodeAst:
 		return true
 	return false
 
 
 func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, dry_run: bool) -> bool:
-	var combiner = condition_node.condition
-	var conditions = condition_node.conditions
+	var combiner: ConditionNodeAst.Combiner = condition_node.condition
+	var conditions: Array = condition_node.conditions
 	var results: Array[bool] = []
-	for condition_def in conditions:
-		var fact_ref = condition_def.get('fact_ref')
-		var operator = condition_def.get('operator')
+	for condition_def: Dictionary in conditions:
+		var fact_ref: String = condition_def.get('fact_ref')
+		var operator: Variant = condition_def.get('operator')
 		# TODO: evaluate this as an expression
-		var value = condition_def.get('value')
-		var fact: FactInterface = load(fact_ref).new()
-		var result = fact.execute(ctx, [])
+		var value: Variant = condition_def.get('value')
+		var script: GDScript = load(fact_ref)
+		var fact: FactInterface = script.new()
+		var result: Variant = fact.execute(ctx, [])
 		# TODO: create a wrapper for this
 		fact.call_deferred("free")
-		var evaluated_value = _evaluate_value(value)
+		var evaluated_value: Variant = _evaluate_value(value)
 		match operator:
 			ConditionNodeAst.Operator.EQUAL:
 				results.append(typeof(result) == typeof(evaluated_value) and result == evaluated_value)
@@ -372,7 +382,8 @@ func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, 
 
 func _process_match_node(ctx: Dictionary, match_node: MatchNodeAst) -> int:
 	var fact_ref: String = match_node.fact_ref
-	var fact: FactInterface = load(fact_ref).new()
+	var script: GDScript = load(fact_ref)
+	var fact: FactInterface = script.new()
 	var result: Variant = fact.execute(ctx, [])
 	# TODO: create a wrapper for this
 	fact.call_deferred("free")
@@ -496,35 +507,59 @@ static func get_type_colour(type: Type) -> Color:
 ## Get name for Dialogue AST type
 ## Example: DialogueAst.get_type_name(type)
 static func get_type_name(type: Type) -> String:
-	return Type.keys()[type].capitalize()
+	var key: String = Type.keys()[type]
+	return key.capitalize()
 
 
-static func is_dialogue_options(nodes: Array[NodeAst]) -> bool:
-	return nodes.filter(func(node): return node.type == Type.DIALOGUE_OPTION).size() > 0
+static func is_dialogue_options(p_nodes: Array[NodeAst]) -> bool:
+	return p_nodes.filter(func(node: NodeAst) -> bool: return node.type == Type.DIALOGUE_OPTION).size() > 0
 
 
 func _parse_position_from_raw_node_ast(node: Dictionary) -> Vector2:
-	var raw_position = node.get('position', str(Vector2.ZERO))
-	raw_position = raw_position.erase(0, 1)
-	raw_position = raw_position.erase(raw_position.length() - 1, 1)
-	var parts: Array = raw_position.split(", ")
-	return Vector2(int(parts[0]), int(parts[1]))
+	var default: Vector2 = Vector2.ZERO
+	var raw_position: Variant = node.get('position', str(default))
+	if not is_instance_of(raw_position, TYPE_STRING):
+		ParleyUtils.log.warn("Unable to parse position of node: %s. Defaulting to %s" % [node.get('id', 'unknown'), str(default)])
+		return default
+	var position: String = raw_position
+	position = position.erase(0, 1)
+	position = position.erase(position.length() - 1, 1)
+	var parts: Array = position.split(", ")
+	var x: int = int(str(parts[0]))
+	var y: int = int(str(parts[1]))
+	return Vector2(x, y)
 
 
 func _parse_group_colour_from_raw_node_ast(node: Dictionary) -> Color:
-	var raw_colour = node.get('colour', str(Color(0, 0, 0, 0)))
-	raw_colour = raw_colour.erase(0, 1)
-	raw_colour = raw_colour.erase(raw_colour.length() - 1, 1)
-	var colour_parts = raw_colour.split(", ")
-	return Color(float(colour_parts[0]), float(colour_parts[1]), float(colour_parts[2]), float(colour_parts[3]))
+	var default: Color = Color(0, 0, 0, 0)
+	var raw_colour: Variant = node.get('colour', str(default))
+	if not is_instance_of(raw_colour, TYPE_STRING):
+		ParleyUtils.log.warn("Unable to parse colour of node: %s. Defaulting to %s" % [node.get('id', 'unknown'), str(default)])
+		return default
+	var colour: String = raw_colour
+	colour = colour.erase(0, 1)
+	colour = colour.erase(colour.length() - 1, 1)
+	var colour_parts: Array = colour.split(", ")
+	var r: float = float(str(colour_parts[0]))
+	var g: float = float(str(colour_parts[1]))
+	var b: float = float(str(colour_parts[2]))
+	var a: float = float(str(colour_parts[3]))
+	return Color(r, g, b, a)
 
 
 func _parse_group_size_from_raw_node_ast(node: Dictionary) -> Vector2:
-	var raw_size = node.get('size', str(Vector2(350, 350)))
-	raw_size = raw_size.erase(0, 1)
-	raw_size = raw_size.erase(raw_size.length() - 1, 1)
-	var size_parts: Array = raw_size.split(", ")
-	return Vector2(int(size_parts[0]), int(size_parts[1]))
+	var default: Vector2 = Vector2(350, 350)
+	var raw_size: Variant = node.get('size', str(default))
+	if not is_instance_of(raw_size, TYPE_STRING):
+		ParleyUtils.log.warn("Unable to parse size of node: %s. Defaulting to %s" % [node.get('id', 'unknown'), str(default)])
+		return default
+	var size: String = raw_size
+	size = size.erase(0, 1)
+	size = size.erase(size.length() - 1, 1)
+	var size_parts: Array = size.split(", ")
+	var x: int = int(str(size_parts[0]))
+	var y: int = int(str(size_parts[1]))
+	return Vector2(x, y)
 
 
 func _generate_id() -> String:

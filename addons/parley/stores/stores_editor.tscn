@@ -18,6 +18,7 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="ParleyStores" type="PanelContainer"]
+auto_translate_mode = 1
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_85s87")
@@ -83,3 +84,5 @@ layout_mode = 2
 [connection signal="toggled" from="StoresMarginContainer/StoresEditorContainer/StoresOptionHBoxContainer/ShowActionStoreButton" to="." method="_on_show_action_store_button_toggled"]
 [connection signal="dialogue_sequence_ast_changed" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/FactStoreEditor" to="." method="_on_fact_store_editor_dialogue_sequence_ast_changed"]
 [connection signal="dialogue_sequence_ast_selected" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/FactStoreEditor" to="." method="_on_fact_store_editor_dialogue_sequence_ast_selected"]
+[connection signal="dialogue_sequence_ast_changed" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/ActionStoreEditor" to="." method="_on_action_store_editor_dialogue_sequence_ast_changed"]
+[connection signal="dialogue_sequence_ast_selected" from="StoresMarginContainer/StoresEditorContainer/StoresContainer/ActionStoreEditor" to="." method="_on_action_store_editor_dialogue_sequence_ast_selected"]

@@ -55,5 +55,6 @@ locale/locale_filter_mode=1
 
 [parley]
 
-stores/character_store_paths=["uid://6le1e46jcwbp", "uid://dpkl3t3evbgg2"]
-stores/fact_store_paths=["uid://c3c7k7lljjqv3"]
+stores/character_store_paths=Array[String](["uid://6le1e46jcwbp", "uid://dpkl3t3evbgg2"])
+stores/fact_store_paths=Array[String](["uid://c3c7k7lljjqv3"])
+stores/action_store_paths=Array[String](["uid://bfwohwb0ftpuq"])

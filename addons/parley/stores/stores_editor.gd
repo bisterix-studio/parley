@@ -1,6 +1,7 @@
 @tool
 class_name ParleyStoresEditor extends PanelContainer
 
+
 #region DEFS
 @onready var show_character_store_button: Button = %ShowCharacterStoreButton
 @onready var show_fact_store_button: Button = %ShowFactStoreButton
@@ -9,22 +10,27 @@ class_name ParleyStoresEditor extends PanelContainer
 @onready var fact_store_editor: ParleyFactStoreEditor = %FactStoreEditor
 @onready var action_store_editor: PanelContainer = %ActionStoreEditor
 
+
 enum Store {
 	CHARACTER,
 	FACT,
 	ACTION,
 }
 
+
 var dialogue_ast: DialogueAst = DialogueAst.new(): set = _set_dialogue_ast
 var current_store: Store: set = _set_current_store
+
 
 signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
 signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
 #endregion
 
+
 #region LIFECYCLE
 func _ready() -> void:
 	current_store = Store.CHARACTER
+
 
 func _clear() -> void:
 	if character_store_editor:
@@ -34,15 +40,18 @@ func _clear() -> void:
 	if action_store_editor:
 		action_store_editor.hide()
 
+
 func _render() -> void:
 	_clear()
 #endregion
+
 
 #region SETTERS
 func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 	if dialogue_ast != new_dialogue_ast:
 		dialogue_ast = new_dialogue_ast
 		_set_current_store(current_store)
+
 
 func _set_current_store(new_current_store: Store) -> void:
 	if current_store != new_current_store:
@@ -53,6 +62,7 @@ func _set_current_store(new_current_store: Store) -> void:
 			Store.ACTION: _set_action_store()
 			_: push_error('PARLEY_ERR: Unsupported store selected: %s' % [current_store])
 
+
 func _set_character_store() -> void:
 	if show_character_store_button and not show_character_store_button.button_pressed:
 		show_character_store_button.button_pressed = true
@@ -60,6 +70,7 @@ func _set_character_store() -> void:
 	if character_store_editor:
 		character_store_editor.selected_character_stores = dialogue_ast.stores.character
 		character_store_editor.show()
+
 
 func _set_fact_store() -> void:
 	if show_fact_store_button and not show_fact_store_button.button_pressed:
@@ -70,13 +81,17 @@ func _set_fact_store() -> void:
 			fact_store_editor.dialogue_sequence_ast = dialogue_ast
 		fact_store_editor.show()
 
+
 func _set_action_store() -> void:
 	if show_action_store_button and not show_action_store_button.button_pressed:
 		show_action_store_button.button_pressed = true
 	_clear()
 	if action_store_editor:
+		if action_store_editor.dialogue_sequence_ast != dialogue_ast:
+			action_store_editor.dialogue_sequence_ast = dialogue_ast
 		action_store_editor.show()
 #endregion
+
 
 #region SIGNALS
 func _on_show_character_store_button_toggled(toggled_on: bool) -> void:
@@ -87,6 +102,7 @@ func _on_show_character_store_button_toggled(toggled_on: bool) -> void:
 		if show_action_store_button:
 			show_action_store_button.button_pressed = false
 
+
 func _on_show_fact_store_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		current_store = Store.FACT
@@ -94,6 +110,7 @@ func _on_show_fact_store_button_toggled(toggled_on: bool) -> void:
 			show_character_store_button.button_pressed = false
 		if show_action_store_button:
 			show_action_store_button.button_pressed = false
+
 
 func _on_show_action_store_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
@@ -103,9 +120,19 @@ func _on_show_action_store_button_toggled(toggled_on: bool) -> void:
 		if show_character_store_button:
 			show_character_store_button.button_pressed = false
 
+
 func _on_fact_store_editor_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: DialogueAst) -> void:
 	dialogue_sequence_ast_changed.emit(new_dialogue_sequence_ast)
 
+
 func _on_fact_store_editor_dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: DialogueAst) -> void:
 	dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
+
+
+func _on_action_store_editor_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: DialogueAst) -> void:
+	dialogue_sequence_ast_changed.emit(new_dialogue_sequence_ast)
+
+
+func _on_action_store_editor_dialogue_sequence_ast_selected(new_dialogue_sequence_ast: DialogueAst) -> void:
+	dialogue_sequence_ast_selected.emit(new_dialogue_sequence_ast)
 #endregion

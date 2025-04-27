@@ -3,7 +3,7 @@
 class_name DialogueOptionsMenu extends MarginContainer
 
 
-const DialogueOptionContainer = preload('./dialogue_option_container.tscn')
+const dialogue_option_container = preload('./dialogue_option_container.tscn')
 
 
 @onready var dialogue_options_container = %DialogueOptionsContainer
@@ -36,7 +36,7 @@ var dialogue_options: Array = []:
 		if dialogue_options.size() > 0:
 			for dialogue_option in dialogue_options:
 				#var item = Button.new()
-				var item = DialogueOptionContainer.instantiate()
+				var item = dialogue_option_container.instantiate()
 				item.name = "DialogueOption%d" % dialogue_options_container.get_child_count()
 				#item.dialogue_option_node = dialogue_option
 				item.text = dialogue_option.text

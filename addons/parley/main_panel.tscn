@@ -18,8 +18,8 @@
 [ext_resource type="PackedScene" uid="uid://1alef4tqlskn" path="res://addons/parley/modals/new_dialogue_modal.tscn" id="12_v8y8i"]
 [ext_resource type="Texture2D" uid="uid://dngyydvxiwyvs" path="res://addons/parley/assets/Reload.svg" id="13_oy825"]
 [ext_resource type="PackedScene" uid="uid://bl5g47dhb7hmk" path="res://addons/parley/components/sidebar.tscn" id="18_re0cy"]
-[ext_resource type="Resource" uid="uid://d2883lul36r1d" path="res://dialogue_sequences/all.ds" id="18_waveq"]
 [ext_resource type="PackedScene" uid="uid://dcdua1f2ah8xa" path="res://addons/parley/views/parley_graph_view.tscn" id="20_8yxrj"]
+[ext_resource type="Script" uid="uid://b3tj6amhgmct6" path="res://addons/parley/stores/action/action_store.gd" id="26_anq7l"]
 [ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="28_anq7l"]
 [ext_resource type="PackedScene" uid="uid://c6cagjh7y5wn4" path="res://addons/parley/modals/export_to_csv_modal.tscn" id="29_wngpy"]
 [ext_resource type="Script" uid="uid://dlvt1tv8850a" path="res://addons/parley/models/stores_ast.gd" id="29_xjep8"]
@@ -33,6 +33,7 @@
 script = ExtResource("29_xjep8")
 character = Array[ExtResource("28_anq7l")]([])
 fact = Array[ExtResource("30_7jaih")]([])
+action = Array[ExtResource("26_anq7l")]([])
 
 [sub_resource type="Resource" id="Resource_7hjis"]
 script = ExtResource("32_pogw7")
@@ -42,6 +43,7 @@ nodes = Array[ExtResource("31_tp54n")]([])
 stores = SubResource("Resource_7jaih")
 
 [node name="MainPanel" type="VBoxContainer" node_paths=PackedStringArray("save_button", "arrange_nodes_button", "refresh_button", "open_file_dialogue")]
+auto_translate_mode = 1
 clip_contents = true
 anchors_preset = 15
 anchor_right = 1.0
@@ -51,7 +53,6 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_06n3w")
-dialogue_ast = ExtResource("18_waveq")
 save_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/SaveButton")
 arrange_nodes_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/ArrangeNodesButton")
 refresh_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/RefreshButton")
@@ -214,7 +215,6 @@ split_offset = 400
 [node name="Sidebar" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView" instance=ExtResource("18_re0cy")]
 unique_name_in_owner = true
 layout_mode = 2
-current_dialogue_ast = ExtResource("18_waveq")
 
 [node name="GraphContainer" type="VBoxContainer" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView"]
 layout_mode = 2
@@ -223,7 +223,6 @@ size_flags_horizontal = 3
 [node name="GraphView" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("20_8yxrj")]
 unique_name_in_owner = true
 layout_mode = 2
-ast = ExtResource("18_waveq")
 
 [node name="BottomPanel" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("29_xxhvx")]
 unique_name_in_owner = true

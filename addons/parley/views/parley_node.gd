@@ -118,15 +118,23 @@ func _render_action_node_editor() -> void:
 		ParleyUtils.log.error("No dialogue sequence AST selected for %s, unable to render node editor" % [node_ast])
 		return
 	var action_node_ast: ActionNodeAst = node_ast
+	var action: Action = ParleyManager.action_store.get_action_by_ref(action_node_ast.action_script_ref)
+	if action.id == "":
+		var exists: bool = ResourceLoader.exists(action_node_ast.action_script_ref)
+		var message_parts: PackedStringArray = [
+			"Unable to find Action with script ref %s in the store." % [action_node_ast.action_script_ref],
+			"Please add to a registered Parley Action Store to be able to edit Action Node [ID=%s]." % [action_node_ast.id]
+		]
+		ParleyUtils.log.error(" ".join(message_parts))
+		if exists:
+			ParleyUtils.log.warn("Script ref %s does not exist within the file system meaning this dialogue sequence will likely fail at runtime." % action_node_ast.action_script_ref)
+
+		return
 	## TODO: create from ast
 	var action_node_editor: ActionNodeEditor = ActionNodeEditorScene.instantiate()
 	action_node_editor.id = action_node_ast.id
 	action_node_editor.description = action_node_ast.description
 	action_node_editor.action_type = action_node_ast.action_type
-	var action: Action = ParleyManager.action_store.get_action_by_ref(action_node_ast.action_script_ref)
-	if action.id == -1:
-		ParleyUtils.log.error("Unable to find Action with script ref %s in the store" % [action_node_ast.action_script_ref])
-		return
 	action_node_editor.action_script_name = action.name
 	action_node_editor.values = action_node_ast.values
 	ParleyUtils.safe_connect(action_node_editor.action_node_changed, _on_action_node_editor_action_node_changed)
@@ -236,7 +244,7 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: ActionNodeAst = node_ast.duplicate(true)
 	var action: Action = ParleyManager.action_store.get_action_by_name(action_script_name)
-	if action.id == -1:
+	if action.id == "":
 		ParleyUtils.log.error("Unable to find Action with script name %s in the store" % [action_script_name])
 		return
 	new_node_ast.update(description, action_type, action.ref.resource_path, values)

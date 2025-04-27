@@ -61,8 +61,8 @@ func update(p_description: String, p_action_type: ActionType, p_action_script_re
 ## Convert this resource into a Dictionary for storage
 func to_dict() -> Dictionary:
 	var node_dict: Dictionary = inst_to_dict(self)
-	node_dict.erase('@path')
-	node_dict.erase('@subpath')
+	var _at_path_discarded: bool = node_dict.erase('@path')
+	var _sub_path_discarded: bool = node_dict.erase('@subpath')
 	node_dict['action_type'] = str(ActionType.find_key(node_dict['action_type']))
 	node_dict['type'] = str(DialogueAst.Type.find_key(node_dict['type']))
 	return node_dict
@@ -70,8 +70,9 @@ func to_dict() -> Dictionary:
 
 ## Get action type name for Action Node AST type
 ## Example: ActionNodeAst.get_action_type_name(ActionType.SCRIPT)
-static func get_action_type_name(action_type: ActionType) -> String:
-	return ActionType.keys()[action_type].capitalize()
+static func get_action_type_name(_action_type: ActionType) -> String:
+	var key: String = ActionType.keys()[_action_type]
+	return key.capitalize()
 
 
 ## Get action type for Action Node AST name

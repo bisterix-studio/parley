@@ -1,12 +1,12 @@
 # TODO: prefix with Parley
 class_name ParleyDefaultBalloon extends CanvasLayer
 
-const DialogueContainer: PackedScene = preload('./dialogue/dialogue_container.tscn')
-const DialogueOptionsContainer: PackedScene = preload('./dialogue_option/dialogue_options_container.tscn')
-const NextDialogueButton: PackedScene = preload('./next_dialogue_button.tscn')
+const dialogue_container: PackedScene = preload('./dialogue/dialogue_container.tscn')
+const dialogue_options_container: PackedScene = preload('./dialogue_option/dialogue_options_container.tscn')
+const next_dialogue_button: PackedScene = preload('./next_dialogue_button.tscn')
 
 ## The action to use for advancing the dialogue
-@export var next_action: StringName = &"ui_accept"
+@export var advance_dialogue_action: StringName = &"ui_accept"
 
 
 @onready var balloon: Control = %Balloon
@@ -53,7 +53,7 @@ var current_node_asts: Array[NodeAst]:
 		balloon.focus_mode = Control.FOCUS_NONE
 		if not DialogueAst.is_dialogue_options(current_node_asts):
 			var next_button: Control = next_children.back()
-			next_button.gui_input.connect(_on_next_dialogue_button_gui_input.bind(next_button))
+			ParleyUtils.safe_connect(next_button.gui_input, _on_next_dialogue_button_gui_input.bind(next_button))
 			if not next_button.is_node_ready():
 				await next_button.ready
 			next_button.grab_focus()
@@ -78,20 +78,20 @@ func _build_next_dialogue_children(current_node_ast: NodeAst) -> Array[Node]:
 	if previous_node_ast is DialogueOptionNodeAst:
 		# Generate a new dialogue instance as if it were a dialogue
 		# because it effectively is now
-		var previous_dialogue_option_container = DialogueContainer.instantiate()
+		var previous_dialogue_option_container = dialogue_container.instantiate()
 		var previous_node_dialogue_ast = DialogueNodeAst.new(previous_node_ast.id, previous_node_ast.position, previous_node_ast.character, previous_node_ast.text)
 		previous_dialogue_option_container.dialogue_node = previous_node_dialogue_ast
 		previous_dialogue_option_container.set_meta('ast', previous_node_dialogue_ast)
 		next_children.append(previous_dialogue_option_container)
 		next_children.append(_create_horizontal_separator(previous_dialogue_option_container))
-	var next_dialogue_container = DialogueContainer.instantiate()
+	var next_dialogue_container = dialogue_container.instantiate()
 	next_dialogue_container.dialogue_node = current_node_ast
 	next_dialogue_container.set_meta('ast', current_node_ast)
 	next_children.append(next_dialogue_container)
-	var next_dialogue_button: Control = NextDialogueButton.instantiate()
+	var next_dialogue_button_control: Control = next_dialogue_button.instantiate()
 	if dialogue_ast.is_at_end(ctx, current_node_ast):
-		next_dialogue_button.text = 'Leave'
-	next_children.append(next_dialogue_button)
+		next_dialogue_button_control.text = 'Leave'
+	next_children.append(next_dialogue_button_control)
 	return next_children
 
 
@@ -101,10 +101,10 @@ func _build_next_dialogue_option_children(current_children: Array[Node]) -> Arra
 	if previous_node:
 		next_children.append(previous_node)
 		next_children.append(_create_horizontal_separator(previous_node))
-	var dialogue_options_container = DialogueOptionsContainer.instantiate()
-	dialogue_options_container.dialogue_options = current_node_asts
-	dialogue_options_container.dialogue_option_selected.connect(_on_dialogue_options_container_dialogue_option_selected)
-	next_children.append(dialogue_options_container)
+	var dialogue_options_container_instance = dialogue_options_container.instantiate()
+	dialogue_options_container_instance.dialogue_options = current_node_asts
+	ParleyUtils.safe_connect(dialogue_options_container_instance.dialogue_option_selected, _on_dialogue_options_container_dialogue_option_selected)
+	next_children.append(dialogue_options_container_instance)
 	return next_children
 
 
@@ -157,37 +157,43 @@ func _create_horizontal_separator(sibling_above: Node) -> Node:
 
 #region ACTIONS
 func _exit_top(next_action: Dictionary) -> void:
-	var child = next_action.get('child')
-	if child and child.has_meta('ast'):
-		var ast = child.get_meta('ast')
-		dialogue_history.append(ast.duplicate())
-		child.queue_free()
-		await child.tree_exited
+	var child: Variant = next_action.get('child')
+	if child and child is Node:
+		var node: Node = child
+		if node.has_meta('ast'):
+			var ast: Variant = node.get_meta('ast')
+			if ast is NodeAst:
+				var node_ast: NodeAst = ast
+				dialogue_history.append(node_ast.duplicate())
+			node.queue_free()
+			await node.tree_exited
 
 
-func _move_to_top(next_action: Dictionary) -> void:
+func _move_to_top(_next_action: Dictionary) -> void:
 	pass
 
 
 func _fade_in(next_action: Dictionary) -> void:
-	var child = next_action.get('child')
-	if child:
-		balloon_container.add_child(child)
+	var child: Variant = next_action.get('child')
+	if child and child is Node:
+		var node: Node = child
+		balloon_container.add_child(node)
 
 
 func _fade_out(next_action: Dictionary) -> void:
-	var child = next_action.get('child')
-	if child:
-		child.queue_free()
-		await child.tree_exited
+	var child: Variant = next_action.get('child')
+	if child and child is Node:
+		var node: Node = child
+		node.queue_free()
+		await node.tree_exited
 #endregion
 
-func _find_previous_node_ast(children: Array[Node]):
+func _find_previous_node_ast(children: Array[Node]) -> Variant:
 	if not previous_node_ast:
 		return
-	for child in children:
+	for child: Node in children:
 		if child.has_meta('ast'):
-			var ast = child.get_meta('ast')
+			var ast: Variant = child.get_meta('ast')
 			if ast.id == previous_node_ast.id:
 				return child
 	return
@@ -198,7 +204,7 @@ func _render_top() -> void:
 		return
 	match previous_node_ast.type:
 		DialogueAst.Type.DIALOGUE:
-			balloon_container
+			pass
 			
 
 func _ready() -> void:
@@ -245,7 +251,7 @@ func _on_balloon_gui_input(event: InputEvent) -> void:
 	var current_node: DialogueNodeAst = current_node_asts.front()
 	if event is InputEventMouseButton and event.is_pressed() and event.get('button_index') == MOUSE_BUTTON_LEFT:
 		next(current_node)
-	elif event.is_action_pressed(next_action) and get_viewport().gui_get_focus_owner() == balloon:
+	elif event.is_action_pressed(advance_dialogue_action) and get_viewport().gui_get_focus_owner() == balloon:
 		next(current_node)
 
 
@@ -256,7 +262,7 @@ func _on_next_dialogue_button_gui_input(event: InputEvent, item: Control) -> voi
 	var current_node: DialogueNodeAst = current_node_asts.front()
 	if event is InputEventMouseButton and event.is_pressed() and event.get('button_index') == MOUSE_BUTTON_LEFT:
 		next(current_node)
-	elif event is InputEventKey and event.is_action_pressed(next_action) and item is NextDialogueButton and get_viewport().gui_get_focus_owner() == item:
+	elif event is InputEventKey and event.is_action_pressed(advance_dialogue_action) and item is NextDialogueButton and get_viewport().gui_get_focus_owner() == item:
 		next(current_node)
 
 

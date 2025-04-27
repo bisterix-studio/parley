@@ -382,6 +382,12 @@
         "id": "main",
         "ref": "res://facts/fact_store_main.tres"
       }
+    ],
+    "action": [
+      {
+        "id": "main",
+        "ref": "res://actions/action_store.tres"
+      }
     ]
   }
 }

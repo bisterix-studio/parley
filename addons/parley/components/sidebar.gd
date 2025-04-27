@@ -1,10 +1,10 @@
 @tool
 class_name ParleySidebar extends VBoxContainer
 
-@export var current_dialogue_ast: DialogueAst = DialogueAst.new(): set = _update_current_dialogue_ast
+var current_dialogue_ast: DialogueAst = DialogueAst.new(): set = _update_current_dialogue_ast
 var filtered_nodes: Array[NodeAst] = []
 
-@export var dialogue_asts: Array[DialogueAst] = []: set = _update_dialogue_asts
+var dialogue_asts: Array[DialogueAst] = []: set = _update_dialogue_asts
 var filtered_dialogue_asts: Array[DialogueAst] = []
 
 @onready var node_list: ItemList = %NodesItemList

@@ -2,10 +2,10 @@
 # TODO: prefix with Parley
 class_name MatchNodeEditor extends NodeEditor
 
-@export var fact_store: FactStore = FactStore.new(): set = _on_set_fact_store
-@export var description: String = "": set = _on_set_description
-@export var fact_name: String = "": set = _on_set_fact_name
-@export var cases: Array[Variant] = []: set = _on_set_cases
+var fact_store: FactStore = FactStore.new(): set = _on_set_fact_store
+var description: String = "": set = _on_set_description
+var fact_name: String = "": set = _on_set_fact_name
+var cases: Array[Variant] = []: set = _on_set_cases
 
 @onready var description_editor: TextEdit = %MatchDescription
 @onready var fact_selector: OptionButton = %FactSelector

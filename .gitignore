@@ -18,3 +18,6 @@ mono_crash.*.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Data
+*.ref-data.txt

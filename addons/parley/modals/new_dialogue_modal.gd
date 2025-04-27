@@ -7,6 +7,11 @@ extends Window
 signal dialogue_ast_created(dialogue_ast: DialogueAst)
 
 
+# TODO: is this needed?
+func _exit_tree() -> void:
+	path_edit.text = ""
+
+
 func _on_file_dialog_file_selected(path: String) -> void:
 	path_edit.text = path
 

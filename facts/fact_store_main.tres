@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="FactStore" load_steps=10 format=3 uid="uid://c3c7k7lljjqv3"]
+[gd_resource type="Resource" script_class="FactStore" load_steps=11 format=3 uid="uid://c3c7k7lljjqv3"]
 
 [ext_resource type="Script" uid="uid://dhlbgj5hd2115" path="res://addons/parley/models/fact.gd" id="1_57q5a"]
 [ext_resource type="Script" uid="uid://ob0am6au6mmt" path="res://addons/parley/stores/fact/fact_store.gd" id="2_685c7"]
+[ext_resource type="Script" uid="uid://cpwr6bc02ec7a" path="res://facts/alice_gave_coffee_fact.gd" id="2_ld0hb"]
 [ext_resource type="Script" uid="uid://5ll5tg3r2x7c" path="res://facts/bob_has_coffee_fact.gd" id="3_47mgl"]
 [ext_resource type="Script" uid="uid://dyrirlhcxgul4" path="res://facts/snooker_balls_fact.gd" id="4_8n1qg"]
 [ext_resource type="Script" uid="uid://c6bo3uftwlv5c" path="res://facts/alice_coffee_status_fact.gd" id="4_81jjj"]
@@ -10,7 +11,7 @@
 script = ExtResource("1_57q5a")
 id = "main:alice_gave_coffee"
 name = "Alice gave coffee"
-ref = ExtResource("4_81jjj")
+ref = ExtResource("2_ld0hb")
 metadata/store = "res://facts/fact_store_main.tres"
 
 [sub_resource type="Resource" id="Resource_3247g"]

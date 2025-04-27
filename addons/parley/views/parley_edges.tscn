@@ -6,6 +6,7 @@
 bg_color = Color(0.115533, 0.193601, 0.311096, 1)
 
 [node name="ParleyEdges" type="PanelContainer"]
+auto_translate_mode = 1
 offset_right = 60.0
 offset_bottom = 29.0
 size_flags_horizontal = 3

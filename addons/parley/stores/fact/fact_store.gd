@@ -3,21 +3,26 @@
 class_name FactStore extends StoreAst
 
 
+#region DEFS
 @export var facts: Array[Fact] = []: set = _set_facts
 
 
-const store_metadata_key: String = "store"
+const store_metadata_key: String = "fact_store"
 
 
 signal fact_added(fact: Fact)
 signal fact_removed(fact_id: String)
+#endregion
 
 
+#region LIFECYCLE
 func _init(_id: String = "", _facts: Array[Fact] = []) -> void:
 	id = _id
 	facts = _facts
+#endregion
 
 
+#region SETTERS
 func _set_facts(new_facts: Array[Fact]) -> void:
 	var facts_with_metadata: Array[Fact] = []
 	for fact: Fact in new_facts:
@@ -29,8 +34,10 @@ func _set_fact_metadata(fact: Fact) -> Fact:
 	if fact and not fact.has_meta(store_metadata_key) and self.resource_path:
 		fact.set_meta(store_metadata_key, self.resource_path)
 	return fact
+#endregion
 
 
+#region CRUD
 static func get_fact_store_ref(fact: Fact) -> String:
 	if fact.has_meta(store_metadata_key):
 		var store: Variant = fact.get_meta(store_metadata_key)
@@ -40,7 +47,7 @@ static func get_fact_store_ref(fact: Fact) -> String:
 
 
 func add_fact(name: String = "") -> Fact:
-	var fact: Fact = Fact.new(_generate_id(name), name)
+	var fact: Fact = Fact.new(ParleyUtils.generate.id(facts, id, name), name)
 	facts.append(_set_fact_metadata(fact))
 	fact_added.emit(fact)
 	emit_changed()
@@ -49,7 +56,7 @@ func add_fact(name: String = "") -> Fact:
 
 func get_fact_id_by_index(index: int) -> String:
 	var fact: Variant = facts.get(index)
-	return fact.id if fact and is_instance_of(fact, Fact) else _generate_id('unknown')
+	return fact.id if fact and is_instance_of(fact, Fact) else ParleyUtils.generate.id(facts, id, 'unknown')
 
 
 func get_fact_name_by_id(fact_id: String) -> String:
@@ -97,18 +104,10 @@ func get_fact_by_ref(ref: String) -> Fact:
 		ParleyUtils.log.error("Fact with ref %s not found in store" % [ref])
 		return Fact.new()
 	return filtered_facts.front()
+#endregion
+
 
 #region HELPERS
-# TODO: utils
-func _generate_id(name: String = "") -> String:
-	var local_id: String
-	if not name:
-		local_id = str(facts.size())
-	else:
-		local_id = name.to_snake_case().to_lower()
-	return "%s:%s" % [id.to_snake_case().to_lower(), local_id]
-
-
 func _to_string() -> String:
 	return "FactStore<%s>" % [str(to_dict())]
 #endregion

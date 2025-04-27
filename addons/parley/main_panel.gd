@@ -13,7 +13,7 @@ const start_node_icon: CompressedTexture2D = preload("./assets/Start.svg")
 const end_node_icon: CompressedTexture2D = preload("./assets/End.svg")
 const group_node_icon: CompressedTexture2D = preload("./assets/Group.svg")
 
-@export var dialogue_ast: DialogueAst: set = _set_dialogue_ast
+var dialogue_ast: DialogueAst: set = _set_dialogue_ast
 
 # TODO: check all uses of globals and ensure that these are used minimally
 # Ideally we only want to be referencing ParleyManager
@@ -45,7 +45,7 @@ signal node_selected(node_ast: NodeAst)
 func _ready() -> void:
 	_setup()
 	# TODO: figure this out at a later date
-	# ParleyManager.dialogue_imported.connect(_on_parley_manager_dialogue_imported)
+	# ParleyUtils.safe_connect(ParleyManager.dialogue_imported, _on_parley_manager_dialogue_imported)
 
 # func _on_parley_manager_dialogue_imported(source_file_path):
 # 	if dialogue_ast and source_file_path == dialogue_ast.resource_path:
@@ -64,20 +64,20 @@ func refresh(arrange: bool = false) -> void:
 
 func _exit_tree() -> void:
 	if dialogue_ast and dialogue_ast.dialogue_updated.is_connected(_on_dialogue_ast_changed):
-		dialogue_ast.dialogue_updated.disconnect(_on_dialogue_ast_changed)
+		ParleyUtils.safe_disconnect(dialogue_ast.dialogue_updated, _on_dialogue_ast_changed)
 	dialogue_ast = null
 	# if Engine.is_editor_hint():
 	# 	if ParleyManager.dialogue_imported.is_connected(_on_parley_manager_dialogue_imported):
 	# 		ParleyManager.dialogue_imported.disconnect(_on_parley_manager_dialogue_imported)
 
-func _set_dialogue_ast(new_dialogue_ast) -> void:
+func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 	# TODO: regenerate
 	if dialogue_ast != new_dialogue_ast:
 		dialogue_ast = new_dialogue_ast
 		if dialogue_ast:
 			if dialogue_ast.dialogue_updated.is_connected(_on_dialogue_ast_changed):
 				dialogue_ast.dialogue_updated.disconnect(_on_dialogue_ast_changed)
-			dialogue_ast.dialogue_updated.connect(_on_dialogue_ast_changed)
+			ParleyUtils.safe_connect(dialogue_ast.dialogue_updated, _on_dialogue_ast_changed)
 			if sidebar:
 				sidebar.add_dialogue_ast(dialogue_ast)
 			dialogue_ast_selected.emit(dialogue_ast)
@@ -121,10 +121,9 @@ func _setup() -> void:
 	_setup_file_menu()
 	_setup_insert_menu()
 	_setup_theme()
-	var _current_dialogue_sequence: Variant = ParleyManager.load_current_dialogue_sequence()
-	if _current_dialogue_sequence is DialogueAst:
-		var current_dialogue_ast: DialogueAst = _current_dialogue_sequence
-		dialogue_ast = current_dialogue_ast
+	var dialogue_sequence_variant: Variant = ParleyManager.load_current_dialogue_sequence()
+	if dialogue_sequence_variant is DialogueAst:
+		dialogue_ast = dialogue_sequence_variant
 
 func _setup_theme() -> void:
 	# TODO: we might need to register this dynamically at a later date
@@ -142,7 +141,7 @@ func _setup_file_menu() -> void:
 	popup.add_icon_item(load_file_icon, "Open Dialogue Sequence...", 1)
 	popup.add_separator("Export")
 	popup.add_icon_item(export_to_csv_icon, "Export to CSV...", 2)
-	popup.id_pressed.connect(_on_file_id_pressed)
+	ParleyUtils.safe_connect(popup.id_pressed, _on_file_id_pressed)
 
 
 ## Set up the insert menu
@@ -161,7 +160,7 @@ func _setup_insert_menu() -> void:
 	popup.add_icon_item(start_node_icon, DialogueAst.get_type_name(DialogueAst.Type.START), DialogueAst.Type.START)
 	popup.add_icon_item(end_node_icon, DialogueAst.get_type_name(DialogueAst.Type.END), DialogueAst.Type.END)
 	popup.add_icon_item(group_node_icon, DialogueAst.get_type_name(DialogueAst.Type.GROUP), DialogueAst.Type.GROUP)
-	popup.id_pressed.connect(_on_insert_id_pressed)
+	ParleyUtils.safe_connect(popup.id_pressed, _on_insert_id_pressed)
 #endregion
 
 
@@ -191,7 +190,7 @@ func _on_graph_view_node_selected(node: Node) -> void:
 	selected_node_id = node.id
 
 
-func _on_graph_view_node_deselected(node: Node) -> void:
+func _on_graph_view_node_deselected(_node: Node) -> void:
 	if not ParleyManager.is_test_dialogue_sequence_running():
 		ParleyManager.set_test_dialogue_sequence_start_node(null)
 #endregion
@@ -210,7 +209,7 @@ func _on_new_dialogue_modal_dialogue_ast_created(new_dialogue_ast: DialogueAst) 
 
 
 func _on_insert_id_pressed(type: DialogueAst.Type) -> void:
-	var ast_node = dialogue_ast.add_new_node(type, (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom)
+	var ast_node: Variant = dialogue_ast.add_new_node(type, (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom)
 	if ast_node:
 		await refresh()
 
@@ -224,7 +223,10 @@ func _on_save_pressed() -> void:
 
 
 func _save_dialogue() -> void:
-	ResourceSaver.save(dialogue_ast)
+	var ok: int = ResourceSaver.save(dialogue_ast)
+	if ok != OK:
+		ParleyUtils.log.warn("Error saving the Dialogue AST: %d" % [ok])
+		return
 	# This is needed to correctly reload upon file saves
 	if Engine.is_editor_hint():
 		EditorInterface.get_resource_filesystem().reimport_files([dialogue_ast.resource_path])
@@ -336,16 +338,17 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 
 # TODO: remove ast stuff
 func _on_action_node_editor_action_node_changed(id: String, description: String, action_type: ActionNodeAst.ActionType, action_script_name: String, values: Array) -> void:
-	var ast_node = dialogue_ast.find_node_by_id(id)
-	var selected_node = graph_view.find_node_by_id(id)
+	var ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
+	var selected_node: Variant = graph_view.find_node_by_id(id)
 	if ast_node is not ActionNodeAst or not _is_selected_node(ActionNode, selected_node, id):
 		return
-	var action = ParleyManager.action_store.get_action_by_name(action_script_name)
-	if action.id == -1:
+	var action: Action = ParleyManager.action_store.get_action_by_name(action_script_name)
+	if action.id == "":
 		ParleyUtils.log.error("Unable to find Action with script name %s in the store" % [action_script_name])
 		return
 	if ast_node is ActionNodeAst:
-		ast_node.update(description, action_type, action.ref.resource_path, values)
+		var action_node_ast: ActionNodeAst = ast_node
+		action_node_ast.update(description, action_type, action.ref.resource_path, values)
 	if selected_node is ActionNode:
 		selected_node.description = description
 		selected_node.action_type = action_type
@@ -396,16 +399,19 @@ func defocus_edge(edge: EdgeAst) -> void:
 
 
 func _on_delete_node_button_pressed(id: String) -> void:
-	if not selected_node_id:
+	if not selected_node_id or is_instance_of(selected_node_id, TYPE_STRING):
 		ParleyUtils.log.info("No node is selected, not deleting anything")
 		return
 	if id != selected_node_id:
 		ParleyUtils.log.info("Node ID to delete does not match the selected Node ID, not deleting anything")
 		return
 		
-	var selected_node = graph_view.find_node_by_id(selected_node_id)
-	graph_view.remove_child(selected_node)
-	dialogue_ast.remove_node(selected_node_id)
+	var valid_selected_node_id: String = selected_node_id
+	var selected_node_variant: Variant = graph_view.find_node_by_id(valid_selected_node_id)
+	if selected_node_variant is Node:
+		var selected_node: Node = selected_node_variant
+		graph_view.remove_child(selected_node)
+	dialogue_ast.remove_node(valid_selected_node_id)
 	selected_node_id = null
 
 
@@ -437,8 +443,8 @@ func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: in
 func _add_edge(from_node_name: StringName, from_slot: int, to_node_name: StringName, to_slot: int) -> void:
 	var from_node_id: String = from_node_name.split('-')[1]
 	var to_node_id: String = to_node_name.split('-')[1]
-	dialogue_ast.add_edge(from_node_id, from_slot, to_node_id, to_slot)
-	graph_view.connect_node(from_node_name, from_slot, to_node_name, to_slot)
+	var _added: int = dialogue_ast.add_edge(from_node_id, from_slot, to_node_id, to_slot)
+	var _connected: int = graph_view.connect_node(from_node_name, from_slot, to_node_name, to_slot)
 
 func _is_selected_node(type: Object, selected_node: Variant, id: String) -> bool:
 	var is_selected_node: bool = selected_node and is_instance_of(selected_node, type) and selected_node_id == id

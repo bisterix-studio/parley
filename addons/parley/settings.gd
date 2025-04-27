@@ -14,12 +14,13 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",
 	ParleyConstants.CHARACTER_STORE_PATHS: [],
 	ParleyConstants.FACT_STORE_PATHS: [],
+	ParleyConstants.ACTION_STORE_PATHS: [],
 	# TODO: remove
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store_main.tres",
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
 	# hardcode it for now but allow people to edit it in settings
-	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: preload("./views/test_dialogue_sequence_scene.tscn").resource_path,
+	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: "res://addons/parley/views/test_dialogue_sequence_scene.tscn",
 }
 
 
@@ -33,6 +34,12 @@ static var TYPES: Dictionary = {
 		"name": ParleyConstants.ACTION_STORE_PATH,
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_FILE,
+	},
+	ParleyConstants.ACTION_STORE_PATHS: {
+		"name": ParleyConstants.ACTION_STORE_PATHS,
+		"type": TYPE_ARRAY,
+		"hint": PROPERTY_HINT_ARRAY_TYPE,
+		"hint_string": "%d/%d:*.tres" % [TYPE_STRING, PROPERTY_HINT_FILE]
 	},
 	ParleyConstants.CHARACTER_STORE_PATH: {
 		"name": ParleyConstants.CHARACTER_STORE_PATH,
@@ -74,7 +81,7 @@ static func prepare(save: bool = true) -> void:
 		if not validate_setting_key(setting_name):
 			continue
 		if not ProjectSettings.has_setting(setting_name):
-			set_setting(setting_name, DEFAULT_SETTINGS[setting_name], save)
+			set_setting(setting_name, DEFAULT_SETTINGS[setting_name])
 		ProjectSettings.set_initial_value(setting_name, DEFAULT_SETTINGS[setting_name])
 		var _info: Variant = TYPES.get(setting_name)
 		if is_instance_of(_info, TYPE_DICTIONARY):
@@ -126,11 +133,15 @@ static func get_user_value(key: String, default: Variant = null) -> Variant:
 	return get_user_config().get(key, default)
 
 
-static func set_setting(key: String, value: Variant, _save: bool = true) -> void:
+static func set_setting(key: String, value: Variant, save: bool = false) -> void:
 	if not validate_setting_key(key):
 		return
 	ProjectSettings.set_setting(key, value)
 	ProjectSettings.set_initial_value(key, DEFAULT_SETTINGS[key])
+	if save:
+		var result: int = ProjectSettings.save()
+		if result != OK:
+			ParleyUtils.log.error("Unable to save Parley project settings: %d" % [result])
 
 
 static func get_setting(key: String, default: Variant = null) -> Variant:

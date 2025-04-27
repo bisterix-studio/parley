@@ -71,12 +71,12 @@ func _on_add_condition_button_pressed() -> void:
 	emit_condition_node_changed()
 
 func _on_condition_option_item_selected(p_condition: int) -> void:
-	condition = p_condition
+	condition = p_condition as ConditionNodeAst.Combiner
 	emit_condition_node_changed()
 
-func _on_condition_changed(id: int, new_fact_name: String, new_operator: ConditionNodeAst.Combiner, new_value: String) -> void:
+func _on_condition_changed(condition_id: int, new_fact_name: String, new_operator: ConditionNodeAst.Combiner, new_value: String) -> void:
 	# TODO: when we add delete, this will need to be refactored
-	conditions[id] = {
+	conditions[condition_id] = {
 		'fact_name': new_fact_name,
 		'operator': new_operator,
 		'value': new_value,

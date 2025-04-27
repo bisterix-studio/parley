@@ -124,7 +124,9 @@ func _map_text_to_value(text: String) -> Variant:
 		ValueType.Bool: return true if text == 'true' else false
 		_: return str(text)
 
-func _map_value_for_comparison(_value: Variant) -> Variant:
-	if is_instance_of(_value, TYPE_INT): return float(_value)
-	return _value
+func _map_value_for_comparison(value_variant: Variant) -> Variant:
+	if is_instance_of(value_variant, TYPE_INT):
+		var value_to_map: int = value_variant
+		return float(value_to_map)
+	return value_variant
 #endregion
