@@ -393,16 +393,32 @@ func _on_group_node_editor_group_node_changed(id: String, group_name: String, co
 		selected_node.colour = colour
 
 
+# TODO: add to docs
 func _on_graph_view_connection_request(from_node_name: StringName, from_slot: int, to_node_name: StringName, to_slot: int) -> void:
 	_add_edge(from_node_name, from_slot, to_node_name, to_slot)
 
 
+# TODO: add to docs
+func _on_graph_view_connection_to_empty(from_node_name: StringName, from_slot: int, release_position: Vector2) -> void:
+	# TODO: it may be better to create a helper for this calculation
+	var ast_node_variant: Variant = dialogue_ast.add_new_node(DialogueAst.Type.DIALOGUE, ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90))
+	if ast_node_variant and ast_node_variant is NodeAst:
+		var ast_node: NodeAst = ast_node_variant
+		await refresh()
+		var to_node_name: String = graph_view.get_ast_node_name(ast_node)
+		# TODO: This is the entry slot for a Dialogue AST Node, it may be better to create a helper function for this
+		var to_slot: int = 0
+		_add_edge(from_node_name, from_slot, to_node_name, to_slot)
+
+
+# TODO: add to docs
 func _on_graph_view_disconnection_request(from_node: StringName, from_slot: int, to_node: StringName, to_slot: int) -> void:
 	var from_node_id: String = from_node.split('-')[1]
 	var to_node_id: String = to_node.split('-')[1]
 	remove_edge(from_node_id, from_slot, to_node_id, to_slot)
 
 
+# TODO: add to docs
 func focus_edge(edge: EdgeAst) -> void:
 	var nodes: Array[ParleyGraphNode] = graph_view.get_nodes_for_edge(edge)
 	for node: ParleyGraphNode in nodes:
@@ -421,6 +437,7 @@ func defocus_edge(edge: EdgeAst) -> void:
 			node.unselect_to_slot(edge.to_slot)
 
 
+# TODO: add to docs
 func delete_node_by_id(id: String) -> void:
 	if not selected_node_id or not is_instance_of(selected_node_id, TYPE_STRING):
 		ParleyUtils.log.info("No node is selected, not deleting anything")

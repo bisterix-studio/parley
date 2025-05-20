@@ -255,6 +255,7 @@ dialogue_ast = SubResource("Resource_7hjis")
 [connection signal="dialogue_ast_selected" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/Sidebar" to="." method="_on_sidebar_dialogue_ast_selected"]
 [connection signal="node_selected" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/Sidebar" to="." method="_on_sidebar_node_selected"]
 [connection signal="connection_request" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_connection_request"]
+[connection signal="connection_to_empty" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_connection_to_empty"]
 [connection signal="disconnection_request" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_disconnection_request"]
 [connection signal="node_deselected" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_node_deselected"]
 [connection signal="node_selected" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer/GraphView" to="." method="_on_graph_view_node_selected"]

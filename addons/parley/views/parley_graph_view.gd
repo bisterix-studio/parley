@@ -166,6 +166,10 @@ func generate_edges(graph_nodes: Dictionary = {}) -> void:
 #region UTILS
 func get_ast_node_name(ast_node: NodeAst) -> String:
 	return "%s-%s" % [str(DialogueAst.Type.find_key(ast_node.type)), ast_node.id]
+
+
+func _goto_node(node: ParleyGraphNode) -> void:
+	scroll_offset = (node.position_offset + node.size * 0.5) * zoom - size * 0.5
 #endregion
 
 #region NODES
@@ -285,6 +289,3 @@ func set_selected_by_id(id: String, _goto: bool = true) -> void:
 			_goto_node(node as ParleyGraphNode)
 			return
 #endregion
-
-func _goto_node(node: ParleyGraphNode) -> void:
-	scroll_offset = (node.position_offset + node.size * 0.5) * zoom - size * 0.5
