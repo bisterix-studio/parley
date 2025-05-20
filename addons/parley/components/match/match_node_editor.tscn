@@ -17,7 +17,7 @@ layout_mode = 2
 [node name="MatchDescription" type="TextEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/MatchDescriptionContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
-placeholder_text = "Alice's coffee status"
+placeholder_text = "Match description (Eg. Difficulty level)"
 wrap_mode = 1
 scroll_past_end_of_file = true
 scroll_fit_content_height = true

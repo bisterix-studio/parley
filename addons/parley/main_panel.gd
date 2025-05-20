@@ -313,7 +313,6 @@ func _on_condition_node_editor_condition_node_changed(id, description, condition
 	selected_node.update(description)
 
 # TODO: remove ast stuff
-# TODO: this appears to be duplicated in addons/parley/views/parley_node.gd
 func _on_match_node_editor_match_node_changed(id: String, description: String, fact_name: String, cases: Array[Variant]) -> void:
 	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
 	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)

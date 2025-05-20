@@ -19,7 +19,7 @@ layout_mode = 2
 [node name="ConditionDescription" type="TextEdit" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionDescriptionContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
-placeholder_text = "Clues 1 and 2 are both found"
+placeholder_text = "Condition description (Eg. Player character has coffee)"
 wrap_mode = 1
 scroll_past_end_of_file = true
 scroll_fit_content_height = true
