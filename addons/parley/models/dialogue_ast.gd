@@ -195,6 +195,13 @@ func remove_node(node_id: String) -> void:
 		index += 1
 	if not removed:
 		ParleyUtils.log.info("Unable to remove node with ID: %s" % [node_id])
+		return
+	index = 0
+	for edge: EdgeAst in edges:
+		if edge.from_node == node_id or edge.to_node == node_id:
+			edges.remove_at(index)
+		index += 1
+
 	_emit_dialogue_updated()
 
 

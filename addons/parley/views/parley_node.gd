@@ -17,6 +17,7 @@ var node_ast: NodeAst: set = _set_node_ast
 @onready var node_editor_container: VBoxContainer = %NodeEditorContainer
 
 signal node_changed(node_ast: NodeAst)
+signal delete_node_button_pressed(id: String)
 #endregion
 
 #region SETTERS
@@ -56,6 +57,7 @@ func _render_dialogue_node_editor() -> void:
 	dialogue_node_editor.character = dialogue_node_ast.character
 	dialogue_node_editor.dialogue = dialogue_node_ast.text
 	ParleyUtils.safe_connect(dialogue_node_editor.dialogue_node_changed, _on_dialogue_node_editor_dialogue_node_changed)
+	ParleyUtils.safe_connect(dialogue_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(dialogue_node_editor)
 
 func _render_dialogue_option_node_editor() -> void:
@@ -69,6 +71,7 @@ func _render_dialogue_option_node_editor() -> void:
 	dialogue_option_node_editor.character = dialogue_option_node_ast.character
 	dialogue_option_node_editor.option = dialogue_option_node_ast.text
 	ParleyUtils.safe_connect(dialogue_option_node_editor.dialogue_option_node_changed, _on_dialogue_option_node_editor_dialogue_option_node_changed)
+	ParleyUtils.safe_connect(dialogue_option_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(dialogue_option_node_editor)
 
 func _render_condition_node_editor() -> void:
@@ -91,6 +94,7 @@ func _render_condition_node_editor() -> void:
 	# TODO: use setters
 	condition_node_editor.update(condition_node_ast.id, condition_node_ast.description, condition, conditions)
 	ParleyUtils.safe_connect(condition_node_editor.condition_node_changed, _on_condition_node_editor_condition_node_changed)
+	ParleyUtils.safe_connect(condition_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(condition_node_editor)
 
 func _render_match_node_editor() -> void:
@@ -111,6 +115,7 @@ func _render_match_node_editor() -> void:
 	match_node_editor.fact_name = fact.name
 	match_node_editor.cases = match_node_ast.cases
 	ParleyUtils.safe_connect(match_node_editor.match_node_changed, _on_match_node_editor_match_node_changed)
+	ParleyUtils.safe_connect(match_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(match_node_editor)
 
 func _render_action_node_editor() -> void:
@@ -138,6 +143,7 @@ func _render_action_node_editor() -> void:
 	action_node_editor.action_script_name = action.name
 	action_node_editor.values = action_node_ast.values
 	ParleyUtils.safe_connect(action_node_editor.action_node_changed, _on_action_node_editor_action_node_changed)
+	ParleyUtils.safe_connect(action_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(action_node_editor)
 
 func _render_group_node_editor() -> void:
@@ -151,6 +157,7 @@ func _render_group_node_editor() -> void:
 	group_node_editor.group_name = group_node_ast.name
 	group_node_editor.colour = group_node_ast.colour
 	ParleyUtils.safe_connect(group_node_editor.group_node_changed, _on_group_node_editor_group_node_changed)
+	ParleyUtils.safe_connect(group_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(group_node_editor)
 
 func _render_start_node_editor() -> void:
@@ -161,6 +168,7 @@ func _render_start_node_editor() -> void:
 	## TODO: create from ast
 	var start_node_editor: StartNodeEditor = StartNodeEditorScene.instantiate()
 	start_node_editor.id = start_node_ast.id
+	ParleyUtils.safe_connect(start_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(start_node_editor)
 
 func _render_end_node_editor() -> void:
@@ -171,6 +179,7 @@ func _render_end_node_editor() -> void:
 	## TODO: create from ast
 	var end_node_editor: EndNodeEditor = EndNodeEditorScene.instantiate()
 	end_node_editor.id = end_node_ast.id
+	ParleyUtils.safe_connect(end_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(end_node_editor)
 #endregion
 
@@ -182,6 +191,11 @@ func _on_dialogue_node_editor_dialogue_node_changed(_id: String, character: Stri
 	new_node_ast.character = character
 	new_node_ast.text = dialogue
 	node_changed.emit(new_node_ast)
+
+
+func _on_delete_node_button_pressed(id: String) -> void:
+	delete_node_button_pressed.emit(id)
+
 
 func _on_dialogue_option_node_editor_dialogue_option_node_changed(_id: String, character: String, option: String) -> void:
 	# TODO: we should probably just update the resource here - it would make things way easier!

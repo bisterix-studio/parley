@@ -45,6 +45,7 @@ func _enter_tree() -> void:
 		# Node Editor Dock
 		node_editor = ParleyNodeScene.instantiate()
 		ParleyUtils.safe_connect(node_editor.node_changed, _on_node_editor_node_changed)
+		ParleyUtils.safe_connect(node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_UL, node_editor)
 
 		# Edges Editor Dock
@@ -95,6 +96,11 @@ func _on_dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: Dialogue
 func _on_node_editor_node_changed(node_ast: NodeAst) -> void:
 	if main_panel_instance:
 		main_panel_instance.selected_node_ast = node_ast
+
+
+func _on_delete_node_button_pressed(id: String) -> void:
+	if main_panel_instance:
+		main_panel_instance.delete_node_by_id(id)
 
 
 func _on_edges_editor_mouse_entered_edge(edge: EdgeAst) -> void:

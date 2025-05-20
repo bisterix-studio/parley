@@ -421,8 +421,8 @@ func defocus_edge(edge: EdgeAst) -> void:
 			node.unselect_to_slot(edge.to_slot)
 
 
-func _on_delete_node_button_pressed(id: String) -> void:
-	if not selected_node_id or is_instance_of(selected_node_id, TYPE_STRING):
+func delete_node_by_id(id: String) -> void:
+	if not selected_node_id or not is_instance_of(selected_node_id, TYPE_STRING):
 		ParleyUtils.log.info("No node is selected, not deleting anything")
 		return
 	if id != selected_node_id:
