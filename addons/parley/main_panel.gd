@@ -70,11 +70,19 @@ func _exit_tree() -> void:
 	# 	if ParleyManager.dialogue_imported.is_connected(_on_parley_manager_dialogue_imported):
 	# 		ParleyManager.dialogue_imported.disconnect(_on_parley_manager_dialogue_imported)
 
+# TODO: move into a more formalised cache
+# TODO: do by resource ID
+var dialogue_view_cache: Dictionary[DialogueAst, Dictionary] = {}
+
 func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 	# TODO: regenerate
 	if dialogue_ast != new_dialogue_ast:
 		dialogue_ast = new_dialogue_ast
 		if dialogue_ast:
+			if not dialogue_view_cache.has(dialogue_ast):
+				var _result: bool = dialogue_view_cache.set(dialogue_ast, {'scroll_offset': Vector2.ZERO})
+			var cache: Dictionary = dialogue_view_cache.get(dialogue_ast, {})
+			var scroll_offset: Vector2 = cache.get('scroll_offset', Vector2.ZERO)
 			if dialogue_ast.dialogue_updated.is_connected(_on_dialogue_ast_changed):
 				dialogue_ast.dialogue_updated.disconnect(_on_dialogue_ast_changed)
 			ParleyUtils.safe_connect(dialogue_ast.dialogue_updated, _on_dialogue_ast_changed)
@@ -82,6 +90,8 @@ func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 				sidebar.add_dialogue_ast(dialogue_ast)
 			dialogue_ast_selected.emit(dialogue_ast)
 			await refresh()
+			if graph_view:
+				graph_view.scroll_offset = scroll_offset
 
 func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:
 	selected_node_ast = new_selected_node_ast
@@ -256,6 +266,14 @@ func _on_test_dialogue_from_selected_button_pressed() -> void:
 func _on_node_editor_node_changed(new_node_ast: NodeAst) -> void:
 	selected_node_ast = new_node_ast
 
+
+func _on_graph_view_scroll_offset_changed(offset: Vector2) -> void:
+	if dialogue_ast:
+		if dialogue_view_cache.has(dialogue_ast):
+			var cache: Dictionary = dialogue_view_cache.get(dialogue_ast)
+			var _result: bool = cache.set('scroll_offset', offset)
+
+
 # TODO: remove ast stuff
 func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: String, new_dialogue_text: String) -> void:
 	var ast_node = dialogue_ast.find_node_by_id(id)
@@ -268,6 +286,7 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 		selected_node.character = new_character
 		selected_node.dialogue = new_dialogue_text
 
+
 # TODO: remove ast stuff
 func _on_dialogue_option_node_editor_dialogue_option_node_changed(id, new_character, new_option_text) -> void:
 	var ast_node = dialogue_ast.find_node_by_id(id)
@@ -279,6 +298,7 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(id, new_charac
 	if selected_node is DialogueOptionNode:
 		selected_node.character = new_character
 		selected_node.option = new_option_text
+
 
 # TODO: remove ast stuff
 func _on_condition_node_editor_condition_node_changed(id, description, condition, conditions) -> void:

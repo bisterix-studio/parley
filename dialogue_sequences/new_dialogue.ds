@@ -1,9 +1,18 @@
 {
   "title": "",
-  "nodes": [],
+  "nodes": [
+    {
+      "id": "1",
+      "type": "DIALOGUE",
+      "position": "(1506.0, 1068.0)",
+      "character": "",
+      "text": ""
+    }
+  ],
   "edges": [],
   "stores": {
     "character": [],
-    "fact": []
+    "fact": [],
+    "action": []
   }
 }
