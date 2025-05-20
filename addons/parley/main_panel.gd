@@ -91,6 +91,9 @@ func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 			dialogue_ast_selected.emit(dialogue_ast)
 			await refresh()
 			if graph_view:
+				# Seems like we have to do this twice to get it to correct render
+				# TODO: investigate further
+				graph_view.scroll_offset = scroll_offset
 				graph_view.scroll_offset = scroll_offset
 
 func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:

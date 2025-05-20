@@ -223,6 +223,7 @@ size_flags_horizontal = 3
 [node name="GraphView" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("20_8yxrj")]
 unique_name_in_owner = true
 layout_mode = 2
+scroll_offset = Vector2(0, 0)
 
 [node name="BottomPanel" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("29_xxhvx")]
 unique_name_in_owner = true
