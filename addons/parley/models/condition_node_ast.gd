@@ -13,9 +13,9 @@ enum Operator {EQUAL, NOT_EQUAL}
 @export var description: String
 
 
-## The condition combiner of the Condition Node AST.
+## The combiner of the Condition Node AST.
 ## Example: ConditionCombiner.ALL
-@export var condition: Combiner
+@export var combiner: Combiner
 
 
 ## The conditions of the Condition Node AST.
@@ -43,21 +43,21 @@ func to_dict() -> Dictionary:
 	var node_dict: Dictionary = inst_to_dict(self)
 	var _at_path_discarded: bool = node_dict.erase('@path')
 	var _sub_path_discarded: bool = node_dict.erase('@subpath')
-	node_dict['condition'] = str(Combiner.find_key(node_dict['condition']))
+	node_dict['combiner'] = str(Combiner.find_key(node_dict['combiner']))
 	node_dict['type'] = str(DialogueAst.Type.find_key(node_dict['type']))
 	return node_dict
 
 
 ## Update a Condition Node AST.
 ## Example: node.update("Description", ConditionCombiner.ALL, [])
-func update(p_description: String, p_condition_combiner: Combiner, p_conditions: Array) -> void:
-	description = p_description
-	condition = p_condition_combiner
+func update(_description: String, _combiner: Combiner, _conditions: Array) -> void:
+	description = _description
+	combiner = _combiner
 	conditions = []
-	for p_condition: Dictionary in p_conditions.duplicate(true):
-		var fact_ref: String = p_condition['fact_ref']
-		var operator: ConditionNodeAst.Operator = p_condition['operator']
-		var value: Variant = p_condition['value']
+	for _condition: Dictionary in _conditions.duplicate(true):
+		var fact_ref: String = _condition['fact_ref']
+		var operator: ConditionNodeAst.Operator = _condition['operator']
+		var value: Variant = _condition['value']
 		add_condition(fact_ref, operator, value)
 
 

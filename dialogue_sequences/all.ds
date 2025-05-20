@@ -25,7 +25,7 @@
       "type": "CONDITION",
       "position": "(2580.0, 500.0)",
       "description": "Bob has a coffee",
-      "condition": "ALL",
+      "combiner": "ALL",
       "conditions": [
         {
           "fact_ref": "res://facts/bob_has_coffee_fact.gd",
@@ -106,7 +106,7 @@
       "type": "CONDITION",
       "position": "(3080.0, 880.0)",
       "description": "Alice gave a coffee",
-      "condition": "ALL",
+      "combiner": "ALL",
       "conditions": [
         {
           "fact_ref": "res://facts/alice_gave_coffee_fact.gd",

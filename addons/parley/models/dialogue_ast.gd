@@ -58,10 +58,10 @@ func add_ast_node(node: Dictionary) -> void:
 			var text: String = node.get('text', '')
 			ast_node = DialogueOptionNodeAst.new(id, position, character, text)
 		Type.CONDITION:
-			var condition: ConditionNodeAst.Combiner = ConditionNodeAst.Combiner.get(node.get('condition'), ConditionNodeAst.Combiner.ALL)
+			var combiner: ConditionNodeAst.Combiner = ConditionNodeAst.Combiner.get(node.get('combiner'), ConditionNodeAst.Combiner.ALL)
 			var description: String = node.get('description', '')
 			var conditions: Array = node.get('conditions', [])
-			ast_node = ConditionNodeAst.new(id, position, description, condition, conditions)
+			ast_node = ConditionNodeAst.new(id, position, description, combiner, conditions)
 		Type.MATCH:
 			var description: String = node.get('description', '')
 			var fact_ref: String = node.get('fact_ref', '')
@@ -353,7 +353,7 @@ func is_at_end(ctx: Dictionary, current_node: NodeAst) -> bool:
 
 
 func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, dry_run: bool) -> bool:
-	var combiner: ConditionNodeAst.Combiner = condition_node.condition
+	var combiner: ConditionNodeAst.Combiner = condition_node.combiner
 	var conditions: Array = condition_node.conditions
 	var results: Array[bool] = []
 	for condition_def: Dictionary in conditions:

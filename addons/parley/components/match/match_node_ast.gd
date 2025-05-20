@@ -8,12 +8,12 @@ class_name MatchNodeAst extends NodeAst
 @export var description: String
 
 
-## The condition combiner of the Match Node AST.
+## The fact ref of the Match Node AST.
 ## Example: "res://facts/alice_coffee_status_fact.gd"
 @export var fact_ref: String
 
 
-## The conditions of the Match Node AST.
+## The cases of the Match Node AST.
 ## Example: ["NEEDS_COFFEE", "NEEDS_MORE_COFFEE", "NEEDS_EVEN_MORE_COFFEE"]
 @export var cases: Array[Variant] = []
 

@@ -107,7 +107,7 @@ func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:
 			_on_dialogue_option_node_editor_dialogue_option_node_changed(dialogue_option_node_ast.id, dialogue_option_node_ast.character, dialogue_option_node_ast.text)
 		DialogueAst.Type.CONDITION:
 			var condition_node_ast: ConditionNodeAst = selected_node_ast
-			_on_condition_node_editor_condition_node_changed(condition_node_ast.id, condition_node_ast.description, condition_node_ast.condition, condition_node_ast.conditions)
+			_on_condition_node_editor_condition_node_changed(condition_node_ast.id, condition_node_ast.description, condition_node_ast.combiner, condition_node_ast.conditions)
 		DialogueAst.Type.MATCH:
 			var match_node_ast: MatchNodeAst = selected_node_ast
 			var fact_name: String = ParleyManager.fact_store.get_fact_by_ref(match_node_ast.fact_ref).name
@@ -279,38 +279,46 @@ func _on_graph_view_scroll_offset_changed(offset: Vector2) -> void:
 
 # TODO: remove ast stuff
 func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: String, new_dialogue_text: String) -> void:
-	var ast_node = dialogue_ast.find_node_by_id(id)
-	var selected_node = graph_view.find_node_by_id(id)
-	if not ast_node or not _is_selected_node(DialogueNode, selected_node, id):
+	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
+	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
+	if not _ast_node or not _is_selected_node(DialogueNode, _selected_node, id):
 		return
-	if ast_node is DialogueNodeAst:
+	if _ast_node is DialogueNodeAst:
+		var ast_node: DialogueNodeAst = _ast_node
 		ast_node.update(new_character, new_dialogue_text)
-	if selected_node is DialogueNode:
+	if _selected_node is DialogueNode:
+		var selected_node: DialogueNode = _selected_node
 		selected_node.character = new_character
 		selected_node.dialogue = new_dialogue_text
 
 
 # TODO: remove ast stuff
-func _on_dialogue_option_node_editor_dialogue_option_node_changed(id, new_character, new_option_text) -> void:
-	var ast_node = dialogue_ast.find_node_by_id(id)
-	var selected_node = graph_view.find_node_by_id(id)
-	if not ast_node or not _is_selected_node(DialogueOptionNode, selected_node, id):
+func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, new_character: String, new_option_text: String) -> void:
+	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
+	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
+	if not _ast_node or not _is_selected_node(DialogueOptionNode, _selected_node, id):
 		return
-	if ast_node is DialogueOptionNodeAst:
+	if _ast_node is DialogueOptionNodeAst:
+		var ast_node: DialogueOptionNodeAst = _ast_node
 		ast_node.update(new_character, new_option_text)
-	if selected_node is DialogueOptionNode:
+	if _selected_node is DialogueOptionNode:
+		var selected_node: DialogueOptionNode = _selected_node
 		selected_node.character = new_character
 		selected_node.option = new_option_text
 
 
 # TODO: remove ast stuff
-func _on_condition_node_editor_condition_node_changed(id, description, condition, conditions) -> void:
-	var ast_node = dialogue_ast.find_node_by_id(id)
-	var selected_node = graph_view.find_node_by_id(id)
-	if not ast_node or not _is_selected_node(ConditionNode, selected_node, id):
+func _on_condition_node_editor_condition_node_changed(id: String, description: String, combiner, conditions) -> void:
+	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
+	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
+	if not _ast_node or not _is_selected_node(ConditionNode, _selected_node, id):
 		return
-	ast_node.update(description, condition, conditions.duplicate(true))
-	selected_node.update(description)
+	if _ast_node is ConditionNodeAst:
+		var ast_node: ConditionNodeAst = _ast_node
+		ast_node.update(description, combiner, conditions.duplicate(true))
+	if _selected_node is ConditionNode:
+		var selected_node: ConditionNode = _selected_node
+		selected_node.update(description)
 
 # TODO: remove ast stuff
 func _on_match_node_editor_match_node_changed(id: String, description: String, fact_name: String, cases: Array[Variant]) -> void:

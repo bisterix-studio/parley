@@ -6,7 +6,7 @@
 [node name="ConditionNodeEditor" instance=ExtResource("1_rqlcg")]
 script = ExtResource("1_fipku")
 description = ""
-condition = 0
+combiner = 0
 conditions = []
 type = 2
 
@@ -28,16 +28,15 @@ use_default_word_separators = false
 [node name="HSeparator" type="HSeparator" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionDescriptionContainer" index="1"]
 layout_mode = 2
 
-[node name="ConditionTrueContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
+[node name="CombinerContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
 
-[node name="ConditionLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionTrueContainer" index="0"]
+[node name="CombinerLabel" type="Label" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CombinerContainer" index="0"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Condition
-"
+text = "Combiner:"
 
-[node name="ConditionOption" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionTrueContainer" index="1"]
+[node name="CombinerOption" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CombinerContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
 selected = 0
@@ -68,5 +67,5 @@ size_flags_horizontal = 3
 text = "Add Condition"
 
 [connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionDescriptionContainer/ConditionDescription" to="." method="_on_condition_description_text_changed"]
-[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionTrueContainer/ConditionOption" to="." method="_on_condition_option_item_selected"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/CombinerContainer/CombinerOption" to="." method="_on_condition_option_item_selected"]
 [connection signal="pressed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ConditionsContainer/AddCondition/AddConditionButton" to="." method="_on_add_condition_button_pressed"]

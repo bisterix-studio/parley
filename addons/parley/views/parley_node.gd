@@ -79,7 +79,7 @@ func _render_condition_node_editor() -> void:
 		ParleyUtils.log.error("No dialogue sequence AST selected for %s, unable to render node editor" % [node_ast])
 		return
 	var condition_node_ast: ConditionNodeAst = node_ast
-	var condition: ConditionNodeAst.Combiner = condition_node_ast.condition
+	var combiner: ConditionNodeAst.Combiner = condition_node_ast.combiner
 	# Create a separation between layers by duplicating
 	var conditions: Array = condition_node_ast.conditions.duplicate(true).map(
 		func(condition_item: Dictionary) -> Dictionary:
@@ -95,7 +95,7 @@ func _render_condition_node_editor() -> void:
 	)
 	var condition_node_editor: ConditionNodeEditor = ConditionNodeEditorScene.instantiate()
 	# TODO: use setters
-	condition_node_editor.update(condition_node_ast.id, condition_node_ast.description, condition, conditions)
+	condition_node_editor.update(condition_node_ast.id, condition_node_ast.description, combiner, conditions)
 	ParleyUtils.safe_connect(condition_node_editor.condition_node_changed, _on_condition_node_editor_condition_node_changed)
 	ParleyUtils.safe_connect(condition_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(condition_node_editor)
@@ -200,7 +200,7 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(_id: String, c
 	new_node_ast.text = option
 	node_changed.emit(new_node_ast)
 
-func _on_condition_node_editor_condition_node_changed(_id: String, description: String, condition: ConditionNodeAst.Combiner, conditions: Array) -> void:
+func _on_condition_node_editor_condition_node_changed(_id: String, description: String, combiner: ConditionNodeAst.Combiner, conditions: Array) -> void:
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: ConditionNodeAst = node_ast.duplicate(true)
 	var ast_conditions: Array = []
@@ -216,7 +216,7 @@ func _on_condition_node_editor_condition_node_changed(_id: String, description: 
 			'value': condition_def['value'],
 		})
 	# TODO: use setters
-	new_node_ast.update(description, condition, ast_conditions)
+	new_node_ast.update(description, combiner, ast_conditions)
 	node_changed.emit(new_node_ast)
 
 func _on_match_node_editor_match_node_changed(_id: String, description: String, fact_name: String, cases: Array[Variant]) -> void:
