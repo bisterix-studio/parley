@@ -313,6 +313,7 @@ func _on_condition_node_editor_condition_node_changed(id, description, condition
 	selected_node.update(description)
 
 # TODO: remove ast stuff
+# TODO: this appears to be duplicated in addons/parley/views/parley_node.gd
 func _on_match_node_editor_match_node_changed(id: String, description: String, fact_name: String, cases: Array[Variant]) -> void:
 	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
 	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
@@ -321,9 +322,6 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 	var ast_node: MatchNodeAst = _ast_node
 	var selected_node: MatchNode = _selected_node
 	var fact: Fact = ParleyManager.fact_store.get_fact_by_name(fact_name)
-	if fact.id == "":
-		ParleyUtils.log.error("Unable to find Fact with name %s in the store" % [fact_name])
-		return
 	# Handle any necessary edge changes
 	var edges_to_delete: Array[EdgeAst] = []
 	var edges_to_create: Array[EdgeAst] = []
@@ -346,7 +344,8 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 
 	if ast_node is MatchNodeAst:
 		ast_node.description = description
-		ast_node.fact_ref = fact.ref.resource_path
+		if fact.id != "":
+			ast_node.fact_ref = fact.ref.resource_path
 		ast_node.cases = cases.duplicate()
 	if selected_node is MatchNode:
 		selected_node.description = description
@@ -366,12 +365,12 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 	if ast_node is not ActionNodeAst or not _is_selected_node(ActionNode, selected_node, id):
 		return
 	var action: Action = ParleyManager.action_store.get_action_by_name(action_script_name)
-	if action.id == "":
-		ParleyUtils.log.error("Unable to find Action with script name %s in the store" % [action_script_name])
-		return
 	if ast_node is ActionNodeAst:
 		var action_node_ast: ActionNodeAst = ast_node
-		action_node_ast.update(description, action_type, action.ref.resource_path, values)
+		var resource_path: String = ""
+		if action.id != "":
+			resource_path = action.ref.resource_path
+		action_node_ast.update(description, action_type, resource_path, values)
 	if selected_node is ActionNode:
 		selected_node.description = description
 		selected_node.action_type = action_type

@@ -92,7 +92,7 @@ func get_fact_by_name(name: String) -> Fact:
 	var filtered_facts: Array = facts.filter(func(fact: Fact) -> bool: return fact.name == name)
 	if filtered_facts.size() == 0:
 		# TODO: is there a better way of handling this error here?
-		ParleyUtils.log.error("Fact with name %s not found in store" % [name])
+		ParleyUtils.log.warn("Fact with name '%s' not found in store, returning an empty Fact" % [name])
 		return Fact.new()
 	return filtered_facts.front()
 
@@ -101,7 +101,7 @@ func get_fact_by_ref(ref: String) -> Fact:
 	var filtered_facts: Array = facts.filter(func(fact: Fact) -> bool: return fact.ref and fact.ref.resource_path == ref)
 	if filtered_facts.size() == 0:
 		# TODO: is there a better way of handling this error here?
-		ParleyUtils.log.error("Fact with ref %s not found in store" % [ref])
+		ParleyUtils.log.warn("Fact with ref '%s' not found in store, returning an empty Fact" % [ref])
 		return Fact.new()
 	return filtered_facts.front()
 #endregion

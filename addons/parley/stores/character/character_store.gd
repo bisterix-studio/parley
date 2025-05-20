@@ -90,8 +90,7 @@ func has_character_name(name: String) -> bool:
 func get_character_by_name(name: String) -> Character:
 	var filtered_characters: Array = characters.filter(func(character: Character) -> bool: return character.name == name)
 	if filtered_characters.size() == 0:
-		# TODO: is there a better way of handling this error here?
-		ParleyUtils.log.error("Character with name %s not found in store" % [name])
+		ParleyUtils.log.warn("Character with name '%s' not found in store, returning an empty Character" % [name])
 		return Character.new()
 	return filtered_characters.front()
 #endregion

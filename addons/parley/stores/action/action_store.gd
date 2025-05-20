@@ -91,8 +91,7 @@ func has_action_name(name: String) -> bool:
 func get_action_by_name(name: String) -> Action:
 	var filtered_actions: Array = actions.filter(func(action: Action) -> bool: return action.name == name)
 	if filtered_actions.size() == 0:
-		# TODO: is there a better way of handling this error here?
-		ParleyUtils.log.error("Action with name %s not found in store" % [name])
+		ParleyUtils.log.warn("Action with name '%s' not found in store, returning an empty Action" % [name])
 		return Action.new()
 	return filtered_actions.front()
 
@@ -100,8 +99,7 @@ func get_action_by_name(name: String) -> Action:
 func get_action_by_ref(ref: String) -> Action:
 	var filtered_actions: Array = actions.filter(func(action: Action) -> bool: return action.ref and action.ref.resource_path == ref)
 	if filtered_actions.size() == 0:
-		# TODO: is there a better way of handling this error here?
-		ParleyUtils.log.error("Action with ref %s not found in store" % [ref])
+		ParleyUtils.log.warn("Action with ref '%s' not found in store, returning an empty Action" % [ref])
 		return Action.new()
 	return filtered_actions.front()
 #endregion

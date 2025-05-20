@@ -84,6 +84,9 @@ func _render_condition_node_editor() -> void:
 	var conditions: Array = condition_node_ast.conditions.duplicate(true).map(
 		func(condition_item: Dictionary) -> Dictionary:
 			var fact_ref: String = condition_item['fact_ref']
+			var exists: bool = ResourceLoader.exists(fact_ref)
+			if not exists:
+				ParleyUtils.log.warn("Condition fact ref '%s' does not exist within the file system meaning this dialogue sequence will likely fail at runtime." % fact_ref)
 			return {
 				'fact_name': ParleyManager.fact_store.get_fact_by_ref(fact_ref).name,
 				'operator': condition_item['operator'],
@@ -109,9 +112,9 @@ func _render_match_node_editor() -> void:
 	# TODO: get this from the node itself and ultimately the JSON definition
 	match_node_editor.fact_store = ParleyManager.fact_store
 	var fact: Fact = ParleyManager.fact_store.get_fact_by_ref(match_node_ast.fact_ref)
-	if fact.id == "":
-		ParleyUtils.log.error("Unable to find Fact with ref %s in the store" % [match_node_ast.fact_ref])
-		return
+	var exists: bool = ResourceLoader.exists(match_node_ast.fact_ref)
+	if not exists:
+		ParleyUtils.log.warn("Match fact ref '%s' does not exist within the file system meaning this dialogue sequence will likely fail at runtime." % match_node_ast.fact_ref)
 	match_node_editor.fact_name = fact.name
 	match_node_editor.cases = match_node_ast.cases
 	ParleyUtils.safe_connect(match_node_editor.match_node_changed, _on_match_node_editor_match_node_changed)
@@ -124,17 +127,10 @@ func _render_action_node_editor() -> void:
 		return
 	var action_node_ast: ActionNodeAst = node_ast
 	var action: Action = ParleyManager.action_store.get_action_by_ref(action_node_ast.action_script_ref)
-	if action.id == "":
-		var exists: bool = ResourceLoader.exists(action_node_ast.action_script_ref)
-		var message_parts: PackedStringArray = [
-			"Unable to find Action with script ref %s in the store." % [action_node_ast.action_script_ref],
-			"Please add to a registered Parley Action Store to be able to edit Action Node [ID=%s]." % [action_node_ast.id]
-		]
-		ParleyUtils.log.error(" ".join(message_parts))
-		if exists:
-			ParleyUtils.log.warn("Script ref %s does not exist within the file system meaning this dialogue sequence will likely fail at runtime." % action_node_ast.action_script_ref)
+	var exists: bool = ResourceLoader.exists(action_node_ast.action_script_ref)
+	if not exists:
+		ParleyUtils.log.warn("Action script ref '%s' does not exist within the file system meaning this dialogue sequence will likely fail at runtime." % action_node_ast.action_script_ref)
 
-		return
 	## TODO: create from ast
 	var action_node_editor: ActionNodeEditor = ActionNodeEditorScene.instantiate()
 	action_node_editor.id = action_node_ast.id
@@ -204,7 +200,7 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(_id: String, c
 	new_node_ast.text = option
 	node_changed.emit(new_node_ast)
 
-func _on_condition_node_editor_condition_node_changed(id: String, description: String, condition: ConditionNodeAst.Combiner, conditions: Array) -> void:
+func _on_condition_node_editor_condition_node_changed(_id: String, description: String, condition: ConditionNodeAst.Combiner, conditions: Array) -> void:
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: ConditionNodeAst = node_ast.duplicate(true)
 	var ast_conditions: Array = []
@@ -223,45 +219,24 @@ func _on_condition_node_editor_condition_node_changed(id: String, description: S
 	new_node_ast.update(description, condition, ast_conditions)
 	node_changed.emit(new_node_ast)
 
-func _on_match_node_editor_match_node_changed(id: String, description: String, fact_name: String, cases: Array[Variant]) -> void:
+func _on_match_node_editor_match_node_changed(_id: String, description: String, fact_name: String, cases: Array[Variant]) -> void:
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: MatchNodeAst = node_ast.duplicate(true)
 	var fact: Fact = ParleyManager.fact_store.get_fact_by_name(fact_name)
-	if fact.id == "":
-		ParleyUtils.log.error("Unable to find Fact with name %s in the store" % [fact_name])
-		return
-	# Handle any necessary edge changes
-	var edges_to_delete: Array[EdgeAst] = []
-	var edges_to_create: Array[EdgeAst] = []
-	if cases.hash() != new_node_ast.cases.hash():
-		# Calculate edges to delete
-		var relevant_edges: Array[EdgeAst] = dialogue_sequence_ast.edges.filter(func(edge: EdgeAst) -> bool: return edge.from_node == id)
-		for edge: EdgeAst in relevant_edges:
-			var slot: int = edge.from_slot
-			if slot >= cases.size() or cases[slot] != new_node_ast.cases[slot]:
-				edges_to_delete.append(edge)
-		# Calculate edges to create
-		for edge: EdgeAst in relevant_edges:
-			var slot: int = edge.from_slot
-			if slot < new_node_ast.cases.size() and cases.has(new_node_ast.cases[slot]):
-				var current_case: Variant = new_node_ast.cases[slot]
-				var case_index: int = cases.find(current_case)
-				if case_index != -1:
-					var new_edge: EdgeAst = EdgeAst.new(edge.from_node, case_index, edge.to_node, edge.to_slot)
-					edges_to_create.append(new_edge)
 	new_node_ast.description = description
-	new_node_ast.fact_ref = fact.ref.resource_path
+	if fact.id != "":
+		new_node_ast.fact_ref = fact.ref.resource_path
 	new_node_ast.cases = cases.duplicate()
 	node_changed.emit(new_node_ast)
 
-func _on_action_node_editor_action_node_changed(id: String, description: String, action_type: ActionNodeAst.ActionType, action_script_name: String, values: Array) -> void:
+func _on_action_node_editor_action_node_changed(_id: String, description: String, action_type: ActionNodeAst.ActionType, action_script_name: String, values: Array) -> void:
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: ActionNodeAst = node_ast.duplicate(true)
 	var action: Action = ParleyManager.action_store.get_action_by_name(action_script_name)
-	if action.id == "":
-		ParleyUtils.log.error("Unable to find Action with script name %s in the store" % [action_script_name])
-		return
-	new_node_ast.update(description, action_type, action.ref.resource_path, values)
+	var resource_path: String = ""
+	if action.id != "":
+		resource_path = action.ref.resource_path
+	new_node_ast.update(description, action_type, resource_path, values)
 	node_changed.emit(new_node_ast)
 
 func _on_group_node_editor_group_node_changed(_id: String, group_name: String, colour: Color) -> void:
