@@ -5,7 +5,7 @@ const ParleyConstants = preload("./constants.gd")
 
 static var DEFAULT_SETTINGS: Dictionary = {
 	# Dialogue
-	ParleyConstants.DIALOGUE_BALLOON_PATH: preload("./components/default_balloon.tscn").resource_path,
+	ParleyConstants.DIALOGUE_BALLOON_PATH: ParleyUtils.resource.get_uid(preload("./components/default_balloon.tscn")),
 	# Stores
 	# TODO: remove
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",

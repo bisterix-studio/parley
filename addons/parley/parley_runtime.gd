@@ -8,10 +8,10 @@ const ParleyConstants = preload('./constants.gd')
 
 #region REGISTRATIONS
 static func get_instance() -> ParleyRuntime:
-	if Engine.has_singleton("ParleyRuntime"):
-		return Engine.get_singleton("ParleyRuntime")
+	if Engine.has_singleton(ParleyConstants.PARLEY_RUNTIME_SINGLETON):
+		return Engine.get_singleton(ParleyConstants.PARLEY_RUNTIME_SINGLETON)
 	var parley_runtime: ParleyRuntime = ParleyRuntime.new()
-	Engine.register_singleton("ParleyRuntime", parley_runtime)
+	Engine.register_singleton(ParleyConstants.PARLEY_RUNTIME_SINGLETON, parley_runtime)
 	return parley_runtime
 #endregion
 

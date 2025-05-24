@@ -2,13 +2,6 @@
 class_name StoresAst extends Resource
 
 
-enum Type {
-	Character,
-	Fact,
-	Action,
-}
-
-
 ## The Character Stores for the Dialogue Sequence
 @export var character: Array[CharacterStore] = []
 
@@ -17,14 +10,9 @@ enum Type {
 @export var fact: Array[FactStore] = []
 
 
-## The Action Stores for the Dialogue Sequence
-@export var action: Array[ActionStore] = []
-
-
-func _init(_character: Array = [], _fact: Array = [], _action: Array = []) -> void:
+func _init(_character: Array = [], _fact: Array = []) -> void:
 	_add_character_stores(_character)
 	_add_fact_stores(_fact)
-	_add_action_stores(_action)
 
 
 ## Register an existing character store
@@ -63,25 +51,6 @@ func new_fact_store(id: String, ref: String, facts: Array[Fact] = []) -> Variant
 	return fact_store
 
 
-## Register an existing action store
-func register_action_store(action_store: ActionStore) -> void:
-	if not action.has(action_store):
-		action.append(action_store)
-		emit_changed()
-
-
-## Register a new action store
-func new_action_store(id: String, ref: String, actions: Array[Action] = []) -> Variant:
-	var action_store: ActionStore = ActionStore.new(id, actions)
-	var save_result: int = ResourceSaver.save(action_store, ref)
-	if save_result != OK:
-		push_error("Error registering new action store: %s" % [save_result])
-		return null
-	action.append(action_store)
-	emit_changed()
-	return action_store
-
-
 ## Add character stores from a dictionary
 func _add_character_stores(_character: Array) -> void:
 	character = []
@@ -102,16 +71,6 @@ func _add_fact_stores(_fact: Array) -> void:
 		fact.append(store)
 
 
-## Add action stores from a dictionary
-func _add_action_stores(_action: Array) -> void:
-	action = []
-	for action_store: Dictionary in _action:
-		var ref: String = action_store.get('ref')
-		var store: ActionStore = load(ref)
-		# TODO: should we check the ID at this point to see if it has loaded correctly?
-		action.append(store)
-
-
 ## Convert this resource into a Dictionary for storage
 func to_dict() -> Dictionary:
 	var node_dict: Dictionary = inst_to_dict(self)
@@ -119,8 +78,6 @@ func to_dict() -> Dictionary:
 	var _ok_subpath: bool = node_dict.erase('@subpath')
 	node_dict['character'] = character.map(func(c: CharacterStore) -> Dictionary: return c.to_dict())
 	node_dict['fact'] = fact.map(func(f: FactStore) -> Dictionary: return f.to_dict())
-	node_dict['action'] = action.map(func(a: ActionStore) -> Dictionary: return a.to_dict())
-	# TODO: action output
 	return node_dict
 
 

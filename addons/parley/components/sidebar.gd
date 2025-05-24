@@ -71,7 +71,7 @@ func _update_dialogue_asts(updated_dialogue_asts: Array[DialogueAst]) -> void:
 
 func add_dialogue_ast(dialogue_ast: DialogueAst) -> void:
 	# We don't want to add a Dialogue AST that already exists
-	var filtered: Array = dialogue_asts.filter(func(d: DialogueAst) -> bool: return d.resource_path == dialogue_ast.resource_path)
+	var filtered: Array = dialogue_asts.filter(func(d: DialogueAst) -> bool: return ParleyUtils.resource.get_uid(d) == ParleyUtils.resource.get_uid(dialogue_ast))
 	if dialogue_asts.size() > 0 and filtered.size() > 0:
 		return
 	dialogue_asts.append(dialogue_ast)

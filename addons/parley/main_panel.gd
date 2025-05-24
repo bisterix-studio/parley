@@ -393,10 +393,10 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 	var action: Action = action_store.get_action_by_ref(action_script_ref)
 	if ast_node is ActionNodeAst:
 		var action_node_ast: ActionNodeAst = ast_node
-		var resource_path: String = ""
+		var uid: String = ""
 		if action.id != "":
-			resource_path = action.ref.resource_path
-		action_node_ast.update(description, action_type, resource_path, values)
+			uid = ParleyUtils.resource.get_uid(action.ref)
+		action_node_ast.update(description, action_type, uid, values)
 	if selected_node is ActionNode:
 		selected_node.description = description
 		selected_node.action_type = action_type
@@ -485,7 +485,7 @@ func _on_sidebar_node_selected(node: NodeAst) -> void:
 
 
 func _on_sidebar_dialogue_ast_selected(selected_dialogue_ast: DialogueAst) -> void:
-	if dialogue_ast.resource_path != selected_dialogue_ast.resource_path:
+	if ParleyUtils.resource.get_uid(dialogue_ast) != ParleyUtils.resource.get_uid(selected_dialogue_ast):
 		dialogue_ast = selected_dialogue_ast
 
 

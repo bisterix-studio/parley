@@ -97,7 +97,7 @@ func _on_action_script_selector_item_selected(index: int) -> void:
 	if index == -1 or index >= action_store.actions.size():
 		return
 	var action: Action = action_store.actions[index]
-	action_script_ref = action.ref.resource_path
+	action_script_ref = ParleyUtils.resource.get_uid(action.ref)
 	_emit_action_node_changed()
 
 func _emit_action_node_changed() -> void:

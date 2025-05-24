@@ -11,11 +11,6 @@ const ParleyEdges: PackedScene = preload("./views/parley_edges.tscn")
 const MainPanelScene: PackedScene = preload("./main_panel.tscn")
 
 
-const PARLEY_RUNTIME_AUTOLOAD: String = "Parley"
-const PARLEY_MANAGER_SINGLETON: String = "ParleyManager"
-const PARLEY_RUNTIME_SINGLETON: String = "ParleyRuntime"
-
-
 var main_panel_instance: ParleyMainPanel
 var import_plugin: EditorImportPlugin
 var stores_editor: ParleyStoresEditor
@@ -192,7 +187,7 @@ func _make_visible(visible: bool) -> void:
 
 
 func _get_plugin_name() -> String:
-	return "Parley"
+	return ParleyConstants.PLUGIN_NAME
 
 
 func _get_plugin_icon() -> Texture2D:
@@ -201,14 +196,14 @@ func _get_plugin_icon() -> Texture2D:
 
 
 func _enable_plugin() -> void:
-	add_autoload_singleton(PARLEY_RUNTIME_AUTOLOAD, "./parley_runtime.gd")
+	add_autoload_singleton(ParleyConstants.PARLEY_RUNTIME_AUTOLOAD, "./parley_runtime.gd")
 
 
 func _disable_plugin() -> void:
-	remove_autoload_singleton(PARLEY_RUNTIME_AUTOLOAD)
+	remove_autoload_singleton(ParleyConstants.PARLEY_RUNTIME_AUTOLOAD)
 
-	if Engine.has_singleton(PARLEY_MANAGER_SINGLETON):
-		Engine.unregister_singleton(PARLEY_MANAGER_SINGLETON)
+	if Engine.has_singleton(ParleyConstants.PARLEY_MANAGER_SINGLETON):
+		Engine.unregister_singleton(ParleyConstants.PARLEY_MANAGER_SINGLETON)
 
-	if Engine.has_singleton(PARLEY_RUNTIME_SINGLETON):
-		Engine.unregister_singleton(PARLEY_RUNTIME_SINGLETON)
+	if Engine.has_singleton(ParleyConstants.PARLEY_RUNTIME_SINGLETON):
+		Engine.unregister_singleton(ParleyConstants.PARLEY_RUNTIME_SINGLETON)

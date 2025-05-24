@@ -144,8 +144,7 @@ func add_ast_stores(_stores: Dictionary) -> void:
 	# all values are defined
 	var character_store: Array = _stores.get('character', [])
 	var fact_store: Array = _stores.get('fact', [])
-	var action_store: Array = _stores.get('action', [])
-	stores = StoresAst.new(character_store, fact_store, action_store)
+	stores = StoresAst.new(character_store, fact_store)
 
 ## Add a new edge to the list of edges. It will not add an edge if it already exists
 ## It returns the number of edges added (1 or 0).

@@ -9,7 +9,6 @@ script = ExtResource("1_qwxcu")
 id = "main:advance_time"
 name = "Advance Time"
 ref = ExtResource("2_6wvxp")
-metadata/parley_action_store = "res://actions/action_store.tres"
 
 [resource]
 script = ExtResource("3_6b0df")

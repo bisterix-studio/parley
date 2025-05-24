@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="2_hnfne"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_hnfne"]
 [ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="4_6q5xl"]
-[ext_resource type="PackedScene" uid="uid://msdptt8ygebm" path="res://addons/parley/stores/action/register_store_modal.tscn" id="5_885rw"]
+[ext_resource type="PackedScene" uid="uid://msdptt8ygebm" path="res://addons/parley/stores/register_store_modal.tscn" id="5_885rw"]
 [ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="7_kbaov"]
 
 [node name="CharacterStoreEditor" type="PanelContainer"]

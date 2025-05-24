@@ -7,6 +7,9 @@ const USER_CONFIG_PATH: String = "user://parley_user_config.json"
 #region Parley Plugin
 const PLUGIN_NAME: String = "Parley"
 const PARLEY_PLUGIN_METADATA: String = "ParleyPlugin"
+const PARLEY_RUNTIME_AUTOLOAD: String = "Parley"
+const PARLEY_MANAGER_SINGLETON: String = "ParleyManager"
+const PARLEY_RUNTIME_SINGLETON: String = "ParleyRuntime"
 #endregion
 
 #region Editor

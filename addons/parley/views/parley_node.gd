@@ -147,7 +147,7 @@ func _render_action_node_editor() -> void:
 		return
 	var action_node_ast: ActionNodeAst = node_ast
 	var exists: bool = ResourceLoader.exists(action_node_ast.action_script_ref)
-	if not exists:
+	if not exists and action_node_ast.action_script_ref != "":
 		ParleyUtils.log.warn("Action script ref '%s' does not exist within the file system meaning this dialogue sequence will likely fail at runtime." % action_node_ast.action_script_ref)
 
 	## TODO: create from ast
@@ -262,10 +262,10 @@ func _on_action_node_editor_action_node_changed(_id: String, description: String
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: ActionNodeAst = node_ast.duplicate(true)
 	var action: Action = action_store.get_action_by_ref(action_script_ref)
-	var resource_path: String = ""
+	var uid: String = ""
 	if action.id != "":
-		resource_path = action.ref.resource_path
-	new_node_ast.update(description, action_type, resource_path, values)
+		uid = ParleyUtils.resource.get_uid(action.ref)
+	new_node_ast.update(description, action_type, uid, values)
 	node_changed.emit(new_node_ast)
 
 

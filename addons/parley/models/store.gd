@@ -3,6 +3,13 @@
 class_name ParleyStore extends Resource
 
 
+enum Type {
+	Character,
+	Fact,
+	Action,
+}
+
+
 ## The Unique ID of the Store AST.
 ## Example: "1"
 @export var id: String = ""
@@ -14,7 +21,7 @@ func _init(_id: String = "") -> void:
 func to_dict() -> Dictionary:
 	return {
 		'id': id,
-		'ref': resource_path,
+		'ref': ParleyUtils.resource.get_uid(self),
 	}
 
 func _to_string() -> String:

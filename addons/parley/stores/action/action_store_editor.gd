@@ -17,6 +17,9 @@ var filtered_actions: Array[Action] = []
 @onready var action_store_editor: ParleyResourceEditor = %ActionStore
 @onready var dialogue_sequence_container: ParleyResourceEditor = %DialogueSequenceContainer
 @onready var add_action_button: Button = %AddActionButton
+@onready var save_action_store_button: Button = %SaveActionStoreButton
+@onready var invalid_action_store_button: Button = %InvalidActionStoreButton
+@onready var new_action_store_button: Button = %NewActionStoreButton
 @onready var register_action_store: ParleyRegisterStoreModal = %RegisterActionStoreModal
 
 
@@ -54,7 +57,12 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 		action_store = new_action_store
 		if action_store_editor.resource != action_store:
 			action_store_editor.resource = action_store
-		actions = action_store.actions
+		if action_store:
+			actions = action_store.actions
+		else:
+			actions = []
+	_render_save_action_store_button()
+	_render_invalid_action_store_button()
 
 func _set_actions(new_actions: Array[Action]) -> void:
 	actions = new_actions
@@ -74,10 +82,13 @@ func _set_action_filter(new_action_filter: String) -> void:
 
 #region RENDERERS
 func _render() -> void:
+	_render_action_store_editor()
 	_render_dialogue_sequence()
 	_render_add_action_button()
+	_render_new_action_store_button()
+	_render_save_action_store_button()
+	_render_invalid_action_store_button()
 	_render_actions()
-
 
 func _render_dialogue_sequence() -> void:
 	if dialogue_sequence_container and dialogue_sequence_ast and dialogue_sequence_ast.resource_path:
@@ -88,6 +99,34 @@ func _render_dialogue_sequence() -> void:
 func _render_add_action_button() -> void:
 	if add_action_button:
 		add_action_button.tooltip_text = "Add Action to the currently selected store."
+
+
+func _render_action_store_editor() -> void:
+	if action_store_editor and (not action_store or not action_store.resource_path):
+		action_store_editor.resource = null
+
+
+func _render_save_action_store_button() -> void:
+	if save_action_store_button:
+		save_action_store_button.tooltip_text = "Save Action Store."
+		if not action_store or not action_store.resource_path:
+			save_action_store_button.hide()
+		else:
+			save_action_store_button.show()
+
+
+func _render_invalid_action_store_button() -> void:
+	if invalid_action_store_button:
+		invalid_action_store_button.tooltip_text = "Invalid Action Store because it does not contain a resource path, please rectify or create and register a new Action Store."
+		if action_store and action_store.resource_path:
+			invalid_action_store_button.hide()
+		else:
+			invalid_action_store_button.show()
+
+
+func _render_new_action_store_button() -> void:
+	if new_action_store_button:
+		new_action_store_button.tooltip_text = "Create and register new Action Store."
 
 
 func _render_actions() -> void:
@@ -163,8 +202,11 @@ func _on_register_action_store_modal_store_registered(store: ParleyStore) -> voi
 
 
 func _on_action_store_resource_changed(store: Resource) -> void:
+	prints(store, store is ActionStore)
 	if store is ActionStore:
 		_register_action_store(store as ActionStore, true)
+	else:
+		action_store = null
 #endregion
 
 

@@ -1,18 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://dil4p8wvfe0y3"]
+[gd_scene load_steps=8 format=3 uid="uid://dil4p8wvfe0y3"]
 
 [ext_resource type="Script" uid="uid://bg4e1jywm04ml" path="res://addons/parley/stores/action/action_store_editor.gd" id="1_kjlpr"]
 [ext_resource type="Texture2D" uid="uid://bmyblj8lm0jme" path="res://addons/parley/assets/Save.svg" id="2_y3m6q"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_1824u"]
-[ext_resource type="Script" uid="uid://cel0yoviy6eqi" path="res://addons/parley/models/action.gd" id="3_s2qgp"]
 [ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="4_f1tkb"]
-[ext_resource type="Script" uid="uid://b3tj6amhgmct6" path="res://addons/parley/stores/action/action_store.gd" id="4_xotdo"]
+[ext_resource type="Texture2D" uid="uid://drrcpeyo5x1ih" path="res://addons/parley/assets/Warning.svg" id="4_s2qgp"]
 [ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="5_s2qgp"]
-[ext_resource type="PackedScene" uid="uid://msdptt8ygebm" path="res://addons/parley/stores/action/register_store_modal.tscn" id="6_1824u"]
-
-[sub_resource type="Resource" id="Resource_s2qgp"]
-script = ExtResource("4_xotdo")
-actions = Array[ExtResource("3_s2qgp")]([])
-id = ""
+[ext_resource type="PackedScene" uid="uid://msdptt8ygebm" path="res://addons/parley/stores/register_store_modal.tscn" id="6_1824u"]
 
 [node name="ActionStoreEditor" type="PanelContainer"]
 offset_right = 40.0
@@ -36,17 +30,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 key = "Action Store"
 base_type = "ActionStore"
-resource = SubResource("Resource_s2qgp")
 
 [node name="SaveActionStoreButton" type="Button" parent="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
+tooltip_text = "Save Action Store."
 icon = ExtResource("2_y3m6q")
+flat = true
+
+[node name="InvalidActionStoreButton" type="Button" parent="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Invalid Action Store because it does not contain a resource path, please rectify or create and register a new Action Store."
+icon = ExtResource("4_s2qgp")
 flat = true
 
 [node name="NewActionStoreButton" type="Button" parent="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Create and register new Action Store."
 icon = ExtResource("3_1824u")
 flat = true
 

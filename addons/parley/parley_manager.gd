@@ -5,16 +5,13 @@ class_name ParleyManager extends Node
 #region DEFS
 const ParleyConstants = preload('./constants.gd')
 
-# TODO: deprecated
 var character_store: CharacterStore = CharacterStore.new()
-# TODO: deprecated
 var fact_store: FactStore = FactStore.new()
-# TODO: rename to character store paths
+# TODO: deprecated
 var character_stores: Array[String]: get = get_character_stores
+# TODO: deprecated
 var fact_stores: Array[String]: get = get_fact_stores
 var action_store: ActionStore: get = _get_action_store
-
-# TODO: expose settings in here to avoid circular dependencies
 #endregion
 
 
@@ -29,10 +26,10 @@ func _init() -> void:
 
 #region REGISTRATIONS
 static func get_instance() -> ParleyManager:
-	if Engine.has_singleton("ParleyManager"):
-		return Engine.get_singleton("ParleyManager")
+	if Engine.has_singleton(ParleyConstants.PARLEY_MANAGER_SINGLETON):
+		return Engine.get_singleton(ParleyConstants.PARLEY_MANAGER_SINGLETON)
 	var parley_manager: ParleyManager = ParleyManager.new()
-	Engine.register_singleton("ParleyManager", parley_manager)
+	Engine.register_singleton(ParleyConstants.PARLEY_MANAGER_SINGLETON, parley_manager)
 	return parley_manager
 
 func register_action_store(store: ActionStore) -> void:
@@ -95,11 +92,18 @@ func get_fact_stores() -> Array[String]:
 	return paths
 
 
-static func _get_action_store() -> ActionStore:
+func _get_action_store() -> ActionStore:
 	var path: String = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATH)
 	if not ResourceLoader.exists(path):
-		ParleyUtils.log.warn("Parley Action Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Action Store, data within this Action Store will be lost upon reload." % path)
-		return ActionStore.new()
+		if not action_store:
+			ParleyUtils.log.warn("Parley Action Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Action Store, data within this Action Store will be lost upon reload." % path)
+			action_store = ActionStore.new()
+		return action_store
+	if not action_store:
+		action_store = load(path)
+	# Ensure that the store path is resilient to changes
+	if path == ParleySettings.DEFAULT_SETTINGS[ParleyConstants.ACTION_STORE_PATH]:
+		register_action_store(action_store)
 	return load(path)
 #endregion
 

@@ -2,7 +2,7 @@
 class_name ParleyRegisterStoreModal extends Window
 
 #region DEFS
-@export var type: StoresAst.Type
+@export var type: ParleyStore.Type
 
 
 var file_mode: FileDialog.FileMode
@@ -29,21 +29,21 @@ signal store_registered(store: ParleyStore)
 #region LIFECYCLE
 func _ready() -> void:
 	match type:
-		StoresAst.Type.Character:
+		ParleyStore.Type.Character:
 			store_name = "Character Store"
 			resource_editor.key = store_name
 			resource_editor.base_type = "CharacterStore"
 			# TODO: get from config
 			default_current_dir = "res://characters"
 			default_current_file = "new_character_store.tres"
-		StoresAst.Type.Fact:
+		ParleyStore.Type.Fact:
 			store_name = "Fact Store"
 			resource_editor.key = store_name
 			resource_editor.base_type = "FactStore"
 			# TODO: get from config
 			default_current_dir = "res://facts"
 			default_current_file = "new_fact_store.tres"
-		StoresAst.Type.Action:
+		ParleyStore.Type.Action:
 			store_name = "Action Store"
 			resource_editor.key = store_name
 			resource_editor.base_type = "ActionStore"

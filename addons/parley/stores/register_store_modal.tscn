@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://msdptt8ygebm"]
 
-[ext_resource type="Script" uid="uid://85wkenyryluy" path="res://addons/parley/stores/action/register_store_modal.gd" id="1_sngxt"]
+[ext_resource type="Script" uid="uid://85wkenyryluy" path="res://addons/parley/stores/register_store_modal.gd" id="1_sngxt"]
 [ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="2_bbxl3"]
 [ext_resource type="PackedScene" uid="uid://dcaqonk76b5qj" path="res://addons/parley/components/editor/string_editor.tscn" id="2_u6kwa"]
 [ext_resource type="Texture2D" uid="uid://d4d8bblglcblx" path="res://addons/parley/assets/Folder.svg" id="3_u6kwa"]

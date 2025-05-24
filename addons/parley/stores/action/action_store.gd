@@ -3,13 +3,8 @@
 class_name ActionStore extends ParleyStore
 
 
-# TODO: get if all of these are used
-
 #region DEFS
 @export var actions: Array[Action] = []: set = _set_actions
-
-
-const store_metadata_key: String = "parley_action_store"
 
 
 signal action_added(action: Action)
@@ -26,61 +21,22 @@ func _init(_id: String = "", _actions: Array[Action] = []) -> void:
 
 #region SETTERS
 func _set_actions(new_actions: Array[Action]) -> void:
-	var actions_with_metadata: Array[Action] = []
-	for action: Action in new_actions:
-		actions_with_metadata.append(_set_action_metadata(action))
-	actions = actions_with_metadata
-
-
-func _set_action_metadata(action: Action) -> Action:
-	if action and not action.has_meta(store_metadata_key) and resource_path:
-		action.set_meta(store_metadata_key, resource_path)
-	return action
+	actions = new_actions
 #endregion
 
 
 #region CRUD
-static func get_action_store_ref(action: Action) -> String:
-	if action.has_meta(store_metadata_key):
-		var store: Variant = action.get_meta(store_metadata_key)
-		if is_instance_of(store, TYPE_STRING) and len(store) > 0:
-			return store
-	return ""
-
-
 func add_action(name: String = "") -> Action:
 	var action: Action = Action.new(ParleyUtils.generate.id(actions, id, name), name)
-	actions.append(_set_action_metadata(action))
 	action_added.emit(action)
 	emit_changed()
 	return action
 
 
-func get_action_id_by_index(index: int) -> String:
-	var action: Variant = actions.get(index)
-	return action.id if action and is_instance_of(action, Action) else ParleyUtils.generate.id(actions, id, 'unknown')
-
-
-func get_action_name_by_id(action_id: String) -> String:
-	var filtered_actions: Array = actions.filter(func(action: Action) -> bool: return action.id == action_id)
-	if filtered_actions.size() == 0:
-		return 'Unknown'
-	return filtered_actions.front().name
-
-
-func get_action_index_by_name(name: String) -> int:
-	var idx: int = 0
-	for action: Action in actions:
-		if action.name == name:
-			return idx
-		idx += 1
-	return -1
-
-
 func get_action_index_by_ref(ref: String) -> int:
 	var idx: int = 0
 	for action: Action in actions:
-		if action.ref.resource_path == ref:
+		if ParleyUtils.resource.get_uid(action.ref) == ref:
 			return idx
 		idx += 1
 	return -1
@@ -92,25 +48,16 @@ func remove_action(action_id: String) -> void:
 	action_removed.emit(action_id)
 	emit_changed()
 
+
 # TODO: docs
-
-func has_action_name(name: String) -> bool:
-	var filtered_actions: Array = actions.filter(func(action: Action) -> bool: return action.name == name)
-	return filtered_actions.size() > 0
-
-
-func get_action_by_name(name: String) -> Action:
-	var filtered_actions: Array = actions.filter(func(action: Action) -> bool: return action.name == name)
-	if filtered_actions.size() == 0:
-		ParleyUtils.log.warn("Action with name not found in store (store:%s, name:%s), returning an empty Action" % [id, name])
-		return Action.new()
-	return filtered_actions.front()
 
 
 func get_action_by_ref(ref: String) -> Action:
-	var filtered_actions: Array = actions.filter(func(action: Action) -> bool: return action.ref and action.ref.resource_path == ref)
+	var filtered_actions: Array = actions.filter(func(action: Action) -> bool:
+		return action.ref and ParleyUtils.resource.get_uid(action.ref) == ref)
 	if filtered_actions.size() == 0:
-		ParleyUtils.log.warn("Action with ref not found in store (store:%s, ref:%s), returning an empty Action" % [id, ref])
+		if ref != "":
+			ParleyUtils.log.warn("Action with ref not found in store (store:%s, ref:%s), returning an empty Action" % [id, ref])
 		return Action.new()
 	return filtered_actions.front()
 #endregion
