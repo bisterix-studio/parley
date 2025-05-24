@@ -1,0 +1,12 @@
+# top-most EditorConfig file
+root = true
+
+# basics for all files in our project
+[*]
+charset = utf-8
+end_of_line = lf
+
+# GDScript
+[*.gd]
+indent_style = tab
+indent_size = 2

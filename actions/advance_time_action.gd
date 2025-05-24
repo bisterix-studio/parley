@@ -1,4 +1,5 @@
-extends ActionInterface
+extends ParleyActionInterface
 
-func execute(_ctx: Dictionary, values: Array) -> void:
-	print("Advancing time by %s hours" % [values[0]])
+func execute(_ctx: Dictionary, values: Array) -> int:
+	print("Advancing time by %s" % [values[0]])
+	return OK

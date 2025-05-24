@@ -18,5 +18,6 @@
   "files.associations": {
     "*.djson": "json",
     "*.ds": "json"
-  }
+  },
+  "editor.renderWhitespace": "all"
 }

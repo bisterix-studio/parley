@@ -27,8 +27,8 @@ func _init(p_id: String = "", p_position: Vector2 = Vector2.ZERO) -> void:
 ## Convert this resource into a Dictionary for storage
 func to_dict() -> Dictionary:
 	var node_dict: Dictionary = inst_to_dict(self)
-	node_dict.erase('@path')
-	node_dict.erase('@subpath')
+	var _path_result: bool = node_dict.erase('@path')
+	var _subpath_result: bool = node_dict.erase('@subpath')
 	node_dict['type'] = str(DialogueAst.Type.find_key(node_dict['type']))
 	return node_dict
 

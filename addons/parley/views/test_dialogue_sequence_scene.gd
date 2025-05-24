@@ -4,9 +4,6 @@ var current_dialogue_ast: DialogueAst
 
 func _ready() -> void:
 	var ctx: Dictionary = {}
-	# TODO: can we get rid of this global ref?
-	if not Engine.has_singleton("ParleyRuntime"):
-		return
 	current_dialogue_ast = ParleyManager.get_instance().load_test_dialogue_sequence()
 	ParleyUtils.signals.safe_connect(current_dialogue_ast.dialogue_ended, _on_dialogue_ended)
 	# TODO: can we get rid of this global ref?
@@ -14,10 +11,10 @@ func _ready() -> void:
 	if start_node_variant is NodeAst:
 		var start_node: NodeAst = start_node_variant
 		# TODO: can we get rid of this global ref?
-		var _node: Node = Engine.get_singleton("ParleyRuntime").start_dialogue(ctx, current_dialogue_ast, start_node)
+		var _node: Node = ParleyRuntime.get_instance().start_dialogue(ctx, current_dialogue_ast, start_node)
 	else:
 		# TODO: can we get rid of this global ref?
-		var _node: Node = Engine.get_singleton("ParleyRuntime").start_dialogue(ctx, current_dialogue_ast)
+		var _node: Node = ParleyRuntime.get_instance().start_dialogue(ctx, current_dialogue_ast)
 
 
 func _exit_tree() -> void:

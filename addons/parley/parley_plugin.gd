@@ -11,8 +11,9 @@ const ParleyEdges: PackedScene = preload("./views/parley_edges.tscn")
 const MainPanelScene: PackedScene = preload("./main_panel.tscn")
 
 
-const PARLEY_RUNTIME_AUTOLOAD: String = "ParleyRuntime"
+const PARLEY_RUNTIME_AUTOLOAD: String = "Parley"
 const PARLEY_MANAGER_SINGLETON: String = "ParleyManager"
+const PARLEY_RUNTIME_SINGLETON: String = "ParleyRuntime"
 
 
 var main_panel_instance: ParleyMainPanel
@@ -205,4 +206,9 @@ func _enable_plugin() -> void:
 
 func _disable_plugin() -> void:
 	remove_autoload_singleton(PARLEY_RUNTIME_AUTOLOAD)
-	Engine.unregister_singleton(PARLEY_MANAGER_SINGLETON)
+
+	if Engine.has_singleton(PARLEY_MANAGER_SINGLETON):
+		Engine.unregister_singleton(PARLEY_MANAGER_SINGLETON)
+
+	if Engine.has_singleton(PARLEY_RUNTIME_SINGLETON):
+		Engine.unregister_singleton(PARLEY_RUNTIME_SINGLETON)

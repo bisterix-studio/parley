@@ -20,7 +20,8 @@ class_name EdgeAst extends Resource
 @export var to_slot: int: set = _on_to_slot_changed
 
 
-signal edge_changed(edge)
+## Emitted when an Edge is changed. Details of the changed edge are included in the signal parameters.
+signal edge_changed(edge: EdgeAst)
 
 
 var ready: bool = false

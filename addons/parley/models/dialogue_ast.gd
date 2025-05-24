@@ -301,8 +301,7 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 				next_nodes.append(next_node)
 			Type.ACTION:
 				if not dry_run:
-					# TODO: Run action here
-					pass
+					_run_action(next_node, ctx)
 				next_nodes.append_array(process_next(ctx, next_node, dry_run))
 			Type.CONDITION:
 				next_nodes.append_array(process_next(ctx, next_node, dry_run))
@@ -340,7 +339,33 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 		var _end: Array[NodeAst] = _process_end(dry_run) # Don't return as we want to use the existing End Node ID
 	next_nodes.sort_custom(_sort_by_y_position)
 	return next_nodes
-	
+
+
+# TODO: make this async/await
+func _run_action(node_ast: NodeAst, ctx: Dictionary) -> void:
+	if node_ast is not ActionNodeAst:
+		ParleyUtils.log.error("Action Node to execute is not an Action Node (node:%s)" % node_ast)
+		return
+	var action_node_ast: ActionNodeAst = node_ast
+	var action: ParleyActionInterface
+	match action_node_ast.action_type:
+		ActionNodeAst.ActionType.SCRIPT:
+			var action_script: GDScript = load(action_node_ast.action_script_ref)
+			if action_script is not GDScript:
+				ParleyUtils.log.error("Action Script reference is not a valid GDScript (node:%s, script:%s)" % [node_ast, action_script])
+				return
+			action = action_script.new()
+		_:
+			ParleyUtils.log.error("Action Node to execute has an unknown Action Type (node:%s)" % node_ast)
+			return
+	if action is not ParleyActionInterface or not action.has_method(&"execute"):
+		ParleyUtils.log.error("Action to execute is not a valid action interface (node:%sm, action:%s)" % [node_ast, action])
+		return
+	var result: int = action.execute(ctx, action_node_ast.values)
+	action.free()
+	if result != OK:
+		ParleyUtils.log.error("Unable to execute Action (code:%i)" % result)
+
 
 # TODO: make context a class that can be extended
 ## Indicator for whether the node is at the end of the current dialogue sequence
@@ -364,8 +389,7 @@ func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, 
 		var script: GDScript = load(fact_ref)
 		var fact: FactInterface = script.new()
 		var result: Variant = fact.execute(ctx, [])
-		# TODO: create a wrapper for this
-		fact.call_deferred("free")
+		fact.free() # Previous this was call_deferred, although I'm not sure why
 		var evaluated_value: Variant = _evaluate_value(value)
 		match operator:
 			ConditionNodeAst.Operator.EQUAL:
@@ -392,8 +416,7 @@ func _process_match_node(ctx: Dictionary, match_node: MatchNodeAst) -> int:
 	var script: GDScript = load(fact_ref)
 	var fact: FactInterface = script.new()
 	var result: Variant = fact.execute(ctx, [])
-	# TODO: create a wrapper for this
-	fact.call_deferred("free")
+	fact.free() # Previous this was call_deferred, although I'm not sure why
 	var evaluated_result: Variant = _evaluate_value(result)
 	var cases: Array = match_node.cases
 	var case_index: int = cases.map(func(case: Variant) -> Variant: return _map_value(case)).find(evaluated_result)
