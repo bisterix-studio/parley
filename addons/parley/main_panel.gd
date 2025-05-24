@@ -1,6 +1,7 @@
 @tool
 class_name ParleyMainPanel extends VBoxContainer
 
+
 const new_file_icon: CompressedTexture2D = preload("./assets/New.svg")
 const load_file_icon: CompressedTexture2D = preload("./assets/Load.svg")
 const export_to_csv_icon: CompressedTexture2D = preload("./assets/Export.svg")
@@ -13,12 +14,14 @@ const start_node_icon: CompressedTexture2D = preload("./assets/Start.svg")
 const end_node_icon: CompressedTexture2D = preload("./assets/End.svg")
 const group_node_icon: CompressedTexture2D = preload("./assets/Group.svg")
 
-var dialogue_ast: DialogueAst: set = _set_dialogue_ast
+
+@export var dialogue_ast: DialogueAst = DialogueAst.new(): set = _set_dialogue_ast
+@export var action_store: ActionStore = ActionStore.new(): set = _set_action_store
+
 
 # TODO: check all uses of globals and ensure that these are used minimally
 # Ideally we only want to be referencing ParleyManager
 # Although... does this even need to be a global if everything is now defined in the DS AST?
-
 # TODO: use unique name (%)
 @onready var graph_view: ParleyGraphView = %GraphView
 @export var save_button: Button
@@ -26,34 +29,34 @@ var dialogue_ast: DialogueAst: set = _set_dialogue_ast
 @export var refresh_button: Button
 @export var open_file_dialogue: FileDialog
 
+
 @onready var file_menu: MenuButton = %FileMenu
 @onready var insert_menu: MenuButton = %InsertMenu
 @onready var new_dialogue_modal: Window = %NewDialogueModal
-@onready var export_to_csv_modal: Window = %ExportToCsvModal
+@onready var export_to_csv_modal: ParleyExportToCsvModal = %ExportToCsvModal
 @onready var editor: HSplitContainer = %EditorView
 @onready var sidebar: ParleySidebar = %Sidebar
 @onready var bottom_panel: MarginContainer = %BottomPanel
+
 
 # TODO: remove this
 var selected_node_id: Variant
 var selected_node_ast: NodeAst: set = _set_selected_node_ast
 
+
 signal dialogue_ast_selected(dialogue_ast: DialogueAst)
 signal node_selected(node_ast: NodeAst)
+
 
 #region SETUP
 func _ready() -> void:
 	_setup()
-	# TODO: figure this out at a later date
-	# ParleyUtils.safe_connect(ParleyManager.dialogue_imported, _on_parley_manager_dialogue_imported)
 
-# func _on_parley_manager_dialogue_imported(source_file_path):
-# 	if dialogue_ast and source_file_path == dialogue_ast.resource_path:
-# 		await refresh()
 
 func refresh(arrange: bool = false) -> void:
 	if graph_view:
 		graph_view.ast = dialogue_ast
+		graph_view.action_store = action_store
 		await graph_view.generate(arrange)
 	if selected_node_id and is_instance_of(selected_node_id, TYPE_STRING):
 		var id: String = selected_node_id
@@ -64,15 +67,14 @@ func refresh(arrange: bool = false) -> void:
 
 func _exit_tree() -> void:
 	if dialogue_ast and dialogue_ast.dialogue_updated.is_connected(_on_dialogue_ast_changed):
-		ParleyUtils.safe_disconnect(dialogue_ast.dialogue_updated, _on_dialogue_ast_changed)
+		ParleyUtils.signals.safe_disconnect(dialogue_ast.dialogue_updated, _on_dialogue_ast_changed)
 	dialogue_ast = null
-	# if Engine.is_editor_hint():
-	# 	if ParleyManager.dialogue_imported.is_connected(_on_parley_manager_dialogue_imported):
-	# 		ParleyManager.dialogue_imported.disconnect(_on_parley_manager_dialogue_imported)
 
-# TODO: move into a more formalised cache
+
+# TODO: move into a more formalised cache that is persistent across reloads
 # TODO: do by resource ID
 var dialogue_view_cache: Dictionary[DialogueAst, Dictionary] = {}
+
 
 func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 	# TODO: regenerate
@@ -85,7 +87,7 @@ func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 			var scroll_offset: Vector2 = cache.get('scroll_offset', Vector2.ZERO)
 			if dialogue_ast.dialogue_updated.is_connected(_on_dialogue_ast_changed):
 				dialogue_ast.dialogue_updated.disconnect(_on_dialogue_ast_changed)
-			ParleyUtils.safe_connect(dialogue_ast.dialogue_updated, _on_dialogue_ast_changed)
+			ParleyUtils.signals.safe_connect(dialogue_ast.dialogue_updated, _on_dialogue_ast_changed)
 			if sidebar:
 				sidebar.add_dialogue_ast(dialogue_ast)
 			dialogue_ast_selected.emit(dialogue_ast)
@@ -95,6 +97,13 @@ func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 				# TODO: investigate further
 				graph_view.scroll_offset = scroll_offset
 				graph_view.scroll_offset = scroll_offset
+
+
+func _set_action_store(new_action_store: ActionStore) -> void:
+	action_store = new_action_store
+	if graph_view:
+		graph_view.action_store = action_store
+
 
 func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:
 	selected_node_ast = new_selected_node_ast
@@ -110,12 +119,12 @@ func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:
 			_on_condition_node_editor_condition_node_changed(condition_node_ast.id, condition_node_ast.description, condition_node_ast.combiner, condition_node_ast.conditions)
 		DialogueAst.Type.MATCH:
 			var match_node_ast: MatchNodeAst = selected_node_ast
-			var fact_name: String = ParleyManager.fact_store.get_fact_by_ref(match_node_ast.fact_ref).name
+			# TODO: can we get rid of this global ref?
+			var fact_name: String = ParleyManager.get_instance().fact_store.get_fact_by_ref(match_node_ast.fact_ref).name
 			_on_match_node_editor_match_node_changed(match_node_ast.id, match_node_ast.description, fact_name, match_node_ast.cases)
 		DialogueAst.Type.ACTION:
 			var action_node_ast: ActionNodeAst = selected_node_ast
-			var action_script_name: String = ParleyManager.action_store.get_action_by_ref(action_node_ast.action_script_ref).name
-			_on_action_node_editor_action_node_changed(action_node_ast.id, action_node_ast.description, action_node_ast.action_type, action_script_name, action_node_ast.values)
+			_on_action_node_editor_action_node_changed(action_node_ast.id, action_node_ast.description, action_node_ast.action_type, action_node_ast.action_script_ref, action_node_ast.values)
 		DialogueAst.Type.GROUP:
 			var group_node_ast: GroupNodeAst = selected_node_ast
 			_on_group_node_editor_group_node_changed(group_node_ast.id, group_node_ast.name, group_node_ast.colour)
@@ -134,9 +143,6 @@ func _setup() -> void:
 	_setup_file_menu()
 	_setup_insert_menu()
 	_setup_theme()
-	var dialogue_sequence_variant: Variant = ParleyManager.load_current_dialogue_sequence()
-	if dialogue_sequence_variant is DialogueAst:
-		dialogue_ast = dialogue_sequence_variant
 
 func _setup_theme() -> void:
 	# TODO: we might need to register this dynamically at a later date
@@ -154,7 +160,7 @@ func _setup_file_menu() -> void:
 	popup.add_icon_item(load_file_icon, "Open Dialogue Sequence...", 1)
 	popup.add_separator("Export")
 	popup.add_icon_item(export_to_csv_icon, "Export to CSV...", 2)
-	ParleyUtils.safe_connect(popup.id_pressed, _on_file_id_pressed)
+	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_file_id_pressed)
 
 
 ## Set up the insert menu
@@ -173,7 +179,7 @@ func _setup_insert_menu() -> void:
 	popup.add_icon_item(start_node_icon, DialogueAst.get_type_name(DialogueAst.Type.START), DialogueAst.Type.START)
 	popup.add_icon_item(end_node_icon, DialogueAst.get_type_name(DialogueAst.Type.END), DialogueAst.Type.END)
 	popup.add_icon_item(group_node_icon, DialogueAst.get_type_name(DialogueAst.Type.GROUP), DialogueAst.Type.GROUP)
-	ParleyUtils.safe_connect(popup.id_pressed, _on_insert_id_pressed)
+	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_insert_id_pressed)
 #endregion
 
 
@@ -193,9 +199,11 @@ func _on_file_id_pressed(id: int) -> void:
 			ParleyUtils.log.info("Unknown option ID pressed: {id}".format({'id': id}))
 
 
-func _on_graph_view_node_selected(node: Node) -> void:
-	if not ParleyManager.is_test_dialogue_sequence_running():
-		ParleyManager.set_test_dialogue_sequence_start_node(node.id)
+func _on_graph_view_node_selected(node: ParleyGraphNode) -> void:
+	# TODO: can we get rid of this global ref?
+	if not ParleyManager.get_instance().is_test_dialogue_sequence_running():
+		# TODO: can we get rid of this global ref?
+		ParleyManager.get_instance().set_test_dialogue_sequence_start_node(node.id)
 	if selected_node_id == node.id:
 		return
 	var node_ast: NodeAst = dialogue_ast.find_node_by_id(node.id)
@@ -204,20 +212,26 @@ func _on_graph_view_node_selected(node: Node) -> void:
 
 
 func _on_graph_view_node_deselected(_node: Node) -> void:
-	if not ParleyManager.is_test_dialogue_sequence_running():
-		ParleyManager.set_test_dialogue_sequence_start_node(null)
+	# TODO: can we get rid of this global ref?
+	if not ParleyManager.get_instance().is_test_dialogue_sequence_running():
+		# TODO: can we get rid of this global ref?
+		ParleyManager.get_instance().set_test_dialogue_sequence_start_node(null)
 #endregion
 
 
 #region BUTTONS
 func _on_open_dialog_file_selected(path: String) -> void:
 	dialogue_ast = load(path)
-	ParleyManager.set_current_dialogue_sequence(path)
+	# TODO: can we get rid of this global ref?
+	# TODO: emit as a signal and handle in the plugin
+	ParleyManager.get_instance().set_current_dialogue_sequence(path)
 
 
 func _on_new_dialogue_modal_dialogue_ast_created(new_dialogue_ast: DialogueAst) -> void:
 	dialogue_ast = new_dialogue_ast
-	ParleyManager.set_current_dialogue_sequence(dialogue_ast.resource_path)
+	# TODO: can we get rid of this global ref?
+	# TODO: emit as a signal and handle in the plugin
+	ParleyManager.get_instance().set_current_dialogue_sequence(dialogue_ast.resource_path)
 	refresh(true)
 
 
@@ -256,12 +270,14 @@ func _on_refresh_button_pressed() -> void:
 func _on_test_dialogue_from_start_button_pressed() -> void:
 	# TODO: dialogue is technically async so we should ideally wait here
 	_save_dialogue()
-	ParleyManager.run_test_dialogue_from_start(dialogue_ast)
+	# TODO: can we get rid of this global ref?
+	ParleyManager.get_instance().run_test_dialogue_from_start(dialogue_ast)
 
 func _on_test_dialogue_from_selected_button_pressed() -> void:
 	# TODO: dialogue is technically async so we should ideally wait here
 	_save_dialogue()
-	ParleyManager.run_test_dialogue_from_selected(dialogue_ast, selected_node_id)
+	# TODO: can we get rid of this global ref?
+	ParleyManager.get_instance().run_test_dialogue_from_selected(dialogue_ast, selected_node_id)
 #endregion
 
 
@@ -308,7 +324,7 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, ne
 
 
 # TODO: remove ast stuff
-func _on_condition_node_editor_condition_node_changed(id: String, description: String, combiner, conditions) -> void:
+func _on_condition_node_editor_condition_node_changed(id: String, description: String, combiner: ConditionNodeAst.Combiner, conditions: Array) -> void:
 	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
 	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
 	if not _ast_node or not _is_selected_node(ConditionNode, _selected_node, id):
@@ -328,7 +344,9 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 		return
 	var ast_node: MatchNodeAst = _ast_node
 	var selected_node: MatchNode = _selected_node
-	var fact: Fact = ParleyManager.fact_store.get_fact_by_name(fact_name)
+	# TODO: can we get rid of this global ref?
+	var fact: Fact = ParleyManager.get_instance().fact_store.get_fact_by_name(fact_name)
+	
 	# Handle any necessary edge changes
 	var edges_to_delete: Array[EdgeAst] = []
 	var edges_to_create: Array[EdgeAst] = []
@@ -366,12 +384,13 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 			graph_view.generate_edges()
 
 # TODO: remove ast stuff
-func _on_action_node_editor_action_node_changed(id: String, description: String, action_type: ActionNodeAst.ActionType, action_script_name: String, values: Array) -> void:
+# TODO: change this to ref
+func _on_action_node_editor_action_node_changed(id: String, description: String, action_type: ActionNodeAst.ActionType, action_script_ref: String, values: Array) -> void:
 	var ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
 	var selected_node: Variant = graph_view.find_node_by_id(id)
 	if ast_node is not ActionNodeAst or not _is_selected_node(ActionNode, selected_node, id):
 		return
-	var action: Action = ParleyManager.action_store.get_action_by_name(action_script_name)
+	var action: Action = action_store.get_action_by_ref(action_script_ref)
 	if ast_node is ActionNodeAst:
 		var action_node_ast: ActionNodeAst = ast_node
 		var resource_path: String = ""

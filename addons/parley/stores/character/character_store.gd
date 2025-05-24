@@ -1,6 +1,6 @@
 @tool
 # TODO: prefix with Parley
-class_name CharacterStore extends StoreAst
+class_name CharacterStore extends ParleyStore
 
 #region DEFS
 @export var characters: Array[Character] = []

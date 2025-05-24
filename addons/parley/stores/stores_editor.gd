@@ -3,6 +3,8 @@ class_name ParleyStoresEditor extends PanelContainer
 
 
 #region DEFS
+var action_store: ActionStore: set = _set_action_store
+
 @onready var show_character_store_button: Button = %ShowCharacterStoreButton
 @onready var show_fact_store_button: Button = %ShowFactStoreButton
 @onready var show_action_store_button: Button = %ShowActionStoreButton
@@ -47,6 +49,10 @@ func _render() -> void:
 
 
 #region SETTERS
+func _set_action_store(new_action_store: ActionStore) -> void:
+	action_store = new_action_store
+
+
 func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 	if dialogue_ast != new_dialogue_ast:
 		dialogue_ast = new_dialogue_ast
@@ -56,13 +62,13 @@ func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 func _set_current_store(new_current_store: Store) -> void:
 	current_store = new_current_store
 	match current_store:
-		Store.CHARACTER: _set_character_store()
-		Store.FACT: _set_fact_store()
-		Store.ACTION: _set_action_store()
+		Store.CHARACTER: _render_character_store()
+		Store.FACT: _render_fact_store()
+		Store.ACTION: _render_action_store()
 		_: push_error('PARLEY_ERR: Unsupported store selected: %s' % [current_store])
 
 
-func _set_character_store() -> void:
+func _render_character_store() -> void:
 	if show_character_store_button and not show_character_store_button.button_pressed:
 		show_character_store_button.button_pressed = true
 	_clear()
@@ -72,7 +78,7 @@ func _set_character_store() -> void:
 		character_store_editor.show()
 
 
-func _set_fact_store() -> void:
+func _render_fact_store() -> void:
 	if show_fact_store_button and not show_fact_store_button.button_pressed:
 		show_fact_store_button.button_pressed = true
 	_clear()
@@ -82,11 +88,12 @@ func _set_fact_store() -> void:
 		fact_store_editor.show()
 
 
-func _set_action_store() -> void:
+func _render_action_store() -> void:
 	if show_action_store_button and not show_action_store_button.button_pressed:
 		show_action_store_button.button_pressed = true
 	_clear()
 	if action_store_editor:
+		action_store_editor.action_store = action_store
 		if action_store_editor.dialogue_sequence_ast != dialogue_ast:
 			action_store_editor.dialogue_sequence_ast = dialogue_ast
 		action_store_editor.show()

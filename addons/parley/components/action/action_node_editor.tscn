@@ -9,7 +9,7 @@
 script = ExtResource("1_3lxj7")
 description = ""
 action_type = 0
-action_script_name = ""
+action_script_ref = ""
 values = []
 type = 3
 

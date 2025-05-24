@@ -1,28 +1,20 @@
 @tool
-extends Node
+class_name ParleyManager extends Node
 
 
 #region DEFS
 const ParleyConstants = preload('./constants.gd')
-const ParleySettings = preload('./settings.gd')
-
 
 # TODO: deprecated
 var character_store: CharacterStore = CharacterStore.new()
 # TODO: deprecated
-var action_store: ActionStore = ActionStore.new()
-# TODO: deprecated
 var fact_store: FactStore = FactStore.new()
 # TODO: rename to character store paths
-var character_stores: Array[String]: get = _get_character_stores
-var fact_stores: Array[String]: get = _get_fact_stores
-var action_stores: Array[String]: get = _get_action_stores
-var current_dialogue_ast: DialogueAst
-var settings = ParleySettings
+var character_stores: Array[String]: get = get_character_stores
+var fact_stores: Array[String]: get = get_fact_stores
+var action_store: ActionStore: get = _get_action_store
 
 # TODO: expose settings in here to avoid circular dependencies
-
-signal dialogue_imported(source_file_path: String)
 #endregion
 
 
@@ -31,63 +23,26 @@ func _init() -> void:
 	if Engine.is_editor_hint():
 		ParleySettings.prepare()
 	_init_character_store()
-	_init_action_store()
 	_init_fact_store()
 #endregion
 
 
-#region GAME
-## Start a dialogue session with the provided Dialogue AST
-## Example: ParleyManager.start_dialogue(dialogue)
-func start_dialogue(ctx: Dictionary, dialogue_ast: DialogueAst, start_node: NodeAst = null) -> Node:
-	current_dialogue_ast = dialogue_ast
-	var current_scene: Node = get_current_scene.call()
-	var dialogue_balloon_path: String = ParleySettings.get_setting(ParleyConstants.DIALOGUE_BALLOON_PATH)
-	if not ResourceLoader.exists(dialogue_balloon_path):
-		ParleyUtils.log.info("Dialogue balloon does not exist at: %s. Falling back to default balloon." % [dialogue_balloon_path])
-		dialogue_balloon_path = ParleySettings.DEFAULT_SETTINGS[ParleyConstants.DIALOGUE_BALLOON_PATH]
-	var dialogue_balloon_scene: PackedScene = load(dialogue_balloon_path)
-	var balloon: Node = dialogue_balloon_scene.instantiate()
-	current_scene.add_child(balloon)
-	if not current_dialogue_ast:
-		ParleyUtils.log.error("No active Dialogue AST set, exiting.")
-		return balloon
-	if balloon.has_method(&"start"):
-		balloon.start(ctx, current_dialogue_ast, start_node)
-	else:
-		# TODO: add translation for error here
-		assert(false, "dialogue_balloon_scene_missing_start_method")
-	return balloon
-
-
-## Used to resolve the current scene.
-## Override if your game manages the current scene itself.
-## Example: get_current_scene.call()
-var get_current_scene: Callable = func() -> Node:
-	var current_scene: Node = Engine.get_main_loop().current_scene
-	if current_scene == null:
-		current_scene = Engine.get_main_loop().root.get_child(Engine.get_main_loop().root.get_child_count() - 1)
-	return current_scene
-#endregion
-
-
 #region REGISTRATIONS
+static func get_instance() -> ParleyManager:
+	if Engine.has_singleton("ParleyManager"):
+		return Engine.get_singleton("ParleyManager")
+	var parley_manager: ParleyManager = ParleyManager.new()
+	Engine.register_singleton("ParleyManager", parley_manager)
+	return parley_manager
+
 func register_action_store(store: ActionStore) -> void:
-	var _paths: Variant = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATHS)
-	var paths: Array[String] = []
-	for path: String in _paths:
-		paths.append(path)
-	if not store.resource_path:
-		ParleyUtils.log.error("Unable to register Action Store: no resource path defined")
+	var path: String = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATH)
+	var uid: String = ParleyUtils.resource.get_uid(store)
+	if not uid:
+		ParleyUtils.log.error("Unable to get UID for Action Store")
 		return
-	var id: int = ResourceLoader.get_resource_uid(store.resource_path)
-	if id == -1:
-		ParleyUtils.log.error("Unable to get UID for Action Store with path: %s" % [store.resource_path])
-		return
-	var uid: String = ResourceUID.id_to_text(id)
-	if not paths.has(uid):
-		paths.append(uid)
-		ParleySettings.set_setting(ParleyConstants.ACTION_STORE_PATHS, paths, true)
+	if path != uid:
+		ParleySettings.set_setting(ParleyConstants.ACTION_STORE_PATH, uid, true)
 		ParleyUtils.log.info("Registered new Action Store: %s" % [store])
 
 
@@ -96,14 +51,10 @@ func register_fact_store(store: FactStore) -> void:
 	var paths: Array[String] = []
 	for path: String in _paths:
 		paths.append(path)
-	if not store.resource_path:
-		ParleyUtils.log.error("Unable to register Fact Store: no resource path defined")
+	var uid: String = ParleyUtils.resource.get_uid(store)
+	if not uid:
+		ParleyUtils.log.error("Unable to get UID for Fact Store")
 		return
-	var id: int = ResourceLoader.get_resource_uid(store.resource_path)
-	if id == -1:
-		ParleyUtils.log.error("Unable to get UID for Fact Store with path: %s" % [store.resource_path])
-		return
-	var uid: String = ResourceUID.id_to_text(id)
 	if not paths.has(uid):
 		paths.append(uid)
 		ParleySettings.set_setting(ParleyConstants.FACT_STORE_PATHS, paths, true)
@@ -115,14 +66,10 @@ func register_character_store(store: CharacterStore) -> void:
 	var paths: Array[String] = []
 	for path: String in _paths:
 		paths.append(path)
-	if not store.resource_path:
-		ParleyUtils.log.error("Unable to register Character Store: no resource path defined")
+	var uid: String = ParleyUtils.resource.get_uid(store)
+	if not uid:
+		ParleyUtils.log.error("Unable to get UID for Character Store")
 		return
-	var id: int = ResourceLoader.get_resource_uid(store.resource_path)
-	if id == -1:
-		ParleyUtils.log.error("Unable to get UID for Character Store with path: %s" % [store.resource_path])
-		return
-	var uid: String = ResourceUID.id_to_text(id)
 	if not paths.has(uid):
 		paths.append(uid)
 		ParleySettings.set_setting(ParleyConstants.CHARACTER_STORE_PATHS, paths, true)
@@ -132,7 +79,7 @@ func register_character_store(store: CharacterStore) -> void:
 
 #region GETTERS
 # TODO: add check for these at startup
-func _get_character_stores() -> Array[String]:
+func get_character_stores() -> Array[String]:
 	var _paths: Variant = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATHS)
 	var paths: Array[String] = []
 	for path: String in _paths:
@@ -140,7 +87,7 @@ func _get_character_stores() -> Array[String]:
 	return paths
 
 
-func _get_fact_stores() -> Array[String]:
+func get_fact_stores() -> Array[String]:
 	var _paths: Variant = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATHS)
 	var paths: Array[String] = []
 	for path: String in _paths:
@@ -148,41 +95,32 @@ func _get_fact_stores() -> Array[String]:
 	return paths
 
 
-func _get_action_stores() -> Array[String]:
-	var _paths: Variant = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATHS)
-	var paths: Array[String] = []
-	for path: String in _paths:
-		paths.append(path)
-	return paths
+static func _get_action_store() -> ActionStore:
+	var path: String = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATH)
+	if not ResourceLoader.exists(path):
+		ParleyUtils.log.warn("Parley Action Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Action Store, data within this Action Store will be lost upon reload." % path)
+		return ActionStore.new()
+	return load(path)
 #endregion
 
 
 #region INIT
 func _init_character_store() -> void:
-	var character_store_path = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATH)
+	var character_store_path: String = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATH)
 	if ResourceLoader.exists(character_store_path):
 		character_store = ResourceLoader.load(character_store_path)
 	else:
 		character_store = CharacterStore.new()
-		ResourceSaver.save(character_store, character_store_path)
-
-
-func _init_action_store() -> void:
-	var action_store_path = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATH)
-	if ResourceLoader.exists(action_store_path):
-		action_store = ResourceLoader.load(action_store_path)
-	else:
-		action_store = ActionStore.new()
-		ResourceSaver.save(action_store, action_store_path)
+		var _result: bool = ResourceSaver.save(character_store, character_store_path)
 
 
 func _init_fact_store() -> void:
-	var fact_store_path = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)
+	var fact_store_path: String = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)
 	if ResourceLoader.exists(fact_store_path):
 		fact_store = ResourceLoader.load(fact_store_path)
 	else:
 		fact_store = FactStore.new()
-		ResourceSaver.save(fact_store, fact_store_path)
+		var _result: bool = ResourceSaver.save(fact_store, fact_store_path)
 #endregion
 
 
@@ -209,7 +147,7 @@ func load_current_dialogue_sequence() -> Variant:
 
 ## Plugin use only
 func load_test_dialogue_sequence() -> DialogueAst:
-	var current_dialogue_sequence_path = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH)
+	var current_dialogue_sequence_path: String = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH)
 	if current_dialogue_sequence_path and ResourceLoader.exists(current_dialogue_sequence_path):
 		return load(current_dialogue_sequence_path)
 	return DialogueAst.new()
@@ -218,9 +156,10 @@ func load_test_dialogue_sequence() -> DialogueAst:
 ## Plugin use only
 func get_test_start_node(dialogue_ast: DialogueAst) -> Variant:
 	var start_node_id_variant: Variant = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_START_NODE_ID)
-	var from_start = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START)
-	if not from_start and start_node_id_variant:
-		return dialogue_ast.find_node_by_id(start_node_id_variant)
+	var from_start: Variant = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START)
+	if not from_start and start_node_id_variant and is_instance_of(start_node_id_variant, TYPE_STRING):
+		var start_node_id: String = start_node_id_variant
+		return dialogue_ast.find_node_by_id(start_node_id)
 	return null
 
 

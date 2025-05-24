@@ -146,7 +146,7 @@ func _render_available_fact_store_menu() -> void:
 				return fact_store.id == available_fact_store.id).size() > 0
 		popup.set_item_checked(index, checked)
 		index += 1
-	ParleyUtils.safe_connect(popup.id_pressed, _on_available_fact_store_pressed)
+	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_available_fact_store_pressed)
 	popup.hide_on_checkable_item_selection = false
 	available_fact_store_label.text = "Available:"
 	available_fact_store_menu.text = "%s/%s Selected" % [selected_fact_stores.size(), available_fact_stores.size()]
@@ -206,8 +206,8 @@ func _render_facts() -> void:
 			fact_editor.fact_id = fact.id
 			fact_editor.fact_name = fact.name
 			fact_editor.fact_ref = fact.ref
-			ParleyUtils.safe_connect(fact_editor.fact_changed, _on_fact_changed.bind(fact))
-			ParleyUtils.safe_connect(fact_editor.fact_removed, _on_fact_removed.bind(fact))
+			ParleyUtils.signals.safe_connect(fact_editor.fact_changed, _on_fact_changed.bind(fact))
+			ParleyUtils.signals.safe_connect(fact_editor.fact_removed, _on_fact_removed.bind(fact))
 			facts_container.add_child(fact_editor)
 			if index != filtered_facts.size() - 1:
 				var horizontal_separator: HSeparator = HSeparator.new()
@@ -291,17 +291,18 @@ func _on_dialogue_sequence_container_resource_selected(selected_dialogue_sequenc
 		dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
 
 
-func _on_register_fact_store_modal_store_registered(store: StoreAst) -> void:
+func _on_register_fact_store_modal_store_registered(store: ParleyStore) -> void:
 	_register_fact_store(store, true)
 #endregion
 
 
 #region ACTIONS
-func _register_fact_store(store: StoreAst, new: bool) -> void:
+func _register_fact_store(store: ParleyStore, new: bool) -> void:
 	if store is FactStore:
 		var fact_store: FactStore = store
 		if new:
-			ParleyManager.register_fact_store(fact_store)
+			# TODO: can we get rid of this global ref?
+			ParleyManager.get_instance().register_fact_store(fact_store)
 		if dialogue_sequence_ast:
 			dialogue_sequence_ast.stores.register_fact_store(fact_store)
 			var _ok: int = ResourceSaver.save(dialogue_sequence_ast)
@@ -332,5 +333,6 @@ func _save() -> void:
 
 #region UTILS
 func _get_available_fact_store_paths() -> Array[String]:
-	return ParleyManager.fact_stores
+	# TODO: can we get rid of this global ref?
+	return ParleyManager.get_instance().fact_stores
 #endregion

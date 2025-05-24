@@ -1,18 +1,18 @@
 [gd_resource type="Resource" script_class="ActionStore" load_steps=5 format=3 uid="uid://bfwohwb0ftpuq"]
 
 [ext_resource type="Script" uid="uid://cel0yoviy6eqi" path="res://addons/parley/models/action.gd" id="1_qwxcu"]
-[ext_resource type="Script" uid="uid://cc7stjcigkq7f" path="res://actions/advance_time_action.gd" id="2_vdqi4"]
+[ext_resource type="Script" uid="uid://cc7stjcigkq7f" path="res://actions/advance_time_action.gd" id="2_6wvxp"]
 [ext_resource type="Script" uid="uid://b3tj6amhgmct6" path="res://addons/parley/stores/action/action_store.gd" id="3_6b0df"]
 
-[sub_resource type="Resource" id="Resource_6wvxp"]
+[sub_resource type="Resource" id="Resource_mgngf"]
 script = ExtResource("1_qwxcu")
 id = "main:advance_time"
 name = "Advance Time"
-ref = ExtResource("2_vdqi4")
-metadata/_custom_type_script = "uid://cel0yoviy6eqi"
+ref = ExtResource("2_6wvxp")
+metadata/parley_action_store = "res://actions/action_store.tres"
 
 [resource]
 script = ExtResource("3_6b0df")
-actions = Array[ExtResource("1_qwxcu")]([SubResource("Resource_6wvxp")])
+actions = Array[ExtResource("1_qwxcu")]([SubResource("Resource_mgngf")])
 id = "main"
 metadata/_custom_type_script = "uid://b3tj6amhgmct6"

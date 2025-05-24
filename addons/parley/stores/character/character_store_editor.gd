@@ -146,7 +146,7 @@ func _render_available_character_store_menu() -> void:
 				return character_store.id == available_character_store.id).size() > 0
 		popup.set_item_checked(index, checked)
 		index += 1
-	ParleyUtils.safe_connect(popup.id_pressed, _on_available_character_store_pressed)
+	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_available_character_store_pressed)
 	popup.hide_on_checkable_item_selection = false
 	available_character_store_label.text = "Available:"
 	available_character_store_menu.text = "%s/%s Selected" % [selected_character_stores.size(), available_character_stores.size()]
@@ -205,8 +205,8 @@ func _render_characters() -> void:
 			var character_editor: ParleyCharacterEditor = CharacterEditor.instantiate()
 			character_editor.character_id = character.id
 			character_editor.character_name = character.name
-			ParleyUtils.safe_connect(character_editor.character_changed, _on_character_changed.bind(character))
-			ParleyUtils.safe_connect(character_editor.character_removed, _on_character_removed.bind(character))
+			ParleyUtils.signals.safe_connect(character_editor.character_changed, _on_character_changed.bind(character))
+			ParleyUtils.signals.safe_connect(character_editor.character_removed, _on_character_removed.bind(character))
 			characters_container.add_child(character_editor)
 			if index != filtered_characters.size() - 1:
 				var horizontal_separator: HSeparator = HSeparator.new()
@@ -289,17 +289,18 @@ func _on_dialogue_sequence_container_resource_selected(selected_dialogue_sequenc
 		dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
 
 
-func _on_register_character_store_modal_store_registered(store: StoreAst) -> void:
+func _on_register_character_store_modal_store_registered(store: ParleyStore) -> void:
 	_register_character_store(store, true)
 #endregion
 
 
 #region ACTIONS
-func _register_character_store(store: StoreAst, new: bool) -> void:
+func _register_character_store(store: ParleyStore, new: bool) -> void:
 	if store is CharacterStore:
 		var character_store: CharacterStore = store
 		if new:
-			ParleyManager.register_character_store(character_store)
+			# TODO: can we get rid of this global ref?
+			ParleyManager.get_instance().register_character_store(character_store)
 		if dialogue_sequence_ast:
 			dialogue_sequence_ast.stores.register_character_store(character_store)
 			var _ok: int = ResourceSaver.save(dialogue_sequence_ast)
@@ -330,5 +331,6 @@ func _save() -> void:
 
 #region UTILS
 func _get_available_character_store_paths() -> Array[String]:
-	return ParleyManager.character_stores
+	# TODO: can we get rid of this global ref?
+	return ParleyManager.get_instance().character_stores
 #endregion

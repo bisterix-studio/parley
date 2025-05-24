@@ -2,17 +2,20 @@
 # TODO: prefix with Parley
 class_name ActionNodeEditor extends NodeEditor
 
+
+var action_store: ActionStore
 @export var description: String = "": set = _on_description_changed
 @export var action_type: ActionNodeAst.ActionType = ActionNodeAst.ActionType.SCRIPT: set = _on_action_changed
-@export var action_script_name: String = "": set = _on_action_script_selected
+@export var action_script_ref: String = "": set = _set_action_script_ref
 @export var values: Array = []: set = _on_values_changed
+
 
 @onready var description_editor: TextEdit = %DescriptionEditor
 @onready var action_type_editor: OptionButton = %ActionTypeEditor
 @onready var action_script_selector: OptionButton = %ActionScriptSelector
 @onready var values_editor: TextEdit = %ActionValueDescription
 
-signal action_node_changed(id: String, description: String, action: ActionNodeAst.ActionType, action_script_name: String, values: Array)
+signal action_node_changed(id: String, description: String, action: ActionNodeAst.ActionType, action_script_ref: String, values: Array)
 
 func _ready() -> void:
 	set_title()
@@ -23,9 +26,7 @@ func _ready() -> void:
 
 func _render_action_options() -> void:
 	action_script_selector.clear()
-	if not ParleyManager.action_store:
-		return
-	for action in ParleyManager.action_store.actions:
+	for action: Action in action_store.actions:
 		action_script_selector.add_item(action.name)
 	_select_action_script()
 
@@ -44,8 +45,8 @@ func _on_action_changed(new_action_type: ActionNodeAst.ActionType) -> void:
 	action_type = new_action_type
 	_select_action_type()
 
-func _on_action_script_selected(new_action_script_name: String) -> void:
-	action_script_name = new_action_script_name
+func _set_action_script_ref(new_action_script_ref: String) -> void:
+	action_script_ref = new_action_script_ref
 	_select_action_script()
 
 func _on_values_changed(new_values: Array) -> void:
@@ -61,7 +62,7 @@ func _select_action_type() -> void:
 	if action_type_editor:
 		var selected_index: int = -1
 		var count: int = 0
-		for action_type_def in ActionNodeAst.ActionType.values():
+		for action_type_def: ActionNodeAst.ActionType in ActionNodeAst.ActionType.values():
 			if action_type == action_type_def:
 				selected_index = count
 			count += 1
@@ -70,7 +71,7 @@ func _select_action_type() -> void:
 
 func _select_action_script() -> void:
 	if action_script_selector:
-		var selected_index = ParleyManager.action_store.get_action_index_by_name(action_script_name)
+		var selected_index: int = action_store.get_action_index_by_ref(action_script_ref)
 		if action_script_selector.selected != selected_index:
 			action_script_selector.select(selected_index)
 
@@ -93,10 +94,12 @@ func _on_action_value_description_text_changed() -> void:
 	_emit_action_node_changed()
 
 func _on_action_script_selector_item_selected(index: int) -> void:
-	var new_action_script_name = action_script_selector.get_item_text(index)
-	action_script_name = new_action_script_name
+	if index == -1 or index >= action_store.actions.size():
+		return
+	var action: Action = action_store.actions[index]
+	action_script_ref = action.ref.resource_path
 	_emit_action_node_changed()
 
 func _emit_action_node_changed() -> void:
-	action_node_changed.emit(id, description, action_type, action_script_name, values)
+	action_node_changed.emit(id, description, action_type, action_script_ref, values)
 #endregion

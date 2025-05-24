@@ -11,6 +11,7 @@ const ParleyEdges: PackedScene = preload("./views/parley_edges.tscn")
 const MainPanelScene: PackedScene = preload("./main_panel.tscn")
 
 
+const PARLEY_RUNTIME_AUTOLOAD: String = "ParleyRuntime"
 const PARLEY_MANAGER_SINGLETON: String = "ParleyManager"
 
 
@@ -38,34 +39,42 @@ func _enter_tree() -> void:
 		
 		# Stores Editor Dock
 		stores_editor = StoresEditorScene.instantiate()
-		ParleyUtils.safe_connect(stores_editor.dialogue_sequence_ast_changed, _on_dialogue_sequence_ast_changed.bind(Component.StoresEditor))
-		ParleyUtils.safe_connect(stores_editor.dialogue_sequence_ast_selected, _on_dialogue_sequence_ast_selected.bind(Component.StoresEditor))
+		ParleyUtils.signals.safe_connect(stores_editor.dialogue_sequence_ast_changed, _on_dialogue_sequence_ast_changed.bind(Component.StoresEditor))
+		ParleyUtils.signals.safe_connect(stores_editor.dialogue_sequence_ast_selected, _on_dialogue_sequence_ast_selected.bind(Component.StoresEditor))
 		add_control_to_dock(DockSlot.DOCK_SLOT_LEFT_UR, stores_editor)
 
 		# Node Editor Dock
 		node_editor = ParleyNodeScene.instantiate()
-		ParleyUtils.safe_connect(node_editor.node_changed, _on_node_editor_node_changed)
-		ParleyUtils.safe_connect(node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
+		ParleyUtils.signals.safe_connect(node_editor.node_changed, _on_node_editor_node_changed)
+		ParleyUtils.signals.safe_connect(node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_UL, node_editor)
 
 		# Edges Editor Dock
 		edges_editor = ParleyEdges.instantiate()
+		ParleyUtils.signals.safe_connect(edges_editor.edge_deleted, _on_edges_editor_edge_deleted)
+		ParleyUtils.signals.safe_connect(edges_editor.mouse_entered_edge, _on_edges_editor_mouse_entered_edge)
+		ParleyUtils.signals.safe_connect(edges_editor.mouse_exited_edge, _on_edges_editor_mouse_exited_edge)
 		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_BL, edges_editor)
-		ParleyUtils.safe_connect(edges_editor.edge_deleted, _on_edges_editor_edge_deleted)
-		ParleyUtils.safe_connect(edges_editor.mouse_entered_edge, _on_edges_editor_mouse_entered_edge)
-		ParleyUtils.safe_connect(edges_editor.mouse_exited_edge, _on_edges_editor_mouse_exited_edge)
 
 		# Main Panel
 		main_panel_instance = MainPanelScene.instantiate()
-		ParleyUtils.safe_connect(main_panel_instance.node_selected, _on_main_panel_node_selected)
-		ParleyUtils.safe_connect(main_panel_instance.dialogue_ast_selected, _on_main_panel_dialogue_sequence_ast_selected)
+		ParleyUtils.signals.safe_connect(main_panel_instance.node_selected, _on_main_panel_node_selected)
+		ParleyUtils.signals.safe_connect(main_panel_instance.dialogue_ast_selected, _on_main_panel_dialogue_sequence_ast_selected)
 		if main_panel_instance.dialogue_ast:
 			_on_dialogue_sequence_ast_changed(main_panel_instance.dialogue_ast, Component.MainPanel)
 		EditorInterface.get_editor_main_screen().add_child(main_panel_instance)
 
+		# Setup of data must be performed before setting the dialogue_ast because
+		# of the refresh that happens in the dialogue_ast setter. This causes
+		# the dialogue to be rendered before the stores are correctly set so
+		# it is vital to setup these first.
+		# TODO: it may be better to not refresh automatically upon a dialogue ast change
+		# or defer the refresh so it happens after all the other setters are made.
+		_setup_data()
+		main_panel_instance.dialogue_ast = ParleyManager.get_instance().load_current_dialogue_sequence()
+
 		# Hide the main panel. Very much required.
 		_make_visible(false)
-
 
 #region SETTERS
 func _set_edges() -> void:
@@ -74,6 +83,19 @@ func _set_edges() -> void:
 		var dialogue_sequence_ast: DialogueAst = node_editor.dialogue_sequence_ast
 		var edges: Array[EdgeAst] = dialogue_sequence_ast.edges
 		edges_editor.set_edges(edges, node_ast.id)
+
+
+func _setup_data() -> void:
+	var parley_manager: ParleyManager = ParleyManager.get_instance()
+
+	if stores_editor:
+		stores_editor.action_store = parley_manager.action_store
+
+	if node_editor:
+		node_editor.action_store = parley_manager.action_store
+
+	if main_panel_instance:
+		main_panel_instance.action_store = parley_manager.action_store
 #endregion
 
 
@@ -178,8 +200,9 @@ func _get_plugin_icon() -> Texture2D:
 
 
 func _enable_plugin() -> void:
-	add_autoload_singleton(PARLEY_MANAGER_SINGLETON, "./parley_manager.gd")
+	add_autoload_singleton(PARLEY_RUNTIME_AUTOLOAD, "./parley_runtime.gd")
 
 
 func _disable_plugin() -> void:
-	remove_autoload_singleton(PARLEY_MANAGER_SINGLETON)
+	remove_autoload_singleton(PARLEY_RUNTIME_AUTOLOAD)
+	Engine.unregister_singleton(PARLEY_MANAGER_SINGLETON)

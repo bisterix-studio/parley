@@ -1,6 +1,7 @@
 # How-To create a Condition Node
 
 <!-- TODO: add Parley examples folder -->
+<!-- TODO: redo screenshots as they will be out of date now -->
 
 Condition Nodes can be used to conditionally direct users down different
 dialogue branches or even conditionally render options. They are designed to be

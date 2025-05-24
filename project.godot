@@ -15,10 +15,6 @@ run/main_scene="uid://ckubjbp3e7yy3"
 config/features=PackedStringArray("4.4")
 config/icon="res://icon.svg"
 
-[autoload]
-
-ParleyManager="*res://addons/parley/./parley_manager.gd"
-
 [debug]
 
 gdscript/warnings/exclude_addons=false
@@ -57,4 +53,3 @@ locale/locale_filter_mode=1
 
 stores/character_store_paths=Array[String](["uid://6le1e46jcwbp", "uid://dpkl3t3evbgg2"])
 stores/fact_store_paths=Array[String](["uid://c3c7k7lljjqv3"])
-stores/action_store_paths=Array[String](["uid://bfwohwb0ftpuq"])

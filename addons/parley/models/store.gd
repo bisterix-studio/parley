@@ -1,6 +1,6 @@
 @tool
 # TODO: prefix with Parley
-class_name StoreAst extends Resource
+class_name ParleyStore extends Resource
 
 
 ## The Unique ID of the Store AST.
@@ -18,4 +18,4 @@ func to_dict() -> Dictionary:
 	}
 
 func _to_string() -> String:
-	return "StoreAst<%s>" % [str(to_dict())]
+	return "ParleyStore<%s>" % [str(to_dict())]

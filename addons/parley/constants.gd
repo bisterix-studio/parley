@@ -22,7 +22,6 @@ const DIALOGUE_BALLOON_PATH: String = "parley/dialogue/dialogue_balloon_path"
 #region Stores
 # Project settings
 const ACTION_STORE_PATH: String = "parley/stores/action_store_path"
-const ACTION_STORE_PATHS: String = "parley/stores/action_store_paths"
 const CHARACTER_STORE_PATH: String = "parley/stores/character_store_path"
 const CHARACTER_STORE_PATHS: String = "parley/stores/character_store_paths"
 const FACT_STORE_PATHS: String = "parley/stores/fact_store_paths"

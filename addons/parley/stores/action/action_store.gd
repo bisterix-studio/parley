@@ -1,13 +1,15 @@
 @tool
 # TODO: prefix with Parley
-class_name ActionStore extends StoreAst
+class_name ActionStore extends ParleyStore
 
+
+# TODO: get if all of these are used
 
 #region DEFS
 @export var actions: Array[Action] = []: set = _set_actions
 
 
-const store_metadata_key: String = "action_store"
+const store_metadata_key: String = "parley_action_store"
 
 
 signal action_added(action: Action)
@@ -31,8 +33,8 @@ func _set_actions(new_actions: Array[Action]) -> void:
 
 
 func _set_action_metadata(action: Action) -> Action:
-	if action and not action.has_meta(store_metadata_key) and self.resource_path:
-		action.set_meta(store_metadata_key, self.resource_path)
+	if action and not action.has_meta(store_metadata_key) and resource_path:
+		action.set_meta(store_metadata_key, resource_path)
 	return action
 #endregion
 
@@ -75,6 +77,15 @@ func get_action_index_by_name(name: String) -> int:
 	return -1
 
 
+func get_action_index_by_ref(ref: String) -> int:
+	var idx: int = 0
+	for action: Action in actions:
+		if action.ref.resource_path == ref:
+			return idx
+		idx += 1
+	return -1
+
+
 func remove_action(action_id: String) -> void:
 	var index_to_remove: int = actions.find_custom(func(action: Action) -> bool: return action.id == action_id)
 	actions.remove_at(index_to_remove)
@@ -91,7 +102,7 @@ func has_action_name(name: String) -> bool:
 func get_action_by_name(name: String) -> Action:
 	var filtered_actions: Array = actions.filter(func(action: Action) -> bool: return action.name == name)
 	if filtered_actions.size() == 0:
-		ParleyUtils.log.warn("Action with name '%s' not found in store, returning an empty Action" % [name])
+		ParleyUtils.log.warn("Action with name not found in store (store:%s, name:%s), returning an empty Action" % [id, name])
 		return Action.new()
 	return filtered_actions.front()
 
@@ -99,7 +110,7 @@ func get_action_by_name(name: String) -> Action:
 func get_action_by_ref(ref: String) -> Action:
 	var filtered_actions: Array = actions.filter(func(action: Action) -> bool: return action.ref and action.ref.resource_path == ref)
 	if filtered_actions.size() == 0:
-		ParleyUtils.log.warn("Action with ref '%s' not found in store, returning an empty Action" % [ref])
+		ParleyUtils.log.warn("Action with ref not found in store (store:%s, ref:%s), returning an empty Action" % [id, ref])
 		return Action.new()
 	return filtered_actions.front()
 #endregion
