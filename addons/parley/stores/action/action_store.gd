@@ -28,6 +28,7 @@ func _set_actions(new_actions: Array[Action]) -> void:
 #region CRUD
 func add_action(name: String = "") -> Action:
 	var action: Action = Action.new(ParleyUtils.generate.id(actions, id, name), name)
+	actions.append(action)
 	action_added.emit(action)
 	emit_changed()
 	return action
