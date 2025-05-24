@@ -13,7 +13,7 @@ class Test_dialogue_node_editor:
 		dialogue_node_editor = DialogueNodeEditorScene.instantiate()
 		var character_store: CharacterStore = CharacterStore.new()
 		character_store.id = "test"
-		character_store.add_character("Default Character")
+		var _result: Character = character_store.add_character("Default Character")
 		dialogue_node_editor.selected_character_stores = [character_store]
 		add_child_autofree(dialogue_node_editor)
 	
@@ -145,7 +145,7 @@ class Test_dialogue_node_editor:
 		dialogue_node_editor.id = input['id']
 		
 		# Act
-		await wait_until(func() -> void: return dialogue_node_editor.is_inside_tree(), .1)
+		await wait_until(func() -> bool: return dialogue_node_editor.is_inside_tree(), .1)
 		use_dialogue_node_editor(dialogue_node_editor, input)
 		await wait_for_signal(dialogue_node_editor.dialogue_node_changed, .1)
 

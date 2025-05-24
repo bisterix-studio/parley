@@ -13,7 +13,9 @@
     "npcs",
     "onready",
     "printerr",
-    "printwarn"
+    "printwarn",
+    "stylebox",
+    "titlebar"
   ],
   "files.associations": {
     "*.djson": "json",
