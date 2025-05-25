@@ -71,7 +71,7 @@ class Test_match_node:
 		watch_signals(match_node)
 		
 		# Act
-		await wait_until(func() -> void: return match_node.is_inside_tree(), .1)
+		await wait_until(func() -> bool: return match_node.is_inside_tree(), .1)
 
 		# Assert
 		assert_true(match_node.is_inside_tree())

@@ -2,6 +2,7 @@
 class_name ParleyGraphView extends GraphEdit
 
 var ast: DialogueAst
+var action_store: ActionStore = ActionStore.new(): set = _set_action_store
 
 #region SETUP
 const dialogue_node_scene: PackedScene = preload("../components/dialogue/dialogue_node.tscn")
@@ -43,6 +44,13 @@ func clear() -> void:
 		await child.tree_exited
 #endregion
 
+
+#region SETTERS
+func _set_action_store(new_action_store: ActionStore) -> void:
+	action_store = new_action_store
+#endregion
+
+
 #region GENERATE COMPONENTS
 func _register_node(ast_node: NodeAst) -> ParleyGraphNode:
 	var type: DialogueAst.Type = ast_node.type
@@ -69,7 +77,7 @@ func _register_node(ast_node: NodeAst) -> ParleyGraphNode:
 			return
 	var ast_node_id: String = ast_node.id
 	# TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
-	ParleyUtils.safe_connect(graph_node.position_offset_changed, func() -> void:
+	ParleyUtils.signals.safe_connect(graph_node.position_offset_changed, func() -> void:
 		if ast_node.type == DialogueAst.Type.GROUP and graph_node is GroupNode:
 			var group_graph_node: GroupNode = graph_node
 			var diff: Vector2 = graph_node.position_offset - ast_node.position
@@ -197,7 +205,7 @@ func _create_action_node(ast_node: ActionNodeAst) -> ParleyGraphNode:
 	node.name = get_ast_node_name(ast_node)
 	node.description = ast_node.description
 	node.action_type = ast_node.action_type
-	node.action_script_name = ParleyManager.action_store.get_action_by_ref(ast_node.action_script_ref).name
+	node.action_script_name = action_store.get_action_by_ref(ast_node.action_script_ref).name
 	node.values = ast_node.values
 	return node
 
@@ -207,7 +215,8 @@ func _create_match_node(ast_node: MatchNodeAst) -> ParleyGraphNode:
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	node.description = ast_node.description
-	node.fact_name = ParleyManager.fact_store.get_fact_by_ref(ast_node.fact_ref).name
+	# TODO: can we get rid of this global ref?
+	node.fact_name = ParleyManager.get_instance().fact_store.get_fact_by_ref(ast_node.fact_ref).name
 	var cases: Array[Variant] = []
 	for case: Variant in ast_node.cases:
 		cases.append(case)
@@ -237,26 +246,26 @@ func _create_group_node(ast_node: GroupNodeAst, _should_regenerate: bool = false
 	node.colour = ast_node.colour
 	node.node_ids = ast_node.node_ids
 	# TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
-	ParleyUtils.safe_connect(node.resize_end, func(new_size: Vector2) -> void:
+	ParleyUtils.signals.safe_connect(node.resize_end, func(new_size: Vector2) -> void:
 		# TODO: should this really be done here?
 		node.size = new_size
 		ast_node.size = new_size
 		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
 	)
 	# TODO: bad to change ast stuff here - refactor to avoid horrible bugs
-	ParleyUtils.safe_connect(node.node_deselected, func() -> void:
+	ParleyUtils.signals.safe_connect(node.node_deselected, func() -> void:
 		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
 		# This is to ensure that the sub nodes
 		# are always selectable within the group node
 		await generate()
 	)
 	# TODO: bad to change ast stuff here - refactor to avoid horrible bugs
-	ParleyUtils.safe_connect(node.node_selected, func() -> void:
+	ParleyUtils.signals.safe_connect(node.node_selected, func() -> void:
 		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
 	)
 	# TODO: bad to change ast stuff here - refactor to avoid horrible bugs
 	# EXPERIMENTAL: see how feedback goes. This is certainly a candidate to be put into settings
-	ParleyUtils.safe_connect(node.dragged, func(_from: Vector2, _to: Vector2) -> void:
+	ParleyUtils.signals.safe_connect(node.dragged, func(_from: Vector2, _to: Vector2) -> void:
 		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
 	)
 	return node

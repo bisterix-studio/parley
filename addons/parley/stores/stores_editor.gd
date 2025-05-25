@@ -3,6 +3,8 @@ class_name ParleyStoresEditor extends PanelContainer
 
 
 #region DEFS
+var action_store: ActionStore: set = _set_action_store
+
 @onready var show_character_store_button: Button = %ShowCharacterStoreButton
 @onready var show_fact_store_button: Button = %ShowFactStoreButton
 @onready var show_action_store_button: Button = %ShowActionStoreButton
@@ -24,14 +26,74 @@ var current_store: Store: set = _set_current_store
 
 signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
 signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
+signal store_changed(store: ParleyStore)
 #endregion
 
 
 #region LIFECYCLE
 func _ready() -> void:
 	current_store = Store.CHARACTER
+	ParleyUtils.signals.safe_connect(action_store_editor.action_store_changed, _on_action_store_changed)
 
 
+func _exit_tree() -> void:
+	ParleyUtils.signals.safe_disconnect(action_store_editor.action_store_changed, _on_action_store_changed)
+#endregion
+
+
+#region SETTERS
+func _set_action_store(new_action_store: ActionStore) -> void:
+	action_store = new_action_store
+
+
+func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
+	if dialogue_ast != new_dialogue_ast:
+		dialogue_ast = new_dialogue_ast
+		_set_current_store(current_store)
+
+
+func _set_current_store(new_current_store: Store) -> void:
+	current_store = new_current_store
+	match current_store:
+		Store.CHARACTER: _render_character_store()
+		Store.FACT: _render_fact_store()
+		Store.ACTION: _render_action_store()
+		_: push_error('PARLEY_ERR: Unsupported store selected: %s' % [current_store])
+
+
+func _render_character_store() -> void:
+	if show_character_store_button and not show_character_store_button.button_pressed:
+		show_character_store_button.button_pressed = true
+	_clear()
+	if character_store_editor:
+		if character_store_editor.dialogue_sequence_ast != dialogue_ast:
+			character_store_editor.dialogue_sequence_ast = dialogue_ast
+		character_store_editor.show()
+
+
+func _render_fact_store() -> void:
+	if show_fact_store_button and not show_fact_store_button.button_pressed:
+		show_fact_store_button.button_pressed = true
+	_clear()
+	if fact_store_editor:
+		if fact_store_editor.dialogue_sequence_ast != dialogue_ast:
+			fact_store_editor.dialogue_sequence_ast = dialogue_ast
+		fact_store_editor.show()
+
+
+func _render_action_store() -> void:
+	if show_action_store_button and not show_action_store_button.button_pressed:
+		show_action_store_button.button_pressed = true
+	_clear()
+	if action_store_editor:
+		action_store_editor.action_store = action_store
+		if action_store_editor.dialogue_sequence_ast != dialogue_ast:
+			action_store_editor.dialogue_sequence_ast = dialogue_ast
+		action_store_editor.show()
+#endregion
+
+
+#region RENDERERS
 func _clear() -> void:
 	if character_store_editor:
 		character_store_editor.hide()
@@ -46,54 +108,11 @@ func _render() -> void:
 #endregion
 
 
-#region SETTERS
-func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
-	if dialogue_ast != new_dialogue_ast:
-		dialogue_ast = new_dialogue_ast
-		_set_current_store(current_store)
-
-
-func _set_current_store(new_current_store: Store) -> void:
-	current_store = new_current_store
-	match current_store:
-		Store.CHARACTER: _set_character_store()
-		Store.FACT: _set_fact_store()
-		Store.ACTION: _set_action_store()
-		_: push_error('PARLEY_ERR: Unsupported store selected: %s' % [current_store])
-
-
-func _set_character_store() -> void:
-	if show_character_store_button and not show_character_store_button.button_pressed:
-		show_character_store_button.button_pressed = true
-	_clear()
-	if character_store_editor:
-		if character_store_editor.dialogue_sequence_ast != dialogue_ast:
-			character_store_editor.dialogue_sequence_ast = dialogue_ast
-		character_store_editor.show()
-
-
-func _set_fact_store() -> void:
-	if show_fact_store_button and not show_fact_store_button.button_pressed:
-		show_fact_store_button.button_pressed = true
-	_clear()
-	if fact_store_editor:
-		if fact_store_editor.dialogue_sequence_ast != dialogue_ast:
-			fact_store_editor.dialogue_sequence_ast = dialogue_ast
-		fact_store_editor.show()
-
-
-func _set_action_store() -> void:
-	if show_action_store_button and not show_action_store_button.button_pressed:
-		show_action_store_button.button_pressed = true
-	_clear()
-	if action_store_editor:
-		if action_store_editor.dialogue_sequence_ast != dialogue_ast:
-			action_store_editor.dialogue_sequence_ast = dialogue_ast
-		action_store_editor.show()
-#endregion
-
-
 #region SIGNALS
+func _on_action_store_changed(new_action_store: ActionStore) -> void:
+	store_changed.emit(new_action_store)
+
+
 func _on_show_character_store_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		current_store = Store.CHARACTER

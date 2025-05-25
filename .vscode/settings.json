@@ -7,15 +7,19 @@
     "containsn",
     "Dialog",
     "dlog",
+    "gdignore",
     "gdscript",
     "glog",
     "npcs",
     "onready",
     "printerr",
-    "printwarn"
+    "printwarn",
+    "stylebox",
+    "titlebar"
   ],
   "files.associations": {
     "*.djson": "json",
     "*.ds": "json"
-  }
+  },
+  "editor.renderWhitespace": "all"
 }

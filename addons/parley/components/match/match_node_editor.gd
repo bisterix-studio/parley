@@ -68,9 +68,14 @@ func _on_set_fact_name(new_fact_name: String) -> void:
 	_select_fact()
 	if fact_store and fact_store.has_fact_name(fact_name):
 		var fact: Fact = fact_store.get_fact_by_name(fact_name)
-		# TODO: new may not exist
-		var fact_interface: FactInterface = load(fact.ref.resource_path).new()
-		# TODO: check if method exists
+		var script: GDScript = load(ParleyUtils.resource.get_uid(fact.ref))
+		if script is not GDScript:
+			ParleyUtils.log.error("Fact is not valid GDScript (def:%s)" % fact)
+			return
+		var fact_interface: FactInterface = script.new()
+		if fact_interface is not FactInterface:
+			ParleyUtils.log.error("Fact script is not a valid Fact interface (def:%s, fact:%s)" % [fact, fact_interface])
+			return
 		var new_available_cases: Array[Variant] = []
 		new_available_cases.append_array(fact_interface.available_values())
 		# TODO: create a wrapper for this
@@ -116,8 +121,8 @@ func _render_cases() -> void:
 			else:
 				case_inst.value = case
 
-			case_inst.case_edited.connect(_on_case_edited.bind(index))
-			case_inst.case_deleted.connect(_on_case_deleted.bind(index))
+			ParleyUtils.signals.safe_connect(case_inst.case_edited, _on_case_edited.bind(index))
+			ParleyUtils.signals.safe_connect(case_inst.case_deleted, _on_case_deleted.bind(index))
 			cases_editor.add_child(case_inst)
 			index += 1
 		has_fallback = _has_fallback

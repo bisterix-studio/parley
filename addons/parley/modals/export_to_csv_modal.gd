@@ -1,5 +1,5 @@
 @tool
-extends Window
+class_name ParleyExportToCsvModal extends Window
 
 
 @onready var path_editor: LineEdit = %PathEdit
@@ -28,15 +28,15 @@ func _on_export_button_pressed() -> void:
 		ParleyUtils.log.error("No Dialogue AST associated with export.")
 		return
 	var csv_lines: Array[PackedStringArray] = dialogue_ast.to_csv_lines()
-	var dir = DirAccess.open(base_path)
+	var dir: DirAccess = DirAccess.open(base_path)
 	if dir:
 		# TODO: maybe add a message for a gdignore
 		# Or probably just mention this in the docs as there are
 		# some tricky things that need to be considered.
-		var file = FileAccess.open(export_path, FileAccess.WRITE)
+		var file: FileAccess = FileAccess.open(export_path, FileAccess.WRITE)
 		if file:
-			for line in csv_lines:
-				file.store_csv_line(line)
+			for line: PackedStringArray in csv_lines:
+				var _result: bool = file.store_csv_line(line)
 			file.close()
 		else:
 			ParleyUtils.log.error("An error occurred while exporting Dialogue to CSV at path: %s." % [export_path])

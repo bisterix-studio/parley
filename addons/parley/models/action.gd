@@ -10,7 +10,7 @@ class_name Action extends Resource
 
 
 ## The unique name of the Action.
-## Example: "advance_time"
+## Example: "Advance Time"
 @export var name: String
 
 

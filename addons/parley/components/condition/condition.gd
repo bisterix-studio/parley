@@ -18,16 +18,18 @@ signal condition_changed
 func _ready() -> void:
 	_render_fact_options()
 	operator_editor.clear()
-	for key in ConditionNodeAst.Operator:
-		operator_editor.add_item(key.capitalize(), ConditionNodeAst.Operator[key])
+	for key: String in ConditionNodeAst.Operator:
+		var item_id: int = ConditionNodeAst.Operator[key]
+		operator_editor.add_item(key.capitalize(), item_id)
 	update(fact_name, operator, value)
 
 
 func _render_fact_options() -> void:
 	fact_selector.clear()
-	if not ParleyManager.fact_store:
+	if not ParleyManager.get_instance().fact_store:
 		return
-	for fact in ParleyManager.fact_store.facts:
+	# TODO: can we get rid of this global ref?
+	for fact: Fact in ParleyManager.get_instance().fact_store.facts:
 		fact_selector.add_item(fact.name)
 	_select_fact()
 
@@ -47,7 +49,8 @@ func _on_fact_selected(new_fact_name: String) -> void:
 
 func _select_fact() -> void:
 	if fact_selector:
-		var selected_index = ParleyManager.fact_store.get_fact_index_by_name(fact_name)
+		# TODO: can we get rid of this global ref?
+		var selected_index = ParleyManager.get_instance().fact_store.get_fact_index_by_name(fact_name)
 		if fact_selector.selected != selected_index:
 			fact_selector.select(selected_index)
 

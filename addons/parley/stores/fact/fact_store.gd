@@ -1,6 +1,6 @@
 @tool
 # TODO: prefix with Parley
-class_name FactStore extends StoreAst
+class_name FactStore extends ParleyStore
 
 
 #region DEFS

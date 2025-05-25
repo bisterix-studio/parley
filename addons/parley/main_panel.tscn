@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://ckubjbp3e7yy3"]
+[gd_scene load_steps=33 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_4ui00"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://cwpe018tuojmx" path="res://addons/parley/assets/Condition.svg" id="6_pb8ro"]
 [ext_resource type="Texture2D" uid="uid://batwytcx6oxfd" path="res://addons/parley/assets/Action.svg" id="7_lxbr4"]
 [ext_resource type="Texture2D" uid="uid://b1waalrtryrol" path="res://addons/parley/assets/Start.svg" id="8_2fjw0"]
+[ext_resource type="Script" uid="uid://cel0yoviy6eqi" path="res://addons/parley/models/action.gd" id="9_anq7l"]
 [ext_resource type="Texture2D" uid="uid://df6gs4fjg2fbo" path="res://addons/parley/assets/TestDialogueFromSelected.svg" id="9_dmt7g"]
 [ext_resource type="Texture2D" uid="uid://b4rpwa05rh13m" path="res://addons/parley/assets/End.svg" id="9_lpmhi"]
 [ext_resource type="Texture2D" uid="uid://vbriasvmuex2" path="res://addons/parley/assets/Group.svg" id="10_h0et1"]
@@ -29,11 +30,15 @@
 [ext_resource type="Script" uid="uid://3nqtsewsmim0" path="res://addons/parley/models/node_ast.gd" id="31_tp54n"]
 [ext_resource type="Script" uid="uid://btn7s5anok7p4" path="res://addons/parley/models/dialogue_ast.gd" id="32_pogw7"]
 
+[sub_resource type="Resource" id="Resource_s5oy3"]
+script = ExtResource("26_anq7l")
+actions = Array[ExtResource("9_anq7l")]([])
+id = ""
+
 [sub_resource type="Resource" id="Resource_7jaih"]
 script = ExtResource("29_xjep8")
 character = Array[ExtResource("28_anq7l")]([])
 fact = Array[ExtResource("30_7jaih")]([])
-action = Array[ExtResource("26_anq7l")]([])
 
 [sub_resource type="Resource" id="Resource_7hjis"]
 script = ExtResource("32_pogw7")
@@ -53,6 +58,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_06n3w")
+action_store = SubResource("Resource_s5oy3")
 save_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/SaveButton")
 arrange_nodes_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/ArrangeNodesButton")
 refresh_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/RefreshButton")
@@ -223,7 +229,6 @@ size_flags_horizontal = 3
 [node name="GraphView" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("20_8yxrj")]
 unique_name_in_owner = true
 layout_mode = 2
-scroll_offset = Vector2(0, 0)
 
 [node name="BottomPanel" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/GraphContainer" instance=ExtResource("29_xxhvx")]
 unique_name_in_owner = true

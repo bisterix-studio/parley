@@ -3,20 +3,17 @@ class_name ParleySettings
 
 const ParleyConstants = preload("./constants.gd")
 
-
 static var DEFAULT_SETTINGS: Dictionary = {
 	# Dialogue
-	ParleyConstants.DIALOGUE_BALLOON_PATH: preload("./components/default_balloon.tscn").resource_path,
+	ParleyConstants.DIALOGUE_BALLOON_PATH: ParleyUtils.resource.get_uid(preload("./components/default_balloon.tscn")),
 	# Stores
-	# TODO: remove
-	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
 	# TODO: remove
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",
 	ParleyConstants.CHARACTER_STORE_PATHS: [],
 	ParleyConstants.FACT_STORE_PATHS: [],
-	ParleyConstants.ACTION_STORE_PATHS: [],
+	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
 	# TODO: remove
-	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store_main.tres",
+	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
 	# hardcode it for now but allow people to edit it in settings
@@ -34,12 +31,6 @@ static var TYPES: Dictionary = {
 		"name": ParleyConstants.ACTION_STORE_PATH,
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_FILE,
-	},
-	ParleyConstants.ACTION_STORE_PATHS: {
-		"name": ParleyConstants.ACTION_STORE_PATHS,
-		"type": TYPE_ARRAY,
-		"hint": PROPERTY_HINT_ARRAY_TYPE,
-		"hint_string": "%d/%d:*.tres" % [TYPE_STRING, PROPERTY_HINT_FILE]
 	},
 	ParleyConstants.CHARACTER_STORE_PATH: {
 		"name": ParleyConstants.CHARACTER_STORE_PATH,

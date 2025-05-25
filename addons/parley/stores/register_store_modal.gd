@@ -2,7 +2,7 @@
 class_name ParleyRegisterStoreModal extends Window
 
 #region DEFS
-@export var type: StoresAst.Type
+@export var type: ParleyStore.Type
 
 
 var file_mode: FileDialog.FileMode
@@ -22,28 +22,28 @@ var id_value: String = ""
 @onready var status: RichTextLabel = %Status
 
 
-signal store_registered(store: StoreAst)
+signal store_registered(store: ParleyStore)
 #endregion
 
 
 #region LIFECYCLE
 func _ready() -> void:
 	match type:
-		StoresAst.Type.Character:
+		ParleyStore.Type.Character:
 			store_name = "Character Store"
 			resource_editor.key = store_name
 			resource_editor.base_type = "CharacterStore"
 			# TODO: get from config
 			default_current_dir = "res://characters"
 			default_current_file = "new_character_store.tres"
-		StoresAst.Type.Fact:
+		ParleyStore.Type.Fact:
 			store_name = "Fact Store"
 			resource_editor.key = store_name
 			resource_editor.base_type = "FactStore"
 			# TODO: get from config
 			default_current_dir = "res://facts"
 			default_current_file = "new_fact_store.tres"
-		StoresAst.Type.Action:
+		ParleyStore.Type.Action:
 			store_name = "Action Store"
 			resource_editor.key = store_name
 			resource_editor.base_type = "ActionStore"
@@ -107,8 +107,8 @@ func _on_id_editor_value_changed(new_value: String) -> void:
 	id_value = new_value
 	id_valid = true if id_value else false
 	if resource_editor:
-		if resource_editor.resource is StoreAst:
-			(resource_editor.resource as StoreAst).id = id_value
+		if resource_editor.resource is ParleyStore:
+			(resource_editor.resource as ParleyStore).id = id_value
 
 
 func _on_choose_path_modal_file_selected(path: String) -> void:
@@ -126,7 +126,7 @@ func _on_cancel_button_pressed() -> void:
 	hide()
 
 
-func _on_resource_editor_resource_changed(resource: StoreAst) -> void:
+func _on_resource_editor_resource_changed(resource: ParleyStore) -> void:
 	if resource:
 		if not id_value:
 			if resource.id:
@@ -160,7 +160,7 @@ func _on_resource_editor_resource_changed(resource: StoreAst) -> void:
 func _on_register_button_pressed() -> void:
 	if resource_editor and resource_editor.resource and path_edit and path_edit.text and id_valid and script_valid and resource_exists:
 		var resource: Resource = resource_editor.resource
-		var store: StoreAst
+		var store: ParleyStore
 		if resource.resource_path:
 			var ok: int = ResourceSaver.save(resource)
 			if ok != OK:

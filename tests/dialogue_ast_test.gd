@@ -101,8 +101,8 @@ class Test_process_next:
 
 	func map_to_dict(node: NodeAst) -> Dictionary:
 		var d: Dictionary = inst_to_dict(node)
-		d.erase('@path')
-		d.erase('@subpath')
+		var _path_result: bool = d.erase('@path')
+		var _subpath_result: bool = d.erase('@subpath')
 		return d
 
 class Test_add_edge:

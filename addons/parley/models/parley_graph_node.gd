@@ -11,7 +11,7 @@ const slot_icon: Texture2D = preload("../assets/ArrowHead.svg")
 func _ready() -> void:
 	setup(type)
 
-func setup(new_type: DialogueAst.Type, title_override = null, colour_override = null) -> void:
+func setup(new_type: DialogueAst.Type, title_override: Variant = null, colour_override: Variant = null) -> void:
 	type = new_type
 	set_titlebar(title_override, colour_override)
 	set_base_panel()
@@ -29,7 +29,7 @@ func set_slot_style(idx: int) -> void:
 ## If overrides are defined for title and colour,
 ## they will be used.
 ## Example: node.set_titlebar()
-func set_titlebar(title_override = null, colour_override = null) -> void:
+func set_titlebar(title_override: Variant = null, colour_override: Variant = null) -> void:
 	title = "%s [ID: %s]" % [title_override if title_override else DialogueAst.get_type_name(type), id]
 	var titlebar: StyleBoxFlat = get_theme_stylebox("titlebar").duplicate()
 	titlebar.bg_color = colour_override if colour_override is Color else DialogueAst.get_type_colour(type)

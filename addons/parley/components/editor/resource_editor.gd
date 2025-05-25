@@ -6,7 +6,7 @@ class_name ParleyResourceEditor extends HBoxContainer
 @export var key: String = "": set = _set_key
 @export var base_type: String = "": set = _set_base_type
 @export var resource: Resource: set = _set_resource
-@export var minimum_x: float = 100 : set = _set_minimum_x
+@export var minimum_x: float = 100: set = _set_minimum_x
 
 
 @onready var _label: Label = %Label
@@ -24,8 +24,8 @@ func _ready() -> void:
 		_resource_picker = EditorResourcePicker.new()
 		_resource_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_resource_picker.base_type = base_type
-		ParleyUtils.safe_connect(_resource_picker.resource_selected, _on_resource_picker_resource_selected)
-		ParleyUtils.safe_connect(_resource_picker.resource_changed, _on_resource_picker_resource_changed)
+		ParleyUtils.signals.safe_connect(_resource_picker.resource_selected, _on_resource_picker_resource_selected)
+		ParleyUtils.signals.safe_connect(_resource_picker.resource_changed, _on_resource_picker_resource_changed)
 		add_child(_resource_picker)
 	_render_key()
 	_render_base_type()

@@ -7,13 +7,18 @@ class Test_action_node_editor:
 	extends GutTest
 	
 	var action_node_editor: ActionNodeEditor = null
+	var action_store: ActionStore = null
 	
 	func before_each() -> void:
+		action_store = ActionStore.new()
 		action_node_editor = ActionNodeEditorScene.instantiate()
+		action_node_editor.action_store = action_store
 		add_child_autofree(action_node_editor)
+		autofree(action_store)
 	
 	func after_each() -> void:
 		action_node_editor = null
+		action_store = null
 	
 	func setup_action_node_editor(p_action_node_editor: ActionNodeEditor, test_case: Dictionary) -> void:
 		var id: Variant = test_case.get('id')

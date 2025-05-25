@@ -1,15 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://i47f3r2rqsf6"]
+[gd_scene load_steps=4 format=3 uid="uid://i47f3r2rqsf6"]
 
 [ext_resource type="Script" uid="uid://bb2tkab6q6jy6" path="res://addons/parley/components/action/action_node_editor.gd" id="1_3lxj7"]
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_ngxen"]
 [ext_resource type="Texture2D" uid="uid://c4qx01xbrjp7h" path="res://addons/parley/assets/Edit.svg" id="3_3rqr3"]
-[ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="4_ithju"]
 
 [node name="ActionNodeEditor" instance=ExtResource("1_ngxen")]
 script = ExtResource("1_3lxj7")
 description = ""
 action_type = 0
-action_script_name = ""
+action_script_ref = ""
 values = []
 type = 3
 
@@ -75,19 +74,11 @@ text = "Action: "
 [node name="ActionScriptSelector" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 1
-popup/item_0/text = "Advance Time"
-popup/item_0/id = 0
 
 [node name="EditActionScriptButton" type="Button" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer" index="2"]
 layout_mode = 2
-disabled = true
+tooltip_text = "Edit Action Script."
 icon = ExtResource("3_3rqr3")
-
-[node name="NewActionScriptButton" type="Button" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer" index="3"]
-layout_mode = 2
-disabled = true
-icon = ExtResource("4_ithju")
 
 [node name="ActionValuesContainer" type="HBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="5"]
 layout_mode = 2
@@ -110,4 +101,5 @@ use_default_word_separators = false
 [connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionDescriptionContainer/DescriptionEditor" to="." method="_on_action_description_text_changed"]
 [connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionTypeContainer/ActionTypeEditor" to="." method="_on_action_type_option_item_selected"]
 [connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer/ActionScriptSelector" to="." method="_on_action_script_selector_item_selected"]
+[connection signal="pressed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionScriptContainer/EditActionScriptButton" to="." method="_on_edit_action_script_button_pressed"]
 [connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/ActionValuesContainer/ActionValueDescription" to="." method="_on_action_value_description_text_changed"]

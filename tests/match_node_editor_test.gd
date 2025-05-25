@@ -90,7 +90,7 @@ class Test_match_node_editor:
 		watch_signals(match_node_editor)
 		
 		# Act
-		await wait_until(func() -> void: return match_node_editor.is_inside_tree(), .1)
+		await wait_until(func() -> bool: return match_node_editor.is_inside_tree(), .1)
 
 		# Assert
 		assert_true(match_node_editor.is_inside_tree())
@@ -167,7 +167,7 @@ class Test_match_node_editor:
 		watch_signals(match_node_editor)
 		
 		# Act
-		await wait_until(func() -> void: return match_node_editor.is_node_ready(), .1)
+		await wait_until(func() -> bool: return match_node_editor.is_node_ready(), .1)
 		use_match_node_editor(match_node_editor, input)
 		await wait_for_signal(match_node_editor.match_node_changed, .1)
 

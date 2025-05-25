@@ -53,7 +53,7 @@ var current_node_asts: Array[NodeAst]:
 		balloon.focus_mode = Control.FOCUS_NONE
 		if not DialogueAst.is_dialogue_options(current_node_asts):
 			var next_button: Control = next_children.back()
-			ParleyUtils.safe_connect(next_button.gui_input, _on_next_dialogue_button_gui_input.bind(next_button))
+			ParleyUtils.signals.safe_connect(next_button.gui_input, _on_next_dialogue_button_gui_input.bind(next_button))
 			if not next_button.is_node_ready():
 				await next_button.ready
 			next_button.grab_focus()
@@ -103,7 +103,7 @@ func _build_next_dialogue_option_children(current_children: Array[Node]) -> Arra
 		next_children.append(_create_horizontal_separator(previous_node))
 	var dialogue_options_container_instance = dialogue_options_container.instantiate()
 	dialogue_options_container_instance.dialogue_options = current_node_asts
-	ParleyUtils.safe_connect(dialogue_options_container_instance.dialogue_option_selected, _on_dialogue_options_container_dialogue_option_selected)
+	ParleyUtils.signals.safe_connect(dialogue_options_container_instance.dialogue_option_selected, _on_dialogue_options_container_dialogue_option_selected)
 	next_children.append(dialogue_options_container_instance)
 	return next_children
 

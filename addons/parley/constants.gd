@@ -7,6 +7,9 @@ const USER_CONFIG_PATH: String = "user://parley_user_config.json"
 #region Parley Plugin
 const PLUGIN_NAME: String = "Parley"
 const PARLEY_PLUGIN_METADATA: String = "ParleyPlugin"
+const PARLEY_RUNTIME_AUTOLOAD: String = "Parley"
+const PARLEY_MANAGER_SINGLETON: String = "ParleyManager"
+const PARLEY_RUNTIME_SINGLETON: String = "ParleyRuntime"
 #endregion
 
 #region Editor
@@ -22,7 +25,6 @@ const DIALOGUE_BALLOON_PATH: String = "parley/dialogue/dialogue_balloon_path"
 #region Stores
 # Project settings
 const ACTION_STORE_PATH: String = "parley/stores/action_store_path"
-const ACTION_STORE_PATHS: String = "parley/stores/action_store_paths"
 const CHARACTER_STORE_PATH: String = "parley/stores/character_store_path"
 const CHARACTER_STORE_PATHS: String = "parley/stores/character_store_paths"
 const FACT_STORE_PATHS: String = "parley/stores/fact_store_paths"
