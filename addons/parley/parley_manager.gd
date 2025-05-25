@@ -11,7 +11,9 @@ var fact_store: FactStore = FactStore.new()
 var character_stores: Array[String]: get = get_character_stores
 # TODO: deprecated
 var fact_stores: Array[String]: get = get_fact_stores
-var action_store: ActionStore: get = _get_action_store
+var action_store: ActionStore:
+	set = _set_action_store,
+	get = _get_action_store
 #endregion
 
 
@@ -41,6 +43,7 @@ func register_action_store(store: ActionStore) -> void:
 	if path != uid:
 		ParleySettings.set_setting(ParleyConstants.ACTION_STORE_PATH, uid, true)
 		ParleyUtils.log.info("Registered new Action Store: %s" % [store])
+	action_store = store
 
 
 func register_fact_store(store: FactStore) -> void:
@@ -74,6 +77,12 @@ func register_character_store(store: CharacterStore) -> void:
 #endregion
 
 
+#region SETTERS
+func _set_action_store(new_action_store: ActionStore) -> void:
+	action_store = new_action_store
+#endregion
+
+
 #region GETTERS
 # TODO: add check for these at startup
 func get_character_stores() -> Array[String]:
@@ -104,7 +113,7 @@ func _get_action_store() -> ActionStore:
 	# Ensure that the store path is resilient to changes
 	if path == ParleySettings.DEFAULT_SETTINGS[ParleyConstants.ACTION_STORE_PATH]:
 		register_action_store(action_store)
-	return load(path)
+	return action_store
 #endregion
 
 

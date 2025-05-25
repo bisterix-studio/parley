@@ -20,11 +20,12 @@ var filtered_actions: Array[Action] = []
 @onready var save_action_store_button: Button = %SaveActionStoreButton
 @onready var invalid_action_store_button: Button = %InvalidActionStoreButton
 @onready var new_action_store_button: Button = %NewActionStoreButton
-@onready var register_action_store: ParleyRegisterStoreModal = %RegisterActionStoreModal
+@onready var register_action_store_modal: ParleyRegisterStoreModal = %RegisterActionStoreModal
 
 
 signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
 signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
+signal action_store_changed(action_store: ActionStore)
 #endregion
 
 
@@ -61,6 +62,7 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 			actions = action_store.actions
 		else:
 			actions = []
+		action_store_changed.emit(action_store)
 	_render_save_action_store_button()
 	_render_invalid_action_store_button()
 
@@ -72,6 +74,8 @@ func _set_actions(new_actions: Array[Action]) -> void:
 		if not action_filter or raw_action_string.containsn(action_filter):
 			filtered_actions.append(action)
 	_render_actions()
+	if action_store:
+		action_store.emit_changed()
 
 
 func _set_action_filter(new_action_filter: String) -> void:
@@ -153,7 +157,8 @@ func _on_action_changed(new_id: String, new_name: String, new_resource: Resource
 	action.id = new_id
 	action.name = new_name
 	action.ref = new_resource
-	action_store.emit_changed()
+	if action_store:
+		action_store.emit_changed()
 
 
 func _on_action_removed(action_id: String, _action: Action) -> void:
@@ -175,15 +180,15 @@ func _on_save_action_store_button_pressed() -> void:
 
 
 func _on_new_action_store_button_pressed() -> void:
-	register_action_store.show()
-	register_action_store.clear()
-	register_action_store.file_mode = FileDialog.FileMode.FILE_MODE_SAVE_FILE
-	register_action_store.resource_editor.resource = ActionStore.new()
+	register_action_store_modal.show()
+	register_action_store_modal.clear()
+	register_action_store_modal.file_mode = FileDialog.FileMode.FILE_MODE_SAVE_FILE
+	register_action_store_modal.resource_editor.resource = ActionStore.new()
 	# TODO: get from config
-	register_action_store.path_edit.text = "res://actions/new_action_store.tres"
-	register_action_store.id_valid = true
-	register_action_store.script_valid = true
-	register_action_store.resource_exists = true
+	register_action_store_modal.path_edit.text = "res://actions/new_action_store.tres"
+	register_action_store_modal.id_valid = true
+	register_action_store_modal.script_valid = true
+	register_action_store_modal.resource_exists = true
 
 
 func _on_dialogue_sequence_container_resource_changed(new_dialogue_sequence_ast: Resource) -> void:
@@ -202,7 +207,6 @@ func _on_register_action_store_modal_store_registered(store: ParleyStore) -> voi
 
 
 func _on_action_store_resource_changed(store: Resource) -> void:
-	prints(store, store is ActionStore)
 	if store is ActionStore:
 		_register_action_store(store as ActionStore, true)
 	else:

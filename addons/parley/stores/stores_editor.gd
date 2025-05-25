@@ -26,25 +26,18 @@ var current_store: Store: set = _set_current_store
 
 signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
 signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
+signal store_changed(store: ParleyStore)
 #endregion
 
 
 #region LIFECYCLE
 func _ready() -> void:
 	current_store = Store.CHARACTER
+	ParleyUtils.signals.safe_connect(action_store_editor.action_store_changed, _on_action_store_changed)
 
 
-func _clear() -> void:
-	if character_store_editor:
-		character_store_editor.hide()
-	if fact_store_editor:
-		fact_store_editor.hide()
-	if action_store_editor:
-		action_store_editor.hide()
-
-
-func _render() -> void:
-	_clear()
+func _exit_tree() -> void:
+	ParleyUtils.signals.safe_disconnect(action_store_editor.action_store_changed, _on_action_store_changed)
 #endregion
 
 
@@ -100,7 +93,26 @@ func _render_action_store() -> void:
 #endregion
 
 
+#region RENDERERS
+func _clear() -> void:
+	if character_store_editor:
+		character_store_editor.hide()
+	if fact_store_editor:
+		fact_store_editor.hide()
+	if action_store_editor:
+		action_store_editor.hide()
+
+
+func _render() -> void:
+	_clear()
+#endregion
+
+
 #region SIGNALS
+func _on_action_store_changed(new_action_store: ActionStore) -> void:
+	store_changed.emit(new_action_store)
+
+
 func _on_show_character_store_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		current_store = Store.CHARACTER

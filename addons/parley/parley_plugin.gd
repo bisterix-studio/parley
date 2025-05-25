@@ -37,6 +37,7 @@ func _enter_tree() -> void:
 		stores_editor = StoresEditorScene.instantiate()
 		ParleyUtils.signals.safe_connect(stores_editor.dialogue_sequence_ast_changed, _on_dialogue_sequence_ast_changed.bind(Component.StoresEditor))
 		ParleyUtils.signals.safe_connect(stores_editor.dialogue_sequence_ast_selected, _on_dialogue_sequence_ast_selected.bind(Component.StoresEditor))
+		ParleyUtils.signals.safe_connect(stores_editor.store_changed, _on_store_changed)
 		add_control_to_dock(DockSlot.DOCK_SLOT_LEFT_UR, stores_editor)
 
 		# Node Editor Dock
@@ -96,6 +97,13 @@ func _setup_data() -> void:
 
 
 #region SIGNALS
+func _on_store_changed(new_store: ParleyStore) -> void:
+	var parley_manager: ParleyManager = ParleyManager.get_instance()
+	parley_manager.action_store = new_store
+	_setup_data()
+	await main_panel_instance.refresh()
+
+
 func _on_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: DialogueAst, component: Component) -> void:
 	if component != Component.MainPanel:
 		main_panel_instance.dialogue_ast = new_dialogue_sequence_ast

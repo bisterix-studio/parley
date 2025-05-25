@@ -93,44 +93,56 @@ func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
 			dialogue_ast_selected.emit(dialogue_ast)
 			await refresh()
 			if graph_view:
-				# Seems like we have to do this twice to get it to correct render
+				# Seems like we have to do this twice to get it to correctly render
 				# TODO: investigate further
 				graph_view.scroll_offset = scroll_offset
 				graph_view.scroll_offset = scroll_offset
 
 
 func _set_action_store(new_action_store: ActionStore) -> void:
-	action_store = new_action_store
+	if action_store != new_action_store:
+		if new_action_store:
+			ParleyUtils.signals.safe_disconnect(action_store.changed, _on_action_store_changed)
+		action_store = new_action_store
+		if action_store:
+			ParleyUtils.signals.safe_connect(action_store.changed, _on_action_store_changed)
 	if graph_view:
 		graph_view.action_store = action_store
 
 
 func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:
 	selected_node_ast = new_selected_node_ast
-	match selected_node_ast.type:
+	if not _is_selected_node(new_selected_node_ast.id):
+		return
+	_set_node_ast(selected_node_ast)
+
+
+func _set_node_ast(new_node_ast: NodeAst) -> void:
+	match new_node_ast.type:
 		DialogueAst.Type.DIALOGUE:
-			var dialogue_node_ast: DialogueNodeAst = selected_node_ast
+			var dialogue_node_ast: DialogueNodeAst = new_node_ast
 			_on_dialogue_node_editor_dialogue_node_changed(dialogue_node_ast.id, dialogue_node_ast.character, dialogue_node_ast.text)
 		DialogueAst.Type.DIALOGUE_OPTION:
-			var dialogue_option_node_ast: DialogueOptionNodeAst = selected_node_ast
+			var dialogue_option_node_ast: DialogueOptionNodeAst = new_node_ast
 			_on_dialogue_option_node_editor_dialogue_option_node_changed(dialogue_option_node_ast.id, dialogue_option_node_ast.character, dialogue_option_node_ast.text)
 		DialogueAst.Type.CONDITION:
-			var condition_node_ast: ConditionNodeAst = selected_node_ast
+			var condition_node_ast: ConditionNodeAst = new_node_ast
 			_on_condition_node_editor_condition_node_changed(condition_node_ast.id, condition_node_ast.description, condition_node_ast.combiner, condition_node_ast.conditions)
 		DialogueAst.Type.MATCH:
-			var match_node_ast: MatchNodeAst = selected_node_ast
+			var match_node_ast: MatchNodeAst = new_node_ast
 			# TODO: can we get rid of this global ref?
 			var fact_name: String = ParleyManager.get_instance().fact_store.get_fact_by_ref(match_node_ast.fact_ref).name
 			_on_match_node_editor_match_node_changed(match_node_ast.id, match_node_ast.description, fact_name, match_node_ast.cases)
 		DialogueAst.Type.ACTION:
-			var action_node_ast: ActionNodeAst = selected_node_ast
+			var action_node_ast: ActionNodeAst = new_node_ast
 			_on_action_node_editor_action_node_changed(action_node_ast.id, action_node_ast.description, action_node_ast.action_type, action_node_ast.action_script_ref, action_node_ast.values)
 		DialogueAst.Type.GROUP:
-			var group_node_ast: GroupNodeAst = selected_node_ast
+			var group_node_ast: GroupNodeAst = new_node_ast
 			_on_group_node_editor_group_node_changed(group_node_ast.id, group_node_ast.name, group_node_ast.colour)
 		_:
 			ParleyUtils.log.error("Unsupported Node type: %s for Node with ID: %s" % [DialogueAst.get_type_name(selected_node_ast.type), selected_node_ast.id])
 			return
+
 
 # TODO: move to the correct region in this file
 func _on_dialogue_ast_changed(new_dialogue_ast: DialogueAst) -> void:
@@ -282,6 +294,13 @@ func _on_test_dialogue_from_selected_button_pressed() -> void:
 
 
 #region SIGNALS
+func _on_action_store_changed() -> void:
+	if action_store:
+		var nodes: Array[NodeAst] = dialogue_ast.find_nodes_by_type(DialogueAst.Type.ACTION)
+		for node_ast: ActionNodeAst in nodes:
+			_set_node_ast(node_ast)
+		
+
 func _on_node_editor_node_changed(new_node_ast: NodeAst) -> void:
 	selected_node_ast = new_node_ast
 
@@ -297,7 +316,7 @@ func _on_graph_view_scroll_offset_changed(offset: Vector2) -> void:
 func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: String, new_dialogue_text: String) -> void:
 	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
 	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
-	if not _ast_node or not _is_selected_node(DialogueNode, _selected_node, id):
+	if not _ast_node or not _selected_node:
 		return
 	if _ast_node is DialogueNodeAst:
 		var ast_node: DialogueNodeAst = _ast_node
@@ -312,7 +331,7 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, new_character: String, new_option_text: String) -> void:
 	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
 	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
-	if not _ast_node or not _is_selected_node(DialogueOptionNode, _selected_node, id):
+	if not _ast_node or not _selected_node:
 		return
 	if _ast_node is DialogueOptionNodeAst:
 		var ast_node: DialogueOptionNodeAst = _ast_node
@@ -327,7 +346,7 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, ne
 func _on_condition_node_editor_condition_node_changed(id: String, description: String, combiner: ConditionNodeAst.Combiner, conditions: Array) -> void:
 	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
 	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
-	if not _ast_node or not _is_selected_node(ConditionNode, _selected_node, id):
+	if not _ast_node or not _selected_node:
 		return
 	if _ast_node is ConditionNodeAst:
 		var ast_node: ConditionNodeAst = _ast_node
@@ -340,7 +359,7 @@ func _on_condition_node_editor_condition_node_changed(id: String, description: S
 func _on_match_node_editor_match_node_changed(id: String, description: String, fact_name: String, cases: Array[Variant]) -> void:
 	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
 	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
-	if _ast_node is not MatchNodeAst or not _is_selected_node(MatchNode, _selected_node, id):
+	if _ast_node is not MatchNodeAst or not _selected_node:
 		return
 	var ast_node: MatchNodeAst = _ast_node
 	var selected_node: MatchNode = _selected_node
@@ -387,8 +406,8 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 # TODO: change this to ref
 func _on_action_node_editor_action_node_changed(id: String, description: String, action_type: ActionNodeAst.ActionType, action_script_ref: String, values: Array) -> void:
 	var ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
-	var selected_node: Variant = graph_view.find_node_by_id(id)
-	if ast_node is not ActionNodeAst or not _is_selected_node(ActionNode, selected_node, id):
+	var parley_graph_node: Variant = graph_view.find_node_by_id(id)
+	if ast_node is not ActionNodeAst or not parley_graph_node:
 		return
 	var action: Action = action_store.get_action_by_ref(action_script_ref)
 	if ast_node is ActionNodeAst:
@@ -397,17 +416,17 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 		if action.id != "":
 			uid = ParleyUtils.resource.get_uid(action.ref)
 		action_node_ast.update(description, action_type, uid, values)
-	if selected_node is ActionNode:
-		selected_node.description = description
-		selected_node.action_type = action_type
-		selected_node.action_script_name = action.name
-		selected_node.values = values
+	if parley_graph_node is ActionNode:
+		parley_graph_node.description = description
+		parley_graph_node.action_type = action_type
+		parley_graph_node.action_script_name = action.name
+		parley_graph_node.values = values
 
 
 func _on_group_node_editor_group_node_changed(id: String, group_name: String, colour: Color) -> void:
 	var ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
 	var selected_node: Variant = graph_view.find_node_by_id(id)
-	if ast_node is not GroupNodeAst or not _is_selected_node(GroupNode, selected_node, id):
+	if ast_node is not GroupNodeAst or not selected_node:
 		return
 	if ast_node is GroupNodeAst:
 		var group_node: GroupNodeAst = ast_node
@@ -500,8 +519,8 @@ func _on_bottom_panel_sidebar_toggled(is_sidebar_open: bool) -> void:
 
 #region HELPERS
 func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
+	# TODO: handle _result
 	var _result: int = dialogue_ast.remove_edge(from_node, from_slot, to_node, to_slot)
-	# TODO: handle result
 	graph_view.ast = dialogue_ast
 	graph_view.generate_edges()
 
@@ -511,9 +530,9 @@ func _add_edge(from_node_name: StringName, from_slot: int, to_node_name: StringN
 	var _added: int = dialogue_ast.add_edge(from_node_id, from_slot, to_node_id, to_slot)
 	var _connected: int = graph_view.connect_node(from_node_name, from_slot, to_node_name, to_slot)
 
-func _is_selected_node(type: Object, selected_node: Variant, id: String) -> bool:
-	var is_selected_node: bool = selected_node and is_instance_of(selected_node, type) and selected_node_id == id
+func _is_selected_node(id: String) -> bool:
+	var is_selected_node: bool = selected_node_id == id
 	if not is_selected_node:
-		ParleyUtils.log.info("Selected node {selected_node} is not a valid node for ID: {id}".format({'selected_node': selected_node, 'id': id}))
+		ParleyUtils.log.warn("Node with ID %s is not selected" % id)
 	return is_selected_node
 #endregion

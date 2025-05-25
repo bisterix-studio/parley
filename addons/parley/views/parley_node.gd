@@ -38,6 +38,7 @@ func _set_node_ast(new_node_ast: NodeAst) -> void:
 
 func _set_action_store(new_action_store: ActionStore) -> void:
 	action_store = new_action_store
+	_render_node()
 #endregion
 
 
@@ -45,18 +46,19 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 func _render_node() -> void:
 	for child: Node in node_editor_container.get_children():
 		child.queue_free()
-	match node_ast.type:
-		DialogueAst.Type.DIALOGUE: _render_dialogue_node_editor()
-		DialogueAst.Type.DIALOGUE_OPTION: _render_dialogue_option_node_editor()
-		DialogueAst.Type.CONDITION: _render_condition_node_editor()
-		DialogueAst.Type.MATCH: _render_match_node_editor()
-		DialogueAst.Type.ACTION: _render_action_node_editor()
-		DialogueAst.Type.GROUP: _render_group_node_editor()
-		DialogueAst.Type.START: _render_start_node_editor()
-		DialogueAst.Type.END: _render_end_node_editor()
-		_:
-			ParleyUtils.log.error("Unsupported Node type: %s for Node with ID: %s" % [DialogueAst.get_type_name(node_ast.type), node_ast.id])
-			return
+	if node_ast:
+		match node_ast.type:
+			DialogueAst.Type.DIALOGUE: _render_dialogue_node_editor()
+			DialogueAst.Type.DIALOGUE_OPTION: _render_dialogue_option_node_editor()
+			DialogueAst.Type.CONDITION: _render_condition_node_editor()
+			DialogueAst.Type.MATCH: _render_match_node_editor()
+			DialogueAst.Type.ACTION: _render_action_node_editor()
+			DialogueAst.Type.GROUP: _render_group_node_editor()
+			DialogueAst.Type.START: _render_start_node_editor()
+			DialogueAst.Type.END: _render_end_node_editor()
+			_:
+				ParleyUtils.log.error("Unsupported Node type: %s for Node with ID: %s" % [DialogueAst.get_type_name(node_ast.type), node_ast.id])
+				return
 
 
 func _render_dialogue_node_editor() -> void:
