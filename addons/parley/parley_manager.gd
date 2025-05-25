@@ -6,11 +6,11 @@ class_name ParleyManager extends Node
 const ParleyConstants = preload('./constants.gd')
 
 var character_store: CharacterStore = CharacterStore.new()
-var fact_store: FactStore = FactStore.new()
+var fact_store: FactStore:
+	set = _set_fact_store,
+	get = _get_fact_store
 # TODO: deprecated
 var character_stores: Array[String]: get = get_character_stores
-# TODO: deprecated
-var fact_stores: Array[String]: get = get_fact_stores
 var action_store: ActionStore:
 	set = _set_action_store,
 	get = _get_action_store
@@ -22,7 +22,6 @@ func _init() -> void:
 	if Engine.is_editor_hint():
 		ParleySettings.prepare()
 	_init_character_store()
-	_init_fact_store()
 #endregion
 
 
@@ -47,18 +46,15 @@ func register_action_store(store: ActionStore) -> void:
 
 
 func register_fact_store(store: FactStore) -> void:
-	var _paths: Variant = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATHS)
-	var paths: Array[String] = []
-	for path: String in _paths:
-		paths.append(path)
+	var path: String = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)
 	var uid: String = ParleyUtils.resource.get_uid(store)
 	if not uid:
 		ParleyUtils.log.error("Unable to get UID for Fact Store")
 		return
-	if not paths.has(uid):
-		paths.append(uid)
-		ParleySettings.set_setting(ParleyConstants.FACT_STORE_PATHS, paths, true)
+	if path != uid:
+		ParleySettings.set_setting(ParleyConstants.FACT_STORE_PATH, uid, true)
 		ParleyUtils.log.info("Registered new Fact Store: %s" % [store])
+	fact_store = store
 
 
 func register_character_store(store: CharacterStore) -> void:
@@ -80,6 +76,10 @@ func register_character_store(store: CharacterStore) -> void:
 #region SETTERS
 func _set_action_store(new_action_store: ActionStore) -> void:
 	action_store = new_action_store
+
+
+func _set_fact_store(new_fact_store: FactStore) -> void:
+	fact_store = new_fact_store
 #endregion
 
 
@@ -87,14 +87,6 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 # TODO: add check for these at startup
 func get_character_stores() -> Array[String]:
 	var _paths: Variant = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATHS)
-	var paths: Array[String] = []
-	for path: String in _paths:
-		paths.append(path)
-	return paths
-
-
-func get_fact_stores() -> Array[String]:
-	var _paths: Variant = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATHS)
 	var paths: Array[String] = []
 	for path: String in _paths:
 		paths.append(path)
@@ -114,6 +106,21 @@ func _get_action_store() -> ActionStore:
 	if path == ParleySettings.DEFAULT_SETTINGS[ParleyConstants.ACTION_STORE_PATH]:
 		register_action_store(action_store)
 	return action_store
+
+
+func _get_fact_store() -> FactStore:
+	var path: String = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)
+	if not ResourceLoader.exists(path):
+		if not fact_store:
+			ParleyUtils.log.warn("Parley Fact Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Fact Store, data within this Fact Store will be lost upon reload." % path)
+			fact_store = FactStore.new()
+		return fact_store
+	if not fact_store:
+		fact_store = load(path)
+	# Ensure that the store path is resilient to changes
+	if path == ParleySettings.DEFAULT_SETTINGS[ParleyConstants.FACT_STORE_PATH]:
+		register_fact_store(fact_store)
+	return fact_store
 #endregion
 
 
@@ -125,15 +132,6 @@ func _init_character_store() -> void:
 	else:
 		character_store = CharacterStore.new()
 		var _result: bool = ResourceSaver.save(character_store, character_store_path)
-
-
-func _init_fact_store() -> void:
-	var fact_store_path: String = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)
-	if ResourceLoader.exists(fact_store_path):
-		fact_store = ResourceLoader.load(fact_store_path)
-	else:
-		fact_store = FactStore.new()
-		var _result: bool = ResourceSaver.save(fact_store, fact_store_path)
 #endregion
 
 

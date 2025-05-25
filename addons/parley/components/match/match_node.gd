@@ -2,7 +2,7 @@
 # TODO: prefix with Parley
 class_name MatchNode extends ParleyGraphNode
 
-const case_label_scene = preload("./case_label.tscn")
+const case_label_scene: PackedScene = preload("./case_label.tscn")
 
 @export var description: String = "": set = _on_set_description
 @export var fact_name: String = "": set = _on_set_fact_name
@@ -59,16 +59,16 @@ func _render_cases() -> void:
 	if is_node_ready():
 		var index: int = 0
 		var children: Array = []
-		for child in get_children():
+		for child: Node in get_children():
 			if index >= start_slot:
 				remove_child(child)
 				child.queue_free()
 			index += 1
-		for child in children:
+		for child: Node in children:
 			await child.tree_exited
 		index = start_slot
 		for case: Variant in cases:
-			var case_label = case_label_scene.instantiate()
+			var case_label: CaseLabel = case_label_scene.instantiate()
 			case_label.case = str(case).capitalize()
 			add_child(case_label)
 			set_slot(index, false, 0, Color.CHARTREUSE, true, 0, Color.CHARTREUSE)

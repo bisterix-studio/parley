@@ -15,6 +15,7 @@ const GroupNodeEditorScene: PackedScene = preload('../components/group/group_nod
 
 var dialogue_sequence_ast: DialogueAst: set = _set_dialogue_sequence_ast
 var action_store: ActionStore: set = _set_action_store
+var fact_store: FactStore: set = _set_fact_store
 var node_ast: NodeAst: set = _set_node_ast
 
 
@@ -38,6 +39,11 @@ func _set_node_ast(new_node_ast: NodeAst) -> void:
 
 func _set_action_store(new_action_store: ActionStore) -> void:
 	action_store = new_action_store
+	_render_node()
+
+
+func _set_fact_store(new_fact_store: FactStore) -> void:
+	fact_store = new_fact_store
 	_render_node()
 #endregion
 
@@ -105,13 +111,13 @@ func _render_condition_node_editor() -> void:
 			if not exists:
 				ParleyUtils.log.warn("Condition fact ref '%s' does not exist within the file system meaning this dialogue sequence will likely fail at runtime." % fact_ref)
 			return {
-				# TODO: can we get rid of this global ref?
-				'fact_name': ParleyManager.get_instance().fact_store.get_fact_by_ref(fact_ref).name,
+				'fact_ref': fact_ref,
 				'operator': condition_item['operator'],
 				'value': condition_item['value'],
 			}
 	)
 	var condition_node_editor: ConditionNodeEditor = ConditionNodeEditorScene.instantiate()
+	condition_node_editor.fact_store = fact_store
 	# TODO: use setters
 	condition_node_editor.update(condition_node_ast.id, condition_node_ast.description, combiner, conditions)
 	ParleyUtils.signals.safe_connect(condition_node_editor.condition_node_changed, _on_condition_node_editor_condition_node_changed)
@@ -126,17 +132,10 @@ func _render_match_node_editor() -> void:
 	var match_node_ast: MatchNodeAst = node_ast
 	## TODO: create from ast
 	var match_node_editor: MatchNodeEditor = MatchNodeEditorScene.instantiate()
+	match_node_editor.fact_store = fact_store
 	match_node_editor.id = match_node_ast.id
 	match_node_editor.description = match_node_ast.description
-	# TODO: get this from the node itself and ultimately the JSON definition
-	# TODO: can we get rid of this global ref?
-	match_node_editor.fact_store = ParleyManager.get_instance().fact_store
-	# TODO: can we get rid of this global ref?
-	var fact: Fact = ParleyManager.get_instance().fact_store.get_fact_by_ref(match_node_ast.fact_ref)
-	var exists: bool = ResourceLoader.exists(match_node_ast.fact_ref)
-	if not exists:
-		ParleyUtils.log.warn("Match fact ref '%s' does not exist within the file system meaning this dialogue sequence will likely fail at runtime." % match_node_ast.fact_ref)
-	match_node_editor.fact_name = fact.name
+	match_node_editor.fact_ref = match_node_ast.fact_ref
 	match_node_editor.cases = match_node_ast.cases
 	ParleyUtils.signals.safe_connect(match_node_editor.match_node_changed, _on_match_node_editor_match_node_changed)
 	ParleyUtils.signals.safe_connect(match_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
@@ -232,14 +231,14 @@ func _on_condition_node_editor_condition_node_changed(_id: String, description: 
 	var new_node_ast: ConditionNodeAst = node_ast.duplicate(true)
 	var ast_conditions: Array = []
 	for condition_def: Dictionary in conditions:
-		var fact_name: String = condition_def['fact_name']
-		# TODO: can we get rid of this global ref?
-		var fact: Fact = ParleyManager.get_instance().fact_store.get_fact_by_name(fact_name)
-		if fact.id == "":
-			ParleyUtils.log.error("Unable to find Fact with name %s in the store" % [fact_name])
-			return
+		# TODO: this seems pointless, isn't fact_ref the same as uid?
+		var fact_ref: String = condition_def['fact_ref']
+		var fact: Fact = fact_store.get_fact_by_ref(fact_ref)
+		var uid: String = ""
+		if fact.id != "":
+			uid = ParleyUtils.resource.get_uid(fact.ref)
 		ast_conditions.append({
-			'fact_ref': fact.ref.resource_path,
+			'fact_ref': uid,
 			'operator': condition_def['operator'],
 			'value': condition_def['value'],
 		})
@@ -248,14 +247,16 @@ func _on_condition_node_editor_condition_node_changed(_id: String, description: 
 	node_changed.emit(new_node_ast)
 
 
-func _on_match_node_editor_match_node_changed(_id: String, description: String, fact_name: String, cases: Array[Variant]) -> void:
+func _on_match_node_editor_match_node_changed(_id: String, description: String, fact_ref: String, cases: Array[Variant]) -> void:
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: MatchNodeAst = node_ast.duplicate(true)
-	# TODO: can we get rid of this global ref?
-	var fact: Fact = ParleyManager.get_instance().fact_store.get_fact_by_name(fact_name)
-	new_node_ast.description = description
+	# TODO: this seems pointless, isn't fact_ref the same as uid?
+	var fact: Fact = fact_store.get_fact_by_ref(fact_ref)
+	var uid: String = ""
 	if fact.id != "":
-		new_node_ast.fact_ref = fact.ref.resource_path
+		uid = ParleyUtils.resource.get_uid(fact.ref)
+	new_node_ast.description = description
+	new_node_ast.fact_ref = uid
 	new_node_ast.cases = cases.duplicate()
 	node_changed.emit(new_node_ast)
 
@@ -263,6 +264,7 @@ func _on_match_node_editor_match_node_changed(_id: String, description: String, 
 func _on_action_node_editor_action_node_changed(_id: String, description: String, action_type: ActionNodeAst.ActionType, action_script_ref: String, values: Array) -> void:
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: ActionNodeAst = node_ast.duplicate(true)
+	# TODO: this seems pointless, isn't action_script_ref the same as uid?
 	var action: Action = action_store.get_action_by_ref(action_script_ref)
 	var uid: String = ""
 	if action.id != "":

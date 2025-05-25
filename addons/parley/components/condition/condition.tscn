@@ -1,45 +1,53 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7u1m6w3cex3j"]
+[gd_scene load_steps=4 format=3 uid="uid://c7u1m6w3cex3j"]
 
 [ext_resource type="Script" uid="uid://bqyncpl8kcdl0" path="res://addons/parley/components/condition/condition.gd" id="1_406sr"]
+[ext_resource type="PackedScene" uid="uid://dcaqonk76b5qj" path="res://addons/parley/components/editor/string_editor.tscn" id="2_fylce"]
+[ext_resource type="Texture2D" uid="uid://dres8tr2nd82o" path="res://addons/parley/assets/Remove.svg" id="3_5f76r"]
 
-[node name="Condition" type="VBoxContainer" node_paths=PackedStringArray("operator_editor", "value_editor")]
+[node name="Condition" type="PanelContainer"]
+offset_right = 256.0
+offset_bottom = 101.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_406sr")
-operator_editor = NodePath("OperatorContainer/OperatorEditor")
-value_editor = NodePath("ValueContainer/ValueEditor")
 
-[node name="HSeparator" type="HSeparator" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="ConditionEditorContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="FactContainer" type="HBoxContainer" parent="."]
+[node name="DataContainer" type="VBoxContainer" parent="MarginContainer/ConditionEditorContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FactContainer" type="HBoxContainer" parent="MarginContainer/ConditionEditorContainer/DataContainer"]
 layout_mode = 2
 
-[node name="FactLabel" type="Label" parent="FactContainer"]
-custom_minimum_size = Vector2(100, 0)
+[node name="FactLabel" type="Label" parent="MarginContainer/ConditionEditorContainer/DataContainer/FactContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Fact"
+text = "Fact:"
 
-[node name="FactSelector" type="OptionButton" parent="FactContainer"]
+[node name="FactSelector" type="OptionButton" parent="MarginContainer/ConditionEditorContainer/DataContainer/FactContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 4
-popup/item_0/text = "Alice gave coffee"
-popup/item_0/id = 0
-popup/item_1/text = "Bob has coffee"
-popup/item_1/id = 1
-popup/item_2/text = "Alice coffee status"
-popup/item_2/id = 2
-popup/item_3/text = "Snooker balls"
-popup/item_3/id = 3
+size_flags_horizontal = 3
 
-[node name="OperatorContainer" type="HBoxContainer" parent="."]
+[node name="OperatorContainer" type="HBoxContainer" parent="MarginContainer/ConditionEditorContainer/DataContainer"]
 layout_mode = 2
 
-[node name="OperatorLabel" type="Label" parent="OperatorContainer"]
-custom_minimum_size = Vector2(100, 0)
+[node name="OperatorLabel" type="Label" parent="MarginContainer/ConditionEditorContainer/DataContainer/OperatorContainer"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Operator"
+text = "Operator:"
 
-[node name="OperatorEditor" type="OptionButton" parent="OperatorContainer"]
+[node name="OperatorEditor" type="OptionButton" parent="MarginContainer/ConditionEditorContainer/DataContainer/OperatorContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
@@ -49,19 +57,21 @@ popup/item_0/id = 0
 popup/item_1/text = "Not Equal"
 popup/item_1/id = 1
 
-[node name="ValueContainer" type="HBoxContainer" parent="."]
+[node name="ValueEditor" parent="MarginContainer/ConditionEditorContainer/DataContainer" instance=ExtResource("2_fylce")]
+unique_name_in_owner = true
+layout_mode = 2
+key = "Value"
+minimum_x = 150.0
+
+[node name="ActionContainer" type="VBoxContainer" parent="MarginContainer/ConditionEditorContainer"]
 layout_mode = 2
 
-[node name="ValueLabel" type="Label" parent="ValueContainer"]
-custom_minimum_size = Vector2(100, 0)
+[node name="DeleteButton" type="Button" parent="MarginContainer/ConditionEditorContainer/ActionContainer"]
 layout_mode = 2
-text = "Value"
+size_flags_vertical = 3
+icon = ExtResource("3_5f76r")
 
-[node name="ValueEditor" type="LineEdit" parent="ValueContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "found"
-
-[connection signal="item_selected" from="FactContainer/FactSelector" to="." method="_on_fact_selector_item_selected"]
-[connection signal="item_selected" from="OperatorContainer/OperatorEditor" to="." method="_on_operator_editor_item_selected"]
-[connection signal="text_changed" from="ValueContainer/ValueEditor" to="." method="_on_value_editor_text_changed"]
+[connection signal="item_selected" from="MarginContainer/ConditionEditorContainer/DataContainer/FactContainer/FactSelector" to="." method="_on_fact_selector_item_selected"]
+[connection signal="item_selected" from="MarginContainer/ConditionEditorContainer/DataContainer/OperatorContainer/OperatorEditor" to="." method="_on_operator_editor_item_selected"]
+[connection signal="value_changed" from="MarginContainer/ConditionEditorContainer/DataContainer/ValueEditor" to="." method="_on_value_editor_value_changed"]
+[connection signal="pressed" from="MarginContainer/ConditionEditorContainer/ActionContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
