@@ -230,11 +230,3 @@ func _save() -> void:
 		ParleyUtils.log.error("Error saving action store [ID: %s]. Code: %d" % [action_store.id, result])
 		return
 #endregion
-
-
-#region UTILS
-func _get_available_action_store() -> ActionStore:
-	# TODO: populate from plugin
-	# TODO: can we get rid of this global ref?
-	return ParleyManager.get_instance().action_store
-#endregion

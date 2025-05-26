@@ -17,6 +17,7 @@ const group_node_icon: CompressedTexture2D = preload("./assets/Group.svg")
 
 @export var dialogue_ast: DialogueAst = DialogueAst.new(): set = _set_dialogue_ast
 @export var action_store: ActionStore = ActionStore.new(): set = _set_action_store
+@export var fact_store: FactStore = FactStore.new(): set = _set_fact_store
 
 
 # TODO: check all uses of globals and ensure that these are used minimally
@@ -57,6 +58,7 @@ func refresh(arrange: bool = false) -> void:
 	if graph_view:
 		graph_view.ast = dialogue_ast
 		graph_view.action_store = action_store
+		graph_view.fact_store = fact_store
 		await graph_view.generate(arrange)
 	if selected_node_id and is_instance_of(selected_node_id, TYPE_STRING):
 		var id: String = selected_node_id
@@ -110,6 +112,17 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 		graph_view.action_store = action_store
 
 
+func _set_fact_store(new_fact_store: FactStore) -> void:
+	if fact_store != new_fact_store:
+		if new_fact_store:
+			ParleyUtils.signals.safe_disconnect(fact_store.changed, _on_fact_store_changed)
+		fact_store = new_fact_store
+		if fact_store:
+			ParleyUtils.signals.safe_connect(fact_store.changed, _on_fact_store_changed)
+	if graph_view:
+		graph_view.fact_store = fact_store
+
+
 func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:
 	selected_node_ast = new_selected_node_ast
 	if not _is_selected_node(new_selected_node_ast.id):
@@ -130,9 +143,7 @@ func _set_node_ast(new_node_ast: NodeAst) -> void:
 			_on_condition_node_editor_condition_node_changed(condition_node_ast.id, condition_node_ast.description, condition_node_ast.combiner, condition_node_ast.conditions)
 		DialogueAst.Type.MATCH:
 			var match_node_ast: MatchNodeAst = new_node_ast
-			# TODO: can we get rid of this global ref?
-			var fact_name: String = ParleyManager.get_instance().fact_store.get_fact_by_ref(match_node_ast.fact_ref).name
-			_on_match_node_editor_match_node_changed(match_node_ast.id, match_node_ast.description, fact_name, match_node_ast.cases)
+			_on_match_node_editor_match_node_changed(match_node_ast.id, match_node_ast.description, match_node_ast.fact_ref, match_node_ast.cases)
 		DialogueAst.Type.ACTION:
 			var action_node_ast: ActionNodeAst = new_node_ast
 			_on_action_node_editor_action_node_changed(action_node_ast.id, action_node_ast.description, action_node_ast.action_type, action_node_ast.action_script_ref, action_node_ast.values)
@@ -299,6 +310,15 @@ func _on_action_store_changed() -> void:
 		var nodes: Array[NodeAst] = dialogue_ast.find_nodes_by_type(DialogueAst.Type.ACTION)
 		for node_ast: ActionNodeAst in nodes:
 			_set_node_ast(node_ast)
+
+
+func _on_fact_store_changed() -> void:
+	if fact_store:
+		# TODO: maybe add a find_nodes_by_types instead
+		var nodes: Array[NodeAst] = dialogue_ast.find_nodes_by_type(DialogueAst.Type.MATCH)
+		nodes.append_array(dialogue_ast.find_nodes_by_type(DialogueAst.Type.CONDITION))
+		for node_ast: NodeAst in nodes:
+			_set_node_ast(node_ast)
 		
 
 func _on_node_editor_node_changed(new_node_ast: NodeAst) -> void:
@@ -344,28 +364,28 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, ne
 
 # TODO: remove ast stuff
 func _on_condition_node_editor_condition_node_changed(id: String, description: String, combiner: ConditionNodeAst.Combiner, conditions: Array) -> void:
-	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
-	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
-	if not _ast_node or not _selected_node:
+	var node_ast: NodeAst = dialogue_ast.find_node_by_id(id)
+	var parley_graph_node_variant: ParleyGraphNode = graph_view.find_node_by_id(id)
+	if node_ast is not ConditionNodeAst or not parley_graph_node_variant:
 		return
-	if _ast_node is ConditionNodeAst:
-		var ast_node: ConditionNodeAst = _ast_node
+	var ast_node: ConditionNodeAst = node_ast
+	var parley_graph_node: ParleyGraphNode = parley_graph_node_variant
+	if ast_node is ConditionNodeAst:
 		ast_node.update(description, combiner, conditions.duplicate(true))
-	if _selected_node is ConditionNode:
-		var selected_node: ConditionNode = _selected_node
-		selected_node.update(description)
+	if parley_graph_node is ConditionNode:
+		var condition_node: ConditionNode = parley_graph_node
+		condition_node.update(description)
+
 
 # TODO: remove ast stuff
-func _on_match_node_editor_match_node_changed(id: String, description: String, fact_name: String, cases: Array[Variant]) -> void:
+func _on_match_node_editor_match_node_changed(id: String, description: String, fact_ref: String, cases: Array[Variant]) -> void:
 	var _ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
-	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
-	if _ast_node is not MatchNodeAst or not _selected_node:
+	var parley_graph_node_variant: ParleyGraphNode = graph_view.find_node_by_id(id)
+	if _ast_node is not MatchNodeAst or not parley_graph_node_variant:
 		return
 	var ast_node: MatchNodeAst = _ast_node
-	var selected_node: MatchNode = _selected_node
-	# TODO: can we get rid of this global ref?
-	var fact: Fact = ParleyManager.get_instance().fact_store.get_fact_by_name(fact_name)
-	
+	var parley_graph_node: ParleyGraphNode = parley_graph_node_variant
+
 	# Handle any necessary edge changes
 	var edges_to_delete: Array[EdgeAst] = []
 	var edges_to_create: Array[EdgeAst] = []
@@ -386,29 +406,35 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 					var new_edge: EdgeAst = EdgeAst.new(edge.from_node, case_index, edge.to_node, edge.to_slot)
 					edges_to_create.append(new_edge)
 
+	var fact: Fact = fact_store.get_fact_by_ref(fact_ref)
 	if ast_node is MatchNodeAst:
 		ast_node.description = description
+		# TODO: do we even need to do this? Isn't already a UID? I guess we are just double checking stuff though
+		var uid: String = ""
 		if fact.id != "":
-			ast_node.fact_ref = fact.ref.resource_path
+			uid = ParleyUtils.resource.get_uid(fact.ref)
+		ast_node.fact_ref = uid
 		ast_node.cases = cases.duplicate()
-	if selected_node is MatchNode:
-		selected_node.description = description
-		selected_node.fact_name = fact_name
+	if parley_graph_node is MatchNode:
+		var match_node: MatchNode = parley_graph_node
+		match_node.description = description
+		match_node.fact_name = fact.name
 		var changed: int = 0
 		changed += dialogue_ast.remove_edges(edges_to_delete, false)
-		selected_node.cases = cases.duplicate()
+		match_node.cases = cases.duplicate()
 		changed += dialogue_ast.add_edges(edges_to_create, edges_to_delete.size() + edges_to_create.size() > 0)
 		if changed > 0:
 			graph_view.ast = dialogue_ast
 			graph_view.generate_edges()
 
+
 # TODO: remove ast stuff
-# TODO: change this to ref
 func _on_action_node_editor_action_node_changed(id: String, description: String, action_type: ActionNodeAst.ActionType, action_script_ref: String, values: Array) -> void:
 	var ast_node: NodeAst = dialogue_ast.find_node_by_id(id)
-	var parley_graph_node: Variant = graph_view.find_node_by_id(id)
-	if ast_node is not ActionNodeAst or not parley_graph_node:
+	var parley_graph_node_variant: Variant = graph_view.find_node_by_id(id)
+	if ast_node is not ActionNodeAst or not parley_graph_node_variant:
 		return
+	var parley_graph_node: ParleyGraphNode = parley_graph_node_variant
 	var action: Action = action_store.get_action_by_ref(action_script_ref)
 	if ast_node is ActionNodeAst:
 		var action_node_ast: ActionNodeAst = ast_node
@@ -417,10 +443,11 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 			uid = ParleyUtils.resource.get_uid(action.ref)
 		action_node_ast.update(description, action_type, uid, values)
 	if parley_graph_node is ActionNode:
-		parley_graph_node.description = description
-		parley_graph_node.action_type = action_type
-		parley_graph_node.action_script_name = action.name
-		parley_graph_node.values = values
+		var action_node: ActionNode = parley_graph_node
+		action_node.description = description
+		action_node.action_type = action_type
+		action_node.action_script_name = action.name
+		action_node.values = values
 
 
 func _on_group_node_editor_group_node_changed(id: String, group_name: String, colour: Color) -> void:
@@ -495,6 +522,7 @@ func delete_node_by_id(id: String) -> void:
 	if selected_node_variant is Node:
 		var selected_node: Node = selected_node_variant
 		graph_view.remove_child(selected_node)
+		selected_node.queue_free() # TODO: verify that this does not cause unexpected behaviour
 	dialogue_ast.remove_node(valid_selected_node_id)
 	selected_node_id = null
 

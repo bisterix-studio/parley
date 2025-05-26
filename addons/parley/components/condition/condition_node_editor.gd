@@ -1,85 +1,156 @@
 @tool
-# TODO: prefix with Parley
-class_name ConditionNodeEditor extends NodeEditor
+class_name ParleyConditionNodeEditor extends NodeEditor
 
-@export var description: String = ""
-@export var combiner: ConditionNodeAst.Combiner = ConditionNodeAst.Combiner.ALL
-@export var conditions: Array = []
+
+#region DEFS
+var fact_store: FactStore: set = _set_fact_store
+@export var description: String = "": set = _set_description
+@export var combiner: ConditionNodeAst.Combiner = ConditionNodeAst.Combiner.ALL: set = _set_combiner
+@export var conditions: Array = []: set = _set_conditions
+
 
 @onready var description_editor: TextEdit = %ConditionDescription
 @onready var combiner_option: OptionButton = %CombinerOption
 @onready var conditions_editor: VBoxContainer = %Conditions
 
-const condition_scene: PackedScene = preload('./condition.tscn')
+
+const condition_scene: PackedScene = preload('./condition_editor.tscn')
+
 
 signal condition_node_changed(id: String, description: String, combiner: ConditionNodeAst.Combiner, conditions: Array)
+#endregion
 
+
+#region LIFECYCLE
 func _ready() -> void:
 	set_title()
-	combiner_option.clear()
-	for key: String in ConditionNodeAst.Combiner:
-		combiner_option.add_item(key.capitalize(), ConditionNodeAst.Combiner[key])
-	update(id, description, combiner, conditions)
+	_render_description()
+	_render_combiner_options()
+	_render_combiner()
+	_render_conditions()
+#endregion
 
-# TODO: this is very intertwined - it needs a refactor to use the setter pattern
-func update(_id: String, _description: String, _combiner: ConditionNodeAst.Combiner, _conditions: Array) -> void:
-	id = _id
-	description = _description
-	if description_editor:
+
+#region SETTERS
+func _set_description(new_description: String) -> void:
+	description = new_description
+	_render_description()
+
+
+func _set_combiner(new_combiner: ConditionNodeAst.Combiner) -> void:
+	combiner = new_combiner
+	_render_combiner()
+
+
+func _set_conditions(new_conditions: Array) -> void:
+	conditions = []
+	for condition: Dictionary in new_conditions:
+		var fact_ref: String = condition.get('fact_ref', '')
+		var operator: ConditionNodeAst.Operator = condition.get('operator', ConditionNodeAst.Operator.EQUAL)
+		var value: String = condition.get('value', '')
+		conditions.append({
+			'fact_ref': condition.fact_ref,
+			'operator': condition.operator,
+			'value': condition.value,
+		})
+	_render_conditions()
+
+
+func _set_fact_store(new_fact_store: FactStore) -> void:
+	if fact_store != new_fact_store:
+		fact_store = new_fact_store
+		conditions = conditions.duplicate(true)
+#endregion
+
+
+#region RENDERERS
+func _render_description() -> void:
+	if description_editor and description_editor.text != description:
 		description_editor.text = description
-	combiner = _combiner
+
+
+func _render_combiner() -> void:
 	if combiner_option:
 		combiner_option.selected = combiner
+
+
+func _render_combiner_options() -> void:
+	if combiner_option:
+		combiner_option.clear()
+		for key: String in ConditionNodeAst.Combiner:
+			var item_id: int = ConditionNodeAst.Combiner[key]
+			combiner_option.add_item(key.capitalize(), item_id)
+
+
+func _render_conditions() -> void:
 	if conditions_editor:
-		var condition_children = conditions_editor.get_children()
-		for child in condition_children:
+		var condition_children: Array[Node] = conditions_editor.get_children()
+		for child: Node in condition_children:
 			conditions_editor.remove_child(child)
-	var conditions_clone = _conditions.duplicate(true)
-	conditions = []
-	for item: Dictionary in _conditions:
-		var _condition: VBoxContainer = add_condition(item['fact_name'], item['operator'], item['value'])
+			child.queue_free()
+		var index: int = 0
+		for condition: Dictionary in conditions:
+			var fact_ref: String = condition.get('fact_ref', '')
+			var operator: ConditionNodeAst.Operator = condition.get('operator', ConditionNodeAst.Operator.EQUAL)
+			var value: String = condition.get('value', '')
+			var new_condition: ParleyConditionEditor = condition_scene.instantiate()
+			new_condition.fact_store = fact_store
+			new_condition.id = str(index)
+			# TODO: use setter pattern
+			new_condition.fact_ref = fact_ref
+			new_condition.operator = operator
+			new_condition.value = value
+			ParleyUtils.signals.safe_connect(new_condition.condition_changed, _on_condition_changed)
+			ParleyUtils.signals.safe_connect(new_condition.condition_removed, _on_condition_removed)
+			conditions_editor.add_child(new_condition)
+			if index != conditions.size() - 1:
+				conditions_editor.add_child(HSeparator.new())
+			index += 1
+#endregion
 
-func add_condition(p_fact_name: String = "", p_operator: ConditionNodeAst.Combiner = ConditionNodeAst.Combiner.ALL, p_value: String = "") -> VBoxContainer:
-	# TODO: dupe: is this needed?
-	# TODO: when we add delete, this will need to be refactored
-	var condition_id = conditions.size()
-	var new_condition: VBoxContainer = condition_scene.instantiate()
-	new_condition.id = condition_id
-	new_condition.fact_name = p_fact_name
-	new_condition.operator = p_operator
-	new_condition.value = p_value
-	new_condition.condition_changed.connect(_on_condition_changed)
-	conditions.append({
-		'fact_name': new_condition.fact_name,
-		'operator': new_condition.operator,
-		'value': new_condition.value,
-	})
-	if conditions_editor:
-		conditions_editor.add_child(new_condition)
-	return new_condition
-
-func emit_condition_node_changed() -> void:
-	condition_node_changed.emit(id, description, combiner, conditions)
 
 #region SIGNALS
 func _on_condition_description_text_changed() -> void:
 	description = description_editor.text
 	emit_condition_node_changed()
 
+
 func _on_add_condition_button_pressed() -> void:
-	var _condition: VBoxContainer = add_condition()
+	var new_conditions: Array = conditions.duplicate(true)
+	new_conditions.append({
+		'fact_ref': "",
+		'operator': ConditionNodeAst.Operator.EQUAL,
+		'value': "",
+	})
+	conditions = new_conditions
 	emit_condition_node_changed()
 
-func _on_condition_option_item_selected(_combiner: int) -> void:
-	combiner = _combiner as ConditionNodeAst.Combiner
+
+func _on_condition_option_item_selected(new_combiner: int) -> void:
+	combiner = new_combiner as ConditionNodeAst.Combiner
 	emit_condition_node_changed()
 
-func _on_condition_changed(condition_id: int, new_fact_name: String, new_operator: ConditionNodeAst.Combiner, new_value: String) -> void:
-	# TODO: when we add delete, this will need to be refactored
-	conditions[condition_id] = {
-		'fact_name': new_fact_name,
+
+func _on_condition_changed(condition_id: String, new_fact_ref: String, new_operator: ConditionNodeAst.Combiner, new_value: String) -> void:
+	conditions[int(condition_id)] = {
+		'fact_ref': new_fact_ref,
 		'operator': new_operator,
 		'value': new_value,
 	}
 	emit_condition_node_changed()
+
+
+func _on_condition_removed(condition_id: String) -> void:
+	var index: int = int(condition_id)
+	var new_conditions: Array = conditions.duplicate(true)
+	if index < 0 or index >= new_conditions.size():
+		ParleyUtils.log.error("Unable to remove Condition from Condition Node (id:%s, index:%i)" % [id, index])
+		return
+	new_conditions.remove_at(int(condition_id))
+	conditions = new_conditions
+	emit_condition_node_changed()
+
+
+func emit_condition_node_changed() -> void:
+	condition_node_changed.emit(id, description, combiner, conditions)
 #endregion

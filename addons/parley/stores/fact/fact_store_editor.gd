@@ -6,38 +6,34 @@ class_name ParleyFactStoreEditor extends PanelContainer
 const FactEditor: PackedScene = preload("../../components/fact/fact_editor.tscn")
 
 
+var fact_store: FactStore = FactStore.new(): set = _set_fact_store
 var dialogue_sequence_ast: DialogueAst: set = _set_dialogue_sequence_ast
-var available_fact_store_paths: Array[String]: get = _get_available_fact_store_paths
-var available_fact_stores: Dictionary[String, FactStore] = {}
 var fact_filter: String = "": set = _set_fact_filter
-var selected_fact_stores: Array[String] = []: set = _set_selected_fact_stores
 var facts: Array[Fact] = []: set = _set_facts
 var filtered_facts: Array[Fact] = []
 
 
-@onready var available_fact_store_label: Label = %AvailableFactStoresLabel
-@onready var available_fact_store_menu: MenuButton = %AvailableFactStores
-@onready var fact_store_selector_label: Label = %FactStoreSelectorLabel
-@onready var fact_store_selector: OptionButton = %FactStoreSelector
 @onready var facts_container: VBoxContainer = %FactsContainer
+@onready var fact_store_editor: ParleyResourceEditor = %FactStore
 @onready var dialogue_sequence_container: ParleyResourceEditor = %DialogueSequenceContainer
 @onready var add_fact_button: Button = %AddFactButton
-@onready var register_fact_store: ParleyRegisterStoreModal = %RegisterFactStoreModal
+@onready var save_fact_store_button: Button = %SaveFactStoreButton
+@onready var invalid_fact_store_button: Button = %InvalidFactStoreButton
+@onready var new_fact_store_button: Button = %NewFactStoreButton
+@onready var register_fact_store_modal: ParleyRegisterStoreModal = %RegisterFactStoreModal
 
 
 signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
 signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
+signal fact_store_changed(fact_store: FactStore)
 #endregion
 
 
 #region LIFECYCLE
 func _ready() -> void:
-	_setup()
+	fact_store_editor.resource = fact_store
+	facts = fact_store.facts
 	_render()
-
-
-func _setup() -> void:
-	_setup_available_fact_stores()
 
 
 func _clear_facts() -> void:
@@ -47,29 +43,6 @@ func _clear_facts() -> void:
 
 
 #region SETTERS
-func _update_facts() -> void:
-	if fact_store_selector and fact_store_selector.selected != -1:
-		# The first item is always the combined view
-		if fact_store_selector.selected == 0:
-			var all_facts: Array[Fact] = []
-			# TODO: there is the chance of duplicates here but let's allow this for now
-			for fact_store: FactStore in available_fact_stores.values():
-				all_facts.append_array(fact_store.facts)
-			facts = all_facts
-		else:
-			var selected_fact_store_ref: String = selected_fact_stores[fact_store_selector.selected - 1]
-			var selected_fact_store: FactStore = available_fact_stores.get(selected_fact_store_ref)
-			facts = selected_fact_store.facts
-
-
-func _setup_available_fact_stores() -> void:
-	available_fact_stores = {}
-	for fact_store_path: String in available_fact_store_paths:
-		var fact_store: FactStore = load(fact_store_path)
-		if fact_store.resource_path and not available_fact_stores.has(fact_store.resource_path):
-			var _set_ok: bool = available_fact_stores.set(fact_store.resource_path, fact_store)
-
-
 func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: DialogueAst) -> void:
 	if dialogue_sequence_ast != new_dialogue_sequence_ast:
 		dialogue_sequence_ast = new_dialogue_sequence_ast
@@ -78,32 +51,20 @@ func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: DialogueAst) -> void:
 
 func _reload_dialogue_sequence_ast() -> void:
 	_render_dialogue_sequence()
-	var new_selected_fact_stores: Array[String] = []
-	for store: FactStore in dialogue_sequence_ast.stores.fact:
-		new_selected_fact_stores.append(store.resource_path)
-	selected_fact_stores = new_selected_fact_stores
 
 
-func _set_selected_fact_stores(new_selected_fact_stores: Array[String]) -> void:
-	if selected_fact_stores != new_selected_fact_stores:
-		selected_fact_stores = new_selected_fact_stores
-		_render_available_fact_store_menu()
-		_render_selected_fact_stores()
-		_update_facts()
-
-
-func _set_selected_fact_store(index: int) -> void:
-	var new_fact_stores: Array[String] = selected_fact_stores.duplicate(true)
-	var selected_fact_store: FactStore = available_fact_stores.values()[index]
-	var selected_fact_store_index: int = selected_fact_stores.find(selected_fact_store.resource_path)
-	if selected_fact_store_index == -1:
-		new_fact_stores.append(selected_fact_store.resource_path)
-		# TODO: handle deregistration
-		_register_fact_store(selected_fact_store, false)
-	else:
-		new_fact_stores.remove_at(selected_fact_store_index)
-	selected_fact_stores = new_fact_stores
-
+func _set_fact_store(new_fact_store: FactStore) -> void:
+	if fact_store != new_fact_store:
+		fact_store = new_fact_store
+		if fact_store_editor.resource != fact_store:
+			fact_store_editor.resource = fact_store
+		if fact_store:
+			facts = fact_store.facts
+		else:
+			facts = []
+		fact_store_changed.emit(fact_store)
+	_render_save_fact_store_button()
+	_render_invalid_fact_store_button()
 
 func _set_facts(new_facts: Array[Fact]) -> void:
 	facts = new_facts
@@ -113,6 +74,8 @@ func _set_facts(new_facts: Array[Fact]) -> void:
 		if not fact_filter or raw_fact_string.containsn(fact_filter):
 			filtered_facts.append(fact)
 	_render_facts()
+	if fact_store:
+		fact_store.emit_changed()
 
 
 func _set_fact_filter(new_fact_filter: String) -> void:
@@ -123,35 +86,13 @@ func _set_fact_filter(new_fact_filter: String) -> void:
 
 #region RENDERERS
 func _render() -> void:
-	_render_available_fact_store_menu()
+	_render_fact_store_editor()
 	_render_dialogue_sequence()
-	_render_selected_fact_stores()
 	_render_add_fact_button()
-	_update_facts()
+	_render_new_fact_store_button()
+	_render_save_fact_store_button()
+	_render_invalid_fact_store_button()
 	_render_facts()
-
-
-func _render_available_fact_store_menu() -> void:
-	if not available_fact_store_menu:
-		return
-	var popup: PopupMenu = available_fact_store_menu.get_popup()
-	popup.clear()
-	var index: int = 0
-	for available_fact_store: FactStore in available_fact_stores.values():
-		popup.add_check_item(str(available_fact_store.id).capitalize())
-		var checked: bool = selected_fact_stores.filter(func(ref: String) -> bool:
-				if not available_fact_stores.has(ref):
-					return false
-				var fact_store: FactStore = available_fact_stores.get(ref)
-				return fact_store.id == available_fact_store.id).size() > 0
-		popup.set_item_checked(index, checked)
-		index += 1
-	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_available_fact_store_pressed)
-	popup.hide_on_checkable_item_selection = false
-	available_fact_store_label.text = "Available:"
-	available_fact_store_menu.text = "%s/%s Selected" % [selected_fact_stores.size(), available_fact_stores.size()]
-	fact_store_selector_label.text = "Selected:"
-
 
 func _render_dialogue_sequence() -> void:
 	if dialogue_sequence_container and dialogue_sequence_ast and dialogue_sequence_ast.resource_path:
@@ -159,42 +100,37 @@ func _render_dialogue_sequence() -> void:
 		dialogue_sequence_container.resource = dialogue_sequence_ast
 
 
-func _render_available_fact_stores() -> void:
-	if not fact_store_selector:
-		return
-	fact_store_selector.clear()
-	if not available_fact_stores:
-		return
-	for available_fact_store: FactStore in available_fact_stores.values():
-		fact_store_selector.add_item(str(available_fact_store.id).capitalize())
-	fact_store_selector.select(0 if available_fact_stores.size() > 0 else -1)
-
-
 func _render_add_fact_button() -> void:
-	if add_fact_button and fact_store_selector:
-		add_fact_button.tooltip_text = "Add Fact to the currently selected store. If no store is explicitly set, this button will not be activated."
-		# This is because the first option is always the "All" option
-		add_fact_button.disabled = [0, -1].has(fact_store_selector.selected)
+	if add_fact_button:
+		add_fact_button.tooltip_text = "Add Fact to the currently selected store."
 
 
-func _render_selected_fact_stores() -> void:
-	if not fact_store_selector:
-		return
-	var current_text: String = fact_store_selector.get_item_text(fact_store_selector.selected) if fact_store_selector.selected != -1 else ""
-	fact_store_selector.clear()
-	fact_store_selector.add_item('All')
-	var items: Array[String] = []
-	for fact_store_ref: String in selected_fact_stores:
-		var fact_store: FactStore = load(fact_store_ref)
-		var text: String = str(fact_store.id).capitalize()
-		items.append(text)
-		fact_store_selector.add_item(text)
-	var current_index: int = items.find(current_text)
-	if current_index == -1:
-		current_index = 0
-	else:
-		current_index += 1
-	fact_store_selector.select(current_index)
+func _render_fact_store_editor() -> void:
+	if fact_store_editor and (not fact_store or not fact_store.resource_path):
+		fact_store_editor.resource = null
+
+
+func _render_save_fact_store_button() -> void:
+	if save_fact_store_button:
+		save_fact_store_button.tooltip_text = "Save Fact Store."
+		if not fact_store or not fact_store.resource_path:
+			save_fact_store_button.hide()
+		else:
+			save_fact_store_button.show()
+
+
+func _render_invalid_fact_store_button() -> void:
+	if invalid_fact_store_button:
+		invalid_fact_store_button.tooltip_text = "Invalid Fact Store because it does not contain a resource path, please rectify or create and register a new Fact Store."
+		if fact_store and fact_store.resource_path:
+			invalid_fact_store_button.hide()
+		else:
+			invalid_fact_store_button.show()
+
+
+func _render_new_fact_store_button() -> void:
+	if new_fact_store_button:
+		new_fact_store_button.tooltip_text = "Create and register new Fact Store."
 
 
 func _render_facts() -> void:
@@ -221,49 +157,18 @@ func _on_fact_changed(new_id: String, new_name: String, new_resource: Resource, 
 	fact.id = new_id
 	fact.name = new_name
 	fact.ref = new_resource
-	var store_ref: String = FactStore.get_fact_store_ref(fact)
-	if available_fact_stores.has(store_ref):
-		var store: FactStore = available_fact_stores.get(store_ref)
-		if store.resource_path == store_ref:
-			store.emit_changed()
+	if fact_store:
+		fact_store.emit_changed()
 
 
-func _on_fact_removed(fact_id: String, fact: Fact) -> void:
-	var store_ref: String = FactStore.get_fact_store_ref(fact)
-	if available_fact_stores.has(store_ref):
-		var store: FactStore = available_fact_stores.get(store_ref)
-		if store.resource_path == store_ref:
-			store.remove_fact(fact_id)
-	_render_selected_fact_stores()
-	_render_add_fact_button()
-	_update_facts()
-	_render_facts()
+func _on_fact_removed(fact_id: String, _fact: Fact) -> void:
+	fact_store.remove_fact(fact_id)
+	facts = fact_store.facts
 
 
 func _on_add_fact_button_pressed() -> void:
-	if fact_store_selector and not [-1, 0].has(fact_store_selector.selected):
-		var fact_store_ref: String = selected_fact_stores[fact_store_selector.selected - 1]
-		if available_fact_stores.has(fact_store_ref):
-			var store: FactStore = available_fact_stores.get(fact_store_ref)
-			if store.resource_path == fact_store_ref:
-				var _new_fact: Fact = store.add_fact()
-		_render_selected_fact_stores()
-		_render_add_fact_button()
-		_update_facts()
-		_render_facts()
-
-
-func _on_available_fact_store_pressed(id: int) -> void:
-	var popup: PopupMenu = available_fact_store_menu.get_popup()
-	var index: int = popup.get_item_index(id)
-	var selected: bool = not popup.is_item_checked(index)
-	popup.set_item_checked(index, selected)
-	_set_selected_fact_store(index)
-
-
-func _on_fact_store_selector_item_selected(_index: int) -> void:
-	_render_add_fact_button()
-	_update_facts()
+	var _new_fact: Fact = fact_store.add_fact()
+	facts = fact_store.facts
 
 
 func _on_filter_facts_text_changed(new_fact_filter: String) -> void:
@@ -275,9 +180,15 @@ func _on_save_fact_store_button_pressed() -> void:
 
 
 func _on_new_fact_store_button_pressed() -> void:
-	register_fact_store.show()
-	register_fact_store.clear()
-	register_fact_store.file_mode = FileDialog.FileMode.FILE_MODE_SAVE_FILE
+	register_fact_store_modal.show()
+	register_fact_store_modal.clear()
+	register_fact_store_modal.file_mode = FileDialog.FileMode.FILE_MODE_SAVE_FILE
+	register_fact_store_modal.resource_editor.resource = FactStore.new()
+	# TODO: get from config
+	register_fact_store_modal.path_edit.text = "res://facts/new_fact_store.tres"
+	register_fact_store_modal.id_valid = true
+	register_fact_store_modal.script_valid = true
+	register_fact_store_modal.resource_exists = true
 
 
 func _on_dialogue_sequence_container_resource_changed(new_dialogue_sequence_ast: Resource) -> void:
@@ -293,46 +204,29 @@ func _on_dialogue_sequence_container_resource_selected(selected_dialogue_sequenc
 
 func _on_register_fact_store_modal_store_registered(store: ParleyStore) -> void:
 	_register_fact_store(store, true)
+
+
+func _on_fact_store_resource_changed(store: Resource) -> void:
+	if store is FactStore:
+		_register_fact_store(store as FactStore, true)
+	else:
+		fact_store = null
 #endregion
 
 
 #region ACTIONS
 func _register_fact_store(store: ParleyStore, new: bool) -> void:
 	if store is FactStore:
-		var fact_store: FactStore = store
+		fact_store = store
 		if new:
 			# TODO: can we get rid of this global ref?
 			ParleyManager.get_instance().register_fact_store(fact_store)
-		if dialogue_sequence_ast:
-			dialogue_sequence_ast.stores.register_fact_store(fact_store)
-			var _ok: int = ResourceSaver.save(dialogue_sequence_ast)
-		_reload_dialogue_sequence_ast()
-		_setup()
 		_render()
-		# TODO: Select this as the current fact store
 
 
 func _save() -> void:
-	if fact_store_selector and fact_store_selector.selected != -1:
-		if fact_store_selector.selected == 0:
-			for fact_store_ref: String in selected_fact_stores:
-				var fact_store: FactStore = available_fact_stores.get(fact_store_ref)
-				var result: int = ResourceSaver.save(fact_store)
-				if result != OK:
-					ParleyUtils.log.error("Error saving fact store [ID: %s]. Code: %d" % [fact_store.id, result])
-					return
-		else:
-			var fact_store_ref: String = selected_fact_stores[fact_store_selector.selected - 1]
-			var fact_store: FactStore = load(fact_store_ref)
-			var result: int = ResourceSaver.save(fact_store)
-			if result != OK:
-				ParleyUtils.log.error("Error saving fact store [ID: %s]. Code: %d" % [fact_store.id, result])
-				return
-#endregion
-
-
-#region UTILS
-func _get_available_fact_store_paths() -> Array[String]:
-	# TODO: can we get rid of this global ref?
-	return ParleyManager.get_instance().fact_stores
+	var result: int = ResourceSaver.save(fact_store)
+	if result != OK:
+		ParleyUtils.log.error("Error saving fact store [ID: %s]. Code: %d" % [fact_store.id, result])
+		return
 #endregion

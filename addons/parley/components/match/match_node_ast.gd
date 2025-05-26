@@ -9,7 +9,7 @@ class_name MatchNodeAst extends NodeAst
 
 
 ## The fact ref of the Match Node AST.
-## Example: "res://facts/alice_coffee_status_fact.gd"
+## Example: "uid://123456"
 @export var fact_ref: String
 
 
@@ -19,7 +19,7 @@ class_name MatchNodeAst extends NodeAst
 
 
 ## Create a new instance of a Match Node AST.
-## Example: MatchNodeAst.new("1", Vector2.ZERO, "Description", "res://facts/alice_coffee_status_fact.gd", [])
+## Example: MatchNodeAst.new("1", Vector2.ZERO, "Description", "uid://123456", [])
 func _init(
 	p_id: String = "",
 	p_position: Vector2 = Vector2.ZERO,

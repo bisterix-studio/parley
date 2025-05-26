@@ -6,7 +6,7 @@ const MatchNodeEditorScene: PackedScene = preload('res://addons/parley/component
 class Test_match_node_editor:
 	extends GutTest
 	
-	var match_node_editor: MatchNodeEditor = null
+	var match_node_editor: ParleyMatchNodeEditor = null
 	var fact_store: FactStore = preload("res://tests/fixtures/basic_fact_store.tres")
 	
 	func before_each() -> void:
@@ -17,70 +17,71 @@ class Test_match_node_editor:
 	func after_each() -> void:
 		match_node_editor = null
 	
-	func setup_match_node_editor(_match_node_editor: MatchNodeEditor, test_case: Dictionary) -> void:
+	func setup_match_node_editor(_match_node_editor: ParleyMatchNodeEditor, test_case: Dictionary) -> void:
 		var id: Variant = test_case.get('id')
 		var description: Variant = test_case.get('description')
-		var fact_name: Variant = test_case.get('fact_name')
+		var fact_ref: Variant = test_case.get('fact_ref')
 		var cases: Variant = test_case.get('cases')
 		if id:
 			_match_node_editor.id = id
 		if description:
 			_match_node_editor.description = description
-		if fact_name:
-			_match_node_editor.fact_name = fact_name
+		if fact_ref:
+			_match_node_editor.fact_ref = fact_ref
 		if cases:
 			_match_node_editor.cases = cases
 
-	func use_match_node_editor(_match_node_editor: MatchNodeEditor, test_case: Dictionary) -> void:
+	func use_match_node_editor(_match_node_editor: ParleyMatchNodeEditor, test_case: Dictionary) -> void:
 		var description: Variant = test_case.get('description')
-		var fact_name: Variant = test_case.get('fact_name')
+		var fact_ref: Variant = test_case.get('fact_ref')
 		var cases: Variant = test_case.get('cases')
 		if description:
 			_match_node_editor.description_editor.insert_text_at_caret(str(description))
-		if fact_name:
-			_match_node_editor.fact_name = fact_name
+		if fact_ref:
+			_match_node_editor.fact_ref = fact_ref
 			_match_node_editor.fact_selector.selected = -1
-			_match_node_editor.fact_selector.item_selected.emit(fact_store.get_fact_index_by_name(str(fact_name)))
+			_match_node_editor.fact_selector.item_selected.emit(fact_store.get_fact_index_by_ref(str(fact_ref)))
 		if cases:
 			var index: int = 0
 			for case: Variant in cases:
 				_match_node_editor.add_case_button.pressed.emit()
 				var case_editor: CaseEditor = _match_node_editor.cases_editor.get_child(index)
-				case_editor.case_editor.item_selected.emit(_match_node_editor.available_cases.find(case))
+				if case_editor:
+					case_editor.case_editor.item_selected.emit(_match_node_editor.available_cases.find(case))
 				index += 1
 
 	func test_initial_render(params: Variant = use_parameters([
 		{
 			"input": {"id": null, "description": null},
-			"expected": {"id": "", "description": "", "fact_name": "", "selected_fact_name": "", "cases": [], "selected_cases": []},
+			"expected": {"id": "", "description": "", "fact_ref": "", "selected_fact_ref": "", "cases": [], "selected_cases": []},
 		},
 		{
 			"input": {"id": "1", "description": null},
-			"expected": {"id": "1", "description": "", "fact_name": "", "selected_fact_name": "", "cases": [], "selected_cases": []},
+			"expected": {"id": "1", "description": "", "fact_ref": "", "selected_fact_ref": "", "cases": [], "selected_cases": []},
 		},
 		{
 			"input": {"id": null, "description": "Some description"},
-			"expected": {"id": "", "description": "Some description", "fact_name": "", "selected_fact_name": "", "cases": [], "selected_cases": []},
+			"expected": {"id": "", "description": "Some description", "fact_ref": "", "selected_fact_ref": "", "cases": [], "selected_cases": []},
 		},
 		{
 			"input": {"id": "1", "description": "Some description"},
-			"expected": {"id": "1", "description": "Some description", "fact_name": "", "selected_fact_name": "", "cases": [], "selected_cases": []},
+			"expected": {"id": "1", "description": "Some description", "fact_ref": "", "selected_fact_ref": "", "cases": [], "selected_cases": []},
 		},
 		{
-			"input": {"id": "1", "description": "Some description", "fact_name": "Unknown fact"},
-			"expected": {"id": "1", "description": "Some description", "fact_name": "Unknown fact", "selected_fact_name": "", "cases": [], "selected_cases": []},
+			"input": {"id": "1", "description": "Some description", "fact_ref": "Unknown fact ref"},
+			"expected": {"id": "1", "description": "Some description", "fact_ref": "Unknown fact ref", "selected_fact_ref": "", "cases": [], "selected_cases": []},
 		},
 		{
-			"input": {"id": "1", "description": "Some description", "fact_name": "Fact 1"},
-			"expected": {"id": "1", "description": "Some description", "fact_name": "Fact 1", "selected_fact_name": "Fact 1", "cases": [], "selected_cases": []},
+			"input": {"id": "1", "description": "Some description", "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[0].ref)},
+			"expected": {"id": "1", "description": "Some description", "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[0].ref), "selected_fact_ref": fact_store.facts[0].name, "cases": [], "selected_cases": []},
 		},
 		{
-			"input": {"id": "1", "description": "Some description", "fact_name": "Fact 2"},
-			"expected": {"id": "1", "description": "Some description", "fact_name": "Fact 2", "selected_fact_name": "Fact 2", "cases": [], "selected_cases": []},
+			"input": {"id": "1", "description": "Some description", "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[1].ref)},
+			"expected": {"id": "1", "description": "Some description", "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[1].ref), "selected_fact_ref": fact_store.facts[1].name, "cases": [], "selected_cases": []},
 		},
 		{
-			"input": {"id": "1", "description": "Some description", "fact_name": "Fact 2", "cases": ["NEEDS_COFFEE", "NEEDS_MORE_COFFEE", "FALLBACK"]},
-			"expected": {"id": "1", "description": "Some description", "fact_name": "Fact 2", "selected_fact_name": "Fact 2", "cases": ["NEEDS_COFFEE", "NEEDS_MORE_COFFEE", "FALLBACK"], "selected_cases": ["Needs Coffee", "Needs More Coffee", "Fallback"]},
+			"input": {"id": "1", "description": "Some description", "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[1].ref), "cases": ["NEEDS_COFFEE", "NEEDS_MORE_COFFEE", "FALLBACK"]},
+			"expected": {"id": "1", "description": "Some description", "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[1].ref), "selected_fact_ref": fact_store.facts[1].name, "cases": ["NEEDS_COFFEE", "NEEDS_MORE_COFFEE", "FALLBACK"], "selected_cases": ["Needs Coffee", "Needs More Coffee", "Fallback"]},
 		},
 	])) -> void:
 		# Arrange
@@ -97,8 +98,8 @@ class Test_match_node_editor:
 		assert_eq(match_node_editor.id, str(expected['id']))
 		assert_eq(match_node_editor.description, str(expected['description']))
 		assert_eq(match_node_editor.description_editor.text, str(expected['description']))
-		assert_eq(match_node_editor.fact_name, str(expected['fact_name']), "Expected fact_name to be set to the expected value.")
-		assert_eq(match_node_editor.fact_selector.text, str(expected['selected_fact_name']), "Expected selected fact_name to be set to the expected value.")
+		assert_eq(match_node_editor.fact_ref, str(expected['fact_ref']), "Expected fact_ref to be set to the expected value.")
+		assert_eq(match_node_editor.fact_selector.text, str(expected['selected_fact_ref']), "Expected selected fact_ref to be set to the expected value.")
 		assert_eq_deep(match_node_editor.cases, TestUtils.string_array(expected['cases']))
 		var index: int = 0
 		for expected_case: Variant in expected['selected_cases']:
@@ -111,19 +112,19 @@ class Test_match_node_editor:
 	func test_update_render_with_variables(params: Variant = use_parameters([
 		{
 			"input": {"id": "1", "description": null},
-			"expected": {"id": "1", "description": "", "fact_name": "", "selected_fact_name": "", "cases": [], "selected_cases": []},
+			"expected": {"id": "1", "description": "", "fact_ref": "", "selected_fact_ref": "", "cases": [], "selected_cases": []},
 		},
 		{
 			"input": {"id": null, "description": "Some description"},
-			"expected": {"id": "", "description": "Some description", "fact_name": "", "selected_fact_name": "", "cases": [], "selected_cases": []},
+			"expected": {"id": "", "description": "Some description", "fact_ref": "", "selected_fact_ref": "", "cases": [], "selected_cases": []},
 		},
 		{
 			"input": {"id": "1", "description": "Some description"},
-			"expected": {"id": "1", "description": "Some description", "fact_name": "", "selected_fact_name": "", "cases": [], "selected_cases": []},
+			"expected": {"id": "1", "description": "Some description", "fact_ref": "", "selected_fact_ref": "", "cases": [], "selected_cases": []},
 		},
 		{
-			"input": {"id": "1", "description": "Some description", "fact_name": "Fact 2", "cases": ["NEEDS_COFFEE", "NEEDS_MORE_COFFEE", "FALLBACK"]},
-			"expected": {"id": "1", "description": "Some description", "fact_name": "Fact 2", "selected_fact_name": "Fact 2", "cases": ["NEEDS_COFFEE", "NEEDS_MORE_COFFEE", "FALLBACK"], "selected_cases": ["Needs Coffee", "Needs More Coffee", "Fallback"]},
+			"input": {"id": "1", "description": "Some description", "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[1].ref), "cases": ["NEEDS_COFFEE", "NEEDS_MORE_COFFEE", "FALLBACK"]},
+			"expected": {"id": "1", "description": "Some description", "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[1].ref), "selected_fact_ref": fact_store.facts[1].name, "cases": ["NEEDS_COFFEE", "NEEDS_MORE_COFFEE", "FALLBACK"], "selected_cases": ["Needs Coffee", "Needs More Coffee", "Fallback"]},
 		}
 	])) -> void:
 		# Arrange
@@ -140,8 +141,8 @@ class Test_match_node_editor:
 		assert_eq(match_node_editor.id, str(expected['id']))
 		assert_eq(match_node_editor.description, str(expected['description']))
 		assert_eq(match_node_editor.description_editor.text, str(expected['description']))
-		assert_eq(match_node_editor.fact_name, str(expected['fact_name']), "Expected fact_name to be set to the expected value.")
-		assert_eq(match_node_editor.fact_selector.text, str(expected['selected_fact_name']), "Expected selected fact_name to be set to the expected value.")
+		assert_eq(match_node_editor.fact_ref, str(expected['fact_ref']), "Expected fact_ref to be set to the expected value.")
+		assert_eq(match_node_editor.fact_selector.text, str(expected['selected_fact_ref']), "Expected selected fact_ref to be set to the expected value.")
 		assert_eq_deep(match_node_editor.cases, TestUtils.string_array(expected['cases']))
 		var index: int = 0
 		for expected_case: Variant in expected['selected_cases']:
@@ -153,12 +154,12 @@ class Test_match_node_editor:
 
 	func test_update_render_with_text_input(params: Variant = use_parameters([
 		{
-			"input": {"id": null, "description": "Some description", "fact_name": null, "cases": null},
-			"expected": {"id": "", "description": "Some description", "fact_name": "", "selected_fact_name": "", "cases": [], "selected_cases": []},
+			"input": {"id": null, "description": "Some description", "fact_ref": null, "cases": null},
+			"expected": {"id": "", "description": "Some description", "fact_ref": "", "selected_fact_ref": "", "cases": [], "selected_cases": []},
 		},
 		{
-			"input": {"id": null, "description": null, "fact_name": "Fact 2", "cases": ["NEEDS_COFFEE", "FALLBACK", "NEEDS_MORE_COFFEE"]},
-			"expected": {"id": "", "description": "", "fact_name": "Fact 2", "selected_fact_name": "Fact 2", "cases": ["NEEDS_COFFEE", "FALLBACK", "NEEDS_MORE_COFFEE"], "selected_cases": ["Needs Coffee", "Fallback", "Needs More Coffee"]},
+			"input": {"id": null, "description": null, "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[1].ref), "cases": ["NEEDS_COFFEE", "FALLBACK", "NEEDS_MORE_COFFEE"]},
+			"expected": {"id": "", "description": "", "fact_ref": ParleyUtils.resource.get_uid(fact_store.facts[1].ref), "selected_fact_ref": fact_store.facts[1].name, "cases": ["NEEDS_COFFEE", "FALLBACK", "NEEDS_MORE_COFFEE"], "selected_cases": ["Needs Coffee", "Fallback", "Needs More Coffee"]},
 		},
 	])) -> void:
 		# Arrange
@@ -176,15 +177,17 @@ class Test_match_node_editor:
 		assert_eq(str(match_node_editor.id), str(expected['id']))
 		assert_eq(str(match_node_editor.description), str(expected['description']))
 		assert_eq(str(match_node_editor.description_editor.text), str(expected['description']))
-		assert_eq(match_node_editor.fact_name, str(expected['fact_name']), "Expected fact_name to be set to the expected value.")
-		assert_eq(match_node_editor.fact_selector.text, str(expected['selected_fact_name']), "Expected selected fact_name to be set to the expected value.")
+		assert_eq(match_node_editor.fact_ref, str(expected['fact_ref']), "Expected fact_ref to be set to the expected value.")
+		assert_eq(match_node_editor.fact_selector.text, str(expected['selected_fact_ref']), "Expected selected fact_ref to be set to the expected value.")
 		assert_eq_deep(match_node_editor.cases, TestUtils.string_array(expected['cases']))
 		var index: int = 0
 		for expected_case: Variant in expected['selected_cases']:
 			var case_editor: CaseEditor = match_node_editor.cases_editor.get_child(index)
-			assert_eq(case_editor.case_editor.text, str(expected_case), "Cases selector does not equal expected case for child: %s" % [index])
+			assert_not_null(case_editor)
+			if case_editor:
+				assert_eq(case_editor.case_editor.text, str(expected_case), "Cases selector does not equal expected case for child: %s" % [index])
 			index += 1
-		assert_signal_emitted_with_parameters(match_node_editor, 'match_node_changed', [expected['id'], expected['description'], expected['fact_name'], expected['cases']])
+		assert_signal_emitted_with_parameters(match_node_editor, 'match_node_changed', [expected['id'], expected['description'], expected['fact_ref'], expected['cases']])
 
 
 class TestUtils:

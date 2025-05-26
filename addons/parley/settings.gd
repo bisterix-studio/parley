@@ -7,12 +7,10 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	# Dialogue
 	ParleyConstants.DIALOGUE_BALLOON_PATH: ParleyUtils.resource.get_uid(preload("./components/default_balloon.tscn")),
 	# Stores
-	# TODO: remove
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",
-	ParleyConstants.CHARACTER_STORE_PATHS: [],
-	ParleyConstants.FACT_STORE_PATHS: [],
-	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
 	# TODO: remove
+	ParleyConstants.CHARACTER_STORE_PATHS: [],
+	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
@@ -39,12 +37,6 @@ static var TYPES: Dictionary = {
 	},
 	ParleyConstants.CHARACTER_STORE_PATHS: {
 		"name": ParleyConstants.CHARACTER_STORE_PATHS,
-		"type": TYPE_ARRAY,
-		"hint": PROPERTY_HINT_ARRAY_TYPE,
-		"hint_string": "%d/%d:*.tres" % [TYPE_STRING, PROPERTY_HINT_FILE]
-	},
-	ParleyConstants.FACT_STORE_PATHS: {
-		"name": ParleyConstants.FACT_STORE_PATHS,
 		"type": TYPE_ARRAY,
 		"hint": PROPERTY_HINT_ARRAY_TYPE,
 		"hint_string": "%d/%d:*.tres" % [TYPE_STRING, PROPERTY_HINT_FILE]

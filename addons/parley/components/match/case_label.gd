@@ -6,7 +6,7 @@ class_name CaseLabel extends MarginContainer
 
 @onready var case_label: Button = %Case
 
-const fallback_icon = preload("../../assets/Fallback.svg")
+const fallback_icon: CompressedTexture2D = preload("../../assets/Fallback.svg")
 
 #region LIFECYCLE
 func _ready() -> void:

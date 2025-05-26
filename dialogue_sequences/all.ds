@@ -28,7 +28,12 @@
       "combiner": "ALL",
       "conditions": [
         {
-          "fact_ref": "res://facts/bob_has_coffee_fact.gd",
+          "fact_ref": "uid://5ll5tg3r2x7c",
+          "operator": 0,
+          "value": "true"
+        },
+        {
+          "fact_ref": "uid://cpwr6bc02ec7a",
           "operator": 0,
           "value": "true"
         }
@@ -109,7 +114,7 @@
       "combiner": "ALL",
       "conditions": [
         {
-          "fact_ref": "res://facts/alice_gave_coffee_fact.gd",
+          "fact_ref": "uid://cpwr6bc02ec7a",
           "operator": 0,
           "value": "true"
         }
@@ -159,7 +164,7 @@
       "type": "MATCH",
       "position": "(300.0, 540.0)",
       "description": "Alice's coffee status",
-      "fact_ref": "res://facts/alice_coffee_status_fact.gd",
+      "fact_ref": "uid://c6bo3uftwlv5c",
       "cases": [
         "NEEDS_COFFEE",
         "NEEDS_MORE_COFFEE",

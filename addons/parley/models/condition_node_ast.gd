@@ -62,7 +62,7 @@ func update(_description: String, _combiner: Combiner, _conditions: Array) -> vo
 
 
 ## Add a condition to the Condition Node AST.
-## Example: node.add_condition("res://facts/alice_gave_coffee_fact.gd", Operator.EQUAL, true)
+## Example: node.add_condition("uid://123456", Operator.EQUAL, true)
 func add_condition(fact_ref: String, operator: Operator, value: Variant) -> void:
 	conditions.append({
 		# TODO: create type for this

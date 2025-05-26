@@ -3,6 +3,7 @@ class_name ParleyGraphView extends GraphEdit
 
 var ast: DialogueAst
 var action_store: ActionStore = ActionStore.new(): set = _set_action_store
+var fact_store: FactStore = FactStore.new(): set = _set_fact_store
 
 #region SETUP
 const dialogue_node_scene: PackedScene = preload("../components/dialogue/dialogue_node.tscn")
@@ -48,6 +49,10 @@ func clear() -> void:
 #region SETTERS
 func _set_action_store(new_action_store: ActionStore) -> void:
 	action_store = new_action_store
+
+
+func _set_fact_store(new_fact_store: FactStore) -> void:
+	fact_store = new_fact_store
 #endregion
 
 
@@ -215,8 +220,7 @@ func _create_match_node(ast_node: MatchNodeAst) -> ParleyGraphNode:
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	node.description = ast_node.description
-	# TODO: can we get rid of this global ref?
-	node.fact_name = ParleyManager.get_instance().fact_store.get_fact_by_ref(ast_node.fact_ref).name
+	node.fact_name = fact_store.get_fact_by_ref(ast_node.fact_ref).name
 	var cases: Array[Variant] = []
 	for case: Variant in ast_node.cases:
 		cases.append(case)

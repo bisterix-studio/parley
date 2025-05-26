@@ -41,9 +41,6 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 		_render()
 
 
-# TODO: render to show the weirdness
-# Current thought is to define an update function. However,
-# should we be doing this across the board now? hmmmm
 func _set_description(new_description: String) -> void:
 	description = new_description
 	_render_description()

@@ -7,8 +7,6 @@ class_name ConditionNode extends ParleyGraphNode
 @onready var description_container: Label = %ConditionDescription
 
 
-const condition_scene: PackedScene = preload('./condition.tscn')
-
 #############
 # Lifecycle #
 #############
