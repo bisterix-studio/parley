@@ -1,13 +1,12 @@
 @tool
-# TODO: prefix with Parley
-class_name MatchNodeEditor extends NodeEditor
+class_name ParleyMatchNodeEditor extends NodeEditor
 
 
 #region DEFS
-var fact_store: FactStore = FactStore.new(): set = _on_set_fact_store
-var description: String = "": set = _on_set_description
-var fact_ref: String = "": set = _on_set_fact_ref
-var cases: Array[Variant] = []: set = _on_set_cases
+var fact_store: FactStore = FactStore.new(): set = _set_fact_store
+var description: String = "": set = _set_description
+var fact_ref: String = "": set = _set_fact_ref
+var cases: Array[Variant] = []: set = _set_cases
 
 
 @onready var description_editor: TextEdit = %MatchDescription
@@ -32,43 +31,28 @@ signal match_node_changed(id: String, description: String, fact_ref: String, cas
 func _ready() -> void:
 	set_title()
 	_render_description()
-	_render_fact()
+	_render_fact_options()
 	_render_cases()
-
-
-func _render_fact() -> void:
-	if not fact_selector:
-		return
-	fact_selector.clear()
-	if not fact_store:
-		return
-	for fact: Fact in fact_store.facts:
-		fact_selector.add_item(fact.name)
-	_select_fact()
-
-
-func _select_fact() -> void:
-	if fact_store and fact_selector:
-		var selected_index: int = fact_store.get_fact_index_by_ref(fact_ref)
-		if fact_selector.selected != selected_index and selected_index < fact_selector.item_count:
-			fact_selector.select(selected_index)
+	if fact_store:
+		ParleyUtils.signals.safe_connect(fact_store.changed, _on_fact_store_changed)
 #endregion
 
 
 #region SETTERS
-func _on_set_fact_store(new_fact_store: FactStore) -> void:
+func _set_fact_store(new_fact_store: FactStore) -> void:
 	fact_store = new_fact_store
-	_render_fact()
+	if fact_store != new_fact_store:
+		if fact_store:
+			ParleyUtils.signals.safe_disconnect(fact_store.changed, _on_fact_store_changed)
+		fact_store = new_fact_store
+		if fact_store:
+			ParleyUtils.signals.safe_connect(fact_store.changed, _on_fact_store_changed)
+	_render_fact_options()
 
 
-func _on_set_description(new_description: String) -> void:
+func _set_description(new_description: String) -> void:
 	description = new_description
 	_render_description()
-
-
-func _render_description() -> void:
-	if description_editor and description_editor.text != description:
-		description_editor.text = description
 
 
 func _on_set_has_fallback(_has_fallback: bool) -> void:
@@ -77,9 +61,9 @@ func _on_set_has_fallback(_has_fallback: bool) -> void:
 		add_fallback_case_button.disabled = has_fallback
 
 
-func _on_set_fact_ref(new_fact_ref: String) -> void:
+func _set_fact_ref(new_fact_ref: String) -> void:
 	fact_ref = new_fact_ref
-	_select_fact()
+	_render_fact()
 	var fact: Fact = fact_store.get_fact_by_ref(fact_ref)
 	if fact_store and fact.id != "":
 		var script: GDScript = load(fact_ref)
@@ -103,7 +87,7 @@ func _on_set_fact_ref(new_fact_ref: String) -> void:
 		cases = filtered_cases
 
 
-func _on_set_cases(new_cases: Array[Variant]) -> void:
+func _set_cases(new_cases: Array[Variant]) -> void:
 	# TODO: move to helper
 	var keys: Dictionary = {}
 	for case: Variant in new_cases:
@@ -116,6 +100,31 @@ func _on_set_cases(new_cases: Array[Variant]) -> void:
 		return
 	cases = filtered_cases
 	_render_cases()
+#endregion
+
+
+#region RENDERERS
+func _render_description() -> void:
+	if description_editor and description_editor.text != description:
+		description_editor.text = description
+
+
+func _render_fact_options() -> void:
+	if not fact_selector:
+		return
+	fact_selector.clear()
+	if not fact_store:
+		return
+	for fact: Fact in fact_store.facts:
+		fact_selector.add_item(fact.name)
+	_render_fact()
+
+
+func _render_fact() -> void:
+	if fact_store and fact_selector:
+		var selected_index: int = fact_store.get_fact_index_by_ref(fact_ref)
+		if fact_selector.selected != selected_index and selected_index < fact_selector.item_count:
+			fact_selector.select(selected_index)
 
 
 func _render_cases() -> void:
@@ -164,8 +173,10 @@ func _on_match_description_text_changed() -> void:
 
 
 func _on_fact_selector_item_selected(index: int) -> void:
-	var new_fact_ref: String = fact_selector.get_item_text(index)
-	fact_ref = new_fact_ref
+	if index == -1 or index >= fact_store.facts.size():
+		return
+	var fact: Fact = fact_store.facts[index]
+	fact_ref = ParleyUtils.resource.get_uid(fact.ref)
 	_emit_match_node_changed()
 
 
@@ -186,6 +197,20 @@ func _on_add_fallback_case_button_pressed() -> void:
 	new_cases.append(MatchNodeAst.fallback_key)
 	cases = new_cases
 	_emit_match_node_changed()
+
+
+func _on_fact_store_changed() -> void:
+	_render_fact_options()
+
+
+func _on_edit_fact_button_pressed() -> void:
+	if not fact_store:
+		return
+	var fact: Fact = fact_store.get_fact_by_ref(fact_ref)
+	if fact.ref is Script:
+		var script: Script = fact.ref
+		EditorInterface.edit_script(script)
+		EditorInterface.set_main_screen_editor('Script')
 
 
 func _emit_match_node_changed() -> void:

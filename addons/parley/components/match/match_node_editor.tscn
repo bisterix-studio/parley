@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bec24fvhws41m"]
+[gd_scene load_steps=5 format=3 uid="uid://bec24fvhws41m"]
 
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_kdtf2"]
 [ext_resource type="Script" uid="uid://cqwma84t2j4tb" path="res://addons/parley/components/match/match_node_editor.gd" id="2_jun7c"]
+[ext_resource type="Texture2D" uid="uid://c4qx01xbrjp7h" path="res://addons/parley/assets/Edit.svg" id="3_frbg2"]
 [ext_resource type="Texture2D" uid="uid://oqt4tn7c8fd" path="res://addons/parley/assets/Fallback.svg" id="3_uceht"]
 
-[node name="MatchNodeEditor" instance=ExtResource("1_kdtf2")]
+[node name="ParleyMatchNodeEditor" instance=ExtResource("1_kdtf2")]
 script = ExtResource("2_jun7c")
 type = 7
 
@@ -38,6 +39,11 @@ text = "Fact:"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="EditFactButton" type="Button" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/FactContainer" index="2"]
+layout_mode = 2
+tooltip_text = "Edit Action Script."
+icon = ExtResource("3_frbg2")
+
 [node name="HSeparator2" type="HSeparator" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="3"]
 layout_mode = 2
 
@@ -68,5 +74,6 @@ icon = ExtResource("3_uceht")
 
 [connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/MatchDescriptionContainer/MatchDescription" to="." method="_on_match_description_text_changed"]
 [connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/FactContainer/FactSelector" to="." method="_on_fact_selector_item_selected"]
+[connection signal="pressed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/FactContainer/EditFactButton" to="." method="_on_edit_fact_button_pressed"]
 [connection signal="pressed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/AddCaseButton" to="." method="_on_add_case_button_pressed"]
 [connection signal="pressed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/AddFallbackCaseButton" to="." method="_on_add_fallback_case_button_pressed"]

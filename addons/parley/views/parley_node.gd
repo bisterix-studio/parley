@@ -116,10 +116,12 @@ func _render_condition_node_editor() -> void:
 				'value': condition_item['value'],
 			}
 	)
-	var condition_node_editor: ConditionNodeEditor = ConditionNodeEditorScene.instantiate()
+	var condition_node_editor: ParleyConditionNodeEditor = ConditionNodeEditorScene.instantiate()
 	condition_node_editor.fact_store = fact_store
-	# TODO: use setters
-	condition_node_editor.update(condition_node_ast.id, condition_node_ast.description, combiner, conditions)
+	condition_node_editor.id = condition_node_ast.id
+	condition_node_editor.description = condition_node_ast.description
+	condition_node_editor.combiner = condition_node_ast.combiner
+	condition_node_editor.conditions = condition_node_ast.conditions
 	ParleyUtils.signals.safe_connect(condition_node_editor.condition_node_changed, _on_condition_node_editor_condition_node_changed)
 	ParleyUtils.signals.safe_connect(condition_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(condition_node_editor)
@@ -131,7 +133,7 @@ func _render_match_node_editor() -> void:
 		return
 	var match_node_ast: MatchNodeAst = node_ast
 	## TODO: create from ast
-	var match_node_editor: MatchNodeEditor = MatchNodeEditorScene.instantiate()
+	var match_node_editor: ParleyMatchNodeEditor = MatchNodeEditorScene.instantiate()
 	match_node_editor.fact_store = fact_store
 	match_node_editor.id = match_node_ast.id
 	match_node_editor.description = match_node_ast.description

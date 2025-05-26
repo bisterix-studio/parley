@@ -31,6 +31,11 @@
           "fact_ref": "uid://5ll5tg3r2x7c",
           "operator": 0,
           "value": "true"
+        },
+        {
+          "fact_ref": "uid://cpwr6bc02ec7a",
+          "operator": 0,
+          "value": "true"
         }
       ]
     },

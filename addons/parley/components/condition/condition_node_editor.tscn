@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://i4ow71ly7mj1" path="res://addons/parley/components/condition/condition_node_editor.gd" id="1_fipku"]
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_rqlcg"]
 
-[node name="ConditionNodeEditor" instance=ExtResource("1_rqlcg")]
+[node name="ParleyConditionNodeEditor" instance=ExtResource("1_rqlcg")]
 script = ExtResource("1_fipku")
 description = ""
 combiner = 0

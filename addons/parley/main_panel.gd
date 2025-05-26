@@ -522,6 +522,7 @@ func delete_node_by_id(id: String) -> void:
 	if selected_node_variant is Node:
 		var selected_node: Node = selected_node_variant
 		graph_view.remove_child(selected_node)
+		selected_node.queue_free() # TODO: verify that this does not cause unexpected behaviour
 	dialogue_ast.remove_node(valid_selected_node_id)
 	selected_node_id = null
 

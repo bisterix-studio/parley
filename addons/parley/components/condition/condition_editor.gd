@@ -26,6 +26,8 @@ func _ready() -> void:
 	_render_fact_options()
 	_render_operator_options()
 	update(fact_ref, operator, value)
+	if fact_store:
+		ParleyUtils.signals.safe_connect(fact_store.changed, _on_fact_store_changed)
 #endregion
 
 
@@ -113,7 +115,6 @@ func _on_fact_selector_item_selected(index: int) -> void:
 	_emit_condition_changed()
 
 
-# TODO: hook this up
 func _on_edit_fact_button_pressed() -> void:
 	if not fact_store:
 		return
@@ -125,7 +126,7 @@ func _on_edit_fact_button_pressed() -> void:
 
 
 func _on_fact_store_changed() -> void:
-	_render_fact()
+	_render_fact_options()
 
 
 func _on_delete_button_pressed() -> void:
