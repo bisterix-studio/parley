@@ -214,12 +214,12 @@ func find_node_by_id(id: String) -> NodeAst:
 	return filtered_nodes.front()
 
 
-## Get nodes by type
-## Example: get_nodes_by_type(type)
-func find_nodes_by_type(type: DialogueAst.Type) -> Array[NodeAst]:
+## Get nodes by types
+## Example: get_nodes_by_types([type])
+func find_nodes_by_types(types: Array[DialogueAst.Type]) -> Array[NodeAst]:
 	var filtered_nodes: Array[NodeAst] = []
 	for node_ast: NodeAst in nodes:
-		if node_ast.type == type:
+		if types.has(node_ast.type):
 			filtered_nodes.append(node_ast)
 	return filtered_nodes
 

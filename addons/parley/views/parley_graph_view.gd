@@ -4,6 +4,7 @@ class_name ParleyGraphView extends GraphEdit
 var ast: DialogueAst
 var action_store: ActionStore = ActionStore.new(): set = _set_action_store
 var fact_store: FactStore = FactStore.new(): set = _set_fact_store
+var character_store: CharacterStore = CharacterStore.new(): set = _set_character_store
 
 #region SETUP
 const dialogue_node_scene: PackedScene = preload("../components/dialogue/dialogue_node.tscn")
@@ -53,6 +54,10 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 
 func _set_fact_store(new_fact_store: FactStore) -> void:
 	fact_store = new_fact_store
+
+
+func _set_character_store(new_character_store: CharacterStore) -> void:
+	character_store = new_character_store
 #endregion
 
 
@@ -190,7 +195,7 @@ func _create_dialogue_node(ast_node: DialogueNodeAst) -> ParleyGraphNode:
 	var node: DialogueNode = dialogue_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
-	node.character = ast_node.character
+	node.character = character_store.get_character_by_id(ast_node.character).name
 	node.dialogue = ast_node.text
 	return node
 
@@ -199,7 +204,7 @@ func _create_dialogue_option_node(ast_node: DialogueOptionNodeAst) -> ParleyGrap
 	var node: DialogueOptionNode = dialogue_option_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
-	node.character = ast_node.character
+	node.character = character_store.get_character_by_id(ast_node.character).name
 	node.option = ast_node.text
 	return node
 

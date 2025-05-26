@@ -16,6 +16,7 @@ const GroupNodeEditorScene: PackedScene = preload('../components/group/group_nod
 var dialogue_sequence_ast: DialogueAst: set = _set_dialogue_sequence_ast
 var action_store: ActionStore: set = _set_action_store
 var fact_store: FactStore: set = _set_fact_store
+var character_store: CharacterStore: set = _set_character_store
 var node_ast: NodeAst: set = _set_node_ast
 
 
@@ -45,6 +46,11 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 func _set_fact_store(new_fact_store: FactStore) -> void:
 	fact_store = new_fact_store
 	_render_node()
+
+
+func _set_character_store(new_character_store: CharacterStore) -> void:
+	character_store = new_character_store
+	_render_node()
 #endregion
 
 
@@ -73,8 +79,8 @@ func _render_dialogue_node_editor() -> void:
 		return
 	var dialogue_node_ast: DialogueNodeAst = node_ast
 	var dialogue_node_editor: DialogueNodeEditor = DialogueNodeEditorScene.instantiate()
+	dialogue_node_editor.character_store = character_store
 	dialogue_node_editor.id = dialogue_node_ast.id
-	dialogue_node_editor.selected_character_stores = dialogue_sequence_ast.stores.character
 	dialogue_node_editor.character = dialogue_node_ast.character
 	dialogue_node_editor.dialogue = dialogue_node_ast.text
 	ParleyUtils.signals.safe_connect(dialogue_node_editor.dialogue_node_changed, _on_dialogue_node_editor_dialogue_node_changed)
@@ -88,6 +94,7 @@ func _render_dialogue_option_node_editor() -> void:
 		return
 	var dialogue_option_node_ast: DialogueOptionNodeAst = node_ast
 	var dialogue_option_node_editor: DialogueOptionNodeEditor = DialogueOptionNodeEditorScene.instantiate()
+	dialogue_option_node_editor.character_store = character_store
 	dialogue_option_node_editor.id = dialogue_option_node_ast.id
 	dialogue_option_node_editor.selected_character_stores = dialogue_sequence_ast.stores.character
 	dialogue_option_node_editor.character = dialogue_option_node_ast.character

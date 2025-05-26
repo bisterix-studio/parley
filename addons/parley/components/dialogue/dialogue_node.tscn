@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://b4bvbns7oq1fv" path="res://addons/parley/assets/ArrowHead.svg" id="1_anbsh"]
 [ext_resource type="Script" uid="uid://c4trssebo3tbu" path="res://addons/parley/components/dialogue/dialogue_node.gd" id="1_lqnni"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mr5tg"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u7w1m"]
 content_margin_left = 3.0
 content_margin_top = 5.0
 content_margin_right = 3.0
@@ -13,7 +13,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xcn16"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvbu4"]
 content_margin_left = 15.0
 content_margin_top = 5.0
 content_margin_right = 15.0
@@ -23,11 +23,11 @@ corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_detail = 5
 
-[node name="DialogueNode" type="GraphNode" node_paths=PackedStringArray("character_editor", "dialogue_editor")]
+[node name="DialogueNode" type="GraphNode"]
 z_index = 10
 custom_minimum_size = Vector2(350, 350)
-theme_override_styles/panel = SubResource("StyleBoxFlat_mr5tg")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_xcn16")
+theme_override_styles/panel = SubResource("StyleBoxFlat_u7w1m")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_mvbu4")
 title = "Dialogue [ID: ]"
 slot/0/left_enabled = true
 slot/0/left_type = 0
@@ -57,13 +57,12 @@ slot/2/right_color = Color(1, 1, 1, 1)
 slot/2/right_icon = null
 slot/2/draw_stylebox = true
 script = ExtResource("1_lqnni")
-character_editor = NodePath("CharacterContainer/Character")
-dialogue_editor = NodePath("DialogueContainer/Dialogue")
 
 [node name="CharacterContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="Character" type="Label" parent="CharacterContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 clip_text = true
@@ -77,6 +76,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Dialogue" type="Label" parent="DialogueContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_vertical = 3

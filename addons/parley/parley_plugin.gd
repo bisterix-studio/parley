@@ -88,14 +88,17 @@ func _setup_data() -> void:
 	if stores_editor:
 		stores_editor.action_store = parley_manager.action_store
 		stores_editor.fact_store = parley_manager.fact_store
+		stores_editor.character_store = parley_manager.character_store
 
 	if node_editor:
 		node_editor.action_store = parley_manager.action_store
 		node_editor.fact_store = parley_manager.fact_store
+		node_editor.character_store = parley_manager.character_store
 
 	if main_panel_instance:
 		main_panel_instance.action_store = parley_manager.action_store
 		main_panel_instance.fact_store = parley_manager.fact_store
+		main_panel_instance.character_store = parley_manager.character_store
 #endregion
 
 
@@ -107,6 +110,8 @@ func _on_store_changed(type: ParleyStore.Type, new_store: ParleyStore) -> void:
 			parley_manager.action_store = new_store
 		ParleyStore.Type.Fact:
 			parley_manager.fact_store = new_store
+		ParleyStore.Type.Character:
+			parley_manager.character_store = new_store
 		_:
 			ParleyUtils.log.error("Error handling store change (type:%s, store:%s): unhandled store type" % [type, new_store])
 			return

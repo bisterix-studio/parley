@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="CharacterStore" load_steps=7 format=3 uid="uid://ceouii84qmu0w"]
+[gd_resource type="Resource" script_class="CharacterStore" load_steps=9 format=3 uid="uid://ceouii84qmu0w"]
 
 [ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="1_3dy24"]
 [ext_resource type="Script" uid="uid://cr1va2oab5tn5" path="res://addons/parley/models/character.gd" id="1_18ucv"]
+[ext_resource type="Script" uid="uid://c76dllitxcu73" path="res://characters/custom_character.gd" id="2_1iyyr"]
 
 [sub_resource type="Resource" id="Resource_yumch"]
 script = ExtResource("1_18ucv")
@@ -27,8 +28,15 @@ id = "main:dave"
 name = "Dave"
 metadata/_custom_type_script = "uid://cr1va2oab5tn5"
 
+[sub_resource type="Resource" id="Resource_s8xrf"]
+script = ExtResource("2_1iyyr")
+age = 30
+id = "custom:englebert"
+name = "Englebert"
+metadata/_custom_type_script = "uid://c76dllitxcu73"
+
 [resource]
 script = ExtResource("1_3dy24")
-characters = Array[ExtResource("1_18ucv")]([SubResource("Resource_yumch"), SubResource("Resource_1iyyr"), SubResource("Resource_r7byi"), SubResource("Resource_iwv5x")])
+characters = Array[ExtResource("1_18ucv")]([SubResource("Resource_yumch"), SubResource("Resource_1iyyr"), SubResource("Resource_r7byi"), SubResource("Resource_iwv5x"), SubResource("Resource_s8xrf")])
 id = "main"
 metadata/_custom_type_script = "uid://cbi8x2vk7bku1"

@@ -72,10 +72,6 @@ func _on_name_editor_value_changed(new_name: String) -> void:
 	_emit_fact_changed()
 
 
-func _on_resource_picker_fact_ref_changed(_resource: Resource) -> void:
-	_emit_fact_changed()
-
-
 func _on_resource_editor_resource_changed(resource: Resource) -> void:
 	fact_ref = resource
 	_emit_fact_changed()
