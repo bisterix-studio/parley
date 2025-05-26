@@ -2,13 +2,19 @@
 # TODO: prefix with Parley
 class_name DialogueOptionNode extends ParleyGraphNode
 
+
+#region DEFS
 @export var character: String = "": set = _on_set_character
 # TODO: rename to text
 @export var option: String = "": set = _on_set_option
 
+
 @onready var character_editor: Label = %Character
 @onready var option_editor: Label = %DialogueOption
+#endregion
 
+
+#region LIFECYCLE
 func _ready() -> void:
 	setup(DialogueAst.Type.DIALOGUE_OPTION, 'Option')
 	custom_minimum_size = Vector2(350, 250)
@@ -17,20 +23,28 @@ func _ready() -> void:
 	set_slot_style(0)
 	_render_character()
 	_render_option()
+#endregion
 
+
+#region SETTERS
 func _on_set_character(new_character: String) -> void:
 	character = new_character
 	_render_character()
 
+
 func _on_set_option(new_option: String) -> void:
 	option = new_option
 	_render_option()
+#endregion
 
+
+#region RENDERERS
 func _render_character() -> void:
-	var parts: PackedStringArray = character.split(':')
-	if character_editor and parts.size() == 2:
-		character_editor.text = "%s [%s]" % [parts[1].capitalize(), parts[0].capitalize()]
+	if character_editor:
+		character_editor.text = character
+
 
 func _render_option() -> void:
 	if option_editor:
 		option_editor.text = option
+#endregion

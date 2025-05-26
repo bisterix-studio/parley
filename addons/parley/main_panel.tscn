@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://ckubjbp3e7yy3"]
+[gd_scene load_steps=37 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_4ui00"]
@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://df6gs4fjg2fbo" path="res://addons/parley/assets/TestDialogueFromSelected.svg" id="9_dmt7g"]
 [ext_resource type="Texture2D" uid="uid://b4rpwa05rh13m" path="res://addons/parley/assets/End.svg" id="9_lpmhi"]
 [ext_resource type="Texture2D" uid="uid://vbriasvmuex2" path="res://addons/parley/assets/Group.svg" id="10_h0et1"]
+[ext_resource type="Script" uid="uid://cr1va2oab5tn5" path="res://addons/parley/models/character.gd" id="11_7jaih"]
 [ext_resource type="Texture2D" uid="uid://opepismu63ox" path="res://addons/parley/assets/Export.svg" id="12_242yd"]
 [ext_resource type="PackedScene" uid="uid://1alef4tqlskn" path="res://addons/parley/modals/new_dialogue_modal.tscn" id="12_v8y8i"]
 [ext_resource type="Texture2D" uid="uid://dngyydvxiwyvs" path="res://addons/parley/assets/Reload.svg" id="13_oy825"]
@@ -39,6 +40,11 @@ id = ""
 [sub_resource type="Resource" id="Resource_kaj3b"]
 script = ExtResource("30_7jaih")
 facts = Array[ExtResource("4_xjep8")]([])
+id = ""
+
+[sub_resource type="Resource" id="Resource_h2jtb"]
+script = ExtResource("28_anq7l")
+characters = Array[ExtResource("11_7jaih")]([])
 id = ""
 
 [sub_resource type="Resource" id="Resource_7jaih"]
@@ -66,6 +72,7 @@ size_flags_vertical = 3
 script = ExtResource("1_06n3w")
 action_store = SubResource("Resource_s5oy3")
 fact_store = SubResource("Resource_kaj3b")
+character_store = SubResource("Resource_h2jtb")
 save_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/SaveButton")
 arrange_nodes_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/ArrangeNodesButton")
 refresh_button = NodePath("MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/RefreshButton")

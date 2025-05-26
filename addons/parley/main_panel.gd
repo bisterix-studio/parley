@@ -18,6 +18,7 @@ const group_node_icon: CompressedTexture2D = preload("./assets/Group.svg")
 @export var dialogue_ast: DialogueAst = DialogueAst.new(): set = _set_dialogue_ast
 @export var action_store: ActionStore = ActionStore.new(): set = _set_action_store
 @export var fact_store: FactStore = FactStore.new(): set = _set_fact_store
+@export var character_store: CharacterStore = CharacterStore.new(): set = _set_character_store
 
 
 # TODO: check all uses of globals and ensure that these are used minimally
@@ -59,6 +60,7 @@ func refresh(arrange: bool = false) -> void:
 		graph_view.ast = dialogue_ast
 		graph_view.action_store = action_store
 		graph_view.fact_store = fact_store
+		graph_view.character_store = character_store
 		await graph_view.generate(arrange)
 	if selected_node_id and is_instance_of(selected_node_id, TYPE_STRING):
 		var id: String = selected_node_id
@@ -121,6 +123,17 @@ func _set_fact_store(new_fact_store: FactStore) -> void:
 			ParleyUtils.signals.safe_connect(fact_store.changed, _on_fact_store_changed)
 	if graph_view:
 		graph_view.fact_store = fact_store
+
+
+func _set_character_store(new_character_store: CharacterStore) -> void:
+	if character_store != new_character_store:
+		if new_character_store:
+			ParleyUtils.signals.safe_disconnect(character_store.changed, _on_character_store_changed)
+		character_store = new_character_store
+		if character_store:
+			ParleyUtils.signals.safe_connect(character_store.changed, _on_character_store_changed)
+	if graph_view:
+		graph_view.character_store = character_store
 
 
 func _set_selected_node_ast(new_selected_node_ast: NodeAst) -> void:
@@ -307,16 +320,21 @@ func _on_test_dialogue_from_selected_button_pressed() -> void:
 #region SIGNALS
 func _on_action_store_changed() -> void:
 	if action_store:
-		var nodes: Array[NodeAst] = dialogue_ast.find_nodes_by_type(DialogueAst.Type.ACTION)
+		var nodes: Array[NodeAst] = dialogue_ast.find_nodes_by_types([DialogueAst.Type.ACTION])
 		for node_ast: ActionNodeAst in nodes:
 			_set_node_ast(node_ast)
 
 
 func _on_fact_store_changed() -> void:
 	if fact_store:
-		# TODO: maybe add a find_nodes_by_types instead
-		var nodes: Array[NodeAst] = dialogue_ast.find_nodes_by_type(DialogueAst.Type.MATCH)
-		nodes.append_array(dialogue_ast.find_nodes_by_type(DialogueAst.Type.CONDITION))
+		var nodes: Array[NodeAst] = dialogue_ast.find_nodes_by_types([DialogueAst.Type.MATCH, DialogueAst.Type.CONDITION])
+		for node_ast: NodeAst in nodes:
+			_set_node_ast(node_ast)
+
+
+func _on_character_store_changed() -> void:
+	if character_store:
+		var nodes: Array[NodeAst] = dialogue_ast.find_nodes_by_types([DialogueAst.Type.DIALOGUE, DialogueAst.Type.DIALOGUE_OPTION])
 		for node_ast: NodeAst in nodes:
 			_set_node_ast(node_ast)
 		
@@ -341,9 +359,10 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 	if _ast_node is DialogueNodeAst:
 		var ast_node: DialogueNodeAst = _ast_node
 		ast_node.update(new_character, new_dialogue_text)
+	# TODO: move into graph view
 	if _selected_node is DialogueNode:
 		var selected_node: DialogueNode = _selected_node
-		selected_node.character = new_character
+		selected_node.character = character_store.get_character_by_id(new_character).name
 		selected_node.dialogue = new_dialogue_text
 
 
@@ -356,9 +375,10 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, ne
 	if _ast_node is DialogueOptionNodeAst:
 		var ast_node: DialogueOptionNodeAst = _ast_node
 		ast_node.update(new_character, new_option_text)
+	# TODO: move into graph view
 	if _selected_node is DialogueOptionNode:
 		var selected_node: DialogueOptionNode = _selected_node
-		selected_node.character = new_character
+		selected_node.character = character_store.get_character_by_id(new_character).name
 		selected_node.option = new_option_text
 
 
@@ -372,6 +392,7 @@ func _on_condition_node_editor_condition_node_changed(id: String, description: S
 	var parley_graph_node: ParleyGraphNode = parley_graph_node_variant
 	if ast_node is ConditionNodeAst:
 		ast_node.update(description, combiner, conditions.duplicate(true))
+	# TODO: move into graph view
 	if parley_graph_node is ConditionNode:
 		var condition_node: ConditionNode = parley_graph_node
 		condition_node.update(description)
@@ -415,6 +436,7 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 			uid = ParleyUtils.resource.get_uid(fact.ref)
 		ast_node.fact_ref = uid
 		ast_node.cases = cases.duplicate()
+	# TODO: move into graph view
 	if parley_graph_node is MatchNode:
 		var match_node: MatchNode = parley_graph_node
 		match_node.description = description
@@ -442,6 +464,7 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 		if action.id != "":
 			uid = ParleyUtils.resource.get_uid(action.ref)
 		action_node_ast.update(description, action_type, uid, values)
+	# TODO: move into graph view
 	if parley_graph_node is ActionNode:
 		var action_node: ActionNode = parley_graph_node
 		action_node.description = description

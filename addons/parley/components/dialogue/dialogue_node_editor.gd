@@ -2,73 +2,95 @@
 # TODO: prefix with Parley
 class_name DialogueNodeEditor extends NodeEditor
 
-signal dialogue_node_changed(id: String, character: String, dialogue: String)
 
+#region DEFS
+var character_store: CharacterStore: set = _set_character_store
 @export var character: String = "": set = _set_character
 @export var dialogue: String = "": set = _set_dialogue
 
-# TODO: add a separate drop down for a character store rather than all characters in a list
-var selected_character_stores: Array[CharacterStore] = []: set = _set_selected_character_stores
-var all_characters: Array[Character] = []
 
-@onready var character_editor: OptionButton = %CharacterEditor
+@onready var character_selector: OptionButton = %CharacterSelector
 @onready var dialogue_editor: TextEdit = %DialogueEditor
 
+
+signal dialogue_node_changed(id: String, character: String, dialogue: String)
+#endregion
+
+
+#region LIFECYCLE
 func _ready() -> void:
 	set_title()
-	reload_character_store()
-	_select_character()
 	_render_dialogue()
+	_render_character_options()
+	if character_store:
+		ParleyUtils.signals.safe_connect(character_store.changed, _on_character_store_changed)
+#endregion
 
-func _set_character(new_character: String) -> void:
-	character = new_character
-	_select_character()
 
-func _set_selected_character_stores(new_selected_character_stores: Array[CharacterStore]) -> void:
-	selected_character_stores = new_selected_character_stores
-	reload_character_store()
+#region SETTERS
+func _set_character_store(new_character_store: CharacterStore) -> void:
+	character_store = new_character_store
+	if character_store != new_character_store:
+		if character_store:
+			ParleyUtils.signals.safe_disconnect(character_store.changed, _on_character_store_changed)
+		character_store = new_character_store
+		if character_store:
+			ParleyUtils.signals.safe_connect(character_store.changed, _on_character_store_changed)
+	_render_character_options()
 
-func _select_character() -> void:
-	if character_editor:
-		var selected_index: int = -1
-		var index = 0
-		for character_def: Character in all_characters:
-			if character == character_def.id:
-				selected_index = index
-			index += 1
-		if character_editor.selected != selected_index:
-			character_editor.select(selected_index)
 
 func _set_dialogue(new_dialogue: String) -> void:
 	dialogue = new_dialogue
 	_render_dialogue()
 
+
+func _set_character(new_character: String) -> void:
+	character = new_character
+	_render_character()
+#endregion
+
+
+#region RENDERERS
 func _render_dialogue() -> void:
 	if dialogue_editor and dialogue_editor.text != dialogue:
 		dialogue_editor.text = dialogue
 
-func reload_character_store() -> void:
-	if not character_editor:
+
+func _render_character_options() -> void:
+	if not character_selector:
 		return
+	character_selector.clear()
+	if not character_store:
+		return
+	for store_character: Character in character_store.characters:
+		character_selector.add_item(store_character.name)
+	_render_character()
 
-	var new_all_characters: Array[Character] = []
-	for character_store in selected_character_stores:
-		new_all_characters.append_array(character_store.characters)
-	all_characters = new_all_characters
 
-	character_editor.clear()
-	for character_def in all_characters:
-		character_editor.add_item(character_def.id)
-	_select_character()
+func _render_character() -> void:
+	if character_store and character_selector:
+		var selected_index: int = character_store.get_character_index_by_id(character)
+		if character_selector.selected != selected_index and selected_index < character_selector.item_count:
+			character_selector.select(selected_index)
+#endregion
+
 
 #region SIGNALS
 func _on_dialogue_editor_text_changed() -> void:
 	dialogue = dialogue_editor.text
 	_emit_dialogue_node_changed()
 
-func _on_character_editor_item_selected(index: int) -> void:
-	character = all_characters[index].id
+
+func _on_character_selector_item_selected(index: int) -> void:
+	if index == -1 or index >= character_store.characters.size():
+		return
+	character = character_store.characters[index].id
 	_emit_dialogue_node_changed()
+
+
+func _on_character_store_changed() -> void:
+	_render_character_options()
+
 
 func _emit_dialogue_node_changed() -> void:
 	dialogue_node_changed.emit(id, character, dialogue)

@@ -50,14 +50,14 @@
       "id": "8",
       "type": "DIALOGUE_OPTION",
       "position": "(3600.0, 320.0)",
-      "character": "npcs:carol",
+      "character": "main:carol",
       "text": "Give to Alice."
     },
     {
       "id": "13",
       "type": "DIALOGUE_OPTION",
       "position": "(3600.0, 700.0)",
-      "character": "npcs:carol",
+      "character": "main:carol",
       "text": "Keep it."
     },
     {
@@ -75,35 +75,35 @@
       "id": "10",
       "type": "DIALOGUE",
       "position": "(4500.0, 360.0)",
-      "character": "npcs:carol",
+      "character": "main:carol",
       "text": "Here you go."
     },
     {
       "id": "11",
       "type": "DIALOGUE",
       "position": "(4940.0, 360.0)",
-      "character": "npcs:dave",
+      "character": "main:dave",
       "text": "Cheers."
     },
     {
       "id": "12",
       "type": "DIALOGUE",
       "position": "(5420.0, 360.0)",
-      "character": "npcs:carol",
+      "character": "main:carol",
       "text": "You're welcome."
     },
     {
       "id": "14",
       "type": "DIALOGUE",
       "position": "(4060.0, 800.0)",
-      "character": "npcs:carol",
+      "character": "main:carol",
       "text": "But it's mine."
     },
     {
       "id": "15",
       "type": "DIALOGUE",
       "position": "(4500.0, 800.0)",
-      "character": "npcs:dave",
+      "character": "main:dave",
       "text": "Fair enough."
     },
     {
@@ -138,7 +138,7 @@
       "id": "20",
       "type": "DIALOGUE",
       "position": "(4120.0, 1740.0)",
-      "character": "npcs:carol",
+      "character": "custom:englebert",
       "text": "I'll get you coffee, Mama. But first, CATNIP."
     },
     {
@@ -372,16 +372,7 @@
     }
   ],
   "stores": {
-    "character": [
-      {
-        "id": "main",
-        "ref": "uid://6le1e46jcwbp"
-      },
-      {
-        "id": "npcs",
-        "ref": "uid://dpkl3t3evbgg2"
-      }
-    ],
+    "character": [],
     "fact": [
       {
         "id": "main",

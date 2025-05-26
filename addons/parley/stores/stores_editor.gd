@@ -5,6 +5,7 @@ class_name ParleyStoresEditor extends PanelContainer
 #region DEFS
 var action_store: ActionStore: set = _set_action_store
 var fact_store: FactStore: set = _set_fact_store
+var character_store: CharacterStore: set = _set_character_store
 
 @onready var show_character_store_button: Button = %ShowCharacterStoreButton
 @onready var show_fact_store_button: Button = %ShowFactStoreButton
@@ -36,11 +37,13 @@ func _ready() -> void:
 	current_store = Store.CHARACTER
 	ParleyUtils.signals.safe_connect(action_store_editor.action_store_changed, _on_action_store_changed)
 	ParleyUtils.signals.safe_connect(fact_store_editor.fact_store_changed, _on_fact_store_changed)
+	ParleyUtils.signals.safe_connect(character_store_editor.character_store_changed, _on_character_store_changed)
 
 
 func _exit_tree() -> void:
 	ParleyUtils.signals.safe_disconnect(action_store_editor.action_store_changed, _on_action_store_changed)
 	ParleyUtils.signals.safe_disconnect(fact_store_editor.fact_store_changed, _on_fact_store_changed)
+	ParleyUtils.signals.safe_disconnect(character_store_editor.character_store_changed, _on_character_store_changed)
 #endregion
 
 
@@ -51,6 +54,10 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 
 func _set_fact_store(new_fact_store: FactStore) -> void:
 	fact_store = new_fact_store
+
+
+func _set_character_store(new_character_store: CharacterStore) -> void:
+	character_store = new_character_store
 
 
 func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
@@ -73,6 +80,7 @@ func _render_character_store() -> void:
 		show_character_store_button.button_pressed = true
 	_clear()
 	if character_store_editor:
+		character_store_editor.character_store = character_store
 		if character_store_editor.dialogue_sequence_ast != dialogue_ast:
 			character_store_editor.dialogue_sequence_ast = dialogue_ast
 		character_store_editor.show()
@@ -123,6 +131,10 @@ func _on_action_store_changed(new_action_store: ActionStore) -> void:
 
 func _on_fact_store_changed(new_fact_store: FactStore) -> void:
 	store_changed.emit(ParleyStore.Type.Fact, new_fact_store)
+
+
+func _on_character_store_changed(new_character_store: CharacterStore) -> void:
+	store_changed.emit(ParleyStore.Type.Character, new_character_store)
 
 
 func _on_show_character_store_button_toggled(toggled_on: bool) -> void:

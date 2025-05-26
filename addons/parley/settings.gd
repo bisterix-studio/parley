@@ -8,8 +8,6 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	ParleyConstants.DIALOGUE_BALLOON_PATH: ParleyUtils.resource.get_uid(preload("./components/default_balloon.tscn")),
 	# Stores
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",
-	# TODO: remove
-	ParleyConstants.CHARACTER_STORE_PATHS: [],
 	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
 	# Test Dialogue Sequence
@@ -35,12 +33,6 @@ static var TYPES: Dictionary = {
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_FILE,
 	},
-	ParleyConstants.CHARACTER_STORE_PATHS: {
-		"name": ParleyConstants.CHARACTER_STORE_PATHS,
-		"type": TYPE_ARRAY,
-		"hint": PROPERTY_HINT_ARRAY_TYPE,
-		"hint_string": "%d/%d:*.tres" % [TYPE_STRING, PROPERTY_HINT_FILE]
-	},
 	ParleyConstants.FACT_STORE_PATH: {
 		"name": ParleyConstants.FACT_STORE_PATH,
 		"type": TYPE_STRING,
@@ -53,10 +45,6 @@ static var TYPES: Dictionary = {
 	}
 }
 
-# TODO: Consider checking the following with helpful error messages if they are not populated
-# - Character store paths
-# - Fact store paths
-# - Action store paths
 
 static func prepare(save: bool = true) -> void:
 	# Set up initial settings
