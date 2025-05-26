@@ -96,7 +96,6 @@ func _render_dialogue_option_node_editor() -> void:
 	var dialogue_option_node_editor: DialogueOptionNodeEditor = DialogueOptionNodeEditorScene.instantiate()
 	dialogue_option_node_editor.character_store = character_store
 	dialogue_option_node_editor.id = dialogue_option_node_ast.id
-	dialogue_option_node_editor.selected_character_stores = dialogue_sequence_ast.stores.character
 	dialogue_option_node_editor.character = dialogue_option_node_ast.character
 	dialogue_option_node_editor.option = dialogue_option_node_ast.text
 	ParleyUtils.signals.safe_connect(dialogue_option_node_editor.dialogue_option_node_changed, _on_dialogue_option_node_editor_dialogue_option_node_changed)
