@@ -21,7 +21,11 @@ text = "Character:"
 
 [node name="CharacterSelector" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterContainer" index="1"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+clip_text = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
@@ -39,5 +43,5 @@ size_flags_vertical = 3
 placeholder_text = "Dialogue goes here.."
 wrap_mode = 1
 
-[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterContainer/CharacterSelector" to="." method="_on_option_button_item_selected"]
+[connection signal="item_selected" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterContainer/CharacterSelector" to="." method="_on_character_selector_item_selected"]
 [connection signal="text_changed" from="BodyMarginContainer/BodyScrollContainer/BodyContainer/VBoxContainer/OptionEditor" to="." method="_on_code_edit_text_changed"]

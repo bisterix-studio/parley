@@ -22,6 +22,10 @@ text = "Character: "
 [node name="CharacterSelector" type="OptionButton" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer/CharacterSelectorContainer" index="1"]
 unique_name_in_owner = true
 layout_mode = 2
+custom_minimum_size = Vector2(150, 0)
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+clip_text = true
 
 [node name="DialogueEditorContainer" type="VBoxContainer" parent="BodyMarginContainer/BodyScrollContainer/BodyContainer" index="1"]
 layout_mode = 2
