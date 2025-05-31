@@ -161,6 +161,7 @@ func _add_node(graph_nodes: Dictionary, ast_node: NodeAst) -> void:
 		current_graph_node = _register_node(ast_node)
 		graph_nodes[ast_node.id] = current_graph_node
 
+
 func generate_edges(graph_nodes: Dictionary = {}) -> void:
 	clear_connections()
 	var nodes: Dictionary
@@ -178,7 +179,34 @@ func generate_edges(graph_nodes: Dictionary = {}) -> void:
 			var from_node: ParleyGraphNode = nodes[edge.from_node]
 			var to_node: ParleyGraphNode = nodes[edge.to_node]
 			var _connected: int = connect_node(from_node.name, edge.from_slot, to_node.name, edge.to_slot)
-			# TODO: handle
+			# TODO: handle ^
+			set_edge_colour(edge)
+
+
+func add_edge(edge: EdgeAst, from_node_name: StringName, to_node_name: StringName) -> void:
+	var _connected: int = connect_node(from_node_name, edge.from_slot, to_node_name, edge.to_slot)
+	# TODO: handle ^
+	set_edge_colour(edge)
+
+
+func set_edge_colour(edge: EdgeAst) -> void:
+	var nodes: Array[ParleyGraphNode] = get_nodes_for_edge(edge)
+	if nodes.size() != 2:
+		ParleyUtils.log.error("Invalid edge, expected 2 nodes but found %i" % nodes.size())
+		return
+	var from_node_index: int = nodes.find_custom(func(n: ParleyGraphNode) -> bool: return n.id == edge.from_node)
+	var to_node_index: int = nodes.find_custom(func(n: ParleyGraphNode) -> bool: return n.id == edge.to_node)
+	if from_node_index == -1:
+		ParleyUtils.log.error("Unable to get from node for edge")
+		return
+	if to_node_index == -1:
+		ParleyUtils.log.error("Unable to get from node for edge")
+		return
+	var from_node: ParleyGraphNode = nodes[from_node_index]
+	var to_node: ParleyGraphNode = nodes[to_node_index]
+	from_node.deselect_from_slot(edge.from_slot)
+	var from_node_colour: Color = from_node.get_from_slot_colour(edge.from_slot)
+	to_node.unselect_to_slot(edge.to_slot, from_node_colour)
 #endregion
 
 #region UTILS

@@ -112,7 +112,7 @@ class Test_add_edge:
 			"current_edges": [],
 			"edge": {"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
 			"expected": {
-				"added": 1,
+				"added": true,
 				"emitted": true,
 				"edges": [
 					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
@@ -125,7 +125,7 @@ class Test_add_edge:
 			],
 			"edge": {"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
 			"expected": {
-				"added": 0,
+				"added": false,
 				"emitted": false,
 				"edges": [
 					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
@@ -144,16 +144,19 @@ class Test_add_edge:
 		var to_node: String = edge.get('to_node')
 		var to_slot: int = edge.get('to_slot')
 		var expected: Dictionary = params.get('expected', {})
-		var expected_added: int = expected.get('added')
+		var expected_added: bool = expected.get('added')
 		var expected_edges: Array = expected.get('edges')
 		var expected_emitted: bool = expected.get('emitted')
 		watch_signals(dialogue_ast)
 		
 		# Act
-		var result: int = dialogue_ast.add_edge(from_node, from_slot, to_node, to_slot)
+		var result: EdgeAst = dialogue_ast.add_edge(from_node, from_slot, to_node, to_slot)
 
 		# Assert
-		assert_eq(result, expected_added)
+		if expected_added:
+			assert_not_null(result)
+		else:
+			assert_null(result)
 		var updated_edges: Array = dialogue_ast.to_dict().get('edges')
 		assert_eq_deep(updated_edges, expected_edges)
 		if expected_emitted:

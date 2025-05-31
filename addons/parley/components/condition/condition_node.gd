@@ -29,7 +29,7 @@ func update(p_description: String) -> void:
 
 
 ## Select from slot by changing to blue colour
-func select_from_slot(from_slot: int) -> void:
+func select_from_slot(from_slot: int, _colour: Color = Color.CHARTREUSE) -> void:
 	var slot: int
 	match from_slot:
 		0:
@@ -42,8 +42,8 @@ func select_from_slot(from_slot: int) -> void:
 	set_slot_color_right(slot, Color.CORNFLOWER_BLUE)
 
 
-## Unselect from slot by returning back to original colour
-func unselect_from_slot(from_slot: int) -> void:
+## Deselect from slot by returning back to original colour
+func deselect_from_slot(from_slot: int, _colour: Color = Color.CHARTREUSE) -> void:
 	var slot: int
 	var colour: Color
 	match from_slot:
@@ -57,3 +57,17 @@ func unselect_from_slot(from_slot: int) -> void:
 			ParleyUtils.log.info("Unknown from slot: %s" % [from_slot])
 			return
 	set_slot_color_right(slot, colour)
+
+
+## Get the Node from slot colour.
+func get_from_slot_colour(from_slot: int) -> Color:
+	var slot: int
+	match from_slot:
+		0:
+			slot = 1
+		1:
+			slot = 2
+		_:
+			ParleyUtils.log.info("Unknown from slot: %s" % [from_slot])
+			return Color.CHARTREUSE
+	return get_slot_color_right(slot)

@@ -523,12 +523,8 @@ func focus_edge(edge: EdgeAst) -> void:
 
 
 func defocus_edge(edge: EdgeAst) -> void:
-	var nodes: Array[ParleyGraphNode] = graph_view.get_nodes_for_edge(edge)
-	for node: ParleyGraphNode in nodes:
-		if node.id == edge.from_node:
-			node.unselect_from_slot(edge.from_slot)
-		if node.id == edge.to_node:
-			node.unselect_to_slot(edge.to_slot)
+	if graph_view:
+		graph_view.set_edge_colour(edge)
 
 
 # TODO: add to docs
@@ -573,13 +569,14 @@ func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: in
 	# TODO: handle _result
 	var _result: int = dialogue_ast.remove_edge(from_node, from_slot, to_node, to_slot)
 	graph_view.ast = dialogue_ast
-	graph_view.generate_edges()
+	graph_view.generate()
 
 func _add_edge(from_node_name: StringName, from_slot: int, to_node_name: StringName, to_slot: int) -> void:
 	var from_node_id: String = from_node_name.split('-')[1]
 	var to_node_id: String = to_node_name.split('-')[1]
-	var _added: int = dialogue_ast.add_edge(from_node_id, from_slot, to_node_id, to_slot)
-	var _connected: int = graph_view.connect_node(from_node_name, from_slot, to_node_name, to_slot)
+	var added_edge: EdgeAst = dialogue_ast.add_edge(from_node_id, from_slot, to_node_id, to_slot)
+	if added_edge:
+		graph_view.add_edge(added_edge, from_node_name, to_node_name)
 
 func _is_selected_node(id: String) -> bool:
 	var is_selected_node: bool = selected_node_id == id

@@ -108,11 +108,16 @@ func _set_cases(new_cases: Array[Variant]) -> void:
 
 #region OVERRIDES
 ## Select from slot by changing to blue colour
-func select_from_slot(from_slot: int) -> void:
-	set_slot_color_right(from_slot + start_slot, Color.CORNFLOWER_BLUE)
+func select_from_slot(from_slot: int, colour: Color = Color.CORNFLOWER_BLUE) -> void:
+	set_slot_color_right(from_slot + start_slot, colour)
 
 
-## Unselect from slot by returning back to original colour
-func unselect_from_slot(from_slot: int) -> void:
-	set_slot_color_right(from_slot + start_slot, Color.CHARTREUSE)
+## Deselect from slot by returning back to original colour
+func deselect_from_slot(from_slot: int, colour: Color = Color.CHARTREUSE) -> void:
+	set_slot_color_right(from_slot + start_slot, colour)
+
+
+## Get the Node from slot colour.
+func get_from_slot_colour(from_slot: int) -> Color:
+	return get_slot_color_right(from_slot + start_slot)
 #endregion
