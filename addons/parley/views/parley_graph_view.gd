@@ -223,7 +223,7 @@ func _create_dialogue_node(ast_node: DialogueNodeAst) -> ParleyGraphNode:
 	var node: DialogueNode = dialogue_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
-	node.character = character_store.get_character_by_id(ast_node.character).name
+	node.character = character_store.get_character_by_ref(ast_node.character).name
 	node.dialogue = ast_node.text
 	return node
 
@@ -232,7 +232,7 @@ func _create_dialogue_option_node(ast_node: DialogueOptionNodeAst) -> ParleyGrap
 	var node: DialogueOptionNode = dialogue_option_node_scene.instantiate()
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
-	node.character = character_store.get_character_by_id(ast_node.character).name
+	node.character = character_store.get_character_by_ref(ast_node.character).name
 	node.option = ast_node.text
 	return node
 

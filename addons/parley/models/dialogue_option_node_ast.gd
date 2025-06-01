@@ -38,3 +38,9 @@ func update(p_character: String, p_text: String) -> void:
 
 static func get_colour() -> Color:
 	return Color("#3268bf")
+
+
+#region UTILS
+func resolve_character() -> Character:
+	return CharacterStore.resolve_character_ref(character)
+#endregion

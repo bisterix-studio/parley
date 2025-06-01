@@ -1,9 +1,10 @@
-# TODO: prefix with Parley
 class_name ParleyDefaultBalloon extends CanvasLayer
+
 
 const dialogue_container: PackedScene = preload('./dialogue/dialogue_container.tscn')
 const dialogue_options_container: PackedScene = preload('./dialogue_option/dialogue_options_container.tscn')
 const next_dialogue_button: PackedScene = preload('./next_dialogue_button.tscn')
+
 
 ## The action to use for advancing the dialogue
 @export var advance_dialogue_action: StringName = &"ui_accept"
@@ -12,53 +13,50 @@ const next_dialogue_button: PackedScene = preload('./next_dialogue_button.tscn')
 @onready var balloon: Control = %Balloon
 @onready var balloon_container: VBoxContainer = %BalloonContainer
 
+
 var ctx: Dictionary = {}
 var dialogue_ast: DialogueAst
-
 var dialogue_history: Array = []
-
 ## Temporary game states
 var temporary_game_states: Array = []
-
 ## See if we are waiting for the player
 var is_waiting_for_input: bool = false
-
 var previous_node_ast: NodeAst = null
+var current_node_asts: Array[NodeAst]: set = _set_current_node_asts
 
-var current_node_asts: Array[NodeAst]:
-	set(p_current_node_asts):
-		is_waiting_for_input = false
-		balloon.focus_mode = Control.FOCUS_ALL
-		balloon.grab_focus()
 
-		# The dialogue has finished so close the balloon
-		if p_current_node_asts.size() == 0 or is_instance_of(p_current_node_asts.front(), EndNodeAst):
-			queue_free()
-			return
+func _set_current_node_asts(p_current_node_asts: Array[NodeAst]) -> void:
+	is_waiting_for_input = false
+	balloon.focus_mode = Control.FOCUS_ALL
+	balloon.grab_focus()
 
-		# If the node isn't ready yet then none of the options
-		# will be ready yet either so we wait
-		if not is_node_ready():
-			await ready
+	# The dialogue has finished so close the balloon
+	if p_current_node_asts.size() == 0 or is_instance_of(p_current_node_asts.front(), EndNodeAst):
+		queue_free()
+		return
 
-		balloon.show()
-		current_node_asts = p_current_node_asts
-		var current_children = balloon_container.get_children()
-		var next_children: Array[Node] = _build_next_children(current_children, p_current_node_asts.front())
-		if next_children.size() == 0:
-			return
+	# If the node isn't ready yet then none of the options
+	# will be ready yet either so we wait
+	if not is_node_ready():
+		await ready
 
-		_handle_next_actions(current_children, next_children)
+	balloon.show()
+	current_node_asts = p_current_node_asts
+	var current_children: Array[Node] = balloon_container.get_children()
+	var first_node: NodeAst = p_current_node_asts.front()
+	var next_children: Array[Node] = _build_next_children(current_children, first_node)
+	if next_children.size() == 0:
+		return
 
-		balloon.focus_mode = Control.FOCUS_NONE
-		if not DialogueAst.is_dialogue_options(current_node_asts):
-			var next_button: Control = next_children.back()
-			ParleyUtils.signals.safe_connect(next_button.gui_input, _on_next_dialogue_button_gui_input.bind(next_button))
-			if not next_button.is_node_ready():
-				await next_button.ready
-			next_button.grab_focus()
-	get:
-		return current_node_asts
+	_handle_next_actions(current_children, next_children)
+
+	balloon.focus_mode = Control.FOCUS_NONE
+	if not DialogueAst.is_dialogue_options(current_node_asts):
+		var next_button: Control = next_children.back()
+		ParleyUtils.signals.safe_connect(next_button.gui_input, _on_next_dialogue_button_gui_input.bind(next_button))
+		if not next_button.is_node_ready():
+			await next_button.ready
+		next_button.grab_focus()
 
 
 func _build_next_children(current_children: Array[Node], current_node_ast: NodeAst) -> Array[Node]:
@@ -109,8 +107,8 @@ func _build_next_dialogue_option_children(current_children: Array[Node]) -> Arra
 
 
 func _handle_next_actions(current_children: Array[Node], next_children: Array[Node]) -> void:
-	var next_actions = []
-	for child in current_children:
+	var next_actions: Array[Dictionary] = []
+	for child: Node in current_children:
 		if child is DialogueContainer:
 			if next_children.has(child):
 				next_actions.append({
@@ -127,13 +125,13 @@ func _handle_next_actions(current_children: Array[Node], next_children: Array[No
 				'action': 'fade_out',
 				'child': child
 			})
-	for child in next_children:
+	for child: Node in next_children:
 		if not current_children.has(child):
 			next_actions.append({
 				'action': 'fade_in',
 				'child': child
 			})
-	for next_action in next_actions:
+	for next_action: Dictionary in next_actions:
 		match next_action.action:
 			'exit_top': _exit_top(next_action)
 			'move_to_top': _move_to_top(next_action)

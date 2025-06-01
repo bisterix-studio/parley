@@ -362,7 +362,7 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 	# TODO: move into graph view
 	if _selected_node is DialogueNode:
 		var selected_node: DialogueNode = _selected_node
-		selected_node.character = character_store.get_character_by_id(new_character).name
+		selected_node.character = character_store.get_character_by_ref(new_character).name
 		selected_node.dialogue = new_dialogue_text
 
 
@@ -378,7 +378,7 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, ne
 	# TODO: move into graph view
 	if _selected_node is DialogueOptionNode:
 		var selected_node: DialogueOptionNode = _selected_node
-		selected_node.character = character_store.get_character_by_id(new_character).name
+		selected_node.character = character_store.get_character_by_ref(new_character).name
 		selected_node.option = new_option_text
 
 

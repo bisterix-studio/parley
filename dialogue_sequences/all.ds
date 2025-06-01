@@ -10,14 +10,14 @@
       "id": "node:3",
       "type": "DIALOGUE",
       "position": "(1680.0, 440.0)",
-      "character": "main:alice",
+      "character": "uid://ceouii84qmu0w::alice",
       "text": "Look. I made a whatdyamacallit."
     },
     {
       "id": "node:4",
       "type": "DIALOGUE",
       "position": "(2140.0, 460.0)",
-      "character": "main:bob",
+      "character": "uid://ceouii84qmu0w::bob",
       "text": "Wow. Great."
     },
     {
@@ -43,21 +43,21 @@
       "id": "node:7",
       "type": "DIALOGUE",
       "position": "(3100.0, 420.0)",
-      "character": "main:alice",
+      "character": "uid://ceouii84qmu0w::alice",
       "text": "I have a coffee."
     },
     {
       "id": "node:8",
       "type": "DIALOGUE_OPTION",
       "position": "(3600.0, 320.0)",
-      "character": "main:carol",
+      "character": "uid://ceouii84qmu0w::carol",
       "text": "Give to Alice."
     },
     {
       "id": "node:13",
       "type": "DIALOGUE_OPTION",
       "position": "(3600.0, 700.0)",
-      "character": "main:carol",
+      "character": "uid://ceouii84qmu0w::carol",
       "text": "Keep it."
     },
     {
@@ -75,35 +75,35 @@
       "id": "node:10",
       "type": "DIALOGUE",
       "position": "(4500.0, 360.0)",
-      "character": "main:carol",
+      "character": "uid://ceouii84qmu0w::carol",
       "text": "Here you go."
     },
     {
       "id": "node:11",
       "type": "DIALOGUE",
       "position": "(4940.0, 360.0)",
-      "character": "main:dave",
+      "character": "uid://ceouii84qmu0w::dave",
       "text": "Cheers."
     },
     {
       "id": "node:12",
       "type": "DIALOGUE",
       "position": "(5420.0, 360.0)",
-      "character": "main:carol",
+      "character": "uid://ceouii84qmu0w::carol",
       "text": "You're welcome."
     },
     {
       "id": "node:14",
       "type": "DIALOGUE",
       "position": "(4060.0, 800.0)",
-      "character": "main:carol",
+      "character": "uid://ceouii84qmu0w::carol",
       "text": "But it's mine."
     },
     {
       "id": "node:15",
       "type": "DIALOGUE",
       "position": "(4500.0, 800.0)",
-      "character": "main:dave",
+      "character": "uid://ceouii84qmu0w::dave",
       "text": "Fair enough."
     },
     {
@@ -124,21 +124,21 @@
       "id": "node:17",
       "type": "DIALOGUE",
       "position": "(4040.0, 1260.0)",
-      "character": "main:bob",
+      "character": "uid://ceouii84qmu0w::bob",
       "text": "Mmm. Coffee. Now, what did you want me to look at?"
     },
     {
       "id": "node:19",
       "type": "DIALOGUE",
       "position": "(3620.0, 1740.0)",
-      "character": "main:bob",
+      "character": "uid://ceouii84qmu0w::bob",
       "text": "I NEED COFFEE!"
     },
     {
       "id": "node:20",
       "type": "DIALOGUE",
       "position": "(4120.0, 1740.0)",
-      "character": "custom:englebert",
+      "character": "uid://ceouii84qmu0w::custom:englebert",
       "text": "I'll get you coffee, Mama. But first, CATNIP."
     },
     {
@@ -176,28 +176,28 @@
       "id": "node:24",
       "type": "DIALOGUE",
       "position": "(980.0, 140.0)",
-      "character": "main:alice",
+      "character": "uid://ceouii84qmu0w::alice",
       "text": "Look, I need coffee."
     },
     {
       "id": "node:25",
       "type": "DIALOGUE",
       "position": "(980.0, 580.0)",
-      "character": "main:alice",
+      "character": "uid://ceouii84qmu0w::alice",
       "text": "Look, I really need coffee."
     },
     {
       "id": "node:26",
       "type": "DIALOGUE",
       "position": "(960.0, 1000.0)",
-      "character": "main:alice",
+      "character": "uid://ceouii84qmu0w::alice",
       "text": "Look, I really really REALLY need coffee."
     },
     {
       "id": "node:27",
       "type": "DIALOGUE",
       "position": "(960.0, 1480.0)",
-      "character": "main:alice",
+      "character": "uid://ceouii84qmu0w::alice",
       "text": "Coffee please."
     }
   ],
