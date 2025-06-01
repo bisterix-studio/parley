@@ -31,7 +31,7 @@ func _on_type_changed(new_type: DialogueAst.Type) -> void:
 
 func set_title(title: String = "", colour: Variant = null) -> void:
 	if title_label:
-		title_label.text = "%s [ID: %s]" % [title if title else DialogueAst.get_type_name(type), id]
+		title_label.text = "%s [ID: %s]" % [title if title else DialogueAst.get_type_name(type), id.replace(NodeAst.id_prefix, '')]
 	if title_panel:
 		title_panel.get_theme_stylebox('panel').set('bg_color', colour if colour is Color else DialogueAst.get_type_colour(type))
 

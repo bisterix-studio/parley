@@ -54,7 +54,7 @@ func add_ast_node(node: Dictionary) -> void:
 	var id_variant: Variant = node.get('id')
 	var position: Vector2 = _parse_position_from_raw_node_ast(node)
 	if not id_variant or not is_instance_of(id_variant, TYPE_STRING):
-		ParleyUtils.log.error("Unable to import Parley AST node without a valid string id field: %s" % [id_variant])
+		ParleyUtils.log.error("Unable to import Parley AST Node without a valid string id field: %s" % [id_variant])
 		return
 	var ast_node: NodeAst
 	var id: String = id_variant
@@ -102,9 +102,9 @@ func add_ast_node(node: Dictionary) -> void:
 
 
 ## Add a new node to the list of nodes
-func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> Variant:
+func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> NodeAst:
 	ParleyUtils.log.info('Inserting new Node into the AST of type: %s' % [type])
-	var new_id: String = _generate_id()
+	var new_id: String = _generate_node_id()
 	var ast_node: NodeAst
 	match type:
 		Type.DIALOGUE:
@@ -125,7 +125,7 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> Variant:
 			ast_node = GroupNodeAst.new(new_id, position)
 		_:
 			ParleyUtils.log.error("Unable to create new Parley AST node of type: %s" % [type])
-			return
+			return null
 	nodes.push_back(ast_node)
 	_emit_dialogue_updated()
 	return ast_node
@@ -142,13 +142,22 @@ func update_node_position(ast_node_id: String, position: Vector2) -> void:
 
 ## Add an edge to the list of edges from an AST
 func add_ast_edge(edge: Dictionary) -> void:
+	var id_variant: Variant = edge.get('id')
+	if id_variant:
+		if not is_instance_of(id_variant, TYPE_STRING):
+			ParleyUtils.log.error("Unable to import Parley AST Edge without a valid string id field: %s" % [id_variant])
+			return
+	else:
+		id_variant = _generate_edge_id()
 	# TODO: add validation before instantiation to ensure that
 	# all values are defined
+	var edge_id: String = id_variant
 	var from_node: String = edge.get('from_node')
 	var from_slot: int = edge.get('from_slot')
 	var to_node: String = edge.get('to_node')
 	var to_slot: int = edge.get('to_slot')
-	var _result: EdgeAst = add_edge(from_node, from_slot, to_node, to_slot, false)
+	var edge_ast: EdgeAst = EdgeAst.new(edge_id, from_node, from_slot, to_node, to_slot)
+	edges.append(edge_ast)
 
 
 ## Add a store to from an AST
@@ -163,8 +172,10 @@ func add_ast_stores(_stores: Dictionary) -> void:
 ## Add a new edge to the list of edges. It will not add an edge if it already exists
 ## It returns the number of edges added (1 or 0).
 ## dialogue_ast.add_edge("1", 0, "2", 1)
-func add_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit: bool = true) -> EdgeAst:
+func add_new_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit: bool = true) -> EdgeAst:
+	var new_id: String = _generate_edge_id()
 	var new_edge: EdgeAst = EdgeAst.new(
+		new_id,
 		from_node,
 		from_slot,
 		to_node,
@@ -192,7 +203,7 @@ func add_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, 
 func add_edges(edges_to_create: Array[EdgeAst], emit: bool = true) -> int:
 	var added: int = 0
 	for edge: EdgeAst in edges_to_create:
-		var added_edge: EdgeAst = add_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
+		var added_edge: EdgeAst = add_new_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
 		if added_edge:
 			added += 1
 	if added > 0 and emit:
@@ -259,7 +270,7 @@ func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: in
 			break
 		index += 1
 	if not removed:
-		ParleyUtils.log.info("Unable to remove edge: %s-%s:%s-%s" % [from_node, from_slot, to_node, to_slot])
+		ParleyUtils.log.info("Unable to remove edge: (%s|%s)=>(%s|%s)" % [from_node, from_slot, to_node, to_slot])
 	if removed and emit:
 		_emit_dialogue_updated()
 	return 1 if removed else 0
@@ -480,7 +491,7 @@ func _map_value(value_expr: Variant) -> Variant:
 func _process_end(dry_run: bool) -> Array[NodeAst]:
 	if not dry_run:
 		dialogue_ended.emit(self)
-	return [EndNodeAst.new(_generate_id())]
+	return [EndNodeAst.new(_generate_node_id())]
 
 
 func _sort_by_y_position(a: NodeAst, b: NodeAst) -> bool:
@@ -610,10 +621,16 @@ func _parse_group_size_from_raw_node_ast(node: Dictionary) -> Vector2:
 	return Vector2(x, y)
 
 
-func _generate_id() -> String:
+func _generate_node_id() -> String:
 	if nodes.size() == 0:
 		return "1"
 	return str(nodes.map(func(node: NodeAst) -> int: return int(node.id)).max() + 1)
+
+
+func _generate_edge_id() -> String:
+	if edges.size() == 0:
+		return "1"
+	return str(edges.map(func(edge: EdgeAst) -> int: return int(edge.id)).max() + 1)
 
 
 func _emit_dialogue_updated() -> void:

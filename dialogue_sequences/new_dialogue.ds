@@ -2,7 +2,7 @@
   "title": "",
   "nodes": [
     {
-      "id": "1",
+      "id": "node:1",
       "type": "DIALOGUE",
       "position": "(1506.0, 1068.0)",
       "character": "",
@@ -12,7 +12,6 @@
   "edges": [],
   "stores": {
     "character": [],
-    "fact": [],
-    "action": []
+    "fact": []
   }
 }

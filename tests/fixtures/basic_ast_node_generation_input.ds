@@ -2,30 +2,30 @@
   "title": "Alice",
   "nodes": [
     {
-      "id": "1",
+      "id": "node:1",
       "type": "START",
       "position": "(0.0, 400.0)"
     },
     {
-      "id": "3",
+      "id": "node:3",
       "type": "DIALOGUE",
       "position": "(240.0, 400.0)",
       "character": "Alice",
       "text": "Look. I made a thing."
     },
     {
-      "id": "4",
+      "id": "node:4",
       "type": "DIALOGUE",
       "position": "(600.0, 400.0)",
       "character": "Bob",
       "text": "Wow. Great."
     },
     {
-      "id": "6",
+      "id": "node:6",
       "type": "CONDITION",
       "position": "(980.0, 400.0)",
       "description": "Bob has a coffee",
-      "condition": "ALL",
+      "combiner": "ALL",
       "conditions": [
         {
           "fact_ref": "res://facts/bob_has_coffee_fact.gd",
@@ -35,28 +35,28 @@
       ]
     },
     {
-      "id": "7",
+      "id": "node:7",
       "type": "DIALOGUE",
       "position": "(1480.0, 400.0)",
       "character": "Alice",
       "text": "LOOK AT MY THING!"
     },
     {
-      "id": "8",
+      "id": "node:8",
       "type": "DIALOGUE_OPTION",
       "position": "(2040.0, 340.0)",
       "character": "Carol",
       "text": "Give to Alice"
     },
     {
-      "id": "13",
+      "id": "node:13",
       "type": "DIALOGUE_OPTION",
       "position": "(2040.0, 700.0)",
       "character": "Carol",
       "text": "Keep it"
     },
     {
-      "id": "9",
+      "id": "node:9",
       "type": "ACTION",
       "position": "(2460.0, 340.0)",
       "description": "Register that coffee was found",
@@ -67,46 +67,46 @@
       ]
     },
     {
-      "id": "10",
+      "id": "node:10",
       "type": "DIALOGUE",
       "position": "(3000.0, 340.0)",
       "character": "Carol",
       "text": "Here you go."
     },
     {
-      "id": "11",
+      "id": "node:11",
       "type": "DIALOGUE",
       "position": "(3360.0, 340.0)",
       "character": "Dave",
       "text": "Cheers."
     },
     {
-      "id": "12",
+      "id": "node:12",
       "type": "DIALOGUE",
       "position": "(3720.0, 340.0)",
       "character": "Carol",
       "text": "You're welcome."
     },
     {
-      "id": "14",
+      "id": "node:14",
       "type": "DIALOGUE",
       "position": "(2460.0, 700.0)",
       "character": "Carol",
       "text": "But it's mine."
     },
     {
-      "id": "15",
+      "id": "node:15",
       "type": "DIALOGUE",
       "position": "(2820.0, 700.0)",
       "character": "Dave",
       "text": "Fair enough."
     },
     {
-      "id": "16",
+      "id": "node:16",
       "type": "CONDITION",
       "position": "(1480.0, 700.0)",
       "description": "Alice gave a coffee",
-      "condition": "ALL",
+      "combiner": "ALL",
       "conditions": [
         {
           "fact_ref": "res://facts/alice_gave_coffee_fact.gd",
@@ -116,151 +116,171 @@
       ]
     },
     {
-      "id": "17",
+      "id": "node:17",
       "type": "DIALOGUE",
       "position": "(2040.0, 960.0)",
       "character": "Bob",
       "text": "Mmm. Coffee. Now, what did you want me to look at?"
     },
     {
-      "id": "19",
+      "id": "node:19",
       "type": "DIALOGUE",
       "position": "(2020.0, 1340.0)",
       "character": "Bob",
       "text": "I NEED COFFEE!"
     },
     {
-      "id": "20",
+      "id": "node:20",
       "type": "DIALOGUE",
       "position": "(2420.0, 1340.0)",
       "character": "Carol",
       "text": "I'll get you coffee, Mama. But first, CATNIP."
     },
     {
-      "id": "21",
+      "id": "node:21",
       "type": "END",
       "position": "(4160.0, 860.0)"
     }
   ],
   "edges": [
     {
-      "from_node": "1",
+      "id": "edge:1",
+      "from_node": "node:1",
       "from_slot": 0,
-      "to_node": "3",
+      "to_node": "node:3",
       "to_slot": 0
     },
     {
-      "from_node": "3",
+      "id": "edge:2",
+      "from_node": "node:3",
       "from_slot": 0,
-      "to_node": "4",
+      "to_node": "node:4",
       "to_slot": 0
     },
     {
-      "from_node": "4",
+      "id": "edge:3",
+      "from_node": "node:4",
       "from_slot": 0,
-      "to_node": "6",
+      "to_node": "node:6",
       "to_slot": 0
     },
     {
-      "from_node": "6",
+      "id": "edge:4",
+      "from_node": "node:6",
       "from_slot": 0,
-      "to_node": "7",
+      "to_node": "node:7",
       "to_slot": 0
     },
     {
-      "from_node": "6",
+      "id": "edge:5",
+      "from_node": "node:6",
       "from_slot": 1,
-      "to_node": "16",
+      "to_node": "node:16",
       "to_slot": 0
     },
     {
-      "from_node": "7",
+      "id": "edge:6",
+      "from_node": "node:7",
       "from_slot": 0,
-      "to_node": "8",
+      "to_node": "node:8",
       "to_slot": 0
     },
     {
-      "from_node": "7",
+      "id": "edge:7",
+      "from_node": "node:7",
       "from_slot": 0,
-      "to_node": "13",
+      "to_node": "node:13",
       "to_slot": 0
     },
     {
-      "from_node": "8",
+      "id": "edge:8",
+      "from_node": "node:8",
       "from_slot": 0,
-      "to_node": "9",
+      "to_node": "node:9",
       "to_slot": 0
     },
     {
-      "from_node": "13",
+      "id": "edge:9",
+      "from_node": "node:13",
       "from_slot": 0,
-      "to_node": "14",
+      "to_node": "node:14",
       "to_slot": 0
     },
     {
-      "from_node": "9",
+      "id": "edge:10",
+      "from_node": "node:9",
       "from_slot": 0,
-      "to_node": "10",
+      "to_node": "node:10",
       "to_slot": 0
     },
     {
-      "from_node": "10",
+      "id": "edge:11",
+      "from_node": "node:10",
       "from_slot": 0,
-      "to_node": "11",
+      "to_node": "node:11",
       "to_slot": 0
     },
     {
-      "from_node": "11",
+      "id": "edge:12",
+      "from_node": "node:11",
       "from_slot": 0,
-      "to_node": "12",
+      "to_node": "node:12",
       "to_slot": 0
     },
     {
-      "from_node": "14",
+      "id": "edge:13",
+      "from_node": "node:14",
       "from_slot": 0,
-      "to_node": "15",
+      "to_node": "node:15",
       "to_slot": 0
     },
     {
-      "from_node": "16",
+      "id": "edge:14",
+      "from_node": "node:16",
       "from_slot": 0,
-      "to_node": "17",
+      "to_node": "node:17",
       "to_slot": 0
     },
     {
-      "from_node": "16",
+      "id": "edge:15",
+      "from_node": "node:16",
       "from_slot": 1,
-      "to_node": "19",
+      "to_node": "node:19",
       "to_slot": 0
     },
     {
-      "from_node": "19",
+      "id": "edge:16",
+      "from_node": "node:19",
       "from_slot": 0,
-      "to_node": "20",
+      "to_node": "node:20",
       "to_slot": 0
     },
     {
-      "from_node": "12",
+      "id": "edge:17",
+      "from_node": "node:12",
       "from_slot": 0,
-      "to_node": "21",
+      "to_node": "node:21",
       "to_slot": 0
     },
     {
-      "from_node": "15",
+      "id": "edge:18",
+      "from_node": "node:15",
       "from_slot": 0,
-      "to_node": "21",
+      "to_node": "node:21",
       "to_slot": 0
     },
     {
-      "from_node": "20",
+      "id": "edge:19",
+      "from_node": "node:20",
       "from_slot": 0,
-      "to_node": "21",
+      "to_node": "node:21",
       "to_slot": 0
     },
     {
-      "from_node": "17",
+      "id": "edge:20",
+      "from_node": "node:17",
       "from_slot": 0,
-      "to_node": "21",
+      "to_node": "node:21",
       "to_slot": 0
     }
   ],
@@ -268,8 +288,9 @@
     "character": [
       {
         "id": "main",
-        "ref": "res://characters/character_store.tres"
+        "ref": "uid://ceouii84qmu0w"
       }
-    ]
+    ],
+    "fact": []
   }
 }

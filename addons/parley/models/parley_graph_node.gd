@@ -30,7 +30,7 @@ func set_slot_style(idx: int) -> void:
 ## they will be used.
 ## Example: node.set_titlebar()
 func set_titlebar(title_override: Variant = null, colour_override: Variant = null) -> void:
-	title = "%s [ID: %s]" % [title_override if title_override else DialogueAst.get_type_name(type), id]
+	title = "%s [ID: %s]" % [title_override if title_override else DialogueAst.get_type_name(type), id.replace(NodeAst.id_prefix, '')]
 	var titlebar: StyleBoxFlat = get_theme_stylebox("titlebar").duplicate()
 	titlebar.bg_color = colour_override if colour_override is Color else DialogueAst.get_type_colour(type)
 	titlebar.corner_detail = 5

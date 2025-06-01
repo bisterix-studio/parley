@@ -424,7 +424,7 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 				var current_case: Variant = ast_node.cases[slot]
 				var case_index: int = cases.find(current_case)
 				if case_index != -1:
-					var new_edge: EdgeAst = EdgeAst.new(edge.from_node, case_index, edge.to_node, edge.to_slot)
+					var new_edge: EdgeAst = EdgeAst.new("", edge.from_node, case_index, edge.to_node, edge.to_slot)
 					edges_to_create.append(new_edge)
 
 	var fact: Fact = fact_store.get_fact_by_ref(fact_ref)
@@ -569,12 +569,12 @@ func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: in
 	# TODO: handle _result
 	var _result: int = dialogue_ast.remove_edge(from_node, from_slot, to_node, to_slot)
 	graph_view.ast = dialogue_ast
-	graph_view.generate()
+	graph_view.generate() # TU: Potential performance issue here
 
 func _add_edge(from_node_name: StringName, from_slot: int, to_node_name: StringName, to_slot: int) -> void:
 	var from_node_id: String = from_node_name.split('-')[1]
 	var to_node_id: String = to_node_name.split('-')[1]
-	var added_edge: EdgeAst = dialogue_ast.add_edge(from_node_id, from_slot, to_node_id, to_slot)
+	var added_edge: EdgeAst = dialogue_ast.add_new_edge(from_node_id, from_slot, to_node_id, to_slot)
 	if added_edge:
 		graph_view.add_edge(added_edge, from_node_name, to_node_name)
 
