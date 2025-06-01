@@ -215,7 +215,7 @@ func run_test_dialogue_from_start(dialogue_ast: DialogueAst) -> void:
 	ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH, dialogue_ast.resource_path)
 	ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START, true)
 	var test_dialogue_path: String = ParleySettings.get_setting(ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH)
-	EditorInterface.play_custom_scene(test_dialogue_path)
+	EditorInterface.play_custom_scene(load(test_dialogue_path).resource_path)
 
 
 ## Plugin use only
@@ -230,5 +230,5 @@ func run_test_dialogue_from_selected(dialogue_ast: DialogueAst, selected_node_id
 	else:
 		ParleySettings.set_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START, true)
 	var test_dialogue_path: String = ParleySettings.get_setting(ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH)
-	EditorInterface.play_custom_scene(test_dialogue_path)
+	EditorInterface.play_custom_scene(load(test_dialogue_path).resource_path)
 #endregion

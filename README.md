@@ -24,6 +24,8 @@ from GitHub.
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Support](#support)
+- [Known Issues and Troubleshooting](#known-issues-and-troubleshooting)
+  - [Parts of Godot are unresponsive in MacOS after close a test dialogue scene via the close button](#parts-of-godot-are-unresponsive-in-macos-after-close-a-test-dialogue-scene-via-the-close-button)
 - [License](#license)
 - [Contributions](#contributions)
 
@@ -69,6 +71,14 @@ Documentation for Parley can be found [here](docs/parley.md).
 | Version  | Supported	Godot version |
 | -------- | ----------------------- |
 | `latest` | `4.4+`                  |
+
+## Known Issues and Troubleshooting
+
+### Parts of Godot are unresponsive in MacOS after close a test dialogue scene via the close button
+
+**Solution:** Swipe up with three fingers to open Mission Control. Swipe down
+again to make Godot responsive again. Currently not sure why it happens, please
+submit an issue if you have any further data on this issue.
 
 ## License
 
