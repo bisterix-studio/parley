@@ -69,7 +69,7 @@ func _render_character_options() -> void:
 
 func _render_character() -> void:
 	if character_store and character_selector:
-		var selected_index: int = character_store.get_character_index_by_id(character)
+		var selected_index: int = character_store.get_character_index_by_ref(character)
 		if character_selector.selected != selected_index and selected_index < character_selector.item_count:
 			character_selector.select(selected_index)
 #endregion
@@ -82,10 +82,10 @@ func _on_dialogue_editor_text_changed() -> void:
 
 
 func _on_character_selector_item_selected(index: int) -> void:
-	if index == -1 or index >= character_store.characters.size():
-		return
-	character = character_store.characters[index].id
-	_emit_dialogue_node_changed()
+	var new_character: String = character_store.get_ref_by_index(index)
+	if new_character != "":
+		character = new_character
+		_emit_dialogue_node_changed()
 
 
 func _on_character_store_changed() -> void:

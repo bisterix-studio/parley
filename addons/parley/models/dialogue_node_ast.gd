@@ -17,24 +17,30 @@ class_name DialogueNodeAst extends NodeAst
 ## Create a new instance of a Dialogue Node AST.
 ## Example: DialogueNodeAst.new("1", Vector2.ZERO, "Alice", "I need some coffee.")
 func _init(
-	p_id: String = "",
-	p_position: Vector2 = Vector2.ZERO,
-	p_character: String = "",
-	p_text: String = ""
+	_id: String = "",
+	_position: Vector2 = Vector2.ZERO,
+	_character: String = "",
+	_text: String = ""
 ) -> void:
 	type = DialogueAst.Type.DIALOGUE
-	id = p_id
-	position = p_position
-	character = p_character
-	text = p_text
+	id = _id
+	position = _position
+	character = _character
+	text = _text
 
 
 ## Update a Dialogue Node AST.
 ## Example: node.update("Alice", "I need some coffee.")
-func update(p_character: String, p_text: String) -> void:
-	character = p_character
-	text = p_text
+func update(_character: String, _text: String) -> void:
+	character = _character
+	text = _text
 
 
 static func get_colour() -> Color:
 	return Color("#266145")
+
+
+#region UTILS
+func resolve_character() -> Character:
+	return CharacterStore.resolve_character_ref(character)
+#endregion
