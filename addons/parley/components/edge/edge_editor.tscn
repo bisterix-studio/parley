@@ -60,6 +60,20 @@ text = "To Slot:"
 layout_mode = 2
 text = "0"
 
+[node name="ColorOverrideContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="ColorOverrideContainer"]
+layout_mode = 2
+
+[node name="ColorOverrideLabel" type="Label" parent="ColorOverrideContainer"]
+layout_mode = 2
+text = "Override colour:"
+
+[node name="ColorOverrideButton" type="ColorPickerButton" parent="ColorOverrideContainer"]
+layout_mode = 2
+text = "Colour override:"
+
 [node name="DeleteEdgeButtonContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 10

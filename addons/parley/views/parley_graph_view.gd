@@ -192,7 +192,7 @@ func add_edge(edge: EdgeAst, from_node_name: StringName, to_node_name: StringNam
 func set_edge_colour(edge: EdgeAst) -> void:
 	var nodes: Array[ParleyGraphNode] = get_nodes_for_edge(edge)
 	if nodes.size() != 2:
-		ParleyUtils.log.error("Invalid edge, expected 2 nodes but found %i" % nodes.size())
+		ParleyUtils.log.error("Invalid edge, expected 2 nodes but found %d" % nodes.size())
 		return
 	var from_node_index: int = nodes.find_custom(func(n: ParleyGraphNode) -> bool: return n.id == edge.from_node)
 	var to_node_index: int = nodes.find_custom(func(n: ParleyGraphNode) -> bool: return n.id == edge.to_node)
@@ -211,7 +211,7 @@ func set_edge_colour(edge: EdgeAst) -> void:
 
 #region UTILS
 func get_ast_node_name(ast_node: NodeAst) -> String:
-	return "%s-%s" % [str(DialogueAst.Type.find_key(ast_node.type)), ast_node.id]
+	return "%s-%s" % [str(DialogueAst.Type.find_key(ast_node.type)), ast_node.id.replace(NodeAst.id_prefix, '')]
 
 
 func _goto_node(node: ParleyGraphNode) -> void:

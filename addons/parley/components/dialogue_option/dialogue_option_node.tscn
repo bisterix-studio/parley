@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://b4bvbns7oq1fv" path="res://addons/parley/assets/ArrowHead.svg" id="1_ew2oa"]
 [ext_resource type="Script" uid="uid://ckcyeha880iie" path="res://addons/parley/components/dialogue_option/dialogue_option_node.gd" id="1_mkgmq"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3snk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ledo5"]
 content_margin_left = 3.0
 content_margin_top = 5.0
 content_margin_right = 3.0
@@ -13,7 +13,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qjot6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1t5ed"]
 content_margin_left = 15.0
 content_margin_top = 5.0
 content_margin_right = 15.0
@@ -28,8 +28,8 @@ z_index = 10
 custom_minimum_size = Vector2(350, 250)
 offset_right = 9.0
 offset_bottom = 55.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_y3snk")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_qjot6")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ledo5")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_1t5ed")
 title = "Option [ID: ]"
 slot/0/left_enabled = true
 slot/0/left_type = 0

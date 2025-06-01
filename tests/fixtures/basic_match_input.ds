@@ -2,12 +2,12 @@
   "title": "",
   "nodes": [
     {
-      "id": "1",
+      "id": "node:1",
       "type": "START",
       "position": "(340.0, 800.0)"
     },
     {
-      "id": "2",
+      "id": "node:2",
       "type": "MATCH",
       "position": "(1140.0, 640.0)",
       "description": "Alice's coffee status",
@@ -20,42 +20,42 @@
       ]
     },
     {
-      "id": "3",
+      "id": "node:3",
       "type": "DIALOGUE",
       "position": "(1980.0, 120.0)",
       "character": "Alice",
       "text": "Yep, coffee please."
     },
     {
-      "id": "4",
+      "id": "node:4",
       "type": "DIALOGUE",
       "position": "(1980.0, 560.0)",
       "character": "Alice",
       "text": "Seriously, I need coffee."
     },
     {
-      "id": "5",
+      "id": "node:5",
       "type": "DIALOGUE",
       "position": "(1980.0, 1020.0)",
       "character": "Alice",
       "text": "COFFEE."
     },
     {
-      "id": "6",
+      "id": "node:6",
       "type": "DIALOGUE",
       "position": "(1980.0, 1480.0)",
       "character": "Alice",
       "text": "If in doubt, coffee please."
     },
     {
-      "id": "8",
+      "id": "node:8",
       "type": "DIALOGUE",
       "position": "(2620.0, 800.0)",
       "character": "Alice",
       "text": "Let's play some snooker!"
     },
     {
-      "id": "9",
+      "id": "node:9",
       "type": "MATCH",
       "position": "(3220.0, 720.0)",
       "description": "What snooker balls are these?",
@@ -69,47 +69,47 @@
       ]
     },
     {
-      "id": "10",
+      "id": "node:10",
       "type": "DIALOGUE",
       "position": "(3880.0, 260.0)",
       "character": "Alice",
       "text": "You potted the red ball!"
     },
     {
-      "id": "11",
+      "id": "node:11",
       "type": "DIALOGUE",
       "position": "(3880.0, 1820.0)",
       "character": "Alice",
       "text": "And that's a bad miss."
     },
     {
-      "id": "12",
+      "id": "node:12",
       "type": "DIALOGUE",
       "position": "(3880.0, 1420.0)",
       "character": "Alice",
       "text": "You potted the blue ball!"
     },
     {
-      "id": "13",
+      "id": "node:13",
       "type": "DIALOGUE",
       "position": "(3880.0, 1040.0)",
       "character": "Alice",
       "text": "You potted the pink ball!"
     },
     {
-      "id": "14",
+      "id": "node:14",
       "type": "DIALOGUE",
       "position": "(3880.0, 640.0)",
       "character": "Alice",
       "text": "You potted the yellow ball!"
     },
     {
-      "id": "15",
+      "id": "node:15",
       "type": "END",
       "position": "(4580.0, 1140.0)"
     },
     {
-      "id": "16",
+      "id": "node:16",
       "type": "DIALOGUE",
       "position": "(700.0, 700.0)",
       "character": "Alice",
@@ -118,129 +118,150 @@
   ],
   "edges": [
     {
-      "from_node": "2",
+      "id": "edge:1",
+      "from_node": "node:2",
       "from_slot": 0,
-      "to_node": "3",
+      "to_node": "node:3",
       "to_slot": 0
     },
     {
-      "from_node": "2",
+      "id": "edge:2",
+      "from_node": "node:2",
       "from_slot": 1,
-      "to_node": "4",
+      "to_node": "node:4",
       "to_slot": 0
     },
     {
-      "from_node": "2",
+      "id": "edge:3",
+      "from_node": "node:2",
       "from_slot": 2,
-      "to_node": "5",
+      "to_node": "node:5",
       "to_slot": 0
     },
     {
-      "from_node": "2",
+      "id": "edge:4",
+      "from_node": "node:2",
       "from_slot": 3,
-      "to_node": "6",
+      "to_node": "node:6",
       "to_slot": 0
     },
     {
-      "from_node": "8",
+      "id": "edge:5",
+      "from_node": "node:8",
       "from_slot": 0,
-      "to_node": "9",
+      "to_node": "node:9",
       "to_slot": 0
     },
     {
-      "from_node": "4",
+      "id": "edge:6",
+      "from_node": "node:4",
       "from_slot": 0,
-      "to_node": "8",
+      "to_node": "node:8",
       "to_slot": 0
     },
     {
-      "from_node": "5",
+      "id": "edge:7",
+      "from_node": "node:5",
       "from_slot": 0,
-      "to_node": "8",
+      "to_node": "node:8",
       "to_slot": 0
     },
     {
-      "from_node": "6",
+      "id": "edge:8",
+      "from_node": "node:6",
       "from_slot": 0,
-      "to_node": "8",
+      "to_node": "node:8",
       "to_slot": 0
     },
     {
-      "from_node": "3",
+      "id": "edge:9",
+      "from_node": "node:3",
       "from_slot": 0,
-      "to_node": "8",
+      "to_node": "node:8",
       "to_slot": 0
     },
     {
-      "from_node": "9",
+      "id": "edge:10",
+      "from_node": "node:9",
       "from_slot": 0,
-      "to_node": "10",
+      "to_node": "node:10",
       "to_slot": 0
     },
     {
-      "from_node": "9",
+      "id": "edge:11",
+      "from_node": "node:9",
       "from_slot": 1,
-      "to_node": "14",
+      "to_node": "node:14",
       "to_slot": 0
     },
     {
-      "from_node": "9",
+      "id": "edge:12",
+      "from_node": "node:9",
       "from_slot": 2,
-      "to_node": "13",
+      "to_node": "node:13",
       "to_slot": 0
     },
     {
-      "from_node": "9",
+      "id": "edge:13",
+      "from_node": "node:9",
       "from_slot": 3,
-      "to_node": "12",
+      "to_node": "node:12",
       "to_slot": 0
     },
     {
-      "from_node": "9",
+      "id": "edge:14",
+      "from_node": "node:9",
       "from_slot": 4,
-      "to_node": "11",
+      "to_node": "node:11",
       "to_slot": 0
     },
     {
-      "from_node": "11",
+      "id": "edge:15",
+      "from_node": "node:11",
       "from_slot": 0,
-      "to_node": "15",
+      "to_node": "node:15",
       "to_slot": 0
     },
     {
-      "from_node": "12",
+      "id": "edge:16",
+      "from_node": "node:12",
       "from_slot": 0,
-      "to_node": "15",
+      "to_node": "node:15",
       "to_slot": 0
     },
     {
-      "from_node": "13",
+      "id": "edge:17",
+      "from_node": "node:13",
       "from_slot": 0,
-      "to_node": "15",
+      "to_node": "node:15",
       "to_slot": 0
     },
     {
-      "from_node": "14",
+      "id": "edge:18",
+      "from_node": "node:14",
       "from_slot": 0,
-      "to_node": "15",
+      "to_node": "node:15",
       "to_slot": 0
     },
     {
-      "from_node": "10",
+      "id": "edge:19",
+      "from_node": "node:10",
       "from_slot": 0,
-      "to_node": "15",
+      "to_node": "node:15",
       "to_slot": 0
     },
     {
-      "from_node": "1",
+      "id": "edge:20",
+      "from_node": "node:1",
       "from_slot": 0,
-      "to_node": "16",
+      "to_node": "node:16",
       "to_slot": 0
     },
     {
-      "from_node": "16",
+      "id": "edge:21",
+      "from_node": "node:16",
       "from_slot": 0,
-      "to_node": "2",
+      "to_node": "node:2",
       "to_slot": 0
     }
   ],
@@ -248,8 +269,9 @@
     "character": [
       {
         "id": "main",
-        "ref": "res://characters/character_store.tres"
+        "ref": "uid://ceouii84qmu0w"
       }
-    ]
+    ],
+    "fact": []
   }
 }

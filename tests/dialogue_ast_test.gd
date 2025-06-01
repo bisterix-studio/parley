@@ -18,18 +18,18 @@ class Test_process_next:
 	var test_dialogue_ast: DialogueAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
 	
 	var test_process_next_cases: Array[Dictionary] = [
-		{"ctx": {}, "current_id": "3", "expected_ids": ["4"]},
-		{"ctx": {}, "current_id": "4", "expected_ids": ["7"]},
-		{"ctx": {"bob_has_coffee": false}, "current_id": "4", "expected_ids": ["17"]},
-		{"ctx": {"bob_has_coffee": false, "alice_gave_coffee": false}, "current_id": "4", "expected_ids": ["19"]},
-		{"ctx": {}, "current_id": "7", "expected_ids": ["8", "13"]},
-		{"ctx": {}, "current_id": "8", "expected_ids": ["10"]},
-		{"ctx": {}, "current_id": "10", "expected_ids": ["11"]},
-		{"ctx": {}, "current_id": "11", "expected_ids": ["12"]},
-		{"ctx": {}, "current_id": "12", "expected_ids": ["21"]},
-		{"ctx": {}, "current_id": "13", "expected_ids": ["14"]},
-		{"ctx": {}, "current_id": "14", "expected_ids": ["15"]},
-		{"ctx": {}, "current_id": "15", "expected_ids": ["21"]},
+		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:4"]},
+		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:7"]},
+		{"ctx": {"bob_has_coffee": false}, "current_id": "node:4", "expected_ids": ["node:17"]},
+		{"ctx": {"bob_has_coffee": false, "alice_gave_coffee": false}, "current_id": "node:4", "expected_ids": ["node:19"]},
+		{"ctx": {}, "current_id": "node:7", "expected_ids": ["node:8", "node:13"]},
+		{"ctx": {}, "current_id": "node:8", "expected_ids": ["node:10"]},
+		{"ctx": {}, "current_id": "node:10", "expected_ids": ["node:11"]},
+		{"ctx": {}, "current_id": "node:11", "expected_ids": ["node:12"]},
+		{"ctx": {}, "current_id": "node:12", "expected_ids": ["node:21"]},
+		{"ctx": {}, "current_id": "node:13", "expected_ids": ["node:14"]},
+		{"ctx": {}, "current_id": "node:14", "expected_ids": ["node:15"]},
+		{"ctx": {}, "current_id": "node:15", "expected_ids": ["node:21"]},
 	]
 	
 	func test_process_next(params: Dictionary = use_parameters(test_process_next_cases)) -> void:
@@ -48,8 +48,8 @@ class Test_process_next:
 	var test_dialogue_ast_sort_cases: DialogueAst = load('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds')
 
 	var test_process_next_sort_cases: Array[Dictionary] = [
-		{"ctx": {}, "current_id": "6", "expected_ids": ["9", "10", "11"]},
-		{"ctx": {}, "current_id": "8", "expected_ids": ["14", "12", "13"]},
+		{"ctx": {}, "current_id": "node:6", "expected_ids": ["node:9", "node:10", "node:11"]},
+		{"ctx": {}, "current_id": "node:8", "expected_ids": ["node:14", "node:12", "node:13"]},
 	]
 
 	func test_process_next_sort_by_y_position(params: Dictionary = use_parameters(test_process_next_sort_cases)) -> void:
@@ -68,23 +68,23 @@ class Test_process_next:
 	var test_dialogue_ast_with_match_node: DialogueAst = load('res://tests/fixtures/basic_match_input.ds')
 	
 	var test_process_next_with_match_node_cases: Array[Dictionary] = [
-		{"ctx": {}, "current_id": "1", "expected_ids": ["16"]},
-		{"ctx": {"alice_coffee_status": "NEEDS_COFFEE"}, "current_id": "16", "expected_ids": ["3"]},
-		{"ctx": {"alice_coffee_status": "NEEDS_MORE_COFFEE"}, "current_id": "16", "expected_ids": ["4"]},
-		{"ctx": {"alice_coffee_status": "NEEDS_EVEN_MORE_COFFEE"}, "current_id": "16", "expected_ids": ["5"]},
-		{"ctx": {"alice_coffee_status": "INVALID"}, "current_id": "16", "expected_ids": ["6"]},
-		{"ctx": {}, "current_id": "16", "expected_ids": ["6"]},
-		{"ctx": {}, "current_id": "3", "expected_ids": ["8"]},
-		{"ctx": {}, "current_id": "4", "expected_ids": ["8"]},
-		{"ctx": {}, "current_id": "5", "expected_ids": ["8"]},
-		{"ctx": {}, "current_id": "6", "expected_ids": ["8"]},
-		{"ctx": {"ball": 1}, "current_id": "8", "expected_ids": ["10"]},
-		{"ctx": {"ball": 2}, "current_id": "8", "expected_ids": ["14"]},
-		{"ctx": {"ball": 6}, "current_id": "8", "expected_ids": ["13"]},
-		{"ctx": {"ball": 5}, "current_id": "8", "expected_ids": ["12"]},
-		{"ctx": {"ball": 7}, "current_id": "8", "expected_ids": ["11"]},
-		{"ctx": {}, "current_id": "8", "expected_ids": ["11"]},
-		{"ctx": {}, "current_id": "11", "expected_ids": ["15"]},
+		{"ctx": {}, "current_id": "node:1", "expected_ids": ["node:16"]},
+		{"ctx": {"alice_coffee_status": "NEEDS_COFFEE"}, "current_id": "node:16", "expected_ids": ["node:3"]},
+		{"ctx": {"alice_coffee_status": "NEEDS_MORE_COFFEE"}, "current_id": "node:16", "expected_ids": ["node:4"]},
+		{"ctx": {"alice_coffee_status": "NEEDS_EVEN_MORE_COFFEE"}, "current_id": "node:16", "expected_ids": ["node:5"]},
+		{"ctx": {"alice_coffee_status": "INVALID"}, "current_id": "node:16", "expected_ids": ["node:6"]},
+		{"ctx": {}, "current_id": "node:16", "expected_ids": ["node:6"]},
+		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:8"]},
+		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:8"]},
+		{"ctx": {}, "current_id": "node:5", "expected_ids": ["node:8"]},
+		{"ctx": {}, "current_id": "node:6", "expected_ids": ["node:8"]},
+		{"ctx": {"ball": 1}, "current_id": "node:8", "expected_ids": ["node:10"]},
+		{"ctx": {"ball": 2}, "current_id": "node:8", "expected_ids": ["node:14"]},
+		{"ctx": {"ball": 6}, "current_id": "node:8", "expected_ids": ["node:13"]},
+		{"ctx": {"ball": 5}, "current_id": "node:8", "expected_ids": ["node:12"]},
+		{"ctx": {"ball": 7}, "current_id": "node:8", "expected_ids": ["node:11"]},
+		{"ctx": {}, "current_id": "node:8", "expected_ids": ["node:11"]},
+		{"ctx": {}, "current_id": "node:11", "expected_ids": ["node:15"]},
 	]
 	
 	func test_process_next_with_match_node(params: Dictionary = use_parameters(test_process_next_with_match_node_cases)) -> void:
@@ -110,25 +110,25 @@ class Test_add_edge:
 	var test_add_edge_cases: Array[Dictionary] = [
 		{
 			"current_edges": [],
-			"edge": {"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			"edge": {"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
 			"expected": {
 				"added": true,
 				"emitted": true,
 				"edges": [
-					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 				]
 			},
 		},
 		{
 			"current_edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
-			"edge": {"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			"edge": {"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
 			"expected": {
 				"added": false,
 				"emitted": false,
 				"edges": [
-					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 				]
 			},
 		},
@@ -150,7 +150,7 @@ class Test_add_edge:
 		watch_signals(dialogue_ast)
 		
 		# Act
-		var result: EdgeAst = dialogue_ast.add_edge(from_node, from_slot, to_node, to_slot)
+		var result: EdgeAst = dialogue_ast.add_new_edge(from_node, from_slot, to_node, to_slot)
 
 		# Assert
 		if expected_added:
@@ -167,56 +167,56 @@ class Test_add_edges:
 	var test_add_edges_cases: Array[Dictionary] = [
 		{
 			"current_edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"edges": [
-				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"expected": {
 				"added": 2,
 				"emitted": true,
 				"edges": [
-					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-					{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
-					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 				]
 			},
 		},
 		{
 			"current_edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
 			],
 			"edges": [
-				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"expected": {
 				"added": 1,
 				"emitted": true,
 				"edges": [
-					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-					{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
-					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 				]
 			},
 		},
 		{
 			"current_edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
 			],
 			"edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"expected": {
 				"added": 0,
 				"emitted": false,
 				"edges": [
-					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-					{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 				]
 			},
 		},
@@ -232,7 +232,8 @@ class Test_add_edges:
 			var from_slot: int = edge.get('from_slot')
 			var to_node: String = edge.get('to_node')
 			var to_slot: int = edge.get('to_slot')
-			edges.append(EdgeAst.new(from_node, from_slot, to_node, to_slot))
+			# The edge ID doesn't matter here as it is handled internally
+			edges.append(EdgeAst.new("", from_node, from_slot, to_node, to_slot))
 		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
 		var expected: Dictionary = params.get('expected', {})
 		var expected_added: int = expected.get('added')
@@ -256,9 +257,9 @@ class Test_remove_edge:
 	var test_remove_edge_cases: Array[Dictionary] = [
 		{
 			"current_edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
-			"edge": {"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			"edge": {"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
 			"expected": {
 				"removed": 1,
 				"emitted": true,
@@ -267,14 +268,14 @@ class Test_remove_edge:
 		},
 		{
 			"current_edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
-			"edge": {"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
+			"edge": {"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
 			"expected": {
 				"removed": 0,
 				"emitted": false,
 				"edges": [
-					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 				]
 			},
 		},
@@ -310,53 +311,53 @@ class Test_remove_edges:
 	var test_remove_edges_cases: Array[Dictionary] = [
 		{
 			"current_edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"expected": {
 				"removed": 2,
 				"emitted": true,
 				"edges": [
-					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 				]
 			},
 		},
 		{
 			"current_edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"expected": {
 				"removed": 1,
 				"emitted": true,
 				"edges": [
-					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 				]
 			},
 		},
 		{
 			"current_edges": [
-				{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-				{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+				{"from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"edges": [
-				{"from_node": "2", "from_slot": 0, "to_node": "2", "to_slot": 1}
+				{"from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 			],
 			"expected": {
 				"removed": 0,
 				"emitted": false,
 				"edges": [
-					{"from_node": "1", "from_slot": 0, "to_node": "2", "to_slot": 1},
-					{"from_node": "3", "from_slot": 0, "to_node": "2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
+					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
 				]
 			},
 		},
@@ -372,7 +373,8 @@ class Test_remove_edges:
 			var from_slot: int = edge.get('from_slot')
 			var to_node: String = edge.get('to_node')
 			var to_slot: int = edge.get('to_slot')
-			edges.append(EdgeAst.new(from_node, from_slot, to_node, to_slot))
+			# # The edge ID doesn't matter here as it is handled internally
+			edges.append(EdgeAst.new("", from_node, from_slot, to_node, to_slot))
 		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
 		var expected: Dictionary = params.get('expected', {})
 		var expected_removed: int = expected.get('removed')

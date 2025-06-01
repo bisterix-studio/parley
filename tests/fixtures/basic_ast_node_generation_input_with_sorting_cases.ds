@@ -2,82 +2,82 @@
   "title": "",
   "nodes": [
     {
-      "id": "1",
+      "id": "node:1",
       "type": "START",
       "position": "(920.0, 1080.0)"
     },
     {
-      "id": "2",
+      "id": "node:2",
       "type": "DIALOGUE",
       "position": "(1240.0, 980.0)",
       "character": "Bob",
       "text": "Test cases"
     },
     {
-      "id": "3",
+      "id": "node:3",
       "type": "DIALOGUE_OPTION",
       "position": "(1820.0, 720.0)",
       "character": "Bob",
       "text": "Fixture 1"
     },
     {
-      "id": "4",
+      "id": "node:4",
       "type": "DIALOGUE_OPTION",
       "position": "(1840.0, 1180.0)",
       "character": "Bob",
       "text": "Fixture 2"
     },
     {
-      "id": "6",
+      "id": "node:6",
       "type": "DIALOGUE",
       "position": "(2440.0, 640.0)",
       "character": "Bob",
       "text": "Ordered already"
     },
     {
-      "id": "8",
+      "id": "node:8",
       "type": "DIALOGUE",
       "position": "(2440.0, 1260.0)",
       "character": "Bob",
       "text": "Created in a different order"
     },
     {
-      "id": "9",
+      "id": "node:9",
       "type": "DIALOGUE_OPTION",
       "position": "(3120.0, 140.0)",
       "character": "Bob",
       "text": "Top"
     },
     {
-      "id": "10",
+      "id": "node:10",
       "type": "DIALOGUE_OPTION",
       "position": "(3120.0, 420.0)",
       "character": "Bob",
       "text": "Middle"
     },
     {
-      "id": "11",
+      "id": "node:11",
       "type": "DIALOGUE_OPTION",
       "position": "(3120.0, 720.0)",
       "character": "Bob",
       "text": "Bottom"
     },
     {
-      "id": "12",
+      "id": "node:12",
       "type": "DIALOGUE_OPTION",
       "position": "(3140.0, 1460.0)",
       "character": "Bob",
       "text": "Middle"
     },
     {
-      "id": "13",
+      "id": "node:13",
       "type": "DIALOGUE_OPTION",
       "position": "(3580.0, 1480.0)",
       "character": "Bob",
       "text": "Bottom"
     },
     {
-      "id": "14",
+      "id": "node:14",
       "type": "DIALOGUE_OPTION",
       "position": "(3120.0, 1140.0)",
       "character": "Bob",
@@ -86,69 +86,80 @@
   ],
   "edges": [
     {
-      "from_node": "1",
+      "id": "edge:1",
+      "from_node": "node:1",
       "from_slot": 0,
-      "to_node": "2",
+      "to_node": "node:2",
       "to_slot": 0
     },
     {
-      "from_node": "2",
+      "id": "edge:2",
+      "from_node": "node:2",
       "from_slot": 0,
-      "to_node": "3",
+      "to_node": "node:3",
       "to_slot": 0
     },
     {
-      "from_node": "2",
+      "id": "edge:3",
+      "from_node": "node:2",
       "from_slot": 0,
-      "to_node": "4",
+      "to_node": "node:4",
       "to_slot": 0
     },
     {
-      "from_node": "4",
+      "id": "edge:4",
+      "from_node": "node:4",
       "from_slot": 0,
-      "to_node": "8",
+      "to_node": "node:8",
       "to_slot": 0
     },
     {
-      "from_node": "3",
+      "id": "edge:5",
+      "from_node": "node:3",
       "from_slot": 0,
-      "to_node": "6",
+      "to_node": "node:6",
       "to_slot": 0
     },
     {
-      "from_node": "6",
+      "id": "edge:6",
+      "from_node": "node:6",
       "from_slot": 0,
-      "to_node": "9",
+      "to_node": "node:9",
       "to_slot": 0
     },
     {
-      "from_node": "6",
+      "id": "edge:7",
+      "from_node": "node:6",
       "from_slot": 0,
-      "to_node": "10",
+      "to_node": "node:10",
       "to_slot": 0
     },
     {
-      "from_node": "6",
+      "id": "edge:8",
+      "from_node": "node:6",
       "from_slot": 0,
-      "to_node": "11",
+      "to_node": "node:11",
       "to_slot": 0
     },
     {
-      "from_node": "8",
+      "id": "edge:9",
+      "from_node": "node:8",
       "from_slot": 0,
-      "to_node": "14",
+      "to_node": "node:14",
       "to_slot": 0
     },
     {
-      "from_node": "8",
+      "id": "edge:10",
+      "from_node": "node:8",
       "from_slot": 0,
-      "to_node": "12",
+      "to_node": "node:12",
       "to_slot": 0
     },
     {
-      "from_node": "8",
+      "id": "edge:11",
+      "from_node": "node:8",
       "from_slot": 0,
-      "to_node": "13",
+      "to_node": "node:13",
       "to_slot": 0
     }
   ],
@@ -156,8 +167,9 @@
     "character": [
       {
         "id": "main",
-        "ref": "res://characters/character_store.tres"
+        "ref": "uid://ceouii84qmu0w"
       }
-    ]
+    ],
+    "fact": []
   }
 }
