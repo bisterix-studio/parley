@@ -204,7 +204,10 @@ func set_edge_colour(edge: EdgeAst) -> void:
 		return
 	var from_node: ParleyGraphNode = nodes[from_node_index]
 	var to_node: ParleyGraphNode = nodes[to_node_index]
-	from_node.deselect_from_slot(edge.from_slot)
+	if edge.should_override_colour:
+		from_node.deselect_from_slot(edge.from_slot, edge.colour_override)
+	else:
+		from_node.deselect_from_slot(edge.from_slot)
 	var from_node_colour: Color = from_node.get_from_slot_colour(edge.from_slot)
 	to_node.unselect_to_slot(edge.to_slot, from_node_colour)
 #endregion

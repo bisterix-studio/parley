@@ -89,7 +89,7 @@ func add_ast_node(node: Dictionary) -> void:
 		Type.END:
 			ast_node = EndNodeAst.new(id, position)
 		Type.GROUP:
-			var colour: Color = _parse_group_colour_from_raw_node_ast(node)
+			var colour: Color = _parse_colour(node)
 			var size: Vector2 = _parse_group_size_from_raw_node_ast(node)
 			var name: String = node.get('name', '')
 			var node_ids: Array = node.get('node_ids', [])
@@ -156,7 +156,10 @@ func add_ast_edge(edge: Dictionary) -> void:
 	var from_slot: int = edge.get('from_slot')
 	var to_node: String = edge.get('to_node')
 	var to_slot: int = edge.get('to_slot')
-	var edge_ast: EdgeAst = EdgeAst.new(edge_id, from_node, from_slot, to_node, to_slot)
+	var should_override_colour: bool = edge.get('should_override_colour')
+	var colour_override: Color = _parse_colour(edge, 'colour_override', EdgeAst.default_colour_override)
+	var edge_ast: EdgeAst = EdgeAst.new(edge_id, from_node, from_slot, to_node, to_slot, should_override_colour, colour_override)
+
 	edges.append(edge_ast)
 
 
@@ -589,11 +592,10 @@ func _parse_position_from_raw_node_ast(node: Dictionary) -> Vector2:
 	return Vector2(x, y)
 
 
-func _parse_group_colour_from_raw_node_ast(node: Dictionary) -> Color:
-	var default: Color = Color(0, 0, 0, 0)
-	var raw_colour: Variant = node.get('colour', str(default))
+func _parse_colour(datum: Dictionary, key: String = "colour", default: Color = Color(0, 0, 0, 0)) -> Color:
+	var raw_colour: Variant = datum.get(key, str(default))
 	if not is_instance_of(raw_colour, TYPE_STRING):
-		ParleyUtils.log.warn("Unable to parse colour of node: %s. Defaulting to %s" % [node.get('id', 'unknown'), str(default)])
+		ParleyUtils.log.warn("Unable to parse colour: %s. Defaulting to %s" % [datum.get('id', 'unknown'), str(default)])
 		return default
 	var colour: String = raw_colour
 	colour = colour.erase(0, 1)

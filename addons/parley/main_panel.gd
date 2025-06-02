@@ -527,6 +527,11 @@ func defocus_edge(edge: EdgeAst) -> void:
 		graph_view.set_edge_colour(edge)
 
 
+func update_edge(edge: EdgeAst) -> void:
+	if graph_view:
+		graph_view.set_edge_colour(edge)
+
+
 # TODO: add to docs
 func delete_node_by_id(id: String) -> void:
 	if not selected_node_id or not is_instance_of(selected_node_id, TYPE_STRING):
