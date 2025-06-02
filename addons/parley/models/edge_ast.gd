@@ -25,6 +25,17 @@ class_name EdgeAst extends Resource
 @export var to_slot: int: set = _set_to_slot
 
 
+## The indicator for whether the Edge colour should be overridden.
+@export var should_override_colour: bool = false: set = _set_should_override_colour
+
+
+## The colour override of the Edge.
+@export var colour_override: Color = default_colour_override: set = _set_colour_override
+
+
+const default_colour_override: Color = Color(0.4118, 0.4118, 0.4118, 1.0)
+
+
 ## Emitted when an Edge is changed. Details of the changed edge are included in the signal parameters.
 signal edge_changed(edge: EdgeAst)
 
@@ -37,12 +48,22 @@ const id_prefix: String = "edge:"
 
 
 #region LIFECYCLE
-func _init(_id: String = "", _from_node: String = "", _from_slot: int = 0, _to_node: String = "", _to_slot: int = 0) -> void:
+func _init(
+	_id: String = "",
+	_from_node: String = "",
+	_from_slot: int = 0,
+	_to_node: String = "",
+	_to_slot: int = 0,
+	_should_override_colour: bool = false,
+	_colour_override: Color = default_colour_override,
+) -> void:
 	id = _id
 	from_node = _from_node
 	from_slot = _from_slot
 	to_node = _to_node
 	to_slot = _to_slot
+	should_override_colour = _should_override_colour
+	colour_override = _colour_override
 	ready = true
 #endregion
 
@@ -76,6 +97,20 @@ func _set_to_slot(new_to_slot: int) -> void:
 	to_slot = new_to_slot
 	if ready:
 		edge_changed.emit(self)
+
+
+func _set_should_override_colour(new_should_override_colour: bool) -> void:
+	if should_override_colour != new_should_override_colour:
+		should_override_colour = new_should_override_colour
+		if ready:
+			edge_changed.emit(self)
+
+
+func _set_colour_override(new_colour_override: Color) -> void:
+	if str(new_colour_override) != str(colour_override):
+		colour_override = new_colour_override
+		if ready:
+			edge_changed.emit(self)
 #endregion
 
 
@@ -88,6 +123,8 @@ func to_dict() -> Dictionary:
 		'from_slot': from_slot,
 		'to_node': to_node,
 		'to_slot': to_slot,
+		'should_override_colour': should_override_colour,
+		'colour_override': colour_override,
 	}
 
 func _to_string() -> String:

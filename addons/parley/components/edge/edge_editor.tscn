@@ -3,16 +3,11 @@
 [ext_resource type="Script" uid="uid://y5sl824eliam" path="res://addons/parley/components/edge/edge_editor.gd" id="1_dn5bp"]
 [ext_resource type="Texture2D" uid="uid://dres8tr2nd82o" path="res://addons/parley/assets/Remove.svg" id="2_s762g"]
 
-[node name="EdgeEditor" type="VBoxContainer" node_paths=PackedStringArray("from_node_value", "from_slot_value", "to_node_value", "to_slot_value", "delete_edge_button")]
+[node name="EdgeEditor" type="VBoxContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3
 script = ExtResource("1_dn5bp")
-from_node_value = NodePath("EdgeDetailsMargin/EdgeTableContainer/FromNodeValue")
-from_slot_value = NodePath("EdgeDetailsMargin/EdgeTableContainer/FromSlotValue")
-to_node_value = NodePath("EdgeDetailsMargin/EdgeTableContainer/ToNodeValue")
-to_slot_value = NodePath("EdgeDetailsMargin/EdgeTableContainer/ToSlotValue")
-delete_edge_button = NodePath("DeleteEdgeButtonContainer/DeleteEdgeButton")
 
 [node name="EdgeSeparator" type="HSeparator" parent="."]
 layout_mode = 2
@@ -35,6 +30,7 @@ layout_mode = 2
 text = "From Node:"
 
 [node name="FromNodeValue" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="FromSlotLabel" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
@@ -42,6 +38,7 @@ layout_mode = 2
 text = "From Slot:"
 
 [node name="FromSlotValue" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "0"
 
@@ -50,6 +47,7 @@ layout_mode = 2
 text = "To Node:"
 
 [node name="ToNodeValue" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="ToSlotLabel" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
@@ -57,13 +55,15 @@ layout_mode = 2
 text = "To Slot:"
 
 [node name="ToSlotValue" type="Label" parent="EdgeDetailsMargin/EdgeTableContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "0"
 
 [node name="ColorOverrideContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="CheckBox" type="CheckBox" parent="ColorOverrideContainer"]
+[node name="ColorOverrideCheckBox" type="CheckBox" parent="ColorOverrideContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="ColorOverrideLabel" type="Label" parent="ColorOverrideContainer"]
@@ -71,6 +71,7 @@ layout_mode = 2
 text = "Override colour:"
 
 [node name="ColorOverrideButton" type="ColorPickerButton" parent="ColorOverrideContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Colour override:"
 
@@ -81,6 +82,7 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="DeleteEdgeButton" type="Button" parent="DeleteEdgeButtonContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Delete the selected edge."
@@ -89,6 +91,8 @@ icon = ExtResource("2_s762g")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="toggled" from="ColorOverrideContainer/ColorOverrideCheckBox" to="." method="_on_check_box_toggled"]
+[connection signal="color_changed" from="ColorOverrideContainer/ColorOverrideButton" to="." method="_on_color_override_button_color_changed"]
 [connection signal="mouse_entered" from="DeleteEdgeButtonContainer/DeleteEdgeButton" to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="DeleteEdgeButtonContainer/DeleteEdgeButton" to="." method="_on_mouse_exited"]
 [connection signal="pressed" from="DeleteEdgeButtonContainer/DeleteEdgeButton" to="." method="_on_delete_edge_button_pressed"]

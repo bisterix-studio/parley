@@ -10,6 +10,7 @@ const EdgeEditorScene: PackedScene = preload('../components/edge/edge_editor.tsc
 
 
 signal edge_deleted(edge: EdgeAst)
+signal edge_changed(edge: EdgeAst)
 signal mouse_entered_edge(edge: EdgeAst)
 signal mouse_exited_edge(edge: EdgeAst)
 
@@ -43,6 +44,7 @@ func set_edges(all_edges: Array[EdgeAst], p_node_id: String) -> void:
 		var edge_editor: EdgeEditor = EdgeEditorScene.instantiate()
 		edge_editor.edge = edge
 		ParleyUtils.signals.safe_connect(edge_editor.edge_deleted, _on_edge_deleted)
+		ParleyUtils.signals.safe_connect(edge_editor.edge_changed, _on_edge_changed)
 		ParleyUtils.signals.safe_connect(edge_editor.mouse_entered_edge, _build_on_mouse_entered_edge(edge))
 		ParleyUtils.signals.safe_connect(edge_editor.mouse_exited_edge, _build_on_mouse_exited_edge(edge))
 		if edges_container:
@@ -61,6 +63,10 @@ func _remove_edge(r_edge: EdgeAst) -> void:
 func _on_edge_deleted(edge: EdgeAst) -> void:
 	_remove_edge(edge)
 	edge_deleted.emit(edge)
+
+
+func _on_edge_changed(new_edge: EdgeAst) -> void:
+	edge_changed.emit(new_edge)
 
 
 func _build_on_mouse_entered_edge(edge: EdgeAst) -> Callable:

@@ -4,20 +4,25 @@ class_name EdgeEditor extends VBoxContainer
 
 @export var edge: EdgeAst: set = _set_edge
 
-@export var from_node_value: Label
-@export var from_slot_value: Label
-@export var to_node_value: Label
-@export var to_slot_value: Label
-@export var delete_edge_button: Button
+@onready var from_node_value: Label = %FromNodeValue
+@onready var from_slot_value: Label = %FromSlotValue
+@onready var to_node_value: Label = %ToNodeValue
+@onready var to_slot_value: Label = %ToSlotValue
+@onready var delete_edge_button: Button = %DeleteEdgeButton
+@onready var colour_override_button: ColorPickerButton = %ColorOverrideButton
+@onready var colour_override_checkbox: CheckBox = %ColorOverrideCheckBox
 
 
 signal edge_deleted(edge: EdgeAst)
+signal edge_changed(edge: EdgeAst)
 signal mouse_entered_edge(edge: EdgeAst)
 signal mouse_exited_edge(edge: EdgeAst)
 
 func _ready() -> void:
 	_set_edge(edge)
 	apply_theme()
+	_render_colour_override_checkbox()
+	_render_colour_override_button()
 
 
 #region SETTERS
@@ -51,7 +56,20 @@ func _render(from_node: String, from_slot: int, to_node: String, to_slot: int) -
 ## Applies the edge editor theme
 ## Example: editor.apply_theme()
 func apply_theme() -> void:
-	delete_edge_button.tooltip_text = "Delete the selected edge."
+	if delete_edge_button:
+		delete_edge_button.tooltip_text = "Delete the selected edge."
+
+
+func _render_colour_override_checkbox() -> void:
+	if colour_override_checkbox and edge:
+		colour_override_checkbox.button_pressed = edge.should_override_colour
+
+
+func _render_colour_override_button() -> void:
+	if colour_override_button and edge:
+		colour_override_button.color = edge.colour_override
+		if colour_override_checkbox:
+			colour_override_button.disabled = not colour_override_checkbox.button_pressed
 #endregion
 
 
@@ -70,4 +88,14 @@ func _on_mouse_exited() -> void:
 
 func _on_edge_changed(new_edge: EdgeAst) -> void:
 	edge = new_edge
+	edge_changed.emit(new_edge)
+
+
+func _on_check_box_toggled(should_override_colour: bool) -> void:
+	edge.should_override_colour = should_override_colour
+	_render_colour_override_button()
+
+
+func _on_color_override_button_color_changed(new_colour_override: Color) -> void:
+	edge.colour_override = new_colour_override
 #endregion

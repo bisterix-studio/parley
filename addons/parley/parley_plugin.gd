@@ -49,6 +49,7 @@ func _enter_tree() -> void:
 		# Edges Editor Dock
 		edges_editor = ParleyEdges.instantiate()
 		ParleyUtils.signals.safe_connect(edges_editor.edge_deleted, _on_edges_editor_edge_deleted)
+		ParleyUtils.signals.safe_connect(edges_editor.edge_changed, _on_edges_editor_edge_changed)
 		ParleyUtils.signals.safe_connect(edges_editor.mouse_entered_edge, _on_edges_editor_mouse_entered_edge)
 		ParleyUtils.signals.safe_connect(edges_editor.mouse_exited_edge, _on_edges_editor_mouse_exited_edge)
 		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_BL, edges_editor)
@@ -157,6 +158,11 @@ func _on_edges_editor_mouse_exited_edge(edge: EdgeAst) -> void:
 func _on_edges_editor_edge_deleted(edge: EdgeAst) -> void:
 	if main_panel_instance:
 		main_panel_instance.remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot)
+
+
+func _on_edges_editor_edge_changed(edge: EdgeAst) -> void:
+	if main_panel_instance:
+		main_panel_instance.update_edge(edge)
 
 
 func _on_main_panel_node_selected(node_ast: NodeAst) -> void:
