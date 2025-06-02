@@ -156,7 +156,7 @@ func add_ast_edge(edge: Dictionary) -> void:
 	var from_slot: int = edge.get('from_slot')
 	var to_node: String = edge.get('to_node')
 	var to_slot: int = edge.get('to_slot')
-	var should_override_colour: bool = edge.get('should_override_colour')
+	var should_override_colour: bool = edge.get('should_override_colour', false)
 	var colour_override: Color = _parse_colour(edge, 'colour_override', EdgeAst.default_colour_override)
 	var edge_ast: EdgeAst = EdgeAst.new(edge_id, from_node, from_slot, to_node, to_slot, should_override_colour, colour_override)
 
