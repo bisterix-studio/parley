@@ -7,6 +7,9 @@ class_name ConditionNode extends ParleyGraphNode
 @onready var description_container: Label = %ConditionDescription
 
 
+const null_colour: Color = Color(0, 0, 0, 0)
+
+
 #############
 # Lifecycle #
 #############
@@ -43,20 +46,20 @@ func select_from_slot(from_slot: int, _colour: Color = Color.CHARTREUSE) -> void
 
 
 ## Deselect from slot by returning back to original colour
-func deselect_from_slot(from_slot: int, _colour: Color = Color.CHARTREUSE) -> void:
+func deselect_from_slot(from_slot: int, colour: Color = null_colour) -> void:
 	var slot: int
-	var colour: Color
+	var slot_colour: Color
 	match from_slot:
 		0:
 			slot = 1
-			colour = Color.CHARTREUSE
+			slot_colour = colour if colour != null_colour else Color.CHARTREUSE
 		1:
 			slot = 2
-			colour = Color.FIREBRICK
+			slot_colour = colour if colour != null_colour else Color.FIREBRICK
 		_:
 			ParleyUtils.log.info("Unknown from slot: %s" % [from_slot])
 			return
-	set_slot_color_right(slot, colour)
+	set_slot_color_right(slot, slot_colour)
 
 
 ## Get the Node from slot colour.
