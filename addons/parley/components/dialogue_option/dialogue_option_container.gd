@@ -3,8 +3,8 @@
 class_name DialogueOptionContainer extends PanelContainer
 
 
-var text: String = "[center]Unknown[/center]":
-	set(new_text): text = "[center]%s[/center]" % [new_text]
+var text: String = "[left]Unknown[/left]":
+	set(new_text): text = "[left]%s[/left]" % [new_text]
 	get: return text
 
 

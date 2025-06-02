@@ -34,14 +34,16 @@ var dialogue_options: Array = []:
 
 		# Add new items
 		if dialogue_options.size() > 0:
+			var item_number: int = 1
 			for dialogue_option in dialogue_options:
 				#var item = Button.new()
 				var item = dialogue_option_container.instantiate()
 				item.name = "DialogueOption%d" % dialogue_options_container.get_child_count()
 				#item.dialogue_option_node = dialogue_option
-				item.text = dialogue_option.text
+				item.text = "%s. %s" % [item_number, dialogue_option.text]
 				item.set_meta("ast", dialogue_option)
 				dialogue_options_container.add_child(item)
+				item_number += 1
 
 			_configure_focus()
 
