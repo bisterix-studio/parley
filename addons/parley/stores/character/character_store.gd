@@ -26,7 +26,7 @@ func _set_characters(new_characters: Array[Character]) -> void:
 
 #region CRUD
 func add_character(name: String = "") -> Character:
-	var character: Character = Character.new(ParleyUtils.generate.id(characters, id, name), name)
+	var character: Character = Character.new(name.to_snake_case().to_lower(), name)
 	characters.append(character)
 	character_added.emit(character)
 	emit_changed()
@@ -101,5 +101,5 @@ static func resolve_character_ref(character_ref: String) -> Character:
 
 #region HELPERS
 func _to_string() -> String:
-	return "CharacterStore<%s>" % [str(to_dict())]
+	return "CharacterStore<id:%s, characters:%d>" % [id, characters.size()]
 #endregion

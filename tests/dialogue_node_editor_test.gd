@@ -12,8 +12,9 @@ class Test_dialogue_node_editor:
 	
 	func before_each() -> void:
 		dialogue_node_editor = DialogueNodeEditorScene.instantiate()
-		character_store = CharacterStore.new()
+		character_store = load('res://tests/fixtures/characters/base_character_store.tres')
 		character_store.id = "test"
+		character_store.characters = []
 		var _result: Character = character_store.add_character("Default Character")
 		dialogue_node_editor.character_store = character_store
 		add_child_autofree(dialogue_node_editor)
@@ -29,8 +30,8 @@ class Test_dialogue_node_editor:
 			p_dialogue_node_editor.id = id
 		if _character_name and _character_name is String:
 			var character_name: String = _character_name
-			var added_character: Character = character_store.add_character(character_name)
-			p_dialogue_node_editor.character = added_character.id
+			var _added_character: Character = character_store.add_character(character_name)
+			p_dialogue_node_editor.character = character_store.get_ref_by_index(character_store.characters.size() - 1)
 		if dialogue:
 			p_dialogue_node_editor.dialogue = dialogue
 
@@ -56,7 +57,7 @@ class Test_dialogue_node_editor:
 		},
 		{
 			"input": {"id": null, "character_name": "Test Character", "dialogue": null},
-			"expected": {"id": "", "character_id": "test:test_character", "selected_character": 1, "dialogue": ""},
+			"expected": {"id": "", "character_id": "%s::test_character" % ParleyUtils.resource.get_uid(character_store), "selected_character": 1, "dialogue": ""},
 		},
 		{
 			"input": {"id": null, "character_name": null, "dialogue": "Some dialogue"},
@@ -64,7 +65,7 @@ class Test_dialogue_node_editor:
 		},
 		{
 			"input": {"id": "1", "character_name": "Test Character", "dialogue": "Some dialogue"},
-			"expected": {"id": "1", "character_id": "test:test_character", "selected_character": 1, "dialogue": "Some dialogue"},
+			"expected": {"id": "1", "character_id": "%s::test_character" % ParleyUtils.resource.get_uid(character_store), "selected_character": 1, "dialogue": "Some dialogue"},
 		},
 	])) -> void:
 		# Arrange
@@ -98,7 +99,7 @@ class Test_dialogue_node_editor:
 		},
 		{
 			"input": {"id": null, "character_name": "Test Character", "dialogue": null},
-			"expected": {"id": "", "character_id": "test:test_character", "selected_character": 1, "dialogue": ""},
+			"expected": {"id": "", "character_id": "%s:test_character" % ParleyUtils.resource.get_uid(character_store), "selected_character": 1, "dialogue": ""},
 		},
 		{
 			"input": {"id": null, "character_name": null, "dialogue": "Some dialogue"},
@@ -106,7 +107,7 @@ class Test_dialogue_node_editor:
 		},
 		{
 			"input": {"id": "1", "character_name": "Test Character", "dialogue": "Some dialogue"},
-			"expected": {"id": "1", "character_id": "test:test_character", "selected_character": 1, "dialogue": "Some dialogue"},
+			"expected": {"id": "1", "character_id": "%s:test_character" % ParleyUtils.resource.get_uid(character_store), "selected_character": 1, "dialogue": "Some dialogue"},
 		},
 	])) -> void:
 		# Arrange
@@ -132,7 +133,7 @@ class Test_dialogue_node_editor:
 		},
 		{
 			"input": {"id": "1", "selected_character": 0},
-			"expected": {"id": "1", "character_id": "test:default_character", "selected_character": 0, "dialogue": ""},
+			"expected": {"id": "1", "character_id": "%s::default_character" % ParleyUtils.resource.get_uid(character_store), "selected_character": 0, "dialogue": ""},
 		},
 	])) -> void:
 		# Arrange

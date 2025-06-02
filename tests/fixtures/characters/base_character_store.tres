@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CharacterStore" load_steps=3 format=3 uid="uid://bs4dwyaicpw8w"]
+
+[ext_resource type="Script" uid="uid://cr1va2oab5tn5" path="res://addons/parley/models/character.gd" id="1_j1vlk"]
+[ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="2_hu852"]
+
+[resource]
+script = ExtResource("2_hu852")
+characters = Array[ExtResource("1_j1vlk")]([])
+id = ""
+metadata/_custom_type_script = "uid://cbi8x2vk7bku1"
