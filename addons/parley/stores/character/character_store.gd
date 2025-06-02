@@ -61,7 +61,8 @@ func get_ref_by_index(index: int) -> String:
 func get_character_index_by_ref(character_ref: String) -> int:
 	var parts: PackedStringArray = character_ref.split('::')
 	if parts.size() != 2 or not ResourceLoader.exists(parts[0]):
-		ParleyUtils.log.warn("Unable to find Character index, defaulting to -1 (ref:%s)" % character_ref)
+		if character_ref != "":
+			ParleyUtils.log.warn("Unable to find Character index, defaulting to -1 (ref:%s)" % character_ref)
 		return -1
 	var idx: int = 0
 	for character: Character in characters:
@@ -74,7 +75,8 @@ func get_character_index_by_ref(character_ref: String) -> int:
 func get_character_by_ref(character_ref: String) -> Character:
 	var parts: PackedStringArray = character_ref.split('::')
 	if parts.size() == 0 or not ResourceLoader.exists(parts[0]):
-		ParleyUtils.log.warn("get_character_by_ref Unable to find Character, defaulting to Unknown (ref:%s)" % character_ref)
+		if character_ref != "":
+			ParleyUtils.log.warn("Unable to find Character, defaulting to Unknown (ref:%s)" % character_ref)
 		return Character.new("", "Unknown")
 	if parts.size() > 1:
 		return _get_character_by_id(parts[1])

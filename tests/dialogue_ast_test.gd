@@ -115,7 +115,7 @@ class Test_add_edge:
 				"added": true,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -128,7 +128,7 @@ class Test_add_edge:
 				"added": false,
 				"emitted": false,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -177,9 +177,9 @@ class Test_add_edges:
 				"added": 2,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
-					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
-					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
+					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
+					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -196,9 +196,9 @@ class Test_add_edges:
 				"added": 1,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
-					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
-					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
+					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
+					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -215,8 +215,8 @@ class Test_add_edges:
 				"added": 0,
 				"emitted": false,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
-					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
+					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -275,7 +275,7 @@ class Test_remove_edge:
 				"removed": 0,
 				"emitted": false,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -323,7 +323,7 @@ class Test_remove_edges:
 				"removed": 2,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
+					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -340,7 +340,7 @@ class Test_remove_edges:
 				"removed": 1,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
+					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -356,8 +356,8 @@ class Test_remove_edges:
 				"removed": 0,
 				"emitted": false,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1},
-					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
+					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
 				]
 			},
 		},
