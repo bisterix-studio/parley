@@ -21,3 +21,6 @@ Thumbs.db
 
 # Data
 *.ref-data.txt
+
+# ASDF
+.tool-versions

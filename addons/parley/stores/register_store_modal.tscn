@@ -1,3 +1,5 @@
+; Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 [gd_scene load_steps=5 format=3 uid="uid://msdptt8ygebm"]
 
 [ext_resource type="Script" uid="uid://85wkenyryluy" path="res://addons/parley/stores/register_store_modal.gd" id="1_sngxt"]

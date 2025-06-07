@@ -23,5 +23,6 @@
     "*.djson": "json",
     "*.ds": "json"
   },
-  "editor.renderWhitespace": "all"
+  "editor.renderWhitespace": "all",
+  "deno.enable": true
 }

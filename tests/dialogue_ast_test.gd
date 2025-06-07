@@ -1,3 +1,5 @@
+# Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 extends GutTest
 
 class Test_process_next:

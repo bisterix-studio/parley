@@ -1,3 +1,5 @@
+; Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 [gd_scene load_steps=5 format=3 uid="uid://c7u1m6w3cex3j"]
 
 [ext_resource type="Script" uid="uid://bqyncpl8kcdl0" path="res://addons/parley/components/condition/condition_editor.gd" id="1_majdh"]

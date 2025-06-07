@@ -1,3 +1,5 @@
+# Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 extends GutTest
 
 const MatchNodeEditorScene: PackedScene = preload('res://addons/parley/components/match/match_node_editor.tscn')

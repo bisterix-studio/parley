@@ -1,3 +1,5 @@
+; Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 [gd_scene load_steps=2 format=3 uid="uid://5hi25aq3rc01"]
 
 [ext_resource type="Script" uid="uid://b6wu5f1lgmndw" path="res://addons/parley/components/match/case_label.gd" id="1_gjlld"]

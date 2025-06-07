@@ -1,0 +1,5 @@
+{
+  "tasks": {
+    "check:licence": "deno run --allow-write=. --allow-read=. scripts/check_licence.ts"
+  }
+}

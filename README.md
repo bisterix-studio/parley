@@ -13,7 +13,7 @@ You can install it via the Asset Library or
 [downloading a copy](https://github.com/bisterix-studio/parley/archive/refs/heads/main.zip)
 from GitHub.
 
-[![GitHub License](https://img.shields.io/github/license/bisterix-studio/parley?style=flat-square)](https://raw.githubusercontent.com/bisterix-studio/parley/main/LICENSE)
+[![GitHub Licence](https://img.shields.io/github/license/bisterix-studio/parley?style=flat-square)](https://raw.githubusercontent.com/bisterix-studio/parley/main/LICENSE)
 
 ![Example usage of Parley](docs/img/parley.png)
 
@@ -26,10 +26,10 @@ from GitHub.
 - [Support](#support)
 - [Known Issues and Troubleshooting](#known-issues-and-troubleshooting)
   - [Parts of Godot are unresponsive in MacOS after close a test dialogue scene via the close button](#parts-of-godot-are-unresponsive-in-macos-after-close-a-test-dialogue-scene-via-the-close-button)
-- [License](#license)
+- [Licence](#licence)
 - [Contributions](#contributions)
 
-Installation Features Examples Support Useful links License Contributions
+Installation Features Examples Support Useful links Licence Contributions
 
 ## Features
 
@@ -80,9 +80,9 @@ Documentation for Parley can be found [here](docs/parley.md).
 again to make Godot responsive again. Currently not sure why it happens, please
 submit an issue if you have any further data on this issue.
 
-## License
+## Licence
 
-Parley is 100% free and open-source, under the MIT license.
+Parley is 100% free and open-source, under the MIT licence.
 
 ## Contributions
 
