@@ -6,11 +6,11 @@ const ActionNodeEditorScene: PackedScene = preload('res://addons/parley/componen
 class Test_action_node_editor:
 	extends GutTest
 	
-	var action_node_editor: ActionNodeEditor = null
-	var action_store: ActionStore = null
+	var action_node_editor: ParleyActionNodeEditor = null
+	var action_store: ParleyActionStore = null
 	
 	func before_each() -> void:
-		action_store = ActionStore.new()
+		action_store = ParleyActionStore.new()
 		action_node_editor = ActionNodeEditorScene.instantiate()
 		action_node_editor.action_store = action_store
 		add_child_autofree(action_node_editor)
@@ -20,7 +20,7 @@ class Test_action_node_editor:
 		action_node_editor = null
 		action_store = null
 	
-	func setup_action_node_editor(p_action_node_editor: ActionNodeEditor, test_case: Dictionary) -> void:
+	func setup_action_node_editor(p_action_node_editor: ParleyActionNodeEditor, test_case: Dictionary) -> void:
 		var id: Variant = test_case.get('id')
 		var description: Variant = test_case.get('description')
 		if id:
@@ -28,7 +28,7 @@ class Test_action_node_editor:
 		if description:
 			p_action_node_editor.description = description
 
-	func use_action_node_editor(p_action_node_editor: ActionNodeEditor, test_case: Dictionary) -> void:
+	func use_action_node_editor(p_action_node_editor: ParleyActionNodeEditor, test_case: Dictionary) -> void:
 		var _description: Variant = test_case.get('description')
 		if _description and _description is String:
 			var description: String = _description
@@ -101,7 +101,7 @@ class Test_action_node_editor:
 	func test_update_render_with_text_input(params: Variant = use_parameters([
 		{
 			"input": {"id": null, "description": "Some description"},
-			"expected": {"id": "", "description": "Some description", "action_type": ActionNodeAst.ActionType.SCRIPT, "script_name": "", "values": []},
+			"expected": {"id": "", "description": "Some description", "action_type": ParleyActionNodeAst.ActionType.SCRIPT, "script_name": "", "values": []},
 		},
 	])) -> void:
 		# Arrange

@@ -1,13 +1,12 @@
 @tool
 
-# TODO: prefix with Parley
-class_name StartNodeAst extends NodeAst
+class_name ParleyStartNodeAst extends ParleyNodeAst
 
 
 ## Create a new instance of a Start Node AST.
-## Example: StartNodeAst.new("1", Vector2.ZERO)
+## Example: ParleyStartNodeAst.new("1", Vector2.ZERO)
 func _init(p_id: String = "", p_position: Vector2 = Vector2.ZERO) -> void:
-	type = DialogueAst.Type.START
+	type = ParleyDialogueSequenceAst.Type.START
 	id = p_id
 	position = p_position
 

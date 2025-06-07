@@ -1,5 +1,4 @@
-# TODO: prefix with Parley
-class_name NextDialogueButton extends PanelContainer
+class_name ParleyNextDialogueButton extends PanelContainer
 
 
 var text: String = "[center]. . .[/center]":

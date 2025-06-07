@@ -6,11 +6,12 @@ class_name ParleyCharacterStoreEditor extends PanelContainer
 const CharacterEditor: PackedScene = preload("../../components/character/character_editor.tscn")
 
 
-var character_store: CharacterStore = CharacterStore.new(): set = _set_character_store
-var dialogue_sequence_ast: DialogueAst: set = _set_dialogue_sequence_ast
+var parley_manager: ParleyManager
+var character_store: ParleyCharacterStore = ParleyCharacterStore.new(): set = _set_character_store
+var dialogue_sequence_ast: ParleyDialogueSequenceAst: set = _set_dialogue_sequence_ast
 var character_filter: String = "": set = _set_character_filter
-var characters: Array[Character] = []: set = _set_characters
-var filtered_characters: Array[Character] = []
+var characters: Array[ParleyCharacter] = []: set = _set_characters
+var filtered_characters: Array[ParleyCharacter] = []
 
 
 @onready var characters_container: VBoxContainer = %CharactersContainer
@@ -23,9 +24,9 @@ var filtered_characters: Array[Character] = []
 @onready var register_character_store_modal: ParleyRegisterStoreModal = %RegisterCharacterStoreModal
 
 
-signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
-signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
-signal character_store_changed(character_store: CharacterStore)
+signal dialogue_sequence_ast_selected(dialogue_sequence_ast: ParleyDialogueSequenceAst)
+signal dialogue_sequence_ast_changed(dialogue_sequence_ast: ParleyDialogueSequenceAst)
+signal character_store_changed(character_store: ParleyCharacterStore)
 #endregion
 
 
@@ -43,7 +44,7 @@ func _clear_characters() -> void:
 
 
 #region SETTERS
-func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: DialogueAst) -> void:
+func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	if dialogue_sequence_ast != new_dialogue_sequence_ast:
 		dialogue_sequence_ast = new_dialogue_sequence_ast
 		_reload_dialogue_sequence_ast()
@@ -53,7 +54,7 @@ func _reload_dialogue_sequence_ast() -> void:
 	_render_dialogue_sequence()
 
 
-func _set_character_store(new_character_store: CharacterStore) -> void:
+func _set_character_store(new_character_store: ParleyCharacterStore) -> void:
 	if character_store != new_character_store:
 		character_store = new_character_store
 		if character_store_editor.resource != character_store:
@@ -66,10 +67,10 @@ func _set_character_store(new_character_store: CharacterStore) -> void:
 	_render_save_character_store_button()
 	_render_invalid_character_store_button()
 
-func _set_characters(new_characters: Array[Character]) -> void:
+func _set_characters(new_characters: Array[ParleyCharacter]) -> void:
 	characters = new_characters
 	filtered_characters = []
-	for character: Character in characters:
+	for character: ParleyCharacter in characters:
 		var raw_character_string: String = str(inst_to_dict(character))
 		if not character_filter or raw_character_string.containsn(character_filter):
 			filtered_characters.append(character)
@@ -96,7 +97,7 @@ func _render() -> void:
 
 func _render_dialogue_sequence() -> void:
 	if dialogue_sequence_container and dialogue_sequence_ast and dialogue_sequence_ast.resource_path:
-		dialogue_sequence_container.base_type = DialogueAst.type_name
+		dialogue_sequence_container.base_type = ParleyDialogueSequenceAst.type_name
 		dialogue_sequence_container.resource = dialogue_sequence_ast
 
 
@@ -137,7 +138,7 @@ func _render_characters() -> void:
 	if characters_container:
 		_clear_characters()
 		var index: int = 0
-		for character: Character in filtered_characters:
+		for character: ParleyCharacter in filtered_characters:
 			var character_editor: ParleyCharacterEditor = CharacterEditor.instantiate()
 			character_editor.character_id = character.id
 			character_editor.character_name = character.name
@@ -152,20 +153,20 @@ func _render_characters() -> void:
 
 
 #region SIGNALS
-func _on_character_changed(new_id: String, new_name: String, character: Character) -> void:
+func _on_character_changed(new_id: String, new_name: String, character: ParleyCharacter) -> void:
 	character.id = new_id
 	character.name = new_name
 	if character_store:
 		character_store.emit_changed()
 
 
-func _on_character_removed(character_id: String, _character: Character) -> void:
+func _on_character_removed(character_id: String, _character: ParleyCharacter) -> void:
 	character_store.remove_character(character_id)
 	characters = character_store.characters
 
 
 func _on_add_character_button_pressed() -> void:
-	var _new_character: Character = character_store.add_character()
+	var _new_character: ParleyCharacter = character_store.add_character()
 	characters = character_store.characters
 
 
@@ -181,7 +182,7 @@ func _on_new_character_store_button_pressed() -> void:
 	register_character_store_modal.show()
 	register_character_store_modal.clear()
 	register_character_store_modal.file_mode = FileDialog.FileMode.FILE_MODE_SAVE_FILE
-	register_character_store_modal.resource_editor.resource = CharacterStore.new()
+	register_character_store_modal.resource_editor.resource = ParleyCharacterStore.new()
 	# TODO: get from config
 	register_character_store_modal.path_edit.text = "res://characters/new_character_store.tres"
 	register_character_store_modal.id_valid = true
@@ -190,13 +191,13 @@ func _on_new_character_store_button_pressed() -> void:
 
 
 func _on_dialogue_sequence_container_resource_changed(new_dialogue_sequence_ast: Resource) -> void:
-	if new_dialogue_sequence_ast is DialogueAst:
+	if new_dialogue_sequence_ast is ParleyDialogueSequenceAst:
 		dialogue_sequence_ast = new_dialogue_sequence_ast
 		dialogue_sequence_ast_changed.emit(dialogue_sequence_ast)
 
 
 func _on_dialogue_sequence_container_resource_selected(selected_dialogue_sequence_ast: Resource, _inspect: bool) -> void:
-	if dialogue_sequence_ast is DialogueAst:
+	if dialogue_sequence_ast is ParleyDialogueSequenceAst:
 		dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
 
 
@@ -205,8 +206,8 @@ func _on_register_character_store_modal_store_registered(store: ParleyStore) -> 
 
 
 func _on_character_store_resource_changed(store: Resource) -> void:
-	if store is CharacterStore:
-		_register_character_store(store as CharacterStore, true)
+	if store is ParleyCharacterStore:
+		_register_character_store(store as ParleyCharacterStore, true)
 	else:
 		character_store = null
 #endregion
@@ -214,11 +215,10 @@ func _on_character_store_resource_changed(store: Resource) -> void:
 
 #region ACTIONS
 func _register_character_store(store: ParleyStore, new: bool) -> void:
-	if store is CharacterStore:
+	if store is ParleyCharacterStore:
 		character_store = store
-		if new:
-			# TODO: can we get rid of this global ref?
-			ParleyManager.get_instance().register_character_store(character_store)
+		if new and parley_manager:
+			parley_manager.register_character_store(character_store)
 		_render()
 
 

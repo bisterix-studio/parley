@@ -1,17 +1,16 @@
 @tool
-# TODO: prefix with Parley
 class_name ParleyGraphNode extends GraphNode
 
 
 var id: String = ""
-var type: DialogueAst.Type = DialogueAst.Type.UNKNOWN
+var type: ParleyDialogueSequenceAst.Type = ParleyDialogueSequenceAst.Type.UNKNOWN
 const slot_icon: Texture2D = preload("../assets/ArrowHead.svg")
 
 
 func _ready() -> void:
 	setup(type)
 
-func setup(new_type: DialogueAst.Type, title_override: Variant = null, colour_override: Variant = null) -> void:
+func setup(new_type: ParleyDialogueSequenceAst.Type, title_override: Variant = null, colour_override: Variant = null) -> void:
 	type = new_type
 	set_titlebar(title_override, colour_override)
 	set_base_panel()
@@ -30,9 +29,9 @@ func set_slot_style(idx: int) -> void:
 ## they will be used.
 ## Example: node.set_titlebar()
 func set_titlebar(title_override: Variant = null, colour_override: Variant = null) -> void:
-	title = "%s [ID: %s]" % [title_override if title_override else DialogueAst.get_type_name(type), id.replace(NodeAst.id_prefix, '')]
+	title = "%s [ID: %s]" % [title_override if title_override else ParleyDialogueSequenceAst.get_type_name(type), id.replace(ParleyNodeAst.id_prefix, '')]
 	var titlebar: StyleBoxFlat = get_theme_stylebox("titlebar").duplicate()
-	titlebar.bg_color = colour_override if colour_override is Color else DialogueAst.get_type_colour(type)
+	titlebar.bg_color = colour_override if colour_override is Color else ParleyDialogueSequenceAst.get_type_colour(type)
 	titlebar.corner_detail = 5
 	titlebar.corner_radius_top_left = 3
 	titlebar.corner_radius_top_right = 3

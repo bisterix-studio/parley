@@ -18,9 +18,8 @@ static func get_instance() -> ParleyRuntime:
 
 #region GAME
 ## Start a dialogue session with the provided Dialogue AST
-# TODO: can we get rid of this global ref?
 ## Example: parley_runtime.start_dialogue(dialogue)
-func start_dialogue(ctx: Dictionary, dialogue_ast: DialogueAst, start_node: NodeAst = null) -> Node:
+func start_dialogue(ctx: Dictionary, dialogue_ast: ParleyDialogueSequenceAst, start_node: ParleyNodeAst = null) -> Node:
 	# TODO: maybe pass this in instead of getting from the engine - gives us a bit more flexibility
 	var current_scene: Node = get_current_scene()
 	var dialogue_balloon_path: String = ParleySettings.get_setting(ParleyConstants.DIALOGUE_BALLOON_PATH)

@@ -3,19 +3,19 @@ extends GutTest
 class Test_process_next:
 	extends GutTest
 
-	func _resolve_expected(params: Dictionary, dialogue_ast: DialogueAst) -> Array:
+	func _resolve_expected(params: Dictionary, dialogue_ast: ParleyDialogueSequenceAst) -> Array:
 		var expected: Array = []
 		if params.get('expected', null):
 			expected = params['expected']
 		else:
 			var expected_ids: PackedStringArray = params['expected_ids']
 			for expected_id: String in expected_ids:
-				var found: Array[NodeAst] = dialogue_ast.nodes.filter(func(node: NodeAst) -> bool: return node.id == expected_id)
+				var found: Array[ParleyNodeAst] = dialogue_ast.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == expected_id)
 				if found.size() > 0:
 					expected.append(found.front())
 		return expected
 
-	var test_dialogue_ast: DialogueAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
+	var test_dialogue_ast: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
 	
 	var test_process_next_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:4"]},
@@ -34,18 +34,18 @@ class Test_process_next:
 	
 	func test_process_next(params: Dictionary = use_parameters(test_process_next_cases)) -> void:
 		# Arrange
-		var current_node: NodeAst = test_dialogue_ast.nodes.filter(func(node: NodeAst) -> bool: return node.id == params['current_id'])[0]
+		var current_node: ParleyNodeAst = test_dialogue_ast.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
 		var expected: Array = _resolve_expected(params, test_dialogue_ast)
 		var ctx: Dictionary = params.get('ctx', {})
 		
 		# Act
-		var result: Array[NodeAst] = test_dialogue_ast.process_next(ctx, current_node)
+		var result: Array[ParleyNodeAst] = test_dialogue_ast.process_next(ctx, current_node)
 
 		# Assert
 		assert_eq_deep(result.map(map_to_dict), expected.map(map_to_dict))
 
 
-	var test_dialogue_ast_sort_cases: DialogueAst = load('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds')
+	var test_dialogue_ast_sort_cases: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds')
 
 	var test_process_next_sort_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "node:6", "expected_ids": ["node:9", "node:10", "node:11"]},
@@ -54,18 +54,18 @@ class Test_process_next:
 
 	func test_process_next_sort_by_y_position(params: Dictionary = use_parameters(test_process_next_sort_cases)) -> void:
 		# Arrange
-		var current_node: NodeAst = test_dialogue_ast_sort_cases.nodes.filter(func(node: NodeAst) -> bool: return node.id == params['current_id'])[0]
+		var current_node: ParleyNodeAst = test_dialogue_ast_sort_cases.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
 		var expected: Array = _resolve_expected(params, test_dialogue_ast_sort_cases)
 		var ctx: Dictionary = params.get('ctx', {})
 		
 		# Act
-		var result: Array[NodeAst] = test_dialogue_ast_sort_cases.process_next(ctx, current_node)
+		var result: Array[ParleyNodeAst] = test_dialogue_ast_sort_cases.process_next(ctx, current_node)
 
 		# Assert
-		assert_eq_deep(result.map(func(i: DialogueOptionNodeAst) -> String: return i.text), ['Top', 'Middle', 'Bottom'])
+		assert_eq_deep(result.map(func(i: ParleyDialogueOptionNodeAst) -> String: return i.text), ['Top', 'Middle', 'Bottom'])
 		assert_eq_deep(result.map(map_to_dict), expected.map(map_to_dict))
 
-	var test_dialogue_ast_with_match_node: DialogueAst = load('res://tests/fixtures/basic_match_input.ds')
+	var test_dialogue_ast_with_match_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_match_input.ds')
 	
 	var test_process_next_with_match_node_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "node:1", "expected_ids": ["node:16"]},
@@ -89,17 +89,17 @@ class Test_process_next:
 	
 	func test_process_next_with_match_node(params: Dictionary = use_parameters(test_process_next_with_match_node_cases)) -> void:
 		# Arrange
-		var current_node: NodeAst = test_dialogue_ast_with_match_node.nodes.filter(func(node: NodeAst) -> bool: return node.id == params['current_id']).front()
+		var current_node: ParleyNodeAst = test_dialogue_ast_with_match_node.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id']).front()
 		var expected: Array = _resolve_expected(params, test_dialogue_ast_with_match_node)
 		var ctx: Dictionary = params.get('ctx', {})
 		
 		# Act
-		var result: Array[NodeAst] = test_dialogue_ast_with_match_node.process_next(ctx, current_node)
+		var result: Array[ParleyNodeAst] = test_dialogue_ast_with_match_node.process_next(ctx, current_node)
 
 		# Assert
 		assert_eq_deep(result.map(map_to_dict), expected.map(map_to_dict))
 
-	func map_to_dict(node: NodeAst) -> Dictionary:
+	func map_to_dict(node: ParleyNodeAst) -> Dictionary:
 		var d: Dictionary = inst_to_dict(node)
 		var _path_result: bool = d.erase('@path')
 		var _subpath_result: bool = d.erase('@subpath')
@@ -115,7 +115,7 @@ class Test_add_edge:
 				"added": true,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -128,7 +128,7 @@ class Test_add_edge:
 				"added": false,
 				"emitted": false,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -138,7 +138,7 @@ class Test_add_edge:
 		# Arrange
 		var current_edges: Array = params.get('current_edges', [])
 		var edge: Dictionary = params.get('edge', {})
-		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
+		var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new("", [], current_edges)
 		var from_node: String = edge.get('from_node')
 		var from_slot: int = edge.get('from_slot')
 		var to_node: String = edge.get('to_node')
@@ -150,7 +150,7 @@ class Test_add_edge:
 		watch_signals(dialogue_ast)
 		
 		# Act
-		var result: EdgeAst = dialogue_ast.add_new_edge(from_node, from_slot, to_node, to_slot)
+		var result: ParleyEdgeAst = dialogue_ast.add_new_edge(from_node, from_slot, to_node, to_slot)
 
 		# Assert
 		if expected_added:
@@ -177,9 +177,9 @@ class Test_add_edges:
 				"added": 2,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
-					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
-					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override},
+					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override},
+					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -196,9 +196,9 @@ class Test_add_edges:
 				"added": 1,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
-					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
-					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override},
+					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override},
+					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -215,8 +215,8 @@ class Test_add_edges:
 				"added": 0,
 				"emitted": false,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
-					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override},
+					{"id": "edge:2", "from_node": "node:2", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -226,15 +226,15 @@ class Test_add_edges:
 		# Arrange
 		var current_edges: Array = params.get('current_edges', [])
 		var raw_edges: Array = params.get('edges', [])
-		var edges: Array[EdgeAst] = []
+		var edges: Array[ParleyEdgeAst] = []
 		for edge: Dictionary in raw_edges:
 			var from_node: String = edge.get('from_node')
 			var from_slot: int = edge.get('from_slot')
 			var to_node: String = edge.get('to_node')
 			var to_slot: int = edge.get('to_slot')
 			# The edge ID doesn't matter here as it is handled internally
-			edges.append(EdgeAst.new("", from_node, from_slot, to_node, to_slot))
-		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
+			edges.append(ParleyEdgeAst.new("", from_node, from_slot, to_node, to_slot))
+		var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new("", [], current_edges)
 		var expected: Dictionary = params.get('expected', {})
 		var expected_added: int = expected.get('added')
 		var expected_edges: Array = expected.get('edges')
@@ -275,7 +275,7 @@ class Test_remove_edge:
 				"removed": 0,
 				"emitted": false,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -285,7 +285,7 @@ class Test_remove_edge:
 		# Arrange
 		var current_edges: Array = params.get('current_edges', [])
 		var edge: Dictionary = params.get('edge', {})
-		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
+		var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new("", [], current_edges)
 		var from_node: String = edge.get('from_node')
 		var from_slot: int = edge.get('from_slot')
 		var to_node: String = edge.get('to_node')
@@ -323,7 +323,7 @@ class Test_remove_edges:
 				"removed": 2,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
+					{"id": "edge:3", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -340,7 +340,7 @@ class Test_remove_edges:
 				"removed": 1,
 				"emitted": true,
 				"edges": [
-					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
+					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -356,8 +356,8 @@ class Test_remove_edges:
 				"removed": 0,
 				"emitted": false,
 				"edges": [
-					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override},
-					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": EdgeAst.default_colour_override}
+					{"id": "edge:1", "from_node": "node:1", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override},
+					{"id": "edge:2", "from_node": "node:3", "from_slot": 0, "to_node": "node:2", "to_slot": 1, "should_override_colour": false, "colour_override": ParleyEdgeAst.default_colour_override}
 				]
 			},
 		},
@@ -367,15 +367,15 @@ class Test_remove_edges:
 		# Arrange
 		var current_edges: Array = params.get('current_edges', [])
 		var raw_edges: Array = params.get('edges', [])
-		var edges: Array[EdgeAst] = []
+		var edges: Array[ParleyEdgeAst] = []
 		for edge: Dictionary in raw_edges:
 			var from_node: String = edge.get('from_node')
 			var from_slot: int = edge.get('from_slot')
 			var to_node: String = edge.get('to_node')
 			var to_slot: int = edge.get('to_slot')
 			# # The edge ID doesn't matter here as it is handled internally
-			edges.append(EdgeAst.new("", from_node, from_slot, to_node, to_slot))
-		var dialogue_ast: DialogueAst = DialogueAst.new("", [], current_edges)
+			edges.append(ParleyEdgeAst.new("", from_node, from_slot, to_node, to_slot))
+		var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new("", [], current_edges)
 		var expected: Dictionary = params.get('expected', {})
 		var expected_removed: int = expected.get('removed')
 		var expected_edges: Array = expected.get('edges')

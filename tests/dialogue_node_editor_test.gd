@@ -7,22 +7,22 @@ const DialogueNodeEditorScene: PackedScene = preload('res://addons/parley/compon
 class Test_dialogue_node_editor:
 	extends GutTest
 	
-	var dialogue_node_editor: DialogueNodeEditor = null
-	var character_store: CharacterStore = null
+	var dialogue_node_editor: ParleyDialogueNodeEditor = null
+	var character_store: ParleyCharacterStore = null
 	
 	func before_each() -> void:
 		dialogue_node_editor = DialogueNodeEditorScene.instantiate()
 		character_store = load('res://tests/fixtures/characters/base_character_store.tres')
 		character_store.id = "test"
 		character_store.characters = []
-		var _result: Character = character_store.add_character("Default Character")
+		var _result: ParleyCharacter = character_store.add_character("Default Character")
 		dialogue_node_editor.character_store = character_store
 		add_child_autofree(dialogue_node_editor)
 	
 	func after_each() -> void:
 		dialogue_node_editor = null
 	
-	func setup_dialogue_node_editor(p_dialogue_node_editor: DialogueNodeEditor, test_case: Dictionary) -> void:
+	func setup_dialogue_node_editor(p_dialogue_node_editor: ParleyDialogueNodeEditor, test_case: Dictionary) -> void:
 		var id: Variant = test_case.get('id')
 		var _character_name: Variant = test_case.get('character_name')
 		var dialogue: Variant = test_case.get('dialogue')
@@ -30,13 +30,13 @@ class Test_dialogue_node_editor:
 			p_dialogue_node_editor.id = id
 		if _character_name and _character_name is String:
 			var character_name: String = _character_name
-			var _added_character: Character = character_store.add_character(character_name)
+			var _added_character: ParleyCharacter = character_store.add_character(character_name)
 			p_dialogue_node_editor.character = character_store.get_ref_by_index(character_store.characters.size() - 1)
 		if dialogue:
 			p_dialogue_node_editor.dialogue = dialogue
 
 
-	func use_dialogue_node_editor(p_dialogue_node_editor: DialogueNodeEditor, test_case: Dictionary) -> void:
+	func use_dialogue_node_editor(p_dialogue_node_editor: ParleyDialogueNodeEditor, test_case: Dictionary) -> void:
 		var _dialogue: Variant = test_case.get('dialogue')
 		var selected_character: Variant = test_case.get('selected_character')
 		if _dialogue and _dialogue is String:

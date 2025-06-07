@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterStore" load_steps=9 format=3 uid="uid://ceouii84qmu0w"]
+[gd_resource type="Resource" script_class="ParleyCharacterStore" load_steps=9 format=3 uid="uid://ceouii84qmu0w"]
 
 [ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="1_3dy24"]
 [ext_resource type="Script" uid="uid://cr1va2oab5tn5" path="res://addons/parley/models/character.gd" id="1_18ucv"]

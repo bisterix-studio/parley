@@ -93,5 +93,5 @@ func _import(source_file: String, save_path: String, _options: Dictionary, _plat
 	var stores: Dictionary = _stores
 
 	# Compilation
-	var dialogue_ast: DialogueAst = DialogueAst.new(title, nodes, edges, stores)
+	var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(title, nodes, edges, stores)
 	return ResourceSaver.save(dialogue_ast, "%s.%s" % [save_path, _get_save_extension()])

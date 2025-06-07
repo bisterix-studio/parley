@@ -1,13 +1,11 @@
 @tool
-
-# TODO: prefix with Parley
-class_name EndNodeAst extends NodeAst
+class_name ParleyEndNodeAst extends ParleyNodeAst
 
 
 ## Create a new instance of a End Node AST.
-## Example: EndNodeAst.new("1", Vector2.ZERO)
+## Example: ParleyEndNodeAst.new("1", Vector2.ZERO)
 func _init(p_id: String = "", p_position: Vector2 = Vector2.ZERO) -> void:
-	type = DialogueAst.Type.END
+	type = ParleyDialogueSequenceAst.Type.END
 	id = p_id
 	position = p_position
 

@@ -1,8 +1,7 @@
 @tool
-# TODO: prefix with Parley
-class_name EdgeEditor extends VBoxContainer
+class_name ParleyEdgeEditor extends VBoxContainer
 
-@export var edge: EdgeAst: set = _set_edge
+@export var edge: ParleyEdgeAst: set = _set_edge
 
 @onready var from_node_value: Label = %FromNodeValue
 @onready var from_slot_value: Label = %FromSlotValue
@@ -13,10 +12,10 @@ class_name EdgeEditor extends VBoxContainer
 @onready var colour_override_checkbox: CheckBox = %ColorOverrideCheckBox
 
 
-signal edge_deleted(edge: EdgeAst)
-signal edge_changed(edge: EdgeAst)
-signal mouse_entered_edge(edge: EdgeAst)
-signal mouse_exited_edge(edge: EdgeAst)
+signal edge_deleted(edge: ParleyEdgeAst)
+signal edge_changed(edge: ParleyEdgeAst)
+signal mouse_entered_edge(edge: ParleyEdgeAst)
+signal mouse_exited_edge(edge: ParleyEdgeAst)
 
 func _ready() -> void:
 	_set_edge(edge)
@@ -26,7 +25,7 @@ func _ready() -> void:
 
 
 #region SETTERS
-func _set_edge(new_edge: EdgeAst) -> void:
+func _set_edge(new_edge: ParleyEdgeAst) -> void:
 	if new_edge != edge:
 		if edge:
 			ParleyUtils.signals.safe_disconnect(edge.edge_changed, _on_edge_changed)
@@ -44,11 +43,11 @@ func _set_edge(new_edge: EdgeAst) -> void:
 #region RENDERERS
 func _render(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
 	if from_node_value:
-		from_node_value.text = from_node.replace(NodeAst.id_prefix, '')
+		from_node_value.text = from_node.replace(ParleyNodeAst.id_prefix, '')
 	if from_slot_value:
 		from_slot_value.text = str(from_slot)
 	if to_node_value:
-		to_node_value.text = to_node.replace(NodeAst.id_prefix, '')
+		to_node_value.text = to_node.replace(ParleyNodeAst.id_prefix, '')
 	if to_slot_value:
 		to_slot_value.text = str(to_slot)
 
@@ -86,7 +85,7 @@ func _on_mouse_exited() -> void:
 	mouse_exited_edge.emit()
 
 
-func _on_edge_changed(new_edge: EdgeAst) -> void:
+func _on_edge_changed(new_edge: ParleyEdgeAst) -> void:
 	edge = new_edge
 	edge_changed.emit(new_edge)
 

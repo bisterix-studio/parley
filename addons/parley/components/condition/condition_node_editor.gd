@@ -1,11 +1,11 @@
 @tool
-class_name ParleyConditionNodeEditor extends NodeEditor
+class_name ParleyConditionNodeEditor extends ParleyBaseNodeEditor
 
 
 #region DEFS
-var fact_store: FactStore: set = _set_fact_store
+var fact_store: ParleyFactStore: set = _set_fact_store
 @export var description: String = "": set = _set_description
-@export var combiner: ConditionNodeAst.Combiner = ConditionNodeAst.Combiner.ALL: set = _set_combiner
+@export var combiner: ParleyConditionNodeAst.Combiner = ParleyConditionNodeAst.Combiner.ALL: set = _set_combiner
 @export var conditions: Array = []: set = _set_conditions
 
 
@@ -17,7 +17,7 @@ var fact_store: FactStore: set = _set_fact_store
 const condition_scene: PackedScene = preload('./condition_editor.tscn')
 
 
-signal condition_node_changed(id: String, description: String, combiner: ConditionNodeAst.Combiner, conditions: Array)
+signal condition_node_changed(id: String, description: String, combiner: ParleyConditionNodeAst.Combiner, conditions: Array)
 #endregion
 
 
@@ -37,7 +37,7 @@ func _set_description(new_description: String) -> void:
 	_render_description()
 
 
-func _set_combiner(new_combiner: ConditionNodeAst.Combiner) -> void:
+func _set_combiner(new_combiner: ParleyConditionNodeAst.Combiner) -> void:
 	combiner = new_combiner
 	_render_combiner()
 
@@ -46,7 +46,7 @@ func _set_conditions(new_conditions: Array) -> void:
 	conditions = []
 	for condition: Dictionary in new_conditions:
 		var fact_ref: String = condition.get('fact_ref', '')
-		var operator: ConditionNodeAst.Operator = condition.get('operator', ConditionNodeAst.Operator.EQUAL)
+		var operator: ParleyConditionNodeAst.Operator = condition.get('operator', ParleyConditionNodeAst.Operator.EQUAL)
 		var value: String = condition.get('value', '')
 		conditions.append({
 			'fact_ref': condition.fact_ref,
@@ -56,7 +56,7 @@ func _set_conditions(new_conditions: Array) -> void:
 	_render_conditions()
 
 
-func _set_fact_store(new_fact_store: FactStore) -> void:
+func _set_fact_store(new_fact_store: ParleyFactStore) -> void:
 	if fact_store != new_fact_store:
 		fact_store = new_fact_store
 		conditions = conditions.duplicate(true)
@@ -77,8 +77,8 @@ func _render_combiner() -> void:
 func _render_combiner_options() -> void:
 	if combiner_option:
 		combiner_option.clear()
-		for key: String in ConditionNodeAst.Combiner:
-			var item_id: int = ConditionNodeAst.Combiner[key]
+		for key: String in ParleyConditionNodeAst.Combiner:
+			var item_id: int = ParleyConditionNodeAst.Combiner[key]
 			combiner_option.add_item(key.capitalize(), item_id)
 
 
@@ -91,7 +91,7 @@ func _render_conditions() -> void:
 		var index: int = 0
 		for condition: Dictionary in conditions:
 			var fact_ref: String = condition.get('fact_ref', '')
-			var operator: ConditionNodeAst.Operator = condition.get('operator', ConditionNodeAst.Operator.EQUAL)
+			var operator: ParleyConditionNodeAst.Operator = condition.get('operator', ParleyConditionNodeAst.Operator.EQUAL)
 			var value: String = condition.get('value', '')
 			var new_condition: ParleyConditionEditor = condition_scene.instantiate()
 			new_condition.fact_store = fact_store
@@ -119,7 +119,7 @@ func _on_add_condition_button_pressed() -> void:
 	var new_conditions: Array = conditions.duplicate(true)
 	new_conditions.append({
 		'fact_ref': "",
-		'operator': ConditionNodeAst.Operator.EQUAL,
+		'operator': ParleyConditionNodeAst.Operator.EQUAL,
 		'value': "",
 	})
 	conditions = new_conditions
@@ -127,11 +127,11 @@ func _on_add_condition_button_pressed() -> void:
 
 
 func _on_condition_option_item_selected(new_combiner: int) -> void:
-	combiner = new_combiner as ConditionNodeAst.Combiner
+	combiner = new_combiner as ParleyConditionNodeAst.Combiner
 	emit_condition_node_changed()
 
 
-func _on_condition_changed(condition_id: String, new_fact_ref: String, new_operator: ConditionNodeAst.Combiner, new_value: String) -> void:
+func _on_condition_changed(condition_id: String, new_fact_ref: String, new_operator: ParleyConditionNodeAst.Combiner, new_value: String) -> void:
 	conditions[int(condition_id)] = {
 		'fact_ref': new_fact_ref,
 		'operator': new_operator,

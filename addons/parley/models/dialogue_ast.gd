@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name DialogueAst extends Resource
+class_name ParleyDialogueSequenceAst extends Resource
 
 
 ## The title of the Dialogue Sequence AST
@@ -8,11 +7,11 @@ class_name DialogueAst extends Resource
 
 
 ### The edges of the Dialogue Sequence AST
-@export var edges: Array[EdgeAst]
+@export var edges: Array[ParleyEdgeAst]
 
 
 ## The nodes of the Dialogue Sequence AST
-@export var nodes: Array[NodeAst]
+@export var nodes: Array[ParleyNodeAst]
 
 
 ## The stores of the Dialogue Sequence AST
@@ -20,7 +19,7 @@ class_name DialogueAst extends Resource
 
 
 ## The type name of the Dialogue Sequence AST
-const type_name: String = "DialogueAst"
+const type_name: String = "ParleyDialogueSequenceAst"
 
 
 ## The type of the Dialogue AST Node
@@ -56,44 +55,44 @@ func add_ast_node(node: Dictionary) -> void:
 	if not id_variant or not is_instance_of(id_variant, TYPE_STRING):
 		ParleyUtils.log.error("Unable to import Parley AST Node without a valid string id field: %s" % [id_variant])
 		return
-	var ast_node: NodeAst
+	var ast_node: ParleyNodeAst
 	var id: String = id_variant
 	match type:
 		Type.DIALOGUE:
 			var character: String = node.get('character', '')
 			var text: String = node.get('text', '')
-			ast_node = DialogueNodeAst.new(id, position, character, text)
+			ast_node = ParleyDialogueNodeAst.new(id, position, character, text)
 		Type.DIALOGUE_OPTION:
 			var character: String = node.get('character', '')
 			var text: String = node.get('text', '')
-			ast_node = DialogueOptionNodeAst.new(id, position, character, text)
+			ast_node = ParleyDialogueOptionNodeAst.new(id, position, character, text)
 		Type.CONDITION:
-			var combiner: ConditionNodeAst.Combiner = ConditionNodeAst.Combiner.get(node.get('combiner'), ConditionNodeAst.Combiner.ALL)
+			var combiner: ParleyConditionNodeAst.Combiner = ParleyConditionNodeAst.Combiner.get(node.get('combiner'), ParleyConditionNodeAst.Combiner.ALL)
 			var description: String = node.get('description', '')
 			var conditions: Array = node.get('conditions', [])
-			ast_node = ConditionNodeAst.new(id, position, description, combiner, conditions)
+			ast_node = ParleyConditionNodeAst.new(id, position, description, combiner, conditions)
 		Type.MATCH:
 			var description: String = node.get('description', '')
 			var fact_ref: String = node.get('fact_ref', '')
 			var cases: Array = node.get('cases', [])
-			ast_node = MatchNodeAst.new(id, position, description, fact_ref, cases)
+			ast_node = ParleyMatchNodeAst.new(id, position, description, fact_ref, cases)
 		Type.ACTION:
 			var description: String = node.get('description', '')
 			var action_type_key: String = node.get('action_type', 'SCRIPT')
-			var action_type: ActionNodeAst.ActionType = ActionNodeAst.ActionType.get(action_type_key, ActionNodeAst.ActionType.SCRIPT)
+			var action_type: ParleyActionNodeAst.ActionType = ParleyActionNodeAst.ActionType.get(action_type_key, ParleyActionNodeAst.ActionType.SCRIPT)
 			var action_script_ref: String = node.get('action_script_ref', '')
 			var values: Array = node.get('values', [])
-			ast_node = ActionNodeAst.new(id, position, description, action_type, action_script_ref, values)
+			ast_node = ParleyActionNodeAst.new(id, position, description, action_type, action_script_ref, values)
 		Type.START:
-			ast_node = StartNodeAst.new(id, position)
+			ast_node = ParleyStartNodeAst.new(id, position)
 		Type.END:
-			ast_node = EndNodeAst.new(id, position)
+			ast_node = ParleyEndNodeAst.new(id, position)
 		Type.GROUP:
 			var colour: Color = _parse_colour(node)
 			var size: Vector2 = _parse_group_size_from_raw_node_ast(node)
 			var name: String = node.get('name', '')
 			var node_ids: Array = node.get('node_ids', [])
-			ast_node = GroupNodeAst.new(id, position, name, node_ids, colour, size)
+			ast_node = ParleyGroupNodeAst.new(id, position, name, node_ids, colour, size)
 		_:
 			ParleyUtils.log.error("Unable to import Parley AST node of type: %s" % [type])
 			return
@@ -102,27 +101,27 @@ func add_ast_node(node: Dictionary) -> void:
 
 
 ## Add a new node to the list of nodes
-func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> NodeAst:
+func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> ParleyNodeAst:
 	ParleyUtils.log.info('Inserting new Node into the AST of type: %s' % [type])
 	var new_id: String = _generate_node_id()
-	var ast_node: NodeAst
+	var ast_node: ParleyNodeAst
 	match type:
 		Type.DIALOGUE:
-			ast_node = DialogueNodeAst.new(new_id, position)
+			ast_node = ParleyDialogueNodeAst.new(new_id, position)
 		Type.DIALOGUE_OPTION:
-			ast_node = DialogueOptionNodeAst.new(new_id, position)
+			ast_node = ParleyDialogueOptionNodeAst.new(new_id, position)
 		Type.CONDITION:
-			ast_node = ConditionNodeAst.new(new_id, position)
+			ast_node = ParleyConditionNodeAst.new(new_id, position)
 		Type.MATCH:
-			ast_node = MatchNodeAst.new(new_id, position)
+			ast_node = ParleyMatchNodeAst.new(new_id, position)
 		Type.ACTION:
-			ast_node = ActionNodeAst.new(new_id, position)
+			ast_node = ParleyActionNodeAst.new(new_id, position)
 		Type.START:
-			ast_node = StartNodeAst.new(new_id, position)
+			ast_node = ParleyStartNodeAst.new(new_id, position)
 		Type.END:
-			ast_node = EndNodeAst.new(new_id, position)
+			ast_node = ParleyEndNodeAst.new(new_id, position)
 		Type.GROUP:
-			ast_node = GroupNodeAst.new(new_id, position)
+			ast_node = ParleyGroupNodeAst.new(new_id, position)
 		_:
 			ParleyUtils.log.error("Unable to create new Parley AST node of type: %s" % [type])
 			return null
@@ -133,7 +132,7 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> NodeAst:
 
 ## Update Node AST position
 func update_node_position(ast_node_id: String, position: Vector2) -> void:
-	for node: NodeAst in nodes:
+	for node: ParleyNodeAst in nodes:
 		if node.id == ast_node_id:
 			node.position = position
 			break
@@ -157,8 +156,8 @@ func add_ast_edge(edge: Dictionary) -> void:
 	var to_node: String = edge.get('to_node')
 	var to_slot: int = edge.get('to_slot')
 	var should_override_colour: bool = edge.get('should_override_colour', false)
-	var colour_override: Color = _parse_colour(edge, 'colour_override', EdgeAst.default_colour_override)
-	var edge_ast: EdgeAst = EdgeAst.new(edge_id, from_node, from_slot, to_node, to_slot, should_override_colour, colour_override)
+	var colour_override: Color = _parse_colour(edge, 'colour_override', ParleyEdgeAst.default_colour_override)
+	var edge_ast: ParleyEdgeAst = ParleyEdgeAst.new(edge_id, from_node, from_slot, to_node, to_slot, should_override_colour, colour_override)
 
 	edges.append(edge_ast)
 
@@ -175,16 +174,16 @@ func add_ast_stores(_stores: Dictionary) -> void:
 ## Add a new edge to the list of edges. It will not add an edge if it already exists
 ## It returns the number of edges added (1 or 0).
 ## dialogue_ast.add_edge("1", 0, "2", 1)
-func add_new_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit: bool = true) -> EdgeAst:
+func add_new_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit: bool = true) -> ParleyEdgeAst:
 	var new_id: String = _generate_edge_id()
-	var new_edge: EdgeAst = EdgeAst.new(
+	var new_edge: ParleyEdgeAst = ParleyEdgeAst.new(
 		new_id,
 		from_node,
 		from_slot,
 		to_node,
 		to_slot,
 	)
-	var existing_edges: Array[EdgeAst] = edges.filter(func(edge: EdgeAst) -> bool:
+	var existing_edges: Array[ParleyEdgeAst] = edges.filter(func(edge: ParleyEdgeAst) -> bool:
 		return (
 			edge.from_node == new_edge.from_node and
 			edge.from_slot == new_edge.from_slot and
@@ -202,11 +201,11 @@ func add_new_edge(from_node: String, from_slot: int, to_node: String, to_slot: i
 
 ## Remove edges to the list of edges.
 ## It returns the number of edges added.
-## dialogue_ast.add_edges([EdgeAst("1", 0, "2", 1).new()])
-func add_edges(edges_to_create: Array[EdgeAst], emit: bool = true) -> int:
+## dialogue_ast.add_edges([ParleyEdgeAst("1", 0, "2", 1).new()])
+func add_edges(edges_to_create: Array[ParleyEdgeAst], emit: bool = true) -> int:
 	var added: int = 0
-	for edge: EdgeAst in edges_to_create:
-		var added_edge: EdgeAst = add_new_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
+	for edge: ParleyEdgeAst in edges_to_create:
+		var added_edge: ParleyEdgeAst = add_new_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
 		if added_edge:
 			added += 1
 	if added > 0 and emit:
@@ -219,7 +218,7 @@ func add_edges(edges_to_create: Array[EdgeAst], emit: bool = true) -> int:
 func remove_node(node_id: String) -> void:
 	var index: int = 0
 	var removed: bool = false
-	for node: NodeAst in nodes:
+	for node: ParleyNodeAst in nodes:
 		if node.id == node_id:
 			nodes.remove_at(index)
 			removed = true
@@ -229,7 +228,7 @@ func remove_node(node_id: String) -> void:
 		ParleyUtils.log.info("Unable to remove node with ID: %s" % [node_id])
 		return
 	index = 0
-	for edge: EdgeAst in edges:
+	for edge: ParleyEdgeAst in edges:
 		if edge.from_node == node_id or edge.to_node == node_id:
 			edges.remove_at(index)
 		index += 1
@@ -239,8 +238,8 @@ func remove_node(node_id: String) -> void:
 
 ## Find a Node AST by its ID.
 ## Example: ast.find_node_by_id("1")
-func find_node_by_id(id: String) -> NodeAst:
-	var filtered_nodes: Array = nodes.filter(func(node: NodeAst) -> bool: return str(node.id) == str(id))
+func find_node_by_id(id: String) -> ParleyNodeAst:
+	var filtered_nodes: Array = nodes.filter(func(node: ParleyNodeAst) -> bool: return str(node.id) == str(id))
 	if filtered_nodes.size() != 1:
 		ParleyUtils.log.info("No AST Node found with ID: {id}".format({'id': id}))
 		return null
@@ -249,9 +248,9 @@ func find_node_by_id(id: String) -> NodeAst:
 
 ## Get nodes by types
 ## Example: get_nodes_by_types([type])
-func find_nodes_by_types(types: Array[DialogueAst.Type]) -> Array[NodeAst]:
-	var filtered_nodes: Array[NodeAst] = []
-	for node_ast: NodeAst in nodes:
+func find_nodes_by_types(types: Array[ParleyDialogueSequenceAst.Type]) -> Array[ParleyNodeAst]:
+	var filtered_nodes: Array[ParleyNodeAst] = []
+	for node_ast: ParleyNodeAst in nodes:
 		if types.has(node_ast.type):
 			filtered_nodes.append(node_ast)
 	return filtered_nodes
@@ -263,7 +262,7 @@ func find_nodes_by_types(types: Array[DialogueAst.Type]) -> Array[NodeAst]:
 func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int, emit: bool = true) -> int:
 	var index: int = 0
 	var removed: bool = false
-	for edge: EdgeAst in edges:
+	for edge: ParleyEdgeAst in edges:
 		if (edge.from_node == from_node and
 			edge.from_slot == from_slot and
 			edge.to_node == to_node and
@@ -281,10 +280,10 @@ func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: in
 
 ## Remove edges from the list of edges.
 ## It returns the number of edges removed.
-## dialogue_ast.remove_edges([EdgeAst("1", 0, "2", 1).new()])
-func remove_edges(edges_to_remove: Array[EdgeAst], emit: bool = true) -> int:
+## dialogue_ast.remove_edges([ParleyEdgeAst("1", 0, "2", 1).new()])
+func remove_edges(edges_to_remove: Array[ParleyEdgeAst], emit: bool = true) -> int:
 	var removed: int = 0
-	for edge: EdgeAst in edges_to_remove:
+	for edge: ParleyEdgeAst in edges_to_remove:
 		removed += remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot, false)
 	if removed > 0 and emit:
 		_emit_dialogue_updated()
@@ -295,7 +294,7 @@ func remove_edges(edges_to_remove: Array[EdgeAst], emit: bool = true) -> int:
 #region DIALOGUE RUNTIME
 # TODO: make context a class that can be extended
 ## Get the next node that can be rendered and perform any necessary processing
-func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool = false) -> Array[NodeAst]:
+func process_next(ctx: Dictionary, current_node: ParleyNodeAst = null, dry_run: bool = false) -> Array[ParleyNodeAst]:
 	if not current_node:
 		var start_node: Variant = _get_start_node(dry_run)
 		if not start_node:
@@ -304,21 +303,21 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 		
 	var id: String = current_node.id
 	# TODO: this won't work for conditionals, need to account for multiple slots
-	var next_edges: Array[EdgeAst] = edges.filter(func(edge: EdgeAst) -> bool: return str(edge.from_node) == id)
+	var next_edges: Array[ParleyEdgeAst] = edges.filter(func(edge: ParleyEdgeAst) -> bool: return str(edge.from_node) == id)
 	# TODO: the Dialogue AST should have a generate new unique ID function
 	if next_edges.size() == 0:
 		return _process_end(dry_run)
-	var next_nodes: Array[NodeAst] = []
+	var next_nodes: Array[ParleyNodeAst] = []
 	var condition_result: bool
 	var match_result: int
 	if current_node.type == Type.CONDITION:
-		var condition_node: ConditionNodeAst = current_node
+		var condition_node: ParleyConditionNodeAst = current_node
 		condition_result = _process_condition_node(ctx, condition_node, dry_run)
 	if current_node.type == Type.MATCH:
-		var match_node: MatchNodeAst = current_node
+		var match_node: ParleyMatchNodeAst = current_node
 		match_result = _process_match_node(ctx, match_node)
 	
-	for next_edge: EdgeAst in next_edges:
+	for next_edge: ParleyEdgeAst in next_edges:
 		if current_node.type == Type.CONDITION:
 			var next_slot: int = 0 if condition_result else 1
 			if next_edge.from_slot != next_slot:
@@ -331,11 +330,11 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 
 		var next_id: String = str(next_edge.to_node)
 		# TODO: warn when multiple nodes are found for the edge
-		var filtered_next_nodes: Array = nodes.filter(func(node: NodeAst) -> bool: return node.id == next_id)
+		var filtered_next_nodes: Array = nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == next_id)
 		if filtered_next_nodes.size() == 0:
 			ParleyUtils.log.warn('Node: {id} not found for Edge: {edge}'.format({'id': next_id, 'edge': next_edge}), dry_run)
 			continue
-		var next_node: NodeAst = filtered_next_nodes.front()
+		var next_node: ParleyNodeAst = filtered_next_nodes.front()
 		var next_type: Type = next_node.type
 		match next_type:
 			Type.DIALOGUE:
@@ -361,7 +360,7 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 	var types: Array[Type] = []
 	# TODO: check for multiple of Dialogue
 	# TODO: check for multiple of End
-	for next_node: NodeAst in next_nodes:
+	for next_node: ParleyNodeAst in next_nodes:
 		var type: Type = next_node.type
 		if type not in types:
 			types.append(type)
@@ -378,21 +377,21 @@ func process_next(ctx: Dictionary, current_node: NodeAst = null, dry_run: bool =
 		ParleyUtils.log.info("Multiple AST Node types found for Dialogue tree: {types}".format({"types": types}), dry_run)
 		return _process_end(dry_run)
 
-	if is_instance_of(next_nodes.front(), EndNodeAst):
-		var _end: Array[NodeAst] = _process_end(dry_run) # Don't return as we want to use the existing End Node ID
+	if is_instance_of(next_nodes.front(), ParleyEndNodeAst):
+		var _end: Array[ParleyNodeAst] = _process_end(dry_run) # Don't return as we want to use the existing End Node ID
 	next_nodes.sort_custom(_sort_by_y_position)
 	return next_nodes
 
 
 # TODO: make this async/await
-func _run_action(node_ast: NodeAst, ctx: Dictionary) -> void:
-	if node_ast is not ActionNodeAst:
+func _run_action(node_ast: ParleyNodeAst, ctx: Dictionary) -> void:
+	if node_ast is not ParleyActionNodeAst:
 		ParleyUtils.log.error("Action Node to execute is not an Action Node (node:%s)" % node_ast)
 		return
-	var action_node_ast: ActionNodeAst = node_ast
+	var action_node_ast: ParleyActionNodeAst = node_ast
 	var action: ParleyActionInterface
 	match action_node_ast.action_type:
-		ActionNodeAst.ActionType.SCRIPT:
+		ParleyActionNodeAst.ActionType.SCRIPT:
 			var action_script: GDScript = load(action_node_ast.action_script_ref)
 			if action_script is not GDScript:
 				ParleyUtils.log.error("Action Script reference is not a valid GDScript (node:%s, script:%s)" % [node_ast, action_script])
@@ -412,16 +411,16 @@ func _run_action(node_ast: NodeAst, ctx: Dictionary) -> void:
 
 # TODO: make context a class that can be extended
 ## Indicator for whether the node is at the end of the current dialogue sequence
-func is_at_end(ctx: Dictionary, current_node: NodeAst) -> bool:
+func is_at_end(ctx: Dictionary, current_node: ParleyNodeAst) -> bool:
 	# Perform a dry run to infer whether we are at the final node
-	var next_nodes: Array[NodeAst] = process_next(ctx, current_node, true)
-	if next_nodes.size() == 1 and next_nodes.front() is EndNodeAst:
+	var next_nodes: Array[ParleyNodeAst] = process_next(ctx, current_node, true)
+	if next_nodes.size() == 1 and next_nodes.front() is ParleyEndNodeAst:
 		return true
 	return false
 
 
-func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, dry_run: bool) -> bool:
-	var combiner: ConditionNodeAst.Combiner = condition_node.combiner
+func _process_condition_node(ctx: Dictionary, condition_node: ParleyConditionNodeAst, dry_run: bool) -> bool:
+	var combiner: ParleyConditionNodeAst.Combiner = condition_node.combiner
 	var conditions: Array = condition_node.conditions
 	var results: Array[bool] = []
 	for condition_def: Dictionary in conditions:
@@ -435,9 +434,9 @@ func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, 
 		fact.free() # Previous this was call_deferred, although I'm not sure why
 		var evaluated_value: Variant = _evaluate_value(value)
 		match operator:
-			ConditionNodeAst.Operator.EQUAL:
+			ParleyConditionNodeAst.Operator.EQUAL:
 				results.append(typeof(result) == typeof(evaluated_value) and result == evaluated_value)
-			ConditionNodeAst.Operator.NOT_EQUAL:
+			ParleyConditionNodeAst.Operator.NOT_EQUAL:
 				results.append(typeof(result) != typeof(evaluated_value) or result != _evaluate_value(value))
 			_:
 				ParleyUtils.log.info("Operator of type %s is not supported" % [operator], dry_run)
@@ -445,16 +444,16 @@ func _process_condition_node(ctx: Dictionary, condition_node: ConditionNodeAst, 
 		ParleyUtils.log.info("No results evaluated", dry_run)
 		return false
 	match combiner:
-		ConditionNodeAst.Combiner.ALL:
+		ParleyConditionNodeAst.Combiner.ALL:
 			return not results.has(false)
-		ConditionNodeAst.Combiner.ANY:
+		ParleyConditionNodeAst.Combiner.ANY:
 			return results.has(true)
 		_:
 			ParleyUtils.log.info("Combiner of type %s is not supported" % [combiner], dry_run)
 			return false
 
 
-func _process_match_node(ctx: Dictionary, match_node: MatchNodeAst) -> int:
+func _process_match_node(ctx: Dictionary, match_node: ParleyMatchNodeAst) -> int:
 	var fact_ref: String = match_node.fact_ref
 	var script: GDScript = load(fact_ref)
 	var fact: FactInterface = script.new()
@@ -464,7 +463,7 @@ func _process_match_node(ctx: Dictionary, match_node: MatchNodeAst) -> int:
 	var cases: Array = match_node.cases
 	var case_index: int = cases.map(func(case: Variant) -> Variant: return _map_value(case)).find(evaluated_result)
 	if case_index == -1:
-		return cases.find(MatchNodeAst.fallback_key)
+		return cases.find(ParleyMatchNodeAst.fallback_key)
 	return case_index
 
 
@@ -491,20 +490,20 @@ func _map_value(value_expr: Variant) -> Variant:
 	return value_expr
 
 
-func _process_end(dry_run: bool) -> Array[NodeAst]:
+func _process_end(dry_run: bool) -> Array[ParleyNodeAst]:
 	if not dry_run:
 		dialogue_ended.emit(self)
-	return [EndNodeAst.new(_generate_node_id())]
+	return [ParleyEndNodeAst.new(_generate_node_id())]
 
 
-func _sort_by_y_position(a: NodeAst, b: NodeAst) -> bool:
+func _sort_by_y_position(a: ParleyNodeAst, b: ParleyNodeAst) -> bool:
 	if a.position.y < b.position.y:
 		return true
 	return false
 
 
 func _get_start_node(dry_run: bool) -> Variant:
-	var filtered_nodes: Array[NodeAst] = nodes.filter(func(node: NodeAst) -> bool: return node.type == Type.START)
+	var filtered_nodes: Array[ParleyNodeAst] = nodes.filter(func(node: ParleyNodeAst) -> bool: return node.type == Type.START)
 	if filtered_nodes.size() == 0:
 		ParleyUtils.log.error("No Start Nodes found. Unable to start the dialogue.", dry_run)
 		return
@@ -519,8 +518,8 @@ func _get_start_node(dry_run: bool) -> Variant:
 func to_dict() -> Dictionary:
 	return {
 		'title': title,
-		'nodes': nodes.map(func(node: NodeAst) -> Dictionary: return node.to_dict()),
-		'edges': edges.map(func(edge: EdgeAst) -> Dictionary: return edge.to_dict()),
+		'nodes': nodes.map(func(node: ParleyNodeAst) -> Dictionary: return node.to_dict()),
+		'edges': edges.map(func(edge: ParleyEdgeAst) -> Dictionary: return edge.to_dict()),
 		'stores': stores.to_dict()
 	}
 
@@ -529,13 +528,13 @@ func to_dict() -> Dictionary:
 func to_csv_lines() -> Array[PackedStringArray]:
 	# TODO: handle locales at scale
 	var lines: Array[PackedStringArray] = [PackedStringArray(["id", "type", "character_en", "text_en"])]
-	for node_ast: NodeAst in nodes:
+	for node_ast: ParleyNodeAst in nodes:
 		match node_ast.type:
 			Type.DIALOGUE:
-				var node: DialogueNodeAst = node_ast
+				var node: ParleyDialogueNodeAst = node_ast
 				lines.append(PackedStringArray([node.id, get_type_name(node.type), node.character, node.text]))
 			Type.DIALOGUE_OPTION:
-				var node: DialogueOptionNodeAst = node_ast
+				var node: ParleyDialogueOptionNodeAst = node_ast
 				lines.append(PackedStringArray([node.id, get_type_name(node.type), node.character, node.text]))
 			_:
 				continue
@@ -543,38 +542,38 @@ func to_csv_lines() -> Array[PackedStringArray]:
 
 
 ## Get colour for Dialogue AST type
-## Example: DialogueAst.get_type_colour(type)
+## Example: ParleyDialogueSequenceAst.get_type_colour(type)
 static func get_type_colour(type: Type) -> Color:
 	match type:
 		Type.DIALOGUE:
-			return DialogueNodeAst.get_colour()
+			return ParleyDialogueNodeAst.get_colour()
 		Type.DIALOGUE_OPTION:
-			return DialogueOptionNodeAst.get_colour()
+			return ParleyDialogueOptionNodeAst.get_colour()
 		Type.CONDITION:
-			return ConditionNodeAst.get_colour()
+			return ParleyConditionNodeAst.get_colour()
 		Type.ACTION:
-			return ActionNodeAst.get_colour()
+			return ParleyActionNodeAst.get_colour()
 		Type.START:
-			return StartNodeAst.get_colour()
+			return ParleyStartNodeAst.get_colour()
 		Type.MATCH:
-			return MatchNodeAst.get_colour()
+			return ParleyMatchNodeAst.get_colour()
 		Type.END:
-			return EndNodeAst.get_colour()
+			return ParleyEndNodeAst.get_colour()
 		Type.GROUP:
-			return GroupNodeAst.get_colour()
+			return ParleyGroupNodeAst.get_colour()
 		_:
-			return NodeAst.get_colour()
+			return ParleyNodeAst.get_colour()
 
 
 ## Get name for Dialogue AST type
-## Example: DialogueAst.get_type_name(type)
+## Example: ParleyDialogueSequenceAst.get_type_name(type)
 static func get_type_name(type: Type) -> String:
 	var key: String = Type.keys()[type]
 	return key.capitalize()
 
 
-static func is_dialogue_options(p_nodes: Array[NodeAst]) -> bool:
-	return p_nodes.filter(func(node: NodeAst) -> bool: return node.type == Type.DIALOGUE_OPTION).size() > 0
+static func is_dialogue_options(p_nodes: Array[ParleyNodeAst]) -> bool:
+	return p_nodes.filter(func(node: ParleyNodeAst) -> bool: return node.type == Type.DIALOGUE_OPTION).size() > 0
 
 
 func _parse_position_from_raw_node_ast(node: Dictionary) -> Vector2:
@@ -626,13 +625,13 @@ func _parse_group_size_from_raw_node_ast(node: Dictionary) -> Vector2:
 func _generate_node_id() -> String:
 	if nodes.size() == 0:
 		return "1"
-	return str(nodes.map(func(node: NodeAst) -> int: return int(node.id)).max() + 1)
+	return str(nodes.map(func(node: ParleyNodeAst) -> int: return int(node.id)).max() + 1)
 
 
 func _generate_edge_id() -> String:
 	if edges.size() == 0:
 		return "1"
-	return str(edges.map(func(edge: EdgeAst) -> int: return int(edge.id)).max() + 1)
+	return str(edges.map(func(edge: ParleyEdgeAst) -> int: return int(edge.id)).max() + 1)
 
 
 func _emit_dialogue_updated() -> void:
@@ -643,5 +642,5 @@ func _emit_dialogue_updated() -> void:
 
 
 func _to_string() -> String:
-	return "DialogueAst<nodes=%d edges=%d>" % [nodes.size(), edges.size()]
+	return "ParleyDialogueSequenceAst<nodes=%d edges=%d>" % [nodes.size(), edges.size()]
 #endregion

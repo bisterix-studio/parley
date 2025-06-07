@@ -6,11 +6,12 @@ class_name ParleyFactStoreEditor extends PanelContainer
 const FactEditor: PackedScene = preload("../../components/fact/fact_editor.tscn")
 
 
-var fact_store: FactStore = FactStore.new(): set = _set_fact_store
-var dialogue_sequence_ast: DialogueAst: set = _set_dialogue_sequence_ast
+var parley_manager: ParleyManager
+var fact_store: ParleyFactStore = ParleyFactStore.new(): set = _set_fact_store
+var dialogue_sequence_ast: ParleyDialogueSequenceAst: set = _set_dialogue_sequence_ast
 var fact_filter: String = "": set = _set_fact_filter
-var facts: Array[Fact] = []: set = _set_facts
-var filtered_facts: Array[Fact] = []
+var facts: Array[ParleyFact] = []: set = _set_facts
+var filtered_facts: Array[ParleyFact] = []
 
 
 @onready var facts_container: VBoxContainer = %FactsContainer
@@ -23,9 +24,9 @@ var filtered_facts: Array[Fact] = []
 @onready var register_fact_store_modal: ParleyRegisterStoreModal = %RegisterFactStoreModal
 
 
-signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
-signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
-signal fact_store_changed(fact_store: FactStore)
+signal dialogue_sequence_ast_selected(dialogue_sequence_ast: ParleyDialogueSequenceAst)
+signal dialogue_sequence_ast_changed(dialogue_sequence_ast: ParleyDialogueSequenceAst)
+signal fact_store_changed(fact_store: ParleyFactStore)
 #endregion
 
 
@@ -43,7 +44,7 @@ func _clear_facts() -> void:
 
 
 #region SETTERS
-func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: DialogueAst) -> void:
+func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	if dialogue_sequence_ast != new_dialogue_sequence_ast:
 		dialogue_sequence_ast = new_dialogue_sequence_ast
 		_reload_dialogue_sequence_ast()
@@ -53,7 +54,7 @@ func _reload_dialogue_sequence_ast() -> void:
 	_render_dialogue_sequence()
 
 
-func _set_fact_store(new_fact_store: FactStore) -> void:
+func _set_fact_store(new_fact_store: ParleyFactStore) -> void:
 	if fact_store != new_fact_store:
 		fact_store = new_fact_store
 		if fact_store_editor.resource != fact_store:
@@ -66,10 +67,10 @@ func _set_fact_store(new_fact_store: FactStore) -> void:
 	_render_save_fact_store_button()
 	_render_invalid_fact_store_button()
 
-func _set_facts(new_facts: Array[Fact]) -> void:
+func _set_facts(new_facts: Array[ParleyFact]) -> void:
 	facts = new_facts
 	filtered_facts = []
-	for fact: Fact in facts:
+	for fact: ParleyFact in facts:
 		var raw_fact_string: String = str(inst_to_dict(fact))
 		if not fact_filter or raw_fact_string.containsn(fact_filter):
 			filtered_facts.append(fact)
@@ -96,7 +97,7 @@ func _render() -> void:
 
 func _render_dialogue_sequence() -> void:
 	if dialogue_sequence_container and dialogue_sequence_ast and dialogue_sequence_ast.resource_path:
-		dialogue_sequence_container.base_type = DialogueAst.type_name
+		dialogue_sequence_container.base_type = ParleyDialogueSequenceAst.type_name
 		dialogue_sequence_container.resource = dialogue_sequence_ast
 
 
@@ -137,7 +138,7 @@ func _render_facts() -> void:
 	if facts_container:
 		_clear_facts()
 		var index: int = 0
-		for fact: Fact in filtered_facts:
+		for fact: ParleyFact in filtered_facts:
 			var fact_editor: ParleyFactEditor = FactEditor.instantiate()
 			fact_editor.fact_id = fact.id
 			fact_editor.fact_name = fact.name
@@ -153,7 +154,7 @@ func _render_facts() -> void:
 
 
 #region SIGNALS
-func _on_fact_changed(new_id: String, new_name: String, new_resource: Resource, fact: Fact) -> void:
+func _on_fact_changed(new_id: String, new_name: String, new_resource: Resource, fact: ParleyFact) -> void:
 	fact.id = new_id
 	fact.name = new_name
 	fact.ref = new_resource
@@ -161,13 +162,13 @@ func _on_fact_changed(new_id: String, new_name: String, new_resource: Resource, 
 		fact_store.emit_changed()
 
 
-func _on_fact_removed(fact_id: String, _fact: Fact) -> void:
+func _on_fact_removed(fact_id: String, _fact: ParleyFact) -> void:
 	fact_store.remove_fact(fact_id)
 	facts = fact_store.facts
 
 
 func _on_add_fact_button_pressed() -> void:
-	var _new_fact: Fact = fact_store.add_fact()
+	var _new_fact: ParleyFact = fact_store.add_fact()
 	facts = fact_store.facts
 
 
@@ -183,7 +184,7 @@ func _on_new_fact_store_button_pressed() -> void:
 	register_fact_store_modal.show()
 	register_fact_store_modal.clear()
 	register_fact_store_modal.file_mode = FileDialog.FileMode.FILE_MODE_SAVE_FILE
-	register_fact_store_modal.resource_editor.resource = FactStore.new()
+	register_fact_store_modal.resource_editor.resource = ParleyFactStore.new()
 	# TODO: get from config
 	register_fact_store_modal.path_edit.text = "res://facts/new_fact_store.tres"
 	register_fact_store_modal.id_valid = true
@@ -192,13 +193,13 @@ func _on_new_fact_store_button_pressed() -> void:
 
 
 func _on_dialogue_sequence_container_resource_changed(new_dialogue_sequence_ast: Resource) -> void:
-	if new_dialogue_sequence_ast is DialogueAst:
+	if new_dialogue_sequence_ast is ParleyDialogueSequenceAst:
 		dialogue_sequence_ast = new_dialogue_sequence_ast
 		dialogue_sequence_ast_changed.emit(dialogue_sequence_ast)
 
 
 func _on_dialogue_sequence_container_resource_selected(selected_dialogue_sequence_ast: Resource, _inspect: bool) -> void:
-	if dialogue_sequence_ast is DialogueAst:
+	if dialogue_sequence_ast is ParleyDialogueSequenceAst:
 		dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
 
 
@@ -207,8 +208,8 @@ func _on_register_fact_store_modal_store_registered(store: ParleyStore) -> void:
 
 
 func _on_fact_store_resource_changed(store: Resource) -> void:
-	if store is FactStore:
-		_register_fact_store(store as FactStore, true)
+	if store is ParleyFactStore:
+		_register_fact_store(store as ParleyFactStore, true)
 	else:
 		fact_store = null
 #endregion
@@ -216,11 +217,10 @@ func _on_fact_store_resource_changed(store: Resource) -> void:
 
 #region ACTIONS
 func _register_fact_store(store: ParleyStore, new: bool) -> void:
-	if store is FactStore:
+	if store is ParleyFactStore:
 		fact_store = store
-		if new:
-			# TODO: can we get rid of this global ref?
-			ParleyManager.get_instance().register_fact_store(fact_store)
+		if new and parley_manager:
+			parley_manager.register_fact_store(fact_store)
 		_render()
 
 

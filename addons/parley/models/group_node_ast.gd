@@ -1,7 +1,6 @@
 @tool
 
-# TODO: prefix with Parley
-class_name GroupNodeAst extends NodeAst
+class_name ParleyGroupNodeAst extends ParleyNodeAst
 
 
 const default_group_colour: Color = Color("#111a2b")
@@ -24,9 +23,9 @@ const default_group_colour: Color = Color("#111a2b")
 
 
 ## Create a new instance of a Group Node AST.
-## Example: GroupNodeAst.new("1", Vector2.ZERO, "Clues", Color("#bfc77f"))
+## Example: ParleyGroupNodeAst.new("1", Vector2.ZERO, "Clues", Color("#bfc77f"))
 func _init(p_id: String = "", p_position: Vector2 = Vector2.ZERO, p_name: String = "", p_node_ids: Array = [], p_colour: Color = default_group_colour, p_size: Vector2 = Vector2(350, 350)) -> void:
-	type = DialogueAst.Type.GROUP
+	type = ParleyDialogueSequenceAst.Type.GROUP
 	id = p_id
 	position = p_position
 	name = p_name

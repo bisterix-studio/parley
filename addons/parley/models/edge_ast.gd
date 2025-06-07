@@ -1,7 +1,5 @@
 @tool
-
-# TODO: prefix with Parley
-class_name EdgeAst extends Resource
+class_name ParleyEdgeAst extends Resource
 
 
 #region DEFS
@@ -37,7 +35,7 @@ const default_colour_override: Color = Color(0.4118, 0.4118, 0.4118, 1.0)
 
 
 ## Emitted when an Edge is changed. Details of the changed edge are included in the signal parameters.
-signal edge_changed(edge: EdgeAst)
+signal edge_changed(edge: ParleyEdgeAst)
 
 
 var ready: bool = false
@@ -76,7 +74,7 @@ func _set_id(new_id: String) -> void:
 
 
 func _set_from_node(new_from_node: String) -> void:
-	from_node = new_from_node if new_from_node.begins_with(NodeAst.id_prefix) else "%s%s" % [NodeAst.id_prefix, new_from_node]
+	from_node = new_from_node if new_from_node.begins_with(ParleyNodeAst.id_prefix) else "%s%s" % [ParleyNodeAst.id_prefix, new_from_node]
 	if ready:
 		edge_changed.emit(self)
 
@@ -88,7 +86,7 @@ func _set_from_slot(new_from_slot: int) -> void:
 
 
 func _set_to_node(new_to_node: String) -> void:
-	to_node = new_to_node if new_to_node.begins_with(NodeAst.id_prefix) else "%s%s" % [NodeAst.id_prefix, new_to_node]
+	to_node = new_to_node if new_to_node.begins_with(ParleyNodeAst.id_prefix) else "%s%s" % [ParleyNodeAst.id_prefix, new_to_node]
 	if ready:
 		edge_changed.emit(self)
 
@@ -128,5 +126,5 @@ func to_dict() -> Dictionary:
 	}
 
 func _to_string() -> String:
-	return "EdgeAst<%s>" % [str(to_dict())]
+	return "ParleyEdgeAst<%s>" % [str(to_dict())]
 #endregion

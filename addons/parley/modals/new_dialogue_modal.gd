@@ -4,7 +4,7 @@ extends Window
 @onready var path_edit: LineEdit = %PathEdit
 @onready var choose_path_modal: FileDialog = %ChoosePathModal
 
-signal dialogue_ast_created(dialogue_ast: DialogueAst)
+signal dialogue_ast_created(dialogue_ast: ParleyDialogueSequenceAst)
 
 
 # TODO: is this needed?
@@ -28,9 +28,12 @@ func _on_cancel_button_pressed() -> void:
 
 
 func _on_create_button_pressed() -> void:
-	var dialogue_ast = DialogueAst.new()
-	var dialogue_ast_path = path_edit.text
-	ResourceSaver.save(dialogue_ast, dialogue_ast_path)
+	var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new()
+	var dialogue_ast_path: String = path_edit.text
+	var result: int = ResourceSaver.save(dialogue_ast, dialogue_ast_path)
+	if result != OK:
+		ParleyUtils.log.error("Unable to save Dialogue Sequence at path %" % dialogue_ast_path)
+		return
 	if Engine.is_editor_hint():
 		EditorInterface.get_resource_filesystem().reimport_files([dialogue_ast_path])
 	dialogue_ast_created.emit(load(dialogue_ast_path))

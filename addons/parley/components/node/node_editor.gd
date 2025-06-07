@@ -1,11 +1,9 @@
 @tool
-# TODO: rename to base_node editor
-# TODO: prefix with Parley
-class_name NodeEditor extends VBoxContainer
+class_name ParleyBaseNodeEditor extends VBoxContainer
 
 
 @export var id: String = "": set = _on_id_changed
-@export var type: DialogueAst.Type = DialogueAst.Type.UNKNOWN: set = _on_type_changed
+@export var type: ParleyDialogueSequenceAst.Type = ParleyDialogueSequenceAst.Type.UNKNOWN: set = _on_type_changed
 
 
 @onready var title_label: Label = %TitleLabel
@@ -24,16 +22,16 @@ func _on_id_changed(new_id: String) -> void:
 	set_title()
 
 
-func _on_type_changed(new_type: DialogueAst.Type) -> void:
+func _on_type_changed(new_type: ParleyDialogueSequenceAst.Type) -> void:
 	if type != new_type: type = new_type
 	set_title()
 
 
 func set_title(title: String = "", colour: Variant = null) -> void:
 	if title_label:
-		title_label.text = "%s [ID: %s]" % [title if title else DialogueAst.get_type_name(type), id.replace(NodeAst.id_prefix, '')]
+		title_label.text = "%s [ID: %s]" % [title if title else ParleyDialogueSequenceAst.get_type_name(type), id.replace(ParleyNodeAst.id_prefix, '')]
 	if title_panel:
-		title_panel.get_theme_stylebox('panel').set('bg_color', colour if colour is Color else DialogueAst.get_type_colour(type))
+		title_panel.get_theme_stylebox('panel').set('bg_color', colour if colour is Color else ParleyDialogueSequenceAst.get_type_colour(type))
 
 
 func _on_delete_node_button_pressed() -> void:

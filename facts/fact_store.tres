@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="FactStore" load_steps=11 format=3 uid="uid://c3c7k7lljjqv3"]
+[gd_resource type="Resource" script_class="ParleyFactStore" load_steps=11 format=3 uid="uid://c3c7k7lljjqv3"]
 
 [ext_resource type="Script" uid="uid://dhlbgj5hd2115" path="res://addons/parley/models/fact.gd" id="1_ho4iq"]
 [ext_resource type="Script" uid="uid://cpwr6bc02ec7a" path="res://facts/alice_gave_coffee_fact.gd" id="2_6g65w"]

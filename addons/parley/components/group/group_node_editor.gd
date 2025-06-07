@@ -1,12 +1,11 @@
 @tool
-# TODO: prefix with Parley
-class_name GroupNodeEditor extends NodeEditor
+class_name ParleyGroupNodeEditor extends ParleyBaseNodeEditor
 
 signal group_node_changed(id: String, name: String, colour: Color)
 
 @export var group_name: String = "": set = _on_group_name_changed
 
-@export var colour: Color = DialogueAst.get_type_colour(DialogueAst.Type.UNKNOWN): set = _on_colour_changed
+@export var colour: Color = ParleyDialogueSequenceAst.get_type_colour(ParleyDialogueSequenceAst.Type.UNKNOWN): set = _on_colour_changed
 
 @onready var group_name_editor: LineEdit = %GroupNodeName
 @onready var colour_picker_button: ColorPickerButton = %GroupNodeColorPickerButton

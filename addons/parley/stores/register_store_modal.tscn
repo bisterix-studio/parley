@@ -38,7 +38,7 @@ placeholder = "Define the unique ID for the store (e.g. main)"
 unique_name_in_owner = true
 layout_mode = 2
 key = "Character Store"
-base_type = "CharacterStore"
+base_type = "ParleyCharacterStore"
 minimum_x = 250.0
 
 [node name="PathContainer" type="HBoxContainer" parent="NewDialogueMarginContainer/NewDialogueContainer"]

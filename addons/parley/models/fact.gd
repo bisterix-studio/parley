@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name Fact extends Resource
+class_name ParleyFact extends Resource
 
 # TODO: make a string
 ## The unique ID of the Fact. It is unique within the scope of the Parley plugin
@@ -25,4 +24,4 @@ func _init(p_id: String = "", p_name: String = "", p_ref: Resource = null) -> vo
 
 
 func _to_string() -> String:
-	return "Fact<id=%s name=%s ref=%s>" % [id || "Unknown", name || "Unknown", ref || "Unknown"]
+	return "ParleyFact<id=%s name=%s ref=%s>" % [id || "Unknown", name || "Unknown", ref || "Unknown"]

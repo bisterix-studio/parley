@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name MatchNode extends ParleyGraphNode
+class_name ParleyMatchNode extends ParleyGraphNode
 
 
 #region DEFS
@@ -22,7 +21,7 @@ static var start_slot: int = 3
 
 #region LIFECYCLE
 func _ready() -> void:
-	setup(DialogueAst.Type.MATCH)
+	setup(ParleyDialogueSequenceAst.Type.MATCH)
 	clear_all_slots()
 	set_slot(0, true, 0, Color.CHARTREUSE, false, 0, Color.CHARTREUSE)
 	set_slot(1, false, 0, Color.CHARTREUSE, false, 0, Color.CHARTREUSE)
@@ -63,7 +62,7 @@ func _render_cases() -> void:
 			await child.tree_exited
 		index = start_slot
 		for case: Variant in cases:
-			var case_label: CaseLabel = case_label_scene.instantiate()
+			var case_label: ParleyCaseLabel = case_label_scene.instantiate()
 			case_label.case = str(case).capitalize()
 			add_child(case_label)
 			set_slot(index, false, 0, Color.CHARTREUSE, true, 0, Color.CHARTREUSE)

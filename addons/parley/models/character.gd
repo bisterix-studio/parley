@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name Character extends Resource
+class_name ParleyCharacter extends Resource
 
 # TODO: maybe have this as a String
 ## The Unique ID of the Character. It is unique within the scope Parley plugin

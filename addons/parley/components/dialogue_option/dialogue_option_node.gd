@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name DialogueOptionNode extends ParleyGraphNode
+class_name ParleyDialogueOptionNode extends ParleyGraphNode
 
 
 #region DEFS
@@ -16,7 +15,7 @@ class_name DialogueOptionNode extends ParleyGraphNode
 
 #region LIFECYCLE
 func _ready() -> void:
-	setup(DialogueAst.Type.DIALOGUE_OPTION, 'Option')
+	setup(ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION, 'Option')
 	custom_minimum_size = Vector2(350, 250)
 	clear_all_slots()
 	set_slot(0, true, 0, Color.CHARTREUSE, true, 0, Color.CHARTREUSE)

@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name DialogueOptionContainer extends PanelContainer
+class_name ParleyDialogueOptionContainer extends PanelContainer
 
 
 var text: String = "[left]Unknown[/left]":

@@ -1,12 +1,11 @@
 @tool
-# TODO: prefix with Parley
-class_name StartNode extends ParleyGraphNode
+class_name ParleyStartNode extends ParleyGraphNode
 
 #############
 # Lifecycle #
 #############
 func _ready() -> void:
-	setup(DialogueAst.Type.START)
+	setup(ParleyDialogueSequenceAst.Type.START)
 	custom_minimum_size = Vector2(200, 100)
 	clear_all_slots()
 	set_slot(0, false, 0, Color.CHARTREUSE, true, 0, Color.CHARTREUSE)

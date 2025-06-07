@@ -1,9 +1,8 @@
 @tool
-# TODO: prefix with Parley
-class_name ActionNode extends ParleyGraphNode
+class_name ParleyActionNode extends ParleyGraphNode
 
 @export var description: String = "": set = _on_description_changed
-@export var action_type: ActionNodeAst.ActionType = ActionNodeAst.ActionType.SCRIPT: set = _on_action_type_changed
+@export var action_type: ParleyActionNodeAst.ActionType = ParleyActionNodeAst.ActionType.SCRIPT: set = _on_action_type_changed
 @export var action_script_name: String = "": set = _on_action_script_name_changed
 @export var values: Array = []: set = _on_values_changed
 
@@ -16,7 +15,7 @@ class_name ActionNode extends ParleyGraphNode
 # Lifecycle #
 #############
 func _ready() -> void:
-	setup(DialogueAst.Type.ACTION)
+	setup(ParleyDialogueSequenceAst.Type.ACTION)
 	clear_all_slots()
 	set_slot(0, true, 0, Color.CHARTREUSE, true, 0, Color.CHARTREUSE)
 	set_slot_style(0)
@@ -28,10 +27,10 @@ func _on_description_changed(new_description: String) -> void:
 		description_editor.text = description
 
 
-func _on_action_type_changed(new_action_type: ActionNodeAst.ActionType) -> void:
+func _on_action_type_changed(new_action_type: ParleyActionNodeAst.ActionType) -> void:
 	action_type = new_action_type
 	if action_type_editor:
-		action_type_editor.text = ActionNodeAst.get_action_type_name(action_type)
+		action_type_editor.text = ParleyActionNodeAst.get_action_type_name(action_type)
 
 
 func _on_action_script_name_changed(new_action_script_name: String) -> void:

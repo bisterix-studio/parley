@@ -1,3 +1,2 @@
 @tool
-# TODO: prefix with Parley
-class_name EndNodeEditor extends NodeEditor
+class_name ParleyEndNodeEditor extends ParleyBaseNodeEditor

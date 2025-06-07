@@ -1,10 +1,9 @@
 @tool
-# TODO: prefix with Parley
-class_name DialogueNodeEditor extends NodeEditor
+class_name ParleyDialogueNodeEditor extends ParleyBaseNodeEditor
 
 
 #region DEFS
-var character_store: CharacterStore: set = _set_character_store
+var character_store: ParleyCharacterStore: set = _set_character_store
 @export var character: String = "": set = _set_character
 @export var dialogue: String = "": set = _set_dialogue
 
@@ -28,7 +27,7 @@ func _ready() -> void:
 
 
 #region SETTERS
-func _set_character_store(new_character_store: CharacterStore) -> void:
+func _set_character_store(new_character_store: ParleyCharacterStore) -> void:
 	character_store = new_character_store
 	if character_store != new_character_store:
 		if character_store:
@@ -62,7 +61,7 @@ func _render_character_options() -> void:
 	character_selector.clear()
 	if not character_store:
 		return
-	for store_character: Character in character_store.characters:
+	for store_character: ParleyCharacter in character_store.characters:
 		character_selector.add_item(store_character.name)
 	_render_character()
 

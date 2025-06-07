@@ -1,7 +1,5 @@
 @tool
-
-# TODO: prefix with Parley
-class_name ConditionNodeAst extends NodeAst
+class_name ParleyConditionNodeAst extends ParleyNodeAst
 
 
 enum Combiner {ALL, ANY}
@@ -24,7 +22,7 @@ enum Operator {EQUAL, NOT_EQUAL}
 
 
 ## Create a new instance of a Condition Node AST.
-## Example: ConditionNodeAst.new("1", Vector2.ZERO, "Description", ConditionCombiner.ALL, [])
+## Example: ParleyConditionNodeAst.new("1", Vector2.ZERO, "Description", ConditionCombiner.ALL, [])
 func _init(
 	p_id: String = "",
 	p_position: Vector2 = Vector2.ZERO,
@@ -32,7 +30,7 @@ func _init(
 	p_condition_combiner: Combiner = Combiner.ALL,
 	p_conditions: Array = []
 ) -> void:
-	type = DialogueAst.Type.CONDITION
+	type = ParleyDialogueSequenceAst.Type.CONDITION
 	id = p_id
 	position = p_position
 	update(p_description, p_condition_combiner, p_conditions)
@@ -44,7 +42,7 @@ func to_dict() -> Dictionary:
 	var _at_path_discarded: bool = node_dict.erase('@path')
 	var _sub_path_discarded: bool = node_dict.erase('@subpath')
 	node_dict['combiner'] = str(Combiner.find_key(node_dict['combiner']))
-	node_dict['type'] = str(DialogueAst.Type.find_key(node_dict['type']))
+	node_dict['type'] = str(ParleyDialogueSequenceAst.Type.find_key(node_dict['type']))
 	return node_dict
 
 
@@ -56,7 +54,7 @@ func update(_description: String, _combiner: Combiner, _conditions: Array) -> vo
 	conditions = []
 	for _condition: Dictionary in _conditions.duplicate(true):
 		var fact_ref: String = _condition['fact_ref']
-		var operator: ConditionNodeAst.Operator = _condition['operator']
+		var operator: ParleyConditionNodeAst.Operator = _condition['operator']
 		var value: Variant = _condition['value']
 		add_condition(fact_ref, operator, value)
 

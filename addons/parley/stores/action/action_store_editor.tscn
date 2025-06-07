@@ -29,7 +29,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 key = "Action Store"
-base_type = "ActionStore"
+base_type = "ParleyActionStore"
 
 [node name="SaveActionStoreButton" type="Button" parent="ActionStoreMarginContainer/ActionStoreContainer/AvailableStoresContainer"]
 unique_name_in_owner = true

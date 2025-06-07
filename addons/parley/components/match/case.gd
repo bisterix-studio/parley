@@ -1,8 +1,7 @@
 @tool
-# TODO: prefix with Parley
-class_name CaseEditor extends HBoxContainer
+class_name ParleyCaseEditor extends HBoxContainer
 
-@export var available_cases: Array[Variant] = [MatchNodeAst.fallback_key]: set = _set_available_cases
+@export var available_cases: Array[Variant] = [ParleyMatchNodeAst.fallback_key]: set = _set_available_cases
 @export var value: Variant = "": set = _set_value
 @export var is_fallback: bool = false: set = _set_is_fallback
 
@@ -64,9 +63,9 @@ func _render_is_fallback() -> void:
 #region SETTERS
 func _set_value(_value: Variant) -> void:
 	if is_fallback:
-		value = MatchNodeAst.fallback_key
+		value = ParleyMatchNodeAst.fallback_key
 	else:
-		if value is String and value == MatchNodeAst.fallback_key:
+		if value is String and value == ParleyMatchNodeAst.fallback_key:
 			is_fallback = true
 		value = _value
 	match typeof(value):
@@ -84,13 +83,13 @@ func _set_available_cases(_available_cases: Array[Variant]) -> void:
 func _set_is_fallback(_is_fallback: bool) -> void:
 	is_fallback = _is_fallback
 	if is_fallback:
-		value = MatchNodeAst.fallback_name
+		value = ParleyMatchNodeAst.fallback_name
 	_render_is_fallback()
 #endregion
 
 #region HELPERS
 func _set_edit_mode() -> void:
-	if available_cases.size() == 1 and available_cases.has(MatchNodeAst.fallback_key):
+	if available_cases.size() == 1 and available_cases.has(ParleyMatchNodeAst.fallback_key):
 		case_editor.hide()
 		case_text_editor.show()
 	else:
@@ -109,7 +108,7 @@ func _on_case_editor_item_selected(index: int) -> void:
 		_emit_case_edited()
 
 func _emit_case_edited() -> void:
-	case_edited.emit(MatchNodeAst.fallback_key if is_fallback else value, is_fallback)
+	case_edited.emit(ParleyMatchNodeAst.fallback_key if is_fallback else value, is_fallback)
 
 func _on_delete_button_pressed() -> void:
 	case_deleted.emit()

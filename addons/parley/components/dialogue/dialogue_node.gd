@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name DialogueNode extends ParleyGraphNode
+class_name ParleyDialogueNode extends ParleyGraphNode
 
 
 #region DEFS
@@ -15,7 +14,7 @@ class_name DialogueNode extends ParleyGraphNode
 
 #region LIFECYCLE
 func _ready() -> void:
-	setup(DialogueAst.Type.DIALOGUE)
+	setup(ParleyDialogueSequenceAst.Type.DIALOGUE)
 	clear_all_slots()
 	set_slot(0, true, 0, Color.CHARTREUSE, true, 0, Color.CHARTREUSE)
 	set_slot_style(0)

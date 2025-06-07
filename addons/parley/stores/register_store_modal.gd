@@ -32,21 +32,21 @@ func _ready() -> void:
 		ParleyStore.Type.Character:
 			store_name = "Character Store"
 			resource_editor.key = store_name
-			resource_editor.base_type = "CharacterStore"
+			resource_editor.base_type = "ParleyCharacterStore"
 			# TODO: get from config
 			default_current_dir = "res://characters"
 			default_current_file = "new_character_store.tres"
 		ParleyStore.Type.Fact:
 			store_name = "Fact Store"
 			resource_editor.key = store_name
-			resource_editor.base_type = "FactStore"
+			resource_editor.base_type = "ParleyFactStore"
 			# TODO: get from config
 			default_current_dir = "res://facts"
 			default_current_file = "new_fact_store.tres"
 		ParleyStore.Type.Action:
 			store_name = "Action Store"
 			resource_editor.key = store_name
-			resource_editor.base_type = "ActionStore"
+			resource_editor.base_type = "ParleyActionStore"
 			# TODO: get from config
 			default_current_dir = "res://actions"
 			default_current_file = "new_action_store.tres"

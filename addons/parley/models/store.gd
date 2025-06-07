@@ -1,5 +1,4 @@
 @tool
-# TODO: prefix with Parley
 class_name ParleyStore extends Resource
 
 

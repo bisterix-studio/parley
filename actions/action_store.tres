@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ActionStore" load_steps=7 format=3 uid="uid://bfwohwb0ftpuq"]
+[gd_resource type="Resource" script_class="ParleyActionStore" load_steps=7 format=3 uid="uid://bfwohwb0ftpuq"]
 
 [ext_resource type="Script" uid="uid://cel0yoviy6eqi" path="res://addons/parley/models/action.gd" id="1_qwxcu"]
 [ext_resource type="Script" uid="uid://cc7stjcigkq7f" path="res://actions/advance_time_action.gd" id="2_6wvxp"]

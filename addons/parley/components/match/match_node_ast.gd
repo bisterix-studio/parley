@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name MatchNodeAst extends NodeAst
+class_name ParleyMatchNodeAst extends ParleyNodeAst
 
 
 ## The description of the Match Node AST.
@@ -19,7 +18,7 @@ class_name MatchNodeAst extends NodeAst
 
 
 ## Create a new instance of a Match Node AST.
-## Example: MatchNodeAst.new("1", Vector2.ZERO, "Description", "uid://123456", [])
+## Example: ParleyMatchNodeAst.new("1", Vector2.ZERO, "Description", "uid://123456", [])
 func _init(
 	p_id: String = "",
 	p_position: Vector2 = Vector2.ZERO,
@@ -27,7 +26,7 @@ func _init(
 	p_fact_ref: String = "",
 	p_cases: Array[Variant] = []
 ) -> void:
-	type = DialogueAst.Type.MATCH
+	type = ParleyDialogueSequenceAst.Type.MATCH
 	id = p_id
 	position = p_position
 	description = p_description

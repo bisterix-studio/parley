@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name CaseLabel extends MarginContainer
+class_name ParleyCaseLabel extends MarginContainer
 
 @export var case: String = "": set = _on_set_case
 
@@ -16,7 +15,7 @@ func _render() -> void:
 	# TODO: add well-known value from Dialogue AST
 	if is_node_ready():
 		case_label.text = case.capitalize()
-		case_label.icon = fallback_icon if case == MatchNodeAst.fallback_key else null
+		case_label.icon = fallback_icon if case == ParleyMatchNodeAst.fallback_key else null
 #endregion
 
 #region SETTERS

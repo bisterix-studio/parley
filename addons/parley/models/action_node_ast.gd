@@ -1,7 +1,5 @@
 @tool
-
-# TODO: prefix with Parley
-class_name ActionNodeAst extends NodeAst
+class_name ParleyActionNodeAst extends ParleyNodeAst
 
 
 ## The different actions available for the Dialogue AST
@@ -31,7 +29,7 @@ enum ActionType {
 
 
 ## Create a new instance of a Action Node AST.
-## Example: ActionNodeAst.new("1", Vector2.ZERO, "Description")
+## Example: ParleyActionNodeAst.new("1", Vector2.ZERO, "Description")
 func _init(
 	p_id: String = "",
 	p_position: Vector2 = Vector2.ZERO,
@@ -40,7 +38,7 @@ func _init(
 	p_action_script_ref: String = "",
 	p_values: Array = []
 ) -> void:
-	type = DialogueAst.Type.ACTION
+	type = ParleyDialogueSequenceAst.Type.ACTION
 	id = p_id
 	position = p_position
 	description = p_description
@@ -64,19 +62,19 @@ func to_dict() -> Dictionary:
 	var _at_path_discarded: bool = node_dict.erase('@path')
 	var _sub_path_discarded: bool = node_dict.erase('@subpath')
 	node_dict['action_type'] = str(ActionType.find_key(node_dict['action_type']))
-	node_dict['type'] = str(DialogueAst.Type.find_key(node_dict['type']))
+	node_dict['type'] = str(ParleyDialogueSequenceAst.Type.find_key(node_dict['type']))
 	return node_dict
 
 
 ## Get action type name for Action Node AST type
-## Example: ActionNodeAst.get_action_type_name(ActionType.SCRIPT)
+## Example: ParleyActionNodeAst.get_action_type_name(ActionType.SCRIPT)
 static func get_action_type_name(_action_type: ActionType) -> String:
 	var key: String = ActionType.keys()[_action_type]
 	return key.capitalize()
 
 
 ## Get action type for Action Node AST name
-## Example: ActionNodeAst.get_action_type("Script")
+## Example: ParleyActionNodeAst.get_action_type("Script")
 static func get_action_type(name: String) -> ActionType:
 	return ActionType[name.to_upper()]
 

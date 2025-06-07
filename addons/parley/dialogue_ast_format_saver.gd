@@ -4,7 +4,7 @@ class_name ParleyDialogueSequenceAstFormatSaver extends ResourceFormatSaver
 ## Returns the list of extensions available for saving the resource object,
 ## provided it is recognized (see _recognize).
 func _recognize(resource: Resource) -> bool:
-	return is_instance_of(resource, DialogueAst)
+	return is_instance_of(resource, ParleyDialogueSequenceAst)
 
 ## Returns whether the given resource object can be saved by this saver.
 func _get_recognized_extensions(_resource: Resource) -> PackedStringArray:
@@ -17,9 +17,9 @@ func _save(resource: Resource, path: String, _flags: int) -> Error:
 	if not resource:
 		return ERR_INVALID_PARAMETER
 	if not _recognize(resource):
-		ParleyUtils.log.error("Unable to save resource, not a DialogueAst instance.")
+		ParleyUtils.log.error("Unable to save resource, not a ParleyDialogueSequenceAst instance.")
 		return ERR_FILE_UNRECOGNIZED
-	var dialogue_ast: DialogueAst = resource
+	var dialogue_ast: ParleyDialogueSequenceAst = resource
 	var raw_file: Variant = FileAccess.open(path, FileAccess.WRITE)
 	if not raw_file:
 		var err: int = FileAccess.get_open_error()

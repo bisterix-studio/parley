@@ -3,9 +3,9 @@ class_name ParleyStoresEditor extends PanelContainer
 
 
 #region DEFS
-var action_store: ActionStore: set = _set_action_store
-var fact_store: FactStore: set = _set_fact_store
-var character_store: CharacterStore: set = _set_character_store
+var action_store: ParleyActionStore: set = _set_action_store
+var fact_store: ParleyFactStore: set = _set_fact_store
+var character_store: ParleyCharacterStore: set = _set_character_store
 
 @onready var show_character_store_button: Button = %ShowCharacterStoreButton
 @onready var show_fact_store_button: Button = %ShowFactStoreButton
@@ -22,12 +22,13 @@ enum Store {
 }
 
 
-var dialogue_ast: DialogueAst = DialogueAst.new(): set = _set_dialogue_ast
+var parley_manager: ParleyManager
+var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(): set = _set_dialogue_ast
 var current_store: Store: set = _set_current_store
 
 
-signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
-signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
+signal dialogue_sequence_ast_selected(dialogue_sequence_ast: ParleyDialogueSequenceAst)
+signal dialogue_sequence_ast_changed(dialogue_sequence_ast: ParleyDialogueSequenceAst)
 signal store_changed(type: ParleyStore.Type, store: ParleyStore)
 #endregion
 
@@ -35,6 +36,9 @@ signal store_changed(type: ParleyStore.Type, store: ParleyStore)
 #region LIFECYCLE
 func _ready() -> void:
 	current_store = Store.CHARACTER
+	character_store_editor.parley_manager = parley_manager
+	fact_store_editor.parley_manager = parley_manager
+	action_store_editor.parley_manager = parley_manager
 	ParleyUtils.signals.safe_connect(action_store_editor.action_store_changed, _on_action_store_changed)
 	ParleyUtils.signals.safe_connect(fact_store_editor.fact_store_changed, _on_fact_store_changed)
 	ParleyUtils.signals.safe_connect(character_store_editor.character_store_changed, _on_character_store_changed)
@@ -48,19 +52,19 @@ func _exit_tree() -> void:
 
 
 #region SETTERS
-func _set_action_store(new_action_store: ActionStore) -> void:
+func _set_action_store(new_action_store: ParleyActionStore) -> void:
 	action_store = new_action_store
 
 
-func _set_fact_store(new_fact_store: FactStore) -> void:
+func _set_fact_store(new_fact_store: ParleyFactStore) -> void:
 	fact_store = new_fact_store
 
 
-func _set_character_store(new_character_store: CharacterStore) -> void:
+func _set_character_store(new_character_store: ParleyCharacterStore) -> void:
 	character_store = new_character_store
 
 
-func _set_dialogue_ast(new_dialogue_ast: DialogueAst) -> void:
+func _set_dialogue_ast(new_dialogue_ast: ParleyDialogueSequenceAst) -> void:
 	if dialogue_ast != new_dialogue_ast:
 		dialogue_ast = new_dialogue_ast
 		_set_current_store(current_store)
@@ -125,15 +129,15 @@ func _render() -> void:
 
 
 #region SIGNALS
-func _on_action_store_changed(new_action_store: ActionStore) -> void:
+func _on_action_store_changed(new_action_store: ParleyActionStore) -> void:
 	store_changed.emit(ParleyStore.Type.Action, new_action_store)
 
 
-func _on_fact_store_changed(new_fact_store: FactStore) -> void:
+func _on_fact_store_changed(new_fact_store: ParleyFactStore) -> void:
 	store_changed.emit(ParleyStore.Type.Fact, new_fact_store)
 
 
-func _on_character_store_changed(new_character_store: CharacterStore) -> void:
+func _on_character_store_changed(new_character_store: ParleyCharacterStore) -> void:
 	store_changed.emit(ParleyStore.Type.Character, new_character_store)
 
 
@@ -164,26 +168,26 @@ func _on_show_action_store_button_toggled(toggled_on: bool) -> void:
 			show_character_store_button.button_pressed = false
 
 
-func _on_fact_store_editor_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: DialogueAst) -> void:
+func _on_fact_store_editor_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	dialogue_sequence_ast_changed.emit(new_dialogue_sequence_ast)
 
 
-func _on_fact_store_editor_dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: DialogueAst) -> void:
+func _on_fact_store_editor_dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
 
 
-func _on_action_store_editor_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: DialogueAst) -> void:
+func _on_action_store_editor_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	dialogue_sequence_ast_changed.emit(new_dialogue_sequence_ast)
 
 
-func _on_action_store_editor_dialogue_sequence_ast_selected(new_dialogue_sequence_ast: DialogueAst) -> void:
+func _on_action_store_editor_dialogue_sequence_ast_selected(new_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	dialogue_sequence_ast_selected.emit(new_dialogue_sequence_ast)
 
 
-func _on_character_store_editor_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: DialogueAst) -> void:
+func _on_character_store_editor_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	dialogue_sequence_ast_changed.emit(new_dialogue_sequence_ast)
 
 
-func _on_character_store_editor_dialogue_sequence_ast_selected(new_dialogue_sequence_ast: DialogueAst) -> void:
+func _on_character_store_editor_dialogue_sequence_ast_selected(new_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	dialogue_sequence_ast_selected.emit(new_dialogue_sequence_ast)
 #endregion

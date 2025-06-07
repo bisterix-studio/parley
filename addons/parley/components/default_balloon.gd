@@ -15,23 +15,23 @@ const next_dialogue_button: PackedScene = preload('./next_dialogue_button.tscn')
 
 
 var ctx: Dictionary = {}
-var dialogue_ast: DialogueAst
+var dialogue_ast: ParleyDialogueSequenceAst
 var dialogue_history: Array = []
 ## Temporary game states
 var temporary_game_states: Array = []
 ## See if we are waiting for the player
 var is_waiting_for_input: bool = false
-var previous_node_ast: NodeAst = null
-var current_node_asts: Array[NodeAst]: set = _set_current_node_asts
+var previous_node_ast: ParleyNodeAst = null
+var current_node_asts: Array[ParleyNodeAst]: set = _set_current_node_asts
 
 
-func _set_current_node_asts(p_current_node_asts: Array[NodeAst]) -> void:
+func _set_current_node_asts(p_current_node_asts: Array[ParleyNodeAst]) -> void:
 	is_waiting_for_input = false
 	balloon.focus_mode = Control.FOCUS_ALL
 	balloon.grab_focus()
 
 	# The dialogue has finished so close the balloon
-	if p_current_node_asts.size() == 0 or is_instance_of(p_current_node_asts.front(), EndNodeAst):
+	if p_current_node_asts.size() == 0 or is_instance_of(p_current_node_asts.front(), ParleyEndNodeAst):
 		queue_free()
 		return
 
@@ -43,7 +43,7 @@ func _set_current_node_asts(p_current_node_asts: Array[NodeAst]) -> void:
 	balloon.show()
 	current_node_asts = p_current_node_asts
 	var current_children: Array[Node] = balloon_container.get_children()
-	var first_node: NodeAst = p_current_node_asts.front()
+	var first_node: ParleyNodeAst = p_current_node_asts.front()
 	var next_children: Array[Node] = _build_next_children(current_children, first_node)
 	if next_children.size() == 0:
 		return
@@ -51,7 +51,7 @@ func _set_current_node_asts(p_current_node_asts: Array[NodeAst]) -> void:
 	_handle_next_actions(current_children, next_children)
 
 	balloon.focus_mode = Control.FOCUS_NONE
-	if not DialogueAst.is_dialogue_options(current_node_asts):
+	if not ParleyDialogueSequenceAst.is_dialogue_options(current_node_asts):
 		var next_button: Control = next_children.back()
 		ParleyUtils.signals.safe_connect(next_button.gui_input, _on_next_dialogue_button_gui_input.bind(next_button))
 		if not next_button.is_node_ready():
@@ -59,11 +59,11 @@ func _set_current_node_asts(p_current_node_asts: Array[NodeAst]) -> void:
 		next_button.grab_focus()
 
 
-func _build_next_children(current_children: Array[Node], current_node_ast: NodeAst) -> Array[Node]:
+func _build_next_children(current_children: Array[Node], current_node_ast: ParleyNodeAst) -> Array[Node]:
 	var next_children: Array[Node] = []
-	if is_instance_of(current_node_ast, DialogueNodeAst) and not (current_node_ast as DialogueNodeAst).text.is_empty():
+	if is_instance_of(current_node_ast, ParleyDialogueNodeAst) and not (current_node_ast as ParleyDialogueNodeAst).text.is_empty():
 		next_children.append_array(_build_next_dialogue_children(current_node_ast))
-	elif current_node_asts.filter(func(_n: NodeAst) -> bool: return is_instance_of(current_node_ast, DialogueOptionNodeAst)).size() == current_node_asts.size():
+	elif current_node_asts.filter(func(_n: ParleyNodeAst) -> bool: return is_instance_of(current_node_ast, ParleyDialogueOptionNodeAst)).size() == current_node_asts.size():
 		next_children.append_array(_build_next_dialogue_option_children(current_children))
 	else:
 		ParleyUtils.log.error("Invalid dialogue balloon nodes. Stopping processing.")
@@ -71,23 +71,23 @@ func _build_next_children(current_children: Array[Node], current_node_ast: NodeA
 	return next_children
 
 
-func _build_next_dialogue_children(current_node_ast: NodeAst) -> Array[Node]:
+func _build_next_dialogue_children(current_node_ast: ParleyNodeAst) -> Array[Node]:
 	var next_children: Array[Node] = []
-	if previous_node_ast is DialogueOptionNodeAst:
+	if previous_node_ast is ParleyDialogueOptionNodeAst:
 		# Generate a new dialogue instance as if it were a dialogue
 		# because it effectively is now
-		var previous_dialogue_option_container: DialogueContainer = dialogue_container.instantiate()
-		var dialogue_option_node_ast: DialogueOptionNodeAst = previous_node_ast
-		var previous_node_dialogue_ast: DialogueNodeAst = DialogueNodeAst.new(dialogue_option_node_ast.id, dialogue_option_node_ast.position, dialogue_option_node_ast.character, dialogue_option_node_ast.text)
+		var previous_dialogue_option_container: ParleyDialogueContainer = dialogue_container.instantiate()
+		var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = previous_node_ast
+		var previous_node_dialogue_ast: ParleyDialogueNodeAst = ParleyDialogueNodeAst.new(dialogue_option_node_ast.id, dialogue_option_node_ast.position, dialogue_option_node_ast.character, dialogue_option_node_ast.text)
 		previous_dialogue_option_container.dialogue_node = previous_node_dialogue_ast
 		previous_dialogue_option_container.set_meta('ast', previous_node_dialogue_ast)
 		next_children.append(previous_dialogue_option_container)
 		next_children.append(_create_horizontal_separator(previous_dialogue_option_container))
-	var next_dialogue_container: DialogueContainer = dialogue_container.instantiate()
+	var next_dialogue_container: ParleyDialogueContainer = dialogue_container.instantiate()
 	next_dialogue_container.dialogue_node = current_node_ast
 	next_dialogue_container.set_meta('ast', current_node_ast)
 	next_children.append(next_dialogue_container)
-	var next_dialogue_button_control: NextDialogueButton = next_dialogue_button.instantiate()
+	var next_dialogue_button_control: ParleyNextDialogueButton = next_dialogue_button.instantiate()
 	if dialogue_ast.is_at_end(ctx, current_node_ast):
 		next_dialogue_button_control.text = 'Leave'
 	next_children.append(next_dialogue_button_control)
@@ -101,7 +101,7 @@ func _build_next_dialogue_option_children(current_children: Array[Node]) -> Arra
 		var previous_node: Control = previous_node_variant
 		next_children.append(previous_node)
 		next_children.append(_create_horizontal_separator(previous_node))
-	var dialogue_options_container_instance: DialogueOptionsMenu = dialogue_options_container.instantiate()
+	var dialogue_options_container_instance: ParleyDialogueOptionsMenu = dialogue_options_container.instantiate()
 	dialogue_options_container_instance.dialogue_options = current_node_asts
 	ParleyUtils.signals.safe_connect(dialogue_options_container_instance.dialogue_option_selected, _on_dialogue_options_container_dialogue_option_selected)
 	next_children.append(dialogue_options_container_instance)
@@ -111,7 +111,7 @@ func _build_next_dialogue_option_children(current_children: Array[Node]) -> Arra
 func _handle_next_actions(current_children: Array[Node], next_children: Array[Node]) -> void:
 	var next_actions: Array[Dictionary] = []
 	for child: Node in current_children:
-		if child is DialogueContainer:
+		if child is ParleyDialogueContainer:
 			if next_children.has(child):
 				next_actions.append({
 					'action': 'move_to_top',
@@ -162,8 +162,8 @@ func _exit_top(next_action: Dictionary) -> void:
 		var node: Node = child
 		if node.has_meta('ast'):
 			var ast: Variant = node.get_meta('ast')
-			if ast is NodeAst:
-				var node_ast: NodeAst = ast
+			if ast is ParleyNodeAst:
+				var node_ast: ParleyNodeAst = ast
 				dialogue_history.append(node_ast.duplicate())
 			node.queue_free()
 			await node.tree_exited
@@ -203,7 +203,7 @@ func _render_top() -> void:
 	if not previous_node_ast:
 		return
 	match previous_node_ast.type:
-		DialogueAst.Type.DIALOGUE:
+		ParleyDialogueSequenceAst.Type.DIALOGUE:
 			pass
 			
 
@@ -218,13 +218,13 @@ func _unhandled_input(_event: InputEvent) -> void:
 
 # TODO: add a context param
 ## Start some dialogue
-func start(_ctx: Dictionary, _dialogue_ast: DialogueAst, start_node: NodeAst = null) -> void:
+func start(_ctx: Dictionary, _dialogue_ast: ParleyDialogueSequenceAst, start_node: ParleyNodeAst = null) -> void:
 	balloon.show()
 	temporary_game_states = [self]
 	is_waiting_for_input = false
 	ctx = _ctx
 	dialogue_ast = _dialogue_ast
-	if start_node is DialogueNodeAst or start_node is DialogueOptionNodeAst:
+	if start_node is ParleyDialogueNodeAst or start_node is ParleyDialogueOptionNodeAst:
 		current_node_asts = [start_node]
 	elif start_node:
 		current_node_asts = dialogue_ast.process_next(ctx, start_node)
@@ -233,7 +233,7 @@ func start(_ctx: Dictionary, _dialogue_ast: DialogueAst, start_node: NodeAst = n
 
 
 ## Process the next Nodes
-func next(current_node_ast: NodeAst) -> void:
+func next(current_node_ast: ParleyNodeAst) -> void:
 	# Probably want to emit at this point? Or maybe earlier
 	dialogue_history.append(current_node_ast)
 	previous_node_ast = current_node_ast
@@ -243,12 +243,12 @@ func next(current_node_ast: NodeAst) -> void:
 #region Signals
 func _on_balloon_gui_input(event: InputEvent) -> void:
 	if not is_waiting_for_input: return
-	if DialogueAst.is_dialogue_options(current_node_asts): return
+	if ParleyDialogueSequenceAst.is_dialogue_options(current_node_asts): return
 
 	# When there are no dialogue options the balloon itself is the clickable thing
 	get_viewport().set_input_as_handled()
 
-	var current_node: DialogueNodeAst = current_node_asts.front()
+	var current_node: ParleyDialogueNodeAst = current_node_asts.front()
 	if event is InputEventMouseButton and event.is_pressed() and event.get('button_index') == MOUSE_BUTTON_LEFT:
 		next(current_node)
 	elif event.is_action_pressed(advance_dialogue_action) and get_viewport().gui_get_focus_owner() == balloon:
@@ -256,16 +256,16 @@ func _on_balloon_gui_input(event: InputEvent) -> void:
 
 
 func _on_next_dialogue_button_gui_input(event: InputEvent, item: Control) -> void:
-	if DialogueAst.is_dialogue_options(current_node_asts): return
+	if ParleyDialogueSequenceAst.is_dialogue_options(current_node_asts): return
 	get_viewport().set_input_as_handled()
 
-	var current_node: DialogueNodeAst = current_node_asts.front()
+	var current_node: ParleyDialogueNodeAst = current_node_asts.front()
 	if event is InputEventMouseButton and event.is_pressed() and event.get('button_index') == MOUSE_BUTTON_LEFT:
 		next(current_node)
-	elif event is InputEventKey and event.is_action_pressed(advance_dialogue_action) and item is NextDialogueButton and get_viewport().gui_get_focus_owner() == item:
+	elif event is InputEventKey and event.is_action_pressed(advance_dialogue_action) and item is ParleyNextDialogueButton and get_viewport().gui_get_focus_owner() == item:
 		next(current_node)
 
 
-func _on_dialogue_options_container_dialogue_option_selected(current_node: DialogueOptionNodeAst) -> void:
+func _on_dialogue_options_container_dialogue_option_selected(current_node: ParleyDialogueOptionNodeAst) -> void:
 	next(current_node)
 #endregion

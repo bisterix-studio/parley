@@ -5,13 +5,13 @@ class_name ParleyManager extends Node
 #region DEFS
 const ParleyConstants = preload('./constants.gd')
 
-var fact_store: FactStore:
+var fact_store: ParleyFactStore:
 	set = _set_fact_store,
 	get = _get_fact_store
-var character_store: CharacterStore:
+var character_store: ParleyCharacterStore:
 	set = _set_character_store,
 	get = _get_character_store
-var action_store: ActionStore:
+var action_store: ParleyActionStore:
 	set = _set_action_store,
 	get = _get_action_store
 #endregion
@@ -33,7 +33,7 @@ static func get_instance() -> ParleyManager:
 	Engine.register_singleton(ParleyConstants.PARLEY_MANAGER_SINGLETON, parley_manager)
 	return parley_manager
 
-func register_action_store(store: ActionStore) -> void:
+func register_action_store(store: ParleyActionStore) -> void:
 	var path: String = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATH)
 	var uid: String = ParleyUtils.resource.get_uid(store)
 	if not uid:
@@ -45,7 +45,7 @@ func register_action_store(store: ActionStore) -> void:
 	action_store = store
 
 
-func register_fact_store(store: FactStore) -> void:
+func register_fact_store(store: ParleyFactStore) -> void:
 	var path: String = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)
 	var uid: String = ParleyUtils.resource.get_uid(store)
 	if not uid:
@@ -57,7 +57,7 @@ func register_fact_store(store: FactStore) -> void:
 	fact_store = store
 
 
-func register_character_store(store: CharacterStore) -> void:
+func register_character_store(store: ParleyCharacterStore) -> void:
 	var path: String = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATH)
 	var uid: String = ParleyUtils.resource.get_uid(store)
 	if not uid:
@@ -71,26 +71,26 @@ func register_character_store(store: CharacterStore) -> void:
 
 
 #region SETTERS
-func _set_action_store(new_action_store: ActionStore) -> void:
+func _set_action_store(new_action_store: ParleyActionStore) -> void:
 	action_store = new_action_store
 
 
-func _set_fact_store(new_fact_store: FactStore) -> void:
+func _set_fact_store(new_fact_store: ParleyFactStore) -> void:
 	fact_store = new_fact_store
 
 
-func _set_character_store(new_character_store: CharacterStore) -> void:
+func _set_character_store(new_character_store: ParleyCharacterStore) -> void:
 	character_store = new_character_store
 #endregion
 
 
 #region GETTERS
-func _get_action_store() -> ActionStore:
+func _get_action_store() -> ParleyActionStore:
 	var path: String = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATH)
 	if not ResourceLoader.exists(path):
 		if not action_store:
 			ParleyUtils.log.warn("Parley Action Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Action Store, data within this Action Store will be lost upon reload." % path)
-			action_store = ActionStore.new()
+			action_store = ParleyActionStore.new()
 		return action_store
 	if not action_store:
 		action_store = load(path)
@@ -100,12 +100,12 @@ func _get_action_store() -> ActionStore:
 	return action_store
 
 
-func _get_character_store() -> CharacterStore:
+func _get_character_store() -> ParleyCharacterStore:
 	var path: String = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATH)
 	if not ResourceLoader.exists(path):
 		if not character_store:
 			ParleyUtils.log.warn("Parley Character Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Character Store, data within this Character Store will be lost upon reload." % path)
-			character_store = CharacterStore.new()
+			character_store = ParleyCharacterStore.new()
 		return character_store
 	if not character_store:
 		character_store = load(path)
@@ -115,12 +115,12 @@ func _get_character_store() -> CharacterStore:
 	return character_store
 
 
-func _get_fact_store() -> FactStore:
+func _get_fact_store() -> ParleyFactStore:
 	var path: String = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)
 	if not ResourceLoader.exists(path):
 		if not fact_store:
 			ParleyUtils.log.warn("Parley Fact Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Fact Store, data within this Fact Store will be lost upon reload." % path)
-			fact_store = FactStore.new()
+			fact_store = ParleyFactStore.new()
 		return fact_store
 	if not fact_store:
 		fact_store = load(path)
@@ -137,7 +137,7 @@ func _init_character_store() -> void:
 	if ResourceLoader.exists(character_store_path):
 		character_store = ResourceLoader.load(character_store_path)
 	else:
-		character_store = CharacterStore.new()
+		character_store = ParleyCharacterStore.new()
 		var _result: bool = ResourceSaver.save(character_store, character_store_path)
 #endregion
 
@@ -154,7 +154,7 @@ func set_current_dialogue_sequence(path: String) -> void:
 ## Plugin use only
 func load_current_dialogue_sequence() -> Variant:
 	if not Engine.is_editor_hint():
-		return DialogueAst.new()
+		return ParleyDialogueSequenceAst.new()
 	var current_dialogue_sequence_path: Variant = ParleySettings.get_user_value(ParleyConstants.EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH)
 	if current_dialogue_sequence_path:
 		var path: String = current_dialogue_sequence_path
@@ -164,15 +164,15 @@ func load_current_dialogue_sequence() -> Variant:
 
 
 ## Plugin use only
-func load_test_dialogue_sequence() -> DialogueAst:
+func load_test_dialogue_sequence() -> ParleyDialogueSequenceAst:
 	var current_dialogue_sequence_path: String = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH)
 	if current_dialogue_sequence_path and ResourceLoader.exists(current_dialogue_sequence_path):
 		return load(current_dialogue_sequence_path)
-	return DialogueAst.new()
+	return ParleyDialogueSequenceAst.new()
 
 
 ## Plugin use only
-func get_test_start_node(dialogue_ast: DialogueAst) -> Variant:
+func get_test_start_node(dialogue_ast: ParleyDialogueSequenceAst) -> Variant:
 	var start_node_id_variant: Variant = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_START_NODE_ID)
 	var from_start: Variant = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START)
 	if not from_start and start_node_id_variant and is_instance_of(start_node_id_variant, TYPE_STRING):
@@ -208,7 +208,7 @@ func set_test_dialogue_sequence_start_node(node_id: Variant) -> void:
 
 
 ## Plugin use only
-func run_test_dialogue_from_start(dialogue_ast: DialogueAst) -> void:
+func run_test_dialogue_from_start(dialogue_ast: ParleyDialogueSequenceAst) -> void:
 	if not Engine.is_editor_hint():
 		return
 	set_test_dialogue_sequence_running(true)
@@ -219,7 +219,7 @@ func run_test_dialogue_from_start(dialogue_ast: DialogueAst) -> void:
 
 
 ## Plugin use only
-func run_test_dialogue_from_selected(dialogue_ast: DialogueAst, selected_node_id: Variant) -> void:
+func run_test_dialogue_from_selected(dialogue_ast: ParleyDialogueSequenceAst, selected_node_id: Variant) -> void:
 	if not Engine.is_editor_hint():
 		return
 	set_test_dialogue_sequence_running(true)

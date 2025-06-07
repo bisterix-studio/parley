@@ -1,7 +1,6 @@
 @tool
 
-# TODO: prefix with Parley
-class_name NodeAst extends Resource
+class_name ParleyNodeAst extends Resource
 
 
 #region DEFS
@@ -9,12 +8,12 @@ class_name NodeAst extends Resource
 ## Example: "1"
 @export var id: String: set = _set_id
 
-# TODO: is there a circular dep issue for DialogueAst.Type here?
+# TODO: is there a circular dep issue for ParleyDialogueSequenceAst.Type here?
 # Is this symptomatic of a wider problem perhaps?
 
 ## The type of the Node AST.
-## Example: DialogueAst.Type.START
-@export var type: DialogueAst.Type = DialogueAst.Type.UNKNOWN
+## Example: ParleyDialogueSequenceAst.Type.START
+@export var type: ParleyDialogueSequenceAst.Type = ParleyDialogueSequenceAst.Type.UNKNOWN
 
 ## The position of the Node AST.
 ## Example: "(1, 2)"
@@ -46,12 +45,12 @@ func to_dict() -> Dictionary:
 	var node_dict: Dictionary = inst_to_dict(self)
 	var _path_result: bool = node_dict.erase('@path')
 	var _subpath_result: bool = node_dict.erase('@subpath')
-	node_dict['type'] = str(DialogueAst.Type.find_key(node_dict['type']))
+	node_dict['type'] = str(ParleyDialogueSequenceAst.Type.find_key(node_dict['type']))
 	return node_dict
 
 
 func _to_string() -> String:
-	return "NodeAst<%s>" % [str(to_dict())]
+	return "ParleyNodeAst<%s>" % [str(to_dict())]
 
 
 static func get_colour() -> Color:

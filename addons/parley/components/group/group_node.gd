@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name GroupNode extends ParleyGraphNode
+class_name ParleyGroupNode extends ParleyGraphNode
 
 ## The name associated with the Group Node AST
 var group_name: String = "": set = _on_group_name_changed
@@ -11,14 +10,14 @@ var node_ids: Array = []
 
 
 ## The colour associated with the Group Node AST
-var colour: Color = DialogueAst.get_type_colour(DialogueAst.Type.GROUP).lightened(0.5): set = _on_colour_changed
+var colour: Color = ParleyDialogueSequenceAst.get_type_colour(ParleyDialogueSequenceAst.Type.GROUP).lightened(0.5): set = _on_colour_changed
 
 
 #############
 # Lifecycle #
 #############
 func _ready() -> void:
-	setup(DialogueAst.Type.GROUP, group_name)
+	setup(ParleyDialogueSequenceAst.Type.GROUP, group_name)
 	z_index = 0
 	custom_minimum_size = Vector2(350, 350)
 	clear_all_slots()

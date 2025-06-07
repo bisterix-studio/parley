@@ -1,12 +1,11 @@
 @tool
-# TODO: prefix with Parley
-class_name ActionNodeEditor extends NodeEditor
+class_name ParleyActionNodeEditor extends ParleyBaseNodeEditor
 
 
 #region DEFS
-var action_store: ActionStore: set = _set_action_store
+var action_store: ParleyActionStore: set = _set_action_store
 @export var description: String = "": set = _set_description
-@export var action_type: ActionNodeAst.ActionType = ActionNodeAst.ActionType.SCRIPT: set = _set_action_type
+@export var action_type: ParleyActionNodeAst.ActionType = ParleyActionNodeAst.ActionType.SCRIPT: set = _set_action_type
 @export var action_script_ref: String = "": set = _set_action_script_ref
 @export var values: Array = []: set = _set_values
 
@@ -17,7 +16,7 @@ var action_store: ActionStore: set = _set_action_store
 @onready var values_editor: TextEdit = %ActionValueDescription
 
 
-signal action_node_changed(id: String, description: String, action: ActionNodeAst.ActionType, action_script_ref: String, values: Array)
+signal action_node_changed(id: String, description: String, action: ParleyActionNodeAst.ActionType, action_script_ref: String, values: Array)
 #endregion
 
 
@@ -31,7 +30,7 @@ func _ready() -> void:
 
 
 #region SETTERS
-func _set_action_store(new_action_store: ActionStore) -> void:
+func _set_action_store(new_action_store: ParleyActionStore) -> void:
 	if action_store != new_action_store:
 		if action_store:
 			ParleyUtils.signals.safe_disconnect(action_store.changed, _on_action_store_changed)
@@ -46,7 +45,7 @@ func _set_description(new_description: String) -> void:
 	_render_description()
 
 
-func _set_action_type(new_action_type: ActionNodeAst.ActionType) -> void:
+func _set_action_type(new_action_type: ParleyActionNodeAst.ActionType) -> void:
 	action_type = new_action_type
 	_select_action_type()
 
@@ -74,7 +73,7 @@ func _render_action_options() -> void:
 	if action_script_selector:
 		action_script_selector.clear()
 		if action_store:
-			for action: Action in action_store.actions:
+			for action: ParleyAction in action_store.actions:
 				action_script_selector.add_item(action.name)
 		_select_action_script()
 
@@ -94,7 +93,7 @@ func _select_action_type() -> void:
 	if action_type_editor:
 		var selected_index: int = -1
 		var count: int = 0
-		for action_type_def: ActionNodeAst.ActionType in ActionNodeAst.ActionType.values():
+		for action_type_def: ParleyActionNodeAst.ActionType in ParleyActionNodeAst.ActionType.values():
 			if action_type == action_type_def:
 				selected_index = count
 			count += 1
@@ -124,7 +123,7 @@ func _on_action_description_text_changed() -> void:
 
 func _on_action_type_option_item_selected(index: int) -> void:
 	var action_text: String = action_type_editor.get_item_text(index)
-	action_type = ActionNodeAst.get_action_type(action_text)
+	action_type = ParleyActionNodeAst.get_action_type(action_text)
 	_emit_action_node_changed()
 
 
@@ -140,7 +139,7 @@ func _on_action_value_description_text_changed() -> void:
 func _on_action_script_selector_item_selected(index: int) -> void:
 	if index == -1 or index >= action_store.actions.size():
 		return
-	var action: Action = action_store.actions[index]
+	var action: ParleyAction = action_store.actions[index]
 	action_script_ref = ParleyUtils.resource.get_uid(action.ref)
 	_emit_action_node_changed()
 
@@ -148,7 +147,7 @@ func _on_action_script_selector_item_selected(index: int) -> void:
 func _on_edit_action_script_button_pressed() -> void:
 	if not action_store:
 		return
-	var action: Action = action_store.get_action_by_ref(action_script_ref)
+	var action: ParleyAction = action_store.get_action_by_ref(action_script_ref)
 	if action.ref is Script:
 		var script: Script = action.ref
 		EditorInterface.edit_script(script)

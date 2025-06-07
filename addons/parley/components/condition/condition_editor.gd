@@ -4,10 +4,10 @@ class_name ParleyConditionEditor extends PanelContainer
 
 
 #region DEFS
-@export var fact_store: FactStore: set = _set_fact_store
+@export var fact_store: ParleyFactStore: set = _set_fact_store
 @export var id: String = ""
 @export var fact_ref: String = "": set = _set_fact_ref
-@export var operator: ConditionNodeAst.Operator = ConditionNodeAst.Operator.EQUAL
+@export var operator: ParleyConditionNodeAst.Operator = ParleyConditionNodeAst.Operator.EQUAL
 @export var value: String = ""
 
 
@@ -16,7 +16,7 @@ class_name ParleyConditionEditor extends PanelContainer
 @onready var value_editor: ParleyStringEditor = %ValueEditor
 
 
-signal condition_changed(id: String, fact_ref: String, operator: ConditionNodeAst.Operator, value: String)
+signal condition_changed(id: String, fact_ref: String, operator: ParleyConditionNodeAst.Operator, value: String)
 signal condition_removed(id: String)
 #endregion
 
@@ -32,7 +32,7 @@ func _ready() -> void:
 
 
 #region SETTERS
-func update(p_fact_ref: String, p_operator: ConditionNodeAst.Operator, p_value: String) -> void:
+func update(p_fact_ref: String, p_operator: ParleyConditionNodeAst.Operator, p_value: String) -> void:
 	fact_ref = p_fact_ref
 	operator = p_operator
 	value = p_value
@@ -46,7 +46,7 @@ func _set_fact_ref(new_fact_ref: String) -> void:
 	_render_fact()
 
 
-func _set_fact_store(new_fact_store: FactStore) -> void:
+func _set_fact_store(new_fact_store: ParleyFactStore) -> void:
 	fact_store = new_fact_store
 	if fact_store != new_fact_store:
 		if fact_store:
@@ -65,7 +65,7 @@ func _render_fact_options() -> void:
 	fact_selector.clear()
 	if not fact_store:
 		return
-	for fact: Fact in fact_store.facts:
+	for fact: ParleyFact in fact_store.facts:
 		fact_selector.add_item(fact.name)
 	_render_fact()
 
@@ -80,8 +80,8 @@ func _render_fact() -> void:
 func _render_operator_options() -> void:
 	if operator_editor:
 		operator_editor.clear()
-		for key: String in ConditionNodeAst.Operator:
-			var item_id: int = ConditionNodeAst.Operator[key]
+		for key: String in ParleyConditionNodeAst.Operator:
+			var item_id: int = ParleyConditionNodeAst.Operator[key]
 			operator_editor.add_item(key.capitalize(), item_id)
 
 
@@ -98,7 +98,7 @@ func _render_value() -> void:
 
 #region SIGNALS
 func _on_operator_editor_item_selected(selected_operator: int) -> void:
-	operator = selected_operator as ConditionNodeAst.Operator
+	operator = selected_operator as ParleyConditionNodeAst.Operator
 	_emit_condition_changed()
 
 
@@ -110,7 +110,7 @@ func _on_value_editor_value_changed(new_value: String) -> void:
 func _on_fact_selector_item_selected(index: int) -> void:
 	if index == -1 or index >= fact_store.facts.size():
 		return
-	var fact: Fact = fact_store.facts[index]
+	var fact: ParleyFact = fact_store.facts[index]
 	fact_ref = ParleyUtils.resource.get_uid(fact.ref)
 	_emit_condition_changed()
 
@@ -118,7 +118,7 @@ func _on_fact_selector_item_selected(index: int) -> void:
 func _on_edit_fact_button_pressed() -> void:
 	if not fact_store:
 		return
-	var fact: Fact = fact_store.get_fact_by_ref(fact_ref)
+	var fact: ParleyFact = fact_store.get_fact_by_ref(fact_ref)
 	if fact.ref is Script:
 		var script: Script = fact.ref
 		EditorInterface.edit_script(script)

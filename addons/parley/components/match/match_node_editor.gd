@@ -1,9 +1,9 @@
 @tool
-class_name ParleyMatchNodeEditor extends NodeEditor
+class_name ParleyMatchNodeEditor extends ParleyBaseNodeEditor
 
 
 #region DEFS
-var fact_store: FactStore = FactStore.new(): set = _set_fact_store
+var fact_store: ParleyFactStore = ParleyFactStore.new(): set = _set_fact_store
 var description: String = "": set = _set_description
 var fact_ref: String = "": set = _set_fact_ref
 var cases: Array[Variant] = []: set = _set_cases
@@ -19,7 +19,7 @@ var cases: Array[Variant] = []: set = _set_cases
 const case_editor: PackedScene = preload("./case.tscn")
 
 
-var available_cases: Array[Variant] = [MatchNodeAst.fallback_key]
+var available_cases: Array[Variant] = [ParleyMatchNodeAst.fallback_key]
 var has_fallback: bool = false: set = _on_set_has_fallback
 
 
@@ -39,7 +39,7 @@ func _ready() -> void:
 
 
 #region SETTERS
-func _set_fact_store(new_fact_store: FactStore) -> void:
+func _set_fact_store(new_fact_store: ParleyFactStore) -> void:
 	fact_store = new_fact_store
 	if fact_store != new_fact_store:
 		if fact_store:
@@ -64,7 +64,7 @@ func _on_set_has_fallback(_has_fallback: bool) -> void:
 func _set_fact_ref(new_fact_ref: String) -> void:
 	fact_ref = new_fact_ref
 	_render_fact()
-	var fact: Fact = fact_store.get_fact_by_ref(fact_ref)
+	var fact: ParleyFact = fact_store.get_fact_by_ref(fact_ref)
 	if fact_store and fact.id != "":
 		var script: GDScript = load(fact_ref)
 		if script is not GDScript:
@@ -78,7 +78,7 @@ func _set_fact_ref(new_fact_ref: String) -> void:
 		new_available_cases.append_array(fact_interface.available_values())
 		# TODO: create a wrapper for this
 		fact_interface.free()
-		new_available_cases.append(MatchNodeAst.fallback_key)
+		new_available_cases.append(ParleyMatchNodeAst.fallback_key)
 		available_cases = new_available_cases
 		var filtered_cases: Array[Variant] = []
 		for case: Variant in cases:
@@ -115,7 +115,7 @@ func _render_fact_options() -> void:
 	fact_selector.clear()
 	if not fact_store:
 		return
-	for fact: Fact in fact_store.facts:
+	for fact: ParleyFact in fact_store.facts:
 		fact_selector.add_item(fact.name)
 	_render_fact()
 
@@ -130,17 +130,17 @@ func _render_fact() -> void:
 func _render_cases() -> void:
 	if cases_editor:
 		for child: Node in cases_editor.get_children():
-			if child is CaseEditor:
+			if child is ParleyCaseEditor:
 				cases_editor.remove_child(child)
 				child.queue_free()
 		var index: int = 0
 		var _has_fallback: bool = false
 		for case: Variant in cases:
-			var case_inst: CaseEditor = case_editor.instantiate()
+			var case_inst: ParleyCaseEditor = case_editor.instantiate()
 			case_inst.available_cases = available_cases
 			case_inst.value = case
-			if case is String and case == MatchNodeAst.fallback_key:
-				case_inst.value = MatchNodeAst.fallback_key
+			if case is String and case == ParleyMatchNodeAst.fallback_key:
+				case_inst.value = ParleyMatchNodeAst.fallback_key
 				case_inst.is_fallback = true
 				_has_fallback = true
 			else:
@@ -156,7 +156,7 @@ func _render_cases() -> void:
 
 #region SIGNALS
 func _on_case_edited(value: String, is_fallback: bool, index: int) -> void:
-	cases[index] = MatchNodeAst.fallback_key if is_fallback else value
+	cases[index] = ParleyMatchNodeAst.fallback_key if is_fallback else value
 	_emit_match_node_changed()
 
 
@@ -175,7 +175,7 @@ func _on_match_description_text_changed() -> void:
 func _on_fact_selector_item_selected(index: int) -> void:
 	if index == -1 or index >= fact_store.facts.size():
 		return
-	var fact: Fact = fact_store.facts[index]
+	var fact: ParleyFact = fact_store.facts[index]
 	fact_ref = ParleyUtils.resource.get_uid(fact.ref)
 	_emit_match_node_changed()
 
@@ -194,7 +194,7 @@ func _on_add_case_button_pressed() -> void:
 
 func _on_add_fallback_case_button_pressed() -> void:
 	var new_cases: Array[Variant] = cases.duplicate()
-	new_cases.append(MatchNodeAst.fallback_key)
+	new_cases.append(ParleyMatchNodeAst.fallback_key)
 	cases = new_cases
 	_emit_match_node_changed()
 
@@ -206,7 +206,7 @@ func _on_fact_store_changed() -> void:
 func _on_edit_fact_button_pressed() -> void:
 	if not fact_store:
 		return
-	var fact: Fact = fact_store.get_fact_by_ref(fact_ref)
+	var fact: ParleyFact = fact_store.get_fact_by_ref(fact_ref)
 	if fact.ref is Script:
 		var script: Script = fact.ref
 		EditorInterface.edit_script(script)

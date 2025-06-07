@@ -28,6 +28,7 @@ enum Component {
 func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		Engine.set_meta(ParleyConstants.PARLEY_PLUGIN_METADATA, self)
+		var parley_manager: ParleyManager = ParleyManager.get_instance()
 
 		# Import plugin setup
 		import_plugin = ParleyImportPlugin.new()
@@ -35,6 +36,7 @@ func _enter_tree() -> void:
 		
 		# Stores Editor Dock
 		stores_editor = StoresEditorScene.instantiate()
+		stores_editor.parley_manager = parley_manager
 		ParleyUtils.signals.safe_connect(stores_editor.dialogue_sequence_ast_changed, _on_dialogue_sequence_ast_changed.bind(Component.StoresEditor))
 		ParleyUtils.signals.safe_connect(stores_editor.dialogue_sequence_ast_selected, _on_dialogue_sequence_ast_selected.bind(Component.StoresEditor))
 		ParleyUtils.signals.safe_connect(stores_editor.store_changed, _on_store_changed)
@@ -56,6 +58,7 @@ func _enter_tree() -> void:
 
 		# Main Panel
 		main_panel_instance = MainPanelScene.instantiate()
+		main_panel_instance.parley_manager = parley_manager
 		ParleyUtils.signals.safe_connect(main_panel_instance.node_selected, _on_main_panel_node_selected)
 		ParleyUtils.signals.safe_connect(main_panel_instance.dialogue_ast_selected, _on_main_panel_dialogue_sequence_ast_selected)
 		if main_panel_instance.dialogue_ast:
@@ -69,7 +72,7 @@ func _enter_tree() -> void:
 		# TODO: it may be better to not refresh automatically upon a dialogue ast change
 		# or defer the refresh so it happens after all the other setters are made.
 		_setup_data()
-		main_panel_instance.dialogue_ast = ParleyManager.get_instance().load_current_dialogue_sequence()
+		main_panel_instance.dialogue_ast = parley_manager.load_current_dialogue_sequence()
 
 		# Hide the main panel. Very much required.
 		_make_visible(false)
@@ -77,9 +80,9 @@ func _enter_tree() -> void:
 #region SETTERS
 func _set_edges() -> void:
 	if node_editor and edges_editor and node_editor.dialogue_sequence_ast and node_editor.node_ast:
-		var node_ast: NodeAst = node_editor.node_ast
-		var dialogue_sequence_ast: DialogueAst = node_editor.dialogue_sequence_ast
-		var edges: Array[EdgeAst] = dialogue_sequence_ast.edges
+		var node_ast: ParleyNodeAst = node_editor.node_ast
+		var dialogue_sequence_ast: ParleyDialogueSequenceAst = node_editor.dialogue_sequence_ast
+		var edges: Array[ParleyEdgeAst] = dialogue_sequence_ast.edges
 		edges_editor.set_edges(edges, node_ast.id)
 
 
@@ -120,14 +123,14 @@ func _on_store_changed(type: ParleyStore.Type, new_store: ParleyStore) -> void:
 	await main_panel_instance.refresh()
 
 
-func _on_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: DialogueAst, component: Component) -> void:
+func _on_dialogue_sequence_ast_changed(new_dialogue_sequence_ast: ParleyDialogueSequenceAst, component: Component) -> void:
 	if component != Component.MainPanel:
 		main_panel_instance.dialogue_ast = new_dialogue_sequence_ast
 	if component != Component.StoresEditor:
 		stores_editor.dialogue_ast = new_dialogue_sequence_ast
 
 
-func _on_dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: DialogueAst, component: Component) -> void:
+func _on_dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: ParleyDialogueSequenceAst, component: Component) -> void:
 	if component != Component.MainPanel:
 		main_panel_instance.dialogue_ast = selected_dialogue_sequence_ast
 		EditorInterface.set_main_screen_editor(ParleyConstants.PLUGIN_NAME)
@@ -135,7 +138,7 @@ func _on_dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: Dialogue
 		stores_editor.dialogue_ast = selected_dialogue_sequence_ast
 
 
-func _on_node_editor_node_changed(node_ast: NodeAst) -> void:
+func _on_node_editor_node_changed(node_ast: ParleyNodeAst) -> void:
 	if main_panel_instance:
 		main_panel_instance.selected_node_ast = node_ast
 
@@ -145,34 +148,34 @@ func _on_delete_node_button_pressed(id: String) -> void:
 		main_panel_instance.delete_node_by_id(id)
 
 
-func _on_edges_editor_mouse_entered_edge(edge: EdgeAst) -> void:
+func _on_edges_editor_mouse_entered_edge(edge: ParleyEdgeAst) -> void:
 	if main_panel_instance:
 		main_panel_instance.focus_edge(edge)
 
 
-func _on_edges_editor_mouse_exited_edge(edge: EdgeAst) -> void:
+func _on_edges_editor_mouse_exited_edge(edge: ParleyEdgeAst) -> void:
 	if main_panel_instance:
 		main_panel_instance.defocus_edge(edge)
 
 
-func _on_edges_editor_edge_deleted(edge: EdgeAst) -> void:
+func _on_edges_editor_edge_deleted(edge: ParleyEdgeAst) -> void:
 	if main_panel_instance:
 		main_panel_instance.remove_edge(edge.from_node, edge.from_slot, edge.to_node, edge.to_slot)
 
 
-func _on_edges_editor_edge_changed(edge: EdgeAst) -> void:
+func _on_edges_editor_edge_changed(edge: ParleyEdgeAst) -> void:
 	if main_panel_instance:
 		main_panel_instance.update_edge(edge)
 
 
-func _on_main_panel_node_selected(node_ast: NodeAst) -> void:
+func _on_main_panel_node_selected(node_ast: ParleyNodeAst) -> void:
 	if node_editor:
 		node_editor.dialogue_sequence_ast = main_panel_instance.dialogue_ast
 		node_editor.node_ast = node_ast
 	_set_edges()
 
 
-func _on_main_panel_dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst) -> void:
+func _on_main_panel_dialogue_sequence_ast_selected(dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	if node_editor:
 		node_editor.dialogue_sequence_ast = dialogue_sequence_ast
 		stores_editor.dialogue_ast = dialogue_sequence_ast

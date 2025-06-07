@@ -5,7 +5,7 @@ class_name ParleyExportToCsvModal extends Window
 @onready var path_editor: LineEdit = %PathEdit
 @onready var choose_path_modal: FileDialog = %ChoosePathModal
 
-@export var dialogue_ast: DialogueAst
+@export var dialogue_ast: ParleyDialogueSequenceAst
 
 # TODO: get from config
 var base_path: String

@@ -6,7 +6,7 @@ const MatchNodeScene: PackedScene = preload('res://addons/parley/components/matc
 class Test_match_node:
 	extends GutTest
 	
-	var match_node: MatchNode = null
+	var match_node: ParleyMatchNode = null
 	
 	func before_each() -> void:
 		match_node = MatchNodeScene.instantiate()
@@ -15,7 +15,7 @@ class Test_match_node:
 	func after_each() -> void:
 		match_node = null
 	
-	func setup_match_node(_match_node: MatchNode, test_case: Dictionary) -> void:
+	func setup_match_node(_match_node: ParleyMatchNode, test_case: Dictionary) -> void:
 		var id: Variant = test_case.get('id')
 		var description: Variant = test_case.get('description')
 		var fact_name: Variant = test_case.get('fact_name')
@@ -81,8 +81,8 @@ class Test_match_node:
 		assert_eq(match_node.fact_name, str(expected['fact_name']), "Expected fact_name to be set to the expected value.")
 		assert_eq(match_node.fact_label.text, str(expected['fact_name']), "Expected fact_name to be set to the expected value.")
 		assert_eq_deep(match_node.cases, expected_cases)
-		var index: int = MatchNode.start_slot
+		var index: int = ParleyMatchNode.start_slot
 		for expected_case: Variant in expected['selected_cases']:
-			var case_label: CaseLabel = match_node.get_child(index)
+			var case_label: ParleyCaseLabel = match_node.get_child(index)
 			assert_eq(case_label.case_label.text, str(expected_case), "Cases label does not equal expected case for child: %s" % [index])
 			index += 1

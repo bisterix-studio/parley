@@ -6,11 +6,12 @@ class_name ParleyActionStoreEditor extends PanelContainer
 const ActionScriptEditor: PackedScene = preload("../../components/action/action_script_editor.tscn")
 
 
-var action_store: ActionStore = ActionStore.new(): set = _set_action_store
-var dialogue_sequence_ast: DialogueAst: set = _set_dialogue_sequence_ast
+var parley_manager: ParleyManager
+var action_store: ParleyActionStore = ParleyActionStore.new(): set = _set_action_store
+var dialogue_sequence_ast: ParleyDialogueSequenceAst: set = _set_dialogue_sequence_ast
 var action_filter: String = "": set = _set_action_filter
-var actions: Array[Action] = []: set = _set_actions
-var filtered_actions: Array[Action] = []
+var actions: Array[ParleyAction] = []: set = _set_actions
+var filtered_actions: Array[ParleyAction] = []
 
 
 @onready var actions_container: VBoxContainer = %ActionsContainer
@@ -23,9 +24,9 @@ var filtered_actions: Array[Action] = []
 @onready var register_action_store_modal: ParleyRegisterStoreModal = %RegisterActionStoreModal
 
 
-signal dialogue_sequence_ast_selected(dialogue_sequence_ast: DialogueAst)
-signal dialogue_sequence_ast_changed(dialogue_sequence_ast: DialogueAst)
-signal action_store_changed(action_store: ActionStore)
+signal dialogue_sequence_ast_selected(dialogue_sequence_ast: ParleyDialogueSequenceAst)
+signal dialogue_sequence_ast_changed(dialogue_sequence_ast: ParleyDialogueSequenceAst)
+signal action_store_changed(action_store: ParleyActionStore)
 #endregion
 
 
@@ -43,7 +44,7 @@ func _clear_actions() -> void:
 
 
 #region SETTERS
-func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: DialogueAst) -> void:
+func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	if dialogue_sequence_ast != new_dialogue_sequence_ast:
 		dialogue_sequence_ast = new_dialogue_sequence_ast
 		_reload_dialogue_sequence_ast()
@@ -53,7 +54,7 @@ func _reload_dialogue_sequence_ast() -> void:
 	_render_dialogue_sequence()
 
 
-func _set_action_store(new_action_store: ActionStore) -> void:
+func _set_action_store(new_action_store: ParleyActionStore) -> void:
 	if action_store != new_action_store:
 		action_store = new_action_store
 		if action_store_editor.resource != action_store:
@@ -66,10 +67,10 @@ func _set_action_store(new_action_store: ActionStore) -> void:
 	_render_save_action_store_button()
 	_render_invalid_action_store_button()
 
-func _set_actions(new_actions: Array[Action]) -> void:
+func _set_actions(new_actions: Array[ParleyAction]) -> void:
 	actions = new_actions
 	filtered_actions = []
-	for action: Action in actions:
+	for action: ParleyAction in actions:
 		var raw_action_string: String = str(inst_to_dict(action))
 		if not action_filter or raw_action_string.containsn(action_filter):
 			filtered_actions.append(action)
@@ -96,7 +97,7 @@ func _render() -> void:
 
 func _render_dialogue_sequence() -> void:
 	if dialogue_sequence_container and dialogue_sequence_ast and dialogue_sequence_ast.resource_path:
-		dialogue_sequence_container.base_type = DialogueAst.type_name
+		dialogue_sequence_container.base_type = ParleyDialogueSequenceAst.type_name
 		dialogue_sequence_container.resource = dialogue_sequence_ast
 
 
@@ -137,7 +138,7 @@ func _render_actions() -> void:
 	if actions_container:
 		_clear_actions()
 		var index: int = 0
-		for action: Action in filtered_actions:
+		for action: ParleyAction in filtered_actions:
 			var action_script_editor: ParleyActionScriptEditor = ActionScriptEditor.instantiate()
 			action_script_editor.action_id = action.id
 			action_script_editor.action_name = action.name
@@ -153,7 +154,7 @@ func _render_actions() -> void:
 
 
 #region SIGNALS
-func _on_action_changed(new_id: String, new_name: String, new_resource: Resource, action: Action) -> void:
+func _on_action_changed(new_id: String, new_name: String, new_resource: Resource, action: ParleyAction) -> void:
 	action.id = new_id
 	action.name = new_name
 	action.ref = new_resource
@@ -161,13 +162,13 @@ func _on_action_changed(new_id: String, new_name: String, new_resource: Resource
 		action_store.emit_changed()
 
 
-func _on_action_removed(action_id: String, _action: Action) -> void:
+func _on_action_removed(action_id: String, _action: ParleyAction) -> void:
 	action_store.remove_action(action_id)
 	actions = action_store.actions
 
 
 func _on_add_action_button_pressed() -> void:
-	var _new_action: Action = action_store.add_action()
+	var _new_action: ParleyAction = action_store.add_action()
 	actions = action_store.actions
 
 
@@ -183,7 +184,7 @@ func _on_new_action_store_button_pressed() -> void:
 	register_action_store_modal.show()
 	register_action_store_modal.clear()
 	register_action_store_modal.file_mode = FileDialog.FileMode.FILE_MODE_SAVE_FILE
-	register_action_store_modal.resource_editor.resource = ActionStore.new()
+	register_action_store_modal.resource_editor.resource = ParleyActionStore.new()
 	# TODO: get from config
 	register_action_store_modal.path_edit.text = "res://actions/new_action_store.tres"
 	register_action_store_modal.id_valid = true
@@ -192,13 +193,13 @@ func _on_new_action_store_button_pressed() -> void:
 
 
 func _on_dialogue_sequence_container_resource_changed(new_dialogue_sequence_ast: Resource) -> void:
-	if new_dialogue_sequence_ast is DialogueAst:
+	if new_dialogue_sequence_ast is ParleyDialogueSequenceAst:
 		dialogue_sequence_ast = new_dialogue_sequence_ast
 		dialogue_sequence_ast_changed.emit(dialogue_sequence_ast)
 
 
 func _on_dialogue_sequence_container_resource_selected(selected_dialogue_sequence_ast: Resource, _inspect: bool) -> void:
-	if dialogue_sequence_ast is DialogueAst:
+	if dialogue_sequence_ast is ParleyDialogueSequenceAst:
 		dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
 
 
@@ -207,8 +208,8 @@ func _on_register_action_store_modal_store_registered(store: ParleyStore) -> voi
 
 
 func _on_action_store_resource_changed(store: Resource) -> void:
-	if store is ActionStore:
-		_register_action_store(store as ActionStore, true)
+	if store is ParleyActionStore:
+		_register_action_store(store as ParleyActionStore, true)
 	else:
 		action_store = null
 #endregion
@@ -216,11 +217,10 @@ func _on_action_store_resource_changed(store: Resource) -> void:
 
 #region ACTIONS
 func _register_action_store(store: ParleyStore, new: bool) -> void:
-	if store is ActionStore:
+	if store is ParleyActionStore:
 		action_store = store
-		if new:
-			# TODO: can we get rid of this global ref?
-			ParleyManager.get_instance().register_action_store(action_store)
+		if new and parley_manager:
+			parley_manager.register_action_store(action_store)
 		_render()
 
 

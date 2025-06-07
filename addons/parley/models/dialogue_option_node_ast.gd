@@ -1,7 +1,5 @@
 @tool
-
-# TODO: prefix with Parley
-class_name DialogueOptionNodeAst extends NodeAst
+class_name ParleyDialogueOptionNodeAst extends ParleyNodeAst
 
 
 ## The character of the Dialogue Option Node AST.
@@ -15,14 +13,14 @@ class_name DialogueOptionNodeAst extends NodeAst
 
 
 ## Create a new instance of a Dialogue Option Node AST.
-## Example: DialogueOptionNodeAst.new("1", Vector2.ZERO, "Alice", "Slurp some coffee.")
+## Example: ParleyDialogueOptionNodeAst.new("1", Vector2.ZERO, "Alice", "Slurp some coffee.")
 func _init(
 	p_id: String = "",
 	p_position: Vector2 = Vector2.ZERO,
 	p_character: String = "",
 	p_text: String = ""
 ) -> void:
-	type = DialogueAst.Type.DIALOGUE_OPTION
+	type = ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION
 	id = p_id
 	position = p_position
 	character = p_character
@@ -41,6 +39,6 @@ static func get_colour() -> Color:
 
 
 #region UTILS
-func resolve_character() -> Character:
-	return CharacterStore.resolve_character_ref(character)
+func resolve_character() -> ParleyCharacter:
+	return ParleyCharacterStore.resolve_character_ref(character)
 #endregion

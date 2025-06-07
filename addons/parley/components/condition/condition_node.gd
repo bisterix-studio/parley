@@ -1,6 +1,5 @@
 @tool
-# TODO: prefix with Parley
-class_name ConditionNode extends ParleyGraphNode
+class_name ParleyConditionNode extends ParleyGraphNode
 
 
 @export var description: String = ""
@@ -14,7 +13,7 @@ const null_colour: Color = Color(0, 0, 0, 0)
 # Lifecycle #
 #############
 func _ready() -> void:
-	setup(DialogueAst.Type.CONDITION)
+	setup(ParleyDialogueSequenceAst.Type.CONDITION)
 	custom_minimum_size = Vector2(350, 250)
 	update(description)
 	clear_all_slots()

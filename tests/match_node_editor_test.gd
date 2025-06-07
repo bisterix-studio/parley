@@ -7,7 +7,7 @@ class Test_match_node_editor:
 	extends GutTest
 	
 	var match_node_editor: ParleyMatchNodeEditor = null
-	var fact_store: FactStore = preload("res://tests/fixtures/basic_fact_store.tres")
+	var fact_store: ParleyFactStore = preload("res://tests/fixtures/basic_fact_store.tres")
 	
 	func before_each() -> void:
 		match_node_editor = MatchNodeEditorScene.instantiate()
@@ -45,7 +45,7 @@ class Test_match_node_editor:
 			var index: int = 0
 			for case: Variant in cases:
 				_match_node_editor.add_case_button.pressed.emit()
-				var case_editor: CaseEditor = _match_node_editor.cases_editor.get_child(index)
+				var case_editor: ParleyCaseEditor = _match_node_editor.cases_editor.get_child(index)
 				if case_editor:
 					case_editor.case_editor.item_selected.emit(_match_node_editor.available_cases.find(case))
 				index += 1
@@ -103,7 +103,7 @@ class Test_match_node_editor:
 		assert_eq_deep(match_node_editor.cases, TestUtils.string_array(expected['cases']))
 		var index: int = 0
 		for expected_case: Variant in expected['selected_cases']:
-			var case_editor: CaseEditor = match_node_editor.cases_editor.get_child(index)
+			var case_editor: ParleyCaseEditor = match_node_editor.cases_editor.get_child(index)
 			assert_eq(case_editor.case_editor.text, str(expected_case), "Cases selector does not equal expected case for child: %s" % [index])
 			index += 1
 		assert_signal_not_emitted(match_node_editor, 'match_node_changed')
@@ -146,7 +146,7 @@ class Test_match_node_editor:
 		assert_eq_deep(match_node_editor.cases, TestUtils.string_array(expected['cases']))
 		var index: int = 0
 		for expected_case: Variant in expected['selected_cases']:
-			var case_editor: CaseEditor = match_node_editor.cases_editor.get_child(index)
+			var case_editor: ParleyCaseEditor = match_node_editor.cases_editor.get_child(index)
 			assert_eq(case_editor.case_editor.text, str(expected_case), "Cases selector does not equal expected case for child: %s" % [index])
 			index += 1
 		assert_signal_not_emitted(match_node_editor, 'match_node_changed')
@@ -182,7 +182,7 @@ class Test_match_node_editor:
 		assert_eq_deep(match_node_editor.cases, TestUtils.string_array(expected['cases']))
 		var index: int = 0
 		for expected_case: Variant in expected['selected_cases']:
-			var case_editor: CaseEditor = match_node_editor.cases_editor.get_child(index)
+			var case_editor: ParleyCaseEditor = match_node_editor.cases_editor.get_child(index)
 			assert_not_null(case_editor)
 			if case_editor:
 				assert_eq(case_editor.case_editor.text, str(expected_case), "Cases selector does not equal expected case for child: %s" % [index])
