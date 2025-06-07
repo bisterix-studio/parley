@@ -11,6 +11,7 @@
     "gdignore",
     "gdscript",
     "glog",
+    "neighbor",
     "npcs",
     "onready",
     "printerr",

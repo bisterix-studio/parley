@@ -61,12 +61,12 @@ func _set_current_node_asts(p_current_node_asts: Array[NodeAst]) -> void:
 
 func _build_next_children(current_children: Array[Node], current_node_ast: NodeAst) -> Array[Node]:
 	var next_children: Array[Node] = []
-	if is_instance_of(current_node_ast, DialogueNodeAst) and not current_node_ast.text.is_empty():
+	if is_instance_of(current_node_ast, DialogueNodeAst) and not (current_node_ast as DialogueNodeAst).text.is_empty():
 		next_children.append_array(_build_next_dialogue_children(current_node_ast))
-	elif current_node_asts.filter(func(n): return is_instance_of(current_node_ast, DialogueOptionNodeAst)).size() == current_node_asts.size():
+	elif current_node_asts.filter(func(_n: NodeAst) -> bool: return is_instance_of(current_node_ast, DialogueOptionNodeAst)).size() == current_node_asts.size():
 		next_children.append_array(_build_next_dialogue_option_children(current_children))
 	else:
-		ParleyUtils.log.error("Invalid dialogue balloon nodes")
+		ParleyUtils.log.error("Invalid dialogue balloon nodes. Stopping processing.")
 		return []
 	return next_children
 
@@ -76,17 +76,18 @@ func _build_next_dialogue_children(current_node_ast: NodeAst) -> Array[Node]:
 	if previous_node_ast is DialogueOptionNodeAst:
 		# Generate a new dialogue instance as if it were a dialogue
 		# because it effectively is now
-		var previous_dialogue_option_container = dialogue_container.instantiate()
-		var previous_node_dialogue_ast = DialogueNodeAst.new(previous_node_ast.id, previous_node_ast.position, previous_node_ast.character, previous_node_ast.text)
+		var previous_dialogue_option_container: DialogueContainer = dialogue_container.instantiate()
+		var dialogue_option_node_ast: DialogueOptionNodeAst = previous_node_ast
+		var previous_node_dialogue_ast: DialogueNodeAst = DialogueNodeAst.new(dialogue_option_node_ast.id, dialogue_option_node_ast.position, dialogue_option_node_ast.character, dialogue_option_node_ast.text)
 		previous_dialogue_option_container.dialogue_node = previous_node_dialogue_ast
 		previous_dialogue_option_container.set_meta('ast', previous_node_dialogue_ast)
 		next_children.append(previous_dialogue_option_container)
 		next_children.append(_create_horizontal_separator(previous_dialogue_option_container))
-	var next_dialogue_container = dialogue_container.instantiate()
+	var next_dialogue_container: DialogueContainer = dialogue_container.instantiate()
 	next_dialogue_container.dialogue_node = current_node_ast
 	next_dialogue_container.set_meta('ast', current_node_ast)
 	next_children.append(next_dialogue_container)
-	var next_dialogue_button_control: Control = next_dialogue_button.instantiate()
+	var next_dialogue_button_control: NextDialogueButton = next_dialogue_button.instantiate()
 	if dialogue_ast.is_at_end(ctx, current_node_ast):
 		next_dialogue_button_control.text = 'Leave'
 	next_children.append(next_dialogue_button_control)
@@ -95,11 +96,12 @@ func _build_next_dialogue_children(current_node_ast: NodeAst) -> Array[Node]:
 
 func _build_next_dialogue_option_children(current_children: Array[Node]) -> Array[Node]:
 	var next_children: Array[Node] = []
-	var previous_node = _find_previous_node_ast(current_children)
-	if previous_node:
+	var previous_node_variant: Variant = _find_previous_node_ast(current_children)
+	if previous_node_variant is Control:
+		var previous_node: Control = previous_node_variant
 		next_children.append(previous_node)
 		next_children.append(_create_horizontal_separator(previous_node))
-	var dialogue_options_container_instance = dialogue_options_container.instantiate()
+	var dialogue_options_container_instance: DialogueOptionsMenu = dialogue_options_container.instantiate()
 	dialogue_options_container_instance.dialogue_options = current_node_asts
 	ParleyUtils.signals.safe_connect(dialogue_options_container_instance.dialogue_option_selected, _on_dialogue_options_container_dialogue_option_selected)
 	next_children.append(dialogue_options_container_instance)
@@ -139,13 +141,13 @@ func _handle_next_actions(current_children: Array[Node], next_children: Array[No
 			'fade_out': _fade_out(next_action)
 
 
-func _create_horizontal_separator(sibling_above: Node) -> Node:
+func _create_horizontal_separator(sibling_above: Control) -> Node:
 	var horizontal_separator: MarginContainer = MarginContainer.new()
 	if sibling_above.has_theme_constant('margin_left'):
-		var margin_left = sibling_above.get_theme_constant('margin_left')
+		var margin_left: int = sibling_above.get_theme_constant('margin_left')
 		horizontal_separator.add_theme_constant_override('margin_left', margin_left * 2)
 	if sibling_above.has_theme_constant('margin_right'):
-		var margin_right = sibling_above.get_theme_constant('margin_right')
+		var margin_right: int = sibling_above.get_theme_constant('margin_right')
 		horizontal_separator.add_theme_constant_override('margin_right', margin_right * 2)
 	horizontal_separator.add_theme_constant_override('margin_top', 0)
 	horizontal_separator.add_theme_constant_override('margin_bottom', 0)

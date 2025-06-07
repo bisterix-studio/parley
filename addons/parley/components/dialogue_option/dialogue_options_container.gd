@@ -3,10 +3,10 @@
 class_name DialogueOptionsMenu extends MarginContainer
 
 
-const dialogue_option_container = preload('./dialogue_option_container.tscn')
+const dialogue_option_container: PackedScene = preload('./dialogue_option_container.tscn')
 
 
-@onready var dialogue_options_container = %DialogueOptionsContainer
+@onready var dialogue_options_container: VBoxContainer = %DialogueOptionsContainer
 
 
 ## Emitted when a dialogue option is selected.
@@ -28,16 +28,16 @@ var dialogue_options: Array = []:
 			await ready
 
 		# Remove any current items
-		for item in dialogue_options_container.get_children():
+		for item: Node in dialogue_options_container.get_children():
 			dialogue_options_container.remove_child(item)
 			item.queue_free()
 
 		# Add new items
 		if dialogue_options.size() > 0:
 			var item_number: int = 1
-			for dialogue_option in dialogue_options:
+			for dialogue_option: DialogueOptionNodeAst in dialogue_options:
 				#var item = Button.new()
-				var item = dialogue_option_container.instantiate()
+				var item: DialogueOptionContainer = dialogue_option_container.instantiate()
 				item.name = "DialogueOption%d" % dialogue_options_container.get_child_count()
 				#item.dialogue_option_node = dialogue_option
 				item.text = "%s. %s" % [item_number, dialogue_option.text]
@@ -49,16 +49,17 @@ var dialogue_options: Array = []:
 
 
 func _ready() -> void:
-	visibility_changed.connect(func():
+	ParleyUtils.signals.safe_connect(visibility_changed, func() -> void:
 		if visible and get_menu_items().size() > 0:
-			get_menu_items()[0].grab_focus()
+			var first: DialogueOptionContainer = get_menu_items().front()
+			first.grab_focus()
 	)
 
 
 ## Get the selectable items in the menu.
-func get_menu_items() -> Array:
-	var items: Array = []
-	for child in dialogue_options_container.get_children():
+func get_menu_items() -> Array[DialogueOptionContainer]:
+	var items: Array[DialogueOptionContainer] = []
+	for child: DialogueOptionContainer in dialogue_options_container.get_children():
 		if not child.visible: continue
 		if not child.has_meta('ast'): continue
 		items.append(child)
@@ -69,8 +70,8 @@ func get_menu_items() -> Array:
 #region Internal
 # Prepare the menu for keyboard and mouse navigation.
 func _configure_focus() -> void:
-	var items = get_menu_items()
-	for i in items.size():
+	var items: Array[DialogueOptionContainer] = get_menu_items()
+	for i: int in items.size():
 		var item: Control = items[i]
 
 		item.focus_mode = Control.FOCUS_ALL
@@ -92,8 +93,8 @@ func _configure_focus() -> void:
 			item.focus_neighbor_bottom = items[i + 1].get_path()
 			item.focus_next = items[i + 1].get_path()
 
-		item.mouse_entered.connect(_on_dialogue_option_mouse_entered.bind(item))
-		item.gui_input.connect(_on_dialogue_option_gui_input.bind(item, item.get_meta("ast")))
+		ParleyUtils.signals.safe_connect(item.mouse_entered, _on_dialogue_option_mouse_entered.bind(item))
+		ParleyUtils.signals.safe_connect(item.gui_input, _on_dialogue_option_gui_input.bind(item, item.get_meta("ast")))
 
 	items[0].grab_focus()
 
@@ -106,9 +107,10 @@ func _on_dialogue_option_mouse_entered(item: Control) -> void:
 
 
 func _on_dialogue_option_gui_input(event: InputEvent, item: Control, dialogue_option: DialogueOptionNodeAst) -> void:
-	get_viewport().set_input_as_handled()
-	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton and event.is_pressed() and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
 		dialogue_option_selected.emit(dialogue_option)
 	elif event.is_action_pressed(&"ui_accept" if next_action.is_empty() else next_action) and item in get_menu_items():
+		get_viewport().set_input_as_handled()
 		dialogue_option_selected.emit(dialogue_option)
 #endregion

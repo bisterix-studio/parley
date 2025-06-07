@@ -41,7 +41,7 @@ theme_override_font_sizes/mono_font_size = 24
 theme_override_font_sizes/normal_font_size = 24
 theme_override_font_sizes/bold_font_size = 24
 bbcode_enabled = true
-text = "[center]Unknown[/center]"
+text = "[left]Unknown[/left]"
 fit_content = true
 scroll_active = false
 
