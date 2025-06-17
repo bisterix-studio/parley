@@ -19,7 +19,7 @@ defined. You can find all sorts of Dialogue Sequence examples in the Parley
 
 ## Instructions
 
-![How-To create a Start Node](./images/how_to_create_start_node/how_to_create_start_node.mp4)
+![How-To create a Start Node](./images/how_to_create_start_node/how_to_create_start_node.gif)
 
 - Create a Start Node using the `Insert` dropdown.
 
