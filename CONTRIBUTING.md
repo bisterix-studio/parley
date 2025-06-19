@@ -21,14 +21,26 @@ change in functionality.
 ### Via gifs
 
 We are big fans of using gifs to demonstrate functionality. The easiest way to
-do this is via [`ffmpeg`](https://ffmpeg.org/). Given an input `mp4` recording
-of some functionality, generate a gif as follows:
+do this is via the following tools:
+
+- [`ffmpeg`](https://ffmpeg.org/).
+- [`gifsicle`](https://www.lcdf.org/gifsicle/)
+
+Given an input `mp4` recording of some functionality, generate a gif as follows:
+
+Set file variables:
+
+```sh
+export INPUT_MP4=input.mp4
+export OUTPUT_GIF=output.gif
+```
+
+Convert mp4 to gif:
 
 ```sh
 ffmpeg \
   -ss 0 \
-  -i input.mp4 \
+  -i $INPUT_MP4 \
   -vf "fps=10,scale=1080:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
-  -loop 0 \
-  output.gif
+  -loop 0 -f gif - | gifsicle --optimize=3 --delay=5 > $OUTPUT_GIF
 ```
