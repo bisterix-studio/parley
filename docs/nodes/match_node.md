@@ -3,7 +3,7 @@
 A Match Node is useful for selecting the next node based on the well-known value
 of a variable or expression.
 
-![match-node](./images/match/match-node.png)
+![match-node](./images/match/match_node.png)
 
 They have the following characteristics:
 
