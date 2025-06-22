@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "ok": "./.githooks/pre-commit",
+    "ok": "./.githooks/pre-commit && deno task docs:ok",
     "check:licence": "deno run --allow-write=. --allow-read=. scripts/check_licence.ts",
     "docs:ok": "deno fmt --check . && deno lint . && deno check **/*.ts && deno check **/*.tsx",
     "docs:start": "deno task --cwd=www start",

@@ -3,7 +3,7 @@ import { useSignal } from "@preact/signals";
 
 export default function ThemeToggle() {
   const theme = useSignal(
-    !IS_BROWSER ? "light" : document.documentElement.dataset.theme ?? "light",
+    !IS_BROWSER ? "dark" : document.documentElement.dataset.theme ?? "dark",
   );
 
   const toggleTheme = () => {

@@ -14,7 +14,6 @@ export default function NavigationBar(
       href: "/showcase",
     },
   ];
-  const isDocs = props.active == "/docs";
   return (
     <nav class={"flex " + (props.class ?? "")} f-client-nav={false}>
       <ul class="flex items-center gap-x-2 sm:gap-4 mx-4 my-2 sm:my-6 flex-wrap lg:mx-8 2xl:mr-0">
@@ -38,11 +37,9 @@ export default function NavigationBar(
             <Icons.GitHub />
           </a>
         </li>
-        {isDocs && (
-          <li class="flex items-center">
-            <ThemeToggle />
-          </li>
-        )}
+        <li class="flex items-center">
+          <ThemeToggle />
+        </li>
       </ul>
     </nav>
   );

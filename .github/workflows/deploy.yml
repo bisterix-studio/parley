@@ -32,5 +32,3 @@ jobs:
           project: "jonnygreen-parley-99"
           entrypoint: "www/main.ts"
           root: "."
-          
-          
