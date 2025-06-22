@@ -29,6 +29,6 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "jonnygreen-parley-99"
+          project: "parley-bisterixstudio-com"
           entrypoint: "www/main.ts"
           root: "."
