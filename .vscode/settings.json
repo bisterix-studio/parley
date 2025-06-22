@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "animejs",
     "autofree",
     "bitmask",
     "cmdln",
@@ -7,12 +8,16 @@
     "containsn",
     "Dialog",
     "dlog",
+    "dotenv",
     "englebert",
+    "extrabold",
     "gdignore",
     "gdscript",
     "gifsicle",
     "glog",
+    "gutignore",
     "lanczos",
+    "maskable",
     "neighbor",
     "npcs",
     "onready",
@@ -28,5 +33,25 @@
     "*.ds": "json"
   },
   "editor.renderWhitespace": "all",
-  "deno.enable": true
+  "deno.enable": true,
+  "deno.lint": true,
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "css.customData": [
+    ".vscode/tailwind.json"
+  ]
 }

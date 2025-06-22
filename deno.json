@@ -1,5 +1,55 @@
 {
   "tasks": {
-    "check:licence": "deno run --allow-write=. --allow-read=. scripts/check_licence.ts"
+    "ok": "./.githooks/pre-commit",
+    "check:licence": "deno run --allow-write=. --allow-read=. scripts/check_licence.ts",
+    "docs:ok": "deno fmt --check . && deno lint . && deno check **/*.ts && deno check **/*.tsx",
+    "docs:start": "deno task --cwd=www start",
+    "docs:build": "deno task --cwd=www build",
+    "docs:preview": "deno task --cwd=www preview"
+  },
+  "lint": {
+    "rules": {
+      "tags": [
+        "fresh",
+        "recommended"
+      ]
+    }
+  },
+  "exclude": [
+    "**/_fresh/*",
+    "addons"
+  ],
+  "imports": {
+    "animejs": "npm:animejs@3",
+    "fresh": "jsr:@fresh/core@^2.0.0-alpha.34",
+    "@fresh/plugin-tailwind": "jsr:@fresh/plugin-tailwind@^0.0.1-alpha.7",
+    "github-slugger": "npm:github-slugger@^2.0.0",
+    "marked": "npm:marked@^15.0.11",
+    "marked-mangle": "npm:marked-mangle@^1.1.9",
+    "preact": "npm:preact@^10.26.6",
+    "@preact/signals": "npm:@preact/signals@^2.0.4",
+    "prismjs": "npm:prismjs@^1.29.0",
+    "@std/front-matter": "jsr:@std/front-matter@^1.0.5",
+    "@std/html": "jsr:@std/html@1",
+    "tailwindcss": "npm:tailwindcss@^3.4.3",
+    "@types/animejs": "npm:@types/animejs@3"
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.asynciterable",
+      "dom.iterable",
+      "deno.ns"
+    ],
+    "jsx": "precompile",
+    "jsxImportSource": "preact",
+    "jsxPrecompileSkipElements": [
+      "a",
+      "img",
+      "source",
+      "body",
+      "html",
+      "head"
+    ]
   }
 }

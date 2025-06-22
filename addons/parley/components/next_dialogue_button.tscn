@@ -1,3 +1,5 @@
+; Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 [gd_scene load_steps=3 format=3 uid="uid://cpupp4n0sb7db"]
 
 [ext_resource type="Script" uid="uid://8xsoplalqhxa" path="res://addons/parley/components/next_dialogue_button.gd" id="1_fh8t8"]

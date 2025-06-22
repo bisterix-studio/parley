@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light and dark theme variables */
+:root {
+  --fresh: 50deg, 100%, 56%;
+  --fresh-green: 142deg, 71%, 29%;
+
+  --background-primary: 215deg, 100%, 100%;
+  --background-secondary: 210deg, 29%, 97%;
+  --background-tertiary: 207deg, 33%, 95%;
+  --foreground-primary: 0deg, 0%, 9%;
+  --foreground-secondary: 0deg, 0%, 23%;
+  --foreground-tertiary: 0deg, 0%, 32%;
+  --foreground-quaternary: 0deg, 0%, 42%;
+
+  --info: 194deg, 76%, 41%;
+}
+html[data-theme="dark"]:root {
+  --fresh: 50deg, 100%, 56%;
+  --fresh-green: 142deg, 71%, 29%;
+
+  --background-primary: 217deg, 55%, 21%;
+  --background-secondary: 217deg, 55%, 25%;
+  --background-tertiary: 216deg, 27.7%, 22%;
+  --foreground-primary: 215deg, 17%, 99%;
+  --foreground-secondary: 240deg, 50%, 96%;
+  --foreground-tertiary: 215deg, 17%, 20%;
+  --foreground-quaternary: 215deg, 17%, 10%;
+
+  --info: 194deg, 76%, 41%;
+
+  color: var(--foreground-primary);
+  background-color: var(--background-primary);
+}
+
+/* Scrollbar colors that look good on light and dark theme */
+* {
+  scrollbar-color: hsla(0deg, 0%, 50%, 0.5) hsla(0deg, 0%, 50%, 0.1) !important;
+}
+
+@font-face {
+  font-family: "Josefin Sans";
+  font-style: normal;
+  src: url("/fonts/JosefinSansVariable.woff2") format("woff2");
+  font-weight: 100 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Josefin Sans";
+  font-style: italic;
+  src: url("/fonts/JosefinSansVariableItalic.woff2") format("woff2");
+  font-weight: 100 700;
+  font-display: swap;
+}
+
+body {
+  font-family:
+    Fixel,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  font-weight: 450;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  scroll-margin-top: 6rem;
+}
+
+b,
+strong,
+.font-bold,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 750;
+}
+
+hr {
+  @apply border-foreground-secondary/10;
+}
+
+.dark-mode-toggle-button img {
+  @apply fill-foreground-primary;
+}
+
+::selection {
+  background-color: #b1d5ff;
+}
+
+html[data-theme="dark"] ::selection {
+  background-color: #064c9c;
+}
+
+/* Starry night background START */
+#shootingstars {
+  transform: translatex(calc(50vw - 50%)) translatey(calc(50vh - 50%))
+    rotate(120deg);
+}
+
+.wish {
+  background-color: white;
+  position: absolute;
+  background: linear-gradient(-45deg, white, rgba(0, 0, 255, 0));
+  filter: drop-shadow(0 0 6px white);
+  overflow: hidden;
+}
+
+/* Starry night background END */
+
+/* Logo START */
+.bs-cls-1 {
+  stroke-width: 60px;
+}
+
+.bs-cls-1, .bs-cls-2 {
+  fill: none;
+}
+
+.bs-cls-1, .bs-cls-2, .bs-cls-3 {
+  stroke: hsla(var(--foreground-secondary));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bs-cls-2, .bs-cls-3 {
+  stroke-width: 80px;
+}
+
+.bs-cls-3 {
+  fill: hsla(var(--foreground-secondary));
+}
+/* Logo END */
