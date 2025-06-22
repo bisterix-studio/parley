@@ -31,11 +31,12 @@ export default function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
             <a
               href={link.href}
               class="text-foreground-secondary hover:underline"
+              target="_blank"
             >
               {link.title}
             </a>
           ))}
-          <a href="https://fresh.deno.dev">
+          <a href="https://fresh.deno.dev" target="_blank">
             <img
               width="197"
               height="37"

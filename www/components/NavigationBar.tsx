@@ -33,6 +33,7 @@ export default function NavigationBar(
             href="https://github.com/bisterix-studio/parley"
             class="hover:text-green-600 inline-block transition"
             aria-label="GitHub"
+            target="_blank"
           >
             <Icons.GitHub />
           </a>
