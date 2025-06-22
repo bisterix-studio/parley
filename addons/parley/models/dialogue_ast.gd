@@ -507,10 +507,11 @@ func _sort_by_y_position(a: ParleyNodeAst, b: ParleyNodeAst) -> bool:
 func _get_start_node(dry_run: bool) -> Variant:
 	var filtered_nodes: Array[ParleyNodeAst] = nodes.filter(func(node: ParleyNodeAst) -> bool: return node.type == Type.START)
 	if filtered_nodes.size() == 0:
-		ParleyUtils.log.error("No Start Nodes found. Unable to start the dialogue.", dry_run)
+		ParleyUtils.log.error("No Start Nodes found. Unable to start the Dialogue Sequence.", dry_run)
 		return
 	if filtered_nodes.size() > 1:
-		ParleyUtils.log.error("Multiple Start Nodes found. Unable to start the dialogue.", dry_run)
+		ParleyUtils.log.error("Multiple Start Nodes found. Unable to start the Dialogue Sequence.", dry_run)
+		return
 	return filtered_nodes.front()
 #endregion
 
