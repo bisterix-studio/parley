@@ -30,7 +30,7 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "jonnygreen-parley-99"
-          entrypoint: "main.ts"
-          root: "www"
+          entrypoint: "www/main.ts"
+          root: "."
           
           
