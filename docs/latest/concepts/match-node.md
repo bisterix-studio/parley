@@ -7,7 +7,7 @@ description: |
 A Match Node is useful for selecting the next node based on the well-known value
 of a variable or expression.
 
-![match-node](../../../www/static/docs/match/match_node.png)
+![match-node](../../../www/static/docs/match/match-node.png)
 
 They have the following characteristics:
 

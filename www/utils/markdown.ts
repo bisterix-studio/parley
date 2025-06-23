@@ -136,7 +136,7 @@ class DefaultRenderer extends Marked.Renderer {
       });
       const type = match[1];
       const icon = `<svg class="icon"><use href="/icons.svg#${type}" /></svg>`;
-      return `<blockquote class="admonition ${type}">\n<span class="admonition-header">${icon}${
+      return `<blockquote class="admonition ${type} text-foreground-tertiary">\n<span class="admonition-header">${icon}${
         label[type]
       }</span>${Marked.parser(tokens)}</blockquote>\n`;
     }

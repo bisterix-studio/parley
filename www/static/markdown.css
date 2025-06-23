@@ -665,6 +665,7 @@ html[data-theme="dark"] {
 .markdown-body .admonition.tip {
   background-color: rgb(230, 246, 230);
   border-color: rgb(0, 148, 0);
+  color: rgb(0, 120, 0);
 }
 .markdown-body .admonition.info .admonition-header {
   color: rgb(25 146 184);
