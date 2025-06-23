@@ -26,6 +26,7 @@ const toc: RawTableOfContents = {
         pages: [
           ["create-dialogue-sequence", "Create a Dialogue sequence"],
           ["create-dialogue-node", "Create a Dialogue Node"],
+          ["create-dialogue-option-node", "Create a Dialogue Option Node"],
           ["create-condition-node", "Create a Condition Node"],
           ["create-match-node", "Create a Match Node"],
           ["create-start-node", "Create a Start Node"],
