@@ -4,9 +4,6 @@
 
 /* Light and dark theme variables */
 :root {
-  --fresh: 50deg, 100%, 56%;
-  --fresh-green: 142deg, 71%, 29%;
-
   --background-primary: 215deg, 100%, 100%;
   --background-secondary: 210deg, 29%, 97%;
   --background-tertiary: 207deg, 33%, 95%;
@@ -18,9 +15,6 @@
   --info: 194deg, 76%, 41%;
 }
 html[data-theme="dark"]:root {
-  --fresh: 50deg, 100%, 56%;
-  --fresh-green: 142deg, 71%, 29%;
-
   --background-primary: 217deg, 55%, 21%;
   --background-secondary: 217deg, 55%, 25%;
   --background-tertiary: 216deg, 27.7%, 22%;

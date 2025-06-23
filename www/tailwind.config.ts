@@ -22,9 +22,6 @@ export default {
     extend: {
       colors: {
         // Dark/light with Tailwind done right using CSS variables:
-        "fresh": "hsla(var(--fresh))",
-        "fresh-green": "hsla(var(--fresh-green))",
-
         "background-primary": "hsla(var(--background-primary))",
         "background-secondary": "hsla(var(--background-secondary))",
         "background-tertiary": "hsla(var(--background-tertiary))",

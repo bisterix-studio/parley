@@ -31,7 +31,7 @@ export default function NavigationBar(
         <li class="flex items-center">
           <a
             href="https://github.com/bisterix-studio/parley"
-            class="hover:text-green-600 inline-block transition"
+            class="hover:text-info inline-block transition"
             aria-label="GitHub"
             target="_blank"
           >
