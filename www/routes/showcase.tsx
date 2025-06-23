@@ -1,6 +1,9 @@
 import { page } from "fresh";
 import { asset } from "fresh/runtime";
+import Footer from "../components/Footer.tsx";
 import Header from "../components/Header.tsx";
+import Projects from "../components/Projects.tsx";
+import projects from "../data/showcase.json" with { type: "json" };
 import { define } from "../utils/state.ts";
 
 const TITLE = "Showcase | Parley";
@@ -32,8 +35,9 @@ export default define.page<typeof handler>(function ShowcasePage() {
             Add yours!
           </a>
         </p>
-        {/* <Projects items={items} class="gap-16" /> */}
+        <Projects items={projects} class="gap-16" />
       </section>
+      <Footer class="mt-auto" />
     </>
   );
 });

@@ -15,6 +15,7 @@ import { TableOfContents } from "../../islands/TableOfContents.tsx";
 import VersionSelect from "../../islands/VersionSelect.tsx";
 import { frontMatter, renderMarkdown } from "../../utils/markdown.ts";
 import { define } from "../../utils/state.ts";
+import Footer from "../../components/Footer.tsx";
 
 interface Data {
   page: Page;
@@ -230,6 +231,7 @@ export default define.page<typeof handler>(function DocsPage(props) {
                   </div>
                 </div>
               </div>
+              <Footer />
             </main>
           </div>
         </Partial>

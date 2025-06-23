@@ -1,6 +1,6 @@
+import { useSignal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
 import type { MarkdownHeading } from "../utils/markdown.ts";
-import { useSignal } from "@preact/signals";
 
 export interface TableOfContentsProps {
   headings: MarkdownHeading[];

@@ -1,3 +1,5 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import PARLEY_VERSIONS from "../versions.json" with { type: "json" };
 
 type RawTableOfContents = Record<

@@ -1,5 +1,6 @@
 import { page } from "fresh";
 import { asset } from "fresh/runtime";
+import Footer from "../components/Footer.tsx";
 import Header from "../components/Header.tsx";
 import { ArchitectureSection } from "../components/homepage/ArchitectureSection.tsx";
 import { CTA } from "../components/homepage/CTA.tsx";
@@ -33,6 +34,7 @@ export default define.page<typeof handler>(function MainPage() {
         <StoresSection />
         <CTA />
       </div>
+      <Footer class="mt-auto" />
     </>
   );
 });

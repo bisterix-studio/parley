@@ -1,5 +1,5 @@
-import { IS_BROWSER } from "fresh/runtime";
 import { useSignal } from "@preact/signals";
+import { IS_BROWSER } from "fresh/runtime";
 
 export default function ThemeToggle() {
   const theme = useSignal(

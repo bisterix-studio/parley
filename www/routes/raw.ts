@@ -1,7 +1,9 @@
-import type { RouteConfig } from "fresh";
-import { format, parse } from "@std/semver";
-import VERSIONS from "../../versions.json" with { type: "json" };
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { extname } from "@std/path";
+import { format, parse } from "@std/semver";
+import type { RouteConfig } from "fresh";
+import VERSIONS from "../../versions.json" with { type: "json" };
 import { define } from "../utils/state.ts";
 
 const BASE_URL = "https://raw.githubusercontent.com/bisterix-studio/parley/";
