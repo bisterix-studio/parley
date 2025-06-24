@@ -4,17 +4,6 @@
 
 /* Light and dark theme variables */
 :root {
-  --background-primary: 215deg, 100%, 100%;
-  --background-secondary: 210deg, 29%, 97%;
-  --background-tertiary: 207deg, 33%, 95%;
-  --foreground-primary: 0deg, 0%, 9%;
-  --foreground-secondary: 0deg, 0%, 23%;
-  --foreground-tertiary: 0deg, 0%, 32%;
-  --foreground-quaternary: 0deg, 0%, 42%;
-
-  --info: 194deg, 76%, 41%;
-}
-html[data-theme="dark"]:root {
   --background-primary: 217deg, 55%, 21%;
   --background-secondary: 217deg, 55%, 25%;
   --background-tertiary: 216deg, 27.7%, 22%;
@@ -27,6 +16,17 @@ html[data-theme="dark"]:root {
 
   color: var(--foreground-primary);
   background-color: var(--background-primary);
+}
+html[data-theme="light"]:root {
+  --background-primary: 215deg, 100%, 100%;
+  --background-secondary: 210deg, 29%, 97%;
+  --background-tertiary: 207deg, 33%, 95%;
+  --foreground-primary: 217deg, 55%, 21%;
+  --foreground-secondary: 217deg, 55%, 25%;
+  --foreground-tertiary: 0deg, 0%, 32%;
+  --foreground-quaternary: 0deg, 0%, 42%;
+
+  --info: 194deg, 76%, 41%;
 }
 
 /* Scrollbar colors that look good on light and dark theme */
@@ -114,10 +114,14 @@ html[data-theme="dark"] ::selection {
 }
 
 .wish {
-  background-color: white;
+  background-color: hsla(var(--foreground-secondary));
   position: absolute;
-  background: linear-gradient(-45deg, white, rgba(0, 0, 255, 0));
-  filter: drop-shadow(0 0 6px white);
+  background: linear-gradient(
+    -45deg,
+    hsla(var(--foreground-secondary)),
+    rgba(0, 0, 255, 0)
+  );
+  filter: drop-shadow(0 0 6px hsla(var(--foreground-secondary)));
   overflow: hidden;
 }
 

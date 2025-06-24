@@ -38,7 +38,7 @@ export default function StarrySky(props: StarrySkyProps) {
             r={randomRadius()}
             stroke="none"
             strokeWidth="0"
-            fill="white"
+            fill="hsla(var(--foreground-secondary))"
             key={y}
             className="star"
           />
