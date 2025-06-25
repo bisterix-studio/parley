@@ -17,7 +17,7 @@ folder.
 
 - Ensure you have familiarised yourself with the
   [Condition Node](../nodes/condition-node.md) docs.
-- Parley is installed and running in your Godot Editor.
+- Parley is [installed](./installation.md) and running in your Godot Editor.
 - You have followed the [instructions](./register-fact.md) to add the relevant
   facts to the system.
 - You have created a basic Dialogue Sequence before. Consult the

@@ -13,7 +13,7 @@ corresponding [create Dialogue Sequence guide](./create-dialogue-sequence.md).
 
 - Ensure you have familiarised yourself with the
   [Parley concepts](../concepts/index.md).
-- Parley is installed and running in your Godot Editor.
+- Parley is [installed](./installation.md) and running in your Godot Editor.
 - You have an available Dialogue Sequence ready to be used and have created a
   basic Dialogue Sequence before. If not, please consult the
   [getting started guide](./create-dialogue-sequence.md) for more info.

@@ -17,7 +17,7 @@ folder.
 
 - Ensure you have familiarised yourself with the
   [End Node](../nodes/end-node.md) docs.
-- Parley is installed and running in your Godot Editor.
+- Parley is [installed](./installation.md) and running in your Godot Editor.
 - You have created a basic Dialogue Sequence before. Consult the
   [getting started guide](./create-dialogue-sequence.md) for more info.
 

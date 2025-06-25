@@ -13,7 +13,7 @@ folder.
 
 - Familiarise yourself with the
   [Dialogue Option Node](../nodes/dialogue-option-node.md) docs.
-- Parley is installed and running in your Godot Editor.
+- Parley is [installed](./installation.md) and running in your Godot Editor.
 - You have followed the [instructions](./register-character.md) to add the
   relevant characters to the system.
 - You have created a basic Dialogue Sequence before. Consult the
