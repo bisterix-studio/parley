@@ -1,7 +1,7 @@
 import { BisterixStudioLogo } from "./BisterixStudioLogo.tsx";
 import { Divider } from "./Divider.tsx";
 import NavigationBar from "./NavigationBar.tsx";
-import { ParleyLogo } from "./PArleyLogo.tsx";
+import { ParleyLogo } from "./Logo.tsx";
 
 export default function Header(props: HeaderProps) {
   const isDocs = props.active == "/docs";
