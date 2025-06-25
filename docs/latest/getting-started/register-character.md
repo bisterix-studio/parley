@@ -1,10 +1,13 @@
 ---
 description: |
-  Register a Fact
+  Register an Action
 ---
 
-Facts are resources in Parley used by Condition Nodes for comparisons within the
-running game. For example, one might want to display different dialogue
+TODO
+
+Actions are resources in Parley used to: TODO.
+
+<!-- For example, one might want to display different dialogue
 depending on whether Alice gave a coffee or not.
 
 Facts are stored in a fact store which can be configured in the Parley settings.
@@ -19,11 +22,11 @@ in the corresponding
   [Condition Node](../nodes/condition-node.md) docs.
 - Parley is installed and running in your Godot Editor.
 - You have created a basic Dialogue Sequence before. Consult the
-  [getting started guide](./create-dialogue-sequence.md) for more info.
+  [getting started guide](./create-dialogue-sequence.md) for more info. -->
 
 <!-- TODO: update when Parley supports creation of Fact -->
 
-## Instructions
+<!-- ## Instructions
 
 > **Note:** it is assumed that the default Parley settings are used for the fact
 > store and it is stored at: `res://facts/fact_store_main.tres`
@@ -87,7 +90,7 @@ func available_values() -> Array[Ball]:
 
 <!-- TODO: change/remove this when supported Parley -->
 
-- Finally, reload the Godot project and the new fact should be available to use
+<!-- - Finally, reload the Godot project and the new fact should be available to use
   in Parley!
 
-![Reload Godot Editor](../../../www/static/docs/register-fact/reload-godot-editor.png)
+![Reload Godot Editor](../../../www/static/docs/register-fact/reload-godot-editor.png) -->

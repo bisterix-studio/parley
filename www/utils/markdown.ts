@@ -8,6 +8,7 @@ import "prismjs/components/prism-diff.js";
 import "prismjs/components/prism-json.js";
 import "prismjs/components/prism-bash.js";
 import "prismjs/components/prism-yaml.js";
+import "prismjs/components/prism-gdscript.js";
 
 export { extractYaml as frontMatter } from "@std/front-matter";
 

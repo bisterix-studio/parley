@@ -9,12 +9,14 @@ description: |
 Condition Nodes can be used to conditionally direct users down different
 dialogue branches or even conditionally render options. They are designed to be
 infinitely nested in theory and you can find all sorts of Dialogue Sequence
-examples in the Parley `examples` folder.
+examples in the Parley
+[`examples`](https://github.com/bisterix-studio/parley/tree/main/examples)
+folder.
 
 ## Pre-requisites
 
 - Ensure you have familiarised yourself with the
-  [Condition Node](../concepts/condition-node.md) docs.
+  [Condition Node](../nodes/condition-node.md) docs.
 - Parley is installed and running in your Godot Editor.
 - You have followed the [instructions](./register-fact.md) to add the relevant
   facts to the system.

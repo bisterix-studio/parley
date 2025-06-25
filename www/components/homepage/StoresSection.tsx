@@ -25,7 +25,7 @@ export function StoresSection() {
             character attitude, triggering journal events, randomising the
             dialogue responses. The list goes on!
           </p>
-          <FancyLink href="/docs/concepts/fact-store" class="mt-2">
+          <FancyLink href="/docs/stores" class="mt-2">
             Learn more about stores
           </FancyLink>
         </div>

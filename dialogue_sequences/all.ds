@@ -64,7 +64,7 @@
       "id": "node:9",
       "type": "ACTION",
       "position": "(4040.0, 360.0)",
-      "description": "Register that Clue 1 was found",
+      "description": "Advance time [4h]",
       "action_type": "SCRIPT",
       "action_script_ref": "uid://cc7stjcigkq7f",
       "values": [

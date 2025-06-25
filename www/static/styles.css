@@ -12,7 +12,9 @@
   --foreground-tertiary: 215deg, 17%, 20%;
   --foreground-quaternary: 215deg, 17%, 10%;
 
-  --info: 194deg, 76%, 41%;
+  --info: 194deg, 76%, 50%;
+  --tip: 120deg, 100%, 50%;
+  --warn: 30deg, 96%, 44%;
 
   color: var(--foreground-primary);
   background-color: var(--background-primary);
@@ -26,7 +28,9 @@ html[data-theme="light"]:root {
   --foreground-tertiary: 0deg, 0%, 32%;
   --foreground-quaternary: 0deg, 0%, 42%;
 
-  --info: 194deg, 76%, 41%;
+  --info: 194deg, 76%, 50%;
+  --tip: 120deg, 100%, 35%;
+  --warn: 30deg, 96%, 44%;
 }
 
 /* Scrollbar colors that look good on light and dark theme */
@@ -127,7 +131,7 @@ html[data-theme="dark"] ::selection {
 
 /* Starry night background END */
 
-/* Logo START */
+/* Bisterix Studio Logo START */
 .bs-cls-1 {
   stroke-width: 60px;
 }
@@ -149,4 +153,11 @@ html[data-theme="dark"] ::selection {
 .bs-cls-3 {
   fill: hsla(var(--foreground-secondary));
 }
-/* Logo END */
+/* Bisterix Studio Logo END */
+
+/* Parley Logo START */
+.parley-cls-1 {
+  fill: hsla(var(--foreground-secondary));
+  fill-opacity: 1;
+}
+/* Parley Logo END */

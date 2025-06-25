@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_ast_compiler_0.2.0"
+type="Resource"
+uid="uid://b3r22nuau53fc"
+path="res://.godot/imported/create-action-basic.ds-e38739cfea455e08a1a897981a137c53.tres"
+
+[deps]
+
+source_file="res://examples/create-action-basic.ds"
+dest_files=["res://.godot/imported/create-action-basic.ds-e38739cfea455e08a1a897981a137c53.tres"]
+
+[params]
+

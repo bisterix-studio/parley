@@ -24,14 +24,14 @@ Some stand out features:
 
 - An easy to use and well-defined Graph Editor
 - A wide variety of nodes for maximum flexibility:
-  - [Dialogue](../concepts/dialogue-node.md)
-  - [Dialogue Option](../concepts/dialogue-option-node.md)
-  - [Condition](../concepts/condition-node.md)
-  - [Match](../concepts/match-node.md)
-  - [Action](../concepts/action-node.md)
-  - [Group](../concepts/group-node.md)
-  - [Start](../concepts/start-node.md)
-  - [End](../concepts/end-node.md)
+  - [Dialogue](../nodes/dialogue-node.md)
+  - [Dialogue Option](../nodes/dialogue-option-node.md)
+  - [Condition](../nodes/condition-node.md)
+  - [Match](../nodes/match-node.md)
+  - [Action](../nodes/action-node.md)
+  - [Group](../nodes/group-node.md)
+  - [Start](../nodes/start-node.md)
+  - [End](../nodes/end-node.md)
 - Creation of connections between nodes to easily see the flow of your dialogue
   sequence
 - Easy testing of your dialogue at any stage in the sequence

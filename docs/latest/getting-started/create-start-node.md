@@ -6,11 +6,12 @@ description: |
 A Start Node defines the start of the Dialogue Sequence. For a Dialogue Sequence
 to be valid and run and runtime, there must be one and only one Start Node
 defined. You can find all sorts of Dialogue Sequence examples in the Parley
-`examples` folder.
+[`examples`](https://github.com/bisterix-studio/parley/tree/main/examples)
+folder.
 
 ## Pre-requisites
 
-- Familiarise yourself with the [Start Node](../concepts/start-node.md) docs.
+- Familiarise yourself with the [Start Node](../nodes/start-node.md) docs.
 - Parley is installed and running in your Godot Editor.
 - You have created a basic Dialogue Sequence before. Consult the
   [getting started guide](./create-dialogue-sequence.md) for more info.

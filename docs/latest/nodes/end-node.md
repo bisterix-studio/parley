@@ -7,7 +7,9 @@ An End Node defines the end of the Dialogue Sequence. Although Dialogue
 Sequences do not require the presence of End Nodes to end a running Dialogue
 Sequence, it is recommended to do so to make it clear to the Dialogue Sequence
 writer that reaching this node ends the currently open dialogue. You can find
-all sorts of Dialogue Sequence examples in the Parley `examples` folder.
+all sorts of Dialogue Sequence examples in the Parley
+[`examples`](https://github.com/bisterix-studio/parley/tree/main/examples)
+folder.
 
 ![End_node](../../../www/static/docs/end/end-node.png)
 

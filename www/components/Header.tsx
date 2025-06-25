@@ -1,6 +1,7 @@
 import { BisterixStudioLogo } from "./BisterixStudioLogo.tsx";
 import { Divider } from "./Divider.tsx";
 import NavigationBar from "./NavigationBar.tsx";
+import { ParleyLogo } from "./PArleyLogo.tsx";
 
 export default function Header(props: HeaderProps) {
   const isDocs = props.active == "/docs";
@@ -31,7 +32,11 @@ export default function Header(props: HeaderProps) {
               aria-label="Bisterix Studio logo"
               preserveAspectRatio="xMinYMin"
             />
-            <p class="pl-4 my-auto text-2xl">Parley</p>
+            <ParleyLogo
+              aria-label="Parley logo"
+              preserveAspectRatio="xMinYMin"
+              class="pl-4"
+            />
           </a>
         </div>
         <NavigationBar class="" active={props.active} />

@@ -9,12 +9,14 @@ An End Node defines the end of the Dialogue Sequence. Although Dialogue
 Sequences do not require the presence of End Nodes to end a running Dialogue
 Sequence, it is recommended to do so to make it clear to the Dialogue Sequence
 writer that reaching this node ends the currently open dialogue. You can find
-all sorts of Dialogue Sequence examples in the Parley `examples` folder.
+all sorts of Dialogue Sequence examples in the Parley
+[`examples`](https://github.com/bisterix-studio/parley/tree/main/examples)
+folder.
 
 ## Pre-requisites
 
 - Ensure you have familiarised yourself with the
-  [End Node](../concepts/end-node.md) docs.
+  [End Node](../nodes/end-node.md) docs.
 - Parley is installed and running in your Godot Editor.
 - You have created a basic Dialogue Sequence before. Consult the
   [getting started guide](./create-dialogue-sequence.md) for more info.

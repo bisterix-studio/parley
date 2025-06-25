@@ -27,17 +27,26 @@ const toc: RawTableOfContents = {
         title: "Getting Started",
         pages: [
           ["create-dialogue-sequence", "Create a Dialogue sequence"],
+          ["run-dialogue-sequence", "Run a Dialogue sequence"],
           ["create-dialogue-node", "Create a Dialogue Node"],
           ["create-dialogue-option-node", "Create a Dialogue Option Node"],
           ["create-condition-node", "Create a Condition Node"],
           ["create-match-node", "Create a Match Node"],
+          ["create-action-node", "Create an Action Node"],
           ["create-start-node", "Create a Start Node"],
           ["create-end-node", "Create an End Node"],
+          ["create-group-node", "Create an Group Node"],
           ["register-fact", "Register a Fact"],
         ],
       },
       concepts: {
         title: "Concepts",
+        pages: [
+          ["parley-runtime", "Parley Runtime"],
+        ],
+      },
+      nodes: {
+        title: "Nodes",
         pages: [
           ["dialogue-node", "Dialogue Node"],
           ["dialogue-option-node", "Dialogue Option Node"],
@@ -47,6 +56,11 @@ const toc: RawTableOfContents = {
           ["start-node", "Start Node"],
           ["end-node", "End Node"],
           ["group-node", "Group Node"],
+        ],
+      },
+      stores: {
+        title: "Stores",
+        pages: [
           ["fact-store", "Fact Store"],
           ["action-store", "Action Store"],
           ["character-store", "Character Store"],

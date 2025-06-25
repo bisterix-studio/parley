@@ -5,7 +5,8 @@ description: |
 
 A Start Node defines the start of the Dialogue Sequence. For a Dialogue Sequence
 to be valid at runtime, there must be one and only one Start Node defined. You
-can find all sorts of Dialogue Sequence examples in the Parley `examples`
+can find all sorts of Dialogue Sequence examples in the Parley
+[`examples`](https://github.com/bisterix-studio/parley/tree/main/examples)
 folder.
 
 ![start_node](../../../www/static/docs/start/start-node.png)
