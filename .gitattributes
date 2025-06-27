@@ -2,6 +2,8 @@
 * text=auto eol=lf
 
 # Only include the addons/parley folder when downloading from the Asset Library.
-/**        export-ignore
-/addons/parley    !export-ignore
+** export-ignore
+/addons !export-ignore
+/addons/* export-ignore
+/addons/parley !export-ignore
 /addons/parley/** !export-ignore

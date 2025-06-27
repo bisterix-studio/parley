@@ -19,7 +19,7 @@ export function Divider(props: DividerProps): JSX.Element {
     }
     case DividerMode.NAVBAR: {
       return (
-        <hr class="border-1 border-foreground-secondary/40 mx-16 2xl:mx-0 rounded-md" />
+        <hr class="border-1 border-foreground-secondary/40 mx-4 sm:mx-16 2xl:mx-0 rounded-md" />
       );
     }
     default: {

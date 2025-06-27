@@ -9,6 +9,4 @@ deploy to your game.
 
 The documentation assumes you have the latest version of
 [Godot](https://godotengine.org/) installed on your system and have also
-installed the Parley plugin.
-
-<!-- TODO: add installation page -->
+[installed the Parley plugin](./installation.md).

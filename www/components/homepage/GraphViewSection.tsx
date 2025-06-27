@@ -1,4 +1,4 @@
-import { SectionHeading } from "../../components/homepage/SectionHeading.tsx";
+import { SectionHeading } from "./SectionHeading.tsx";
 import { PageSection } from "../../components/PageSection.tsx";
 import { SideBySide } from "../../components/SideBySide.tsx";
 

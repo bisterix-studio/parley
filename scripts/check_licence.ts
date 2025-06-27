@@ -8,7 +8,6 @@ import { globToRegExp } from "jsr:@std/path/glob-to-regexp";
 const EXTENSIONS: [string, string][] = [
   [".ts", "//"],
   [".gd", "#"],
-  [".tscn", ";"],
 ];
 const EXCLUDED_DIRS = [
   "**/.godot",
