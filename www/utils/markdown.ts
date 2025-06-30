@@ -71,14 +71,9 @@ class DefaultRenderer extends Marked.Renderer {
       return `<a href="${href}"${titleAttr}>${text}</a>`;
     }
 
-    let parsedHref = href;
-    if (parsedHref.endsWith(".md")) {
-      parsedHref = parsedHref
-        .replace(/\.md$/, "")
-        .replace(/\/index$/, "")
-        .replace(/(\.\.\/)+/, "/docs/");
-    }
-    return `<a href="${parsedHref}"${titleAttr} rel="noopener noreferrer">${text}</a>`;
+    const [parsedHref, isAbsolute] = parseLink(href);
+    const target = isAbsolute ? ' target="_blank"' : "";
+    return `<a href="${parsedHref}"${titleAttr}${target} rel="noopener noreferrer">${text}</a>`;
   }
 
   override image({ href, text, title }: Marked.Tokens.Image) {
@@ -136,6 +131,9 @@ class DefaultRenderer extends Marked.Renderer {
         if (token.type === "text" && token.text.startsWith(match[0])) {
           token.text = token.text.slice(match[0].length);
         }
+        if (token.type === "link" && token.href) {
+          token.href = parseLink(token.href)[0];
+        }
       });
       const type = match[1];
       const icon = `<svg class="icon"><use href="/icons.svg#${type}" /></svg>`;
@@ -145,6 +143,18 @@ class DefaultRenderer extends Marked.Renderer {
     }
     return `<blockquote>\n${Marked.parser(tokens)}</blockquote>\n`;
   }
+}
+
+function parseLink(link: string): [parsed: string, isAbsolute: boolean] {
+  let parsedHref = link;
+  const isAbsolute = parsedHref.startsWith("https://");
+  if (parsedHref.endsWith(".md") && !isAbsolute) {
+    parsedHref = parsedHref
+      .replace(/\.md$/, "")
+      .replace(/\/index$/, "")
+      .replace(/(\.\.\/)+/, "/docs/");
+  }
+  return [parsedHref, isAbsolute];
 }
 
 export interface MarkdownOptions {

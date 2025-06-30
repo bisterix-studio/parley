@@ -9,3 +9,4 @@ raise
 [a GitHub issue](https://github.com/bisterix-studio/parley/issues/new?category=ideas).
 
 - [Basic Action Node](https://github.com/bisterix-studio/parley/blob/main/examples/create-action-basic.ds)
+- [Basic Group Node](https://github.com/bisterix-studio/parley/blob/main/examples/create-group-basic.ds)

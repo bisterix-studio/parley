@@ -3,94 +3,56 @@ description: |
   Register an Action
 ---
 
-TODO
+Actions are resources in Parley used to execute defined functionality during the
+running of a Dialogue Sequence. For example, an Action could contain
+functionality to: emit a signal, register a journal entry, or update state.
 
-Actions are resources in Parley used to: TODO.
+Actions are stored in an action store which can be configured in the Parley
+settings.
 
-<!-- For example, one might want to display different dialogue
-depending on whether Alice gave a coffee or not.
-
-Facts are stored in a fact store which can be configured in the Parley settings.
-
-In this guide, we will create a fact that can be used to create a Condition Node
-in the corresponding
-[create a Condition Node guide](./create-condition-node.md).
+In this guide, we will create a action that can be used to create an Action Node
+in the corresponding [create an Action Node guide](./create-action-node.md).
 
 ## Pre-requisites
 
 - Ensure you have familiarised yourself with the
-  [Condition Node](../nodes/condition-node.md) docs.
+  [Action Node](../nodes/action-node.md) docs.
 - Parley is [installed](./installation.md) and running in your Godot Editor.
 - You have created a basic Dialogue Sequence before. Consult the
-  [getting started guide](./create-dialogue-sequence.md) for more info. -->
+  [getting started guide](./create-dialogue-sequence.md) for more info.
 
-<!-- TODO: update when Parley supports creation of Fact -->
+## Instructions
 
-<!-- ## Instructions
+![Register an Action](../../../www/static/docs/register-action/register-action.gif)
 
-> **Note:** it is assumed that the default Parley settings are used for the fact
-> store and it is stored at: `res://facts/fact_store_main.tres`
+> [info]: it is assumed that the default Parley settings are used for the fact
+> store and it is stored at: `res://facts/fact_store_main.tres`. You can find
+> more information on changing the default Parley settings
+> [here](../reference/parley-settings.md).
 
-- Create a Fact script (ensure that it extends the `FactInterface` class) at:
-  `res://facts/alice_gave_coffee_fact.gd`
-
-```gdscript
-extends FactInterface
-
-func execute(_ctx: Dictionary, _values: Array) -> bool:
-	print('Alice did indeed give coffee')
-  # Note, you can return any value here, it doesn't
-  # necessarily have to be a bool
-	return true
-```
-
-- [OPTIONAL] If the return type of your fact, is **not** of type `bool`, it is
-  recommended to return well-known values of the fact (for example, when using a
-  [Match Node](../nodes/match-node.md)). For example:
+- Create an Action script (ensure that it extends the `ParleyActionInterface`
+  class) at: `res://actions/advance_time_action.gd`
 
 ```gdscript
-extends FactInterface
+extends ParleyActionInterface
 
-enum Ball {
-	RED = 1,
-	YELLOW = 2,
-	PINK = 6,
-	BLUE = 5,
-}
-
-func execute(ctx: Dictionary, _values: Array) -> int:
-	return ctx.get('ball', 0)
-
-func available_values() -> Array[Ball]:
-	return [
-		Ball.RED,
-		Ball.YELLOW,
-		Ball.PINK,
-		Ball.BLUE,
-	]
+func execute(_ctx: Dictionary, values: Array) -> int:
+	print("Advancing time by %s" % [values[0]])
+	return OK
 ```
 
-- Open up the inspector for `res://facts/fact_store_main.tres` in the Godot
-  Editor and click `Add Element`:
+1. Open up the `ParleyStores` dock in the Godot Editor and click `Add Action`.
+2. Give your new action an ID. In our example, we use: `main:advance_time`.
+3. Give your new action a name. In our example, we use: `Advance Time`.
+4. Link your created action script with the Action using the resource inspector
+   (labelled `Ref`).
 
-![Add Element](../../../www/static/docs/register-fact/add-element.png)
+> [tip]: You can use the resource editors in `ParleyStores` to quickly navigate
+> to the relevant resource for editing. You can also add resources using the
+> resource editor dropdown field instead of dragging.
 
-- Then, click the empty element and choose `New Fact`:
-
-![Click Empty Element](../../../www/static/docs/register-fact/click-empty-element.png)
-
-- Now populate the fact ID by using the same element ID (recommended but not
-  essential) and choose a sensible name for the Fact in the store:
-
-![Populate basic fact data](../../../www/static/docs/register-fact/populate-basic-fact-data.png)
-
-- Then, drag the fact script created earlier to the `<empty>` ref field:
-
-![Drag Fact Script](../../../www/static/docs/register-fact/drag-fact-script.png)
-
-<!-- TODO: change/remove this when supported Parley -->
-
-<!-- - Finally, reload the Godot project and the new fact should be available to use
-  in Parley!
-
-![Reload Godot Editor](../../../www/static/docs/register-fact/reload-godot-editor.png) -->
+5. You should now see that the Action is available in the Action node dropdown
+   options. Select `Advance Time` in the options to associate it with the
+   selected Action Node.
+6. Test out your new Action within the Dialogue Sequence by clicking the Test
+   Dialogue Sequence from start button.

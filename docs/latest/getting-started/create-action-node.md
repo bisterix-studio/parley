@@ -39,12 +39,12 @@ folder.
 > [tip]: You can click on the pencil icon to the right of the Action to view the
 > selected script in the Godot GDScript editor and optionally edit it.
 
-1. Choose a value to pass to the Action Node. This must be a value understood by
+6. Choose a value to pass to the Action Node. This must be a value understood by
    the underlying script (chosen in the previous step). In this example, we set
    to: `4h`.
-2. Click the `Save` button in the Parley editor and there we have it! Our first
+7. Click the `Save` button in the Parley editor and there we have it! Our first
    dialogue sequence with an Action Node.
-3. Now connect this Node up with other Nodes to continue the Dialogue Sequence
+8. Now connect this Node up with other Nodes to continue the Dialogue Sequence
    with your awesome game writing!
-4. You can test out your Dialogue Sequence by clicking the Test Dialogue
+9. You can test out your Dialogue Sequence by clicking the Test Dialogue
    Sequence from start button.

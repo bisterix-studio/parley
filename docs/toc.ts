@@ -35,7 +35,7 @@ const toc: RawTableOfContents = {
           ["create-condition-node", "Create a Condition Node"],
           ["create-match-node", "Create a Match Node"],
           ["create-action-node", "Create an Action Node"],
-          ["create-group-node", "Create an Group Node"],
+          ["create-group-node", "Create a Group Node"],
           ["create-end-node", "Create an End Node"],
           ["register-fact", "Register a Fact"],
           ["register-action", "Register an Action"],
@@ -73,6 +73,12 @@ const toc: RawTableOfContents = {
       examples: {
         title: "Examples",
         pages: [],
+      },
+      reference: {
+        title: "Reference",
+        pages: [
+          ["parley-settings", "Parley settings"],
+        ],
       },
     },
   },

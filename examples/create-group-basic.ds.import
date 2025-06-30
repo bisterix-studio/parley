@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_ast_compiler_0.2.0"
+type="Resource"
+uid="uid://g0rrpyv0xaa1"
+path="res://.godot/imported/create-group-basic.ds-f390bbe2427ec4eb03f92f1badf743e4.tres"
+
+[deps]
+
+source_file="res://examples/create-group-basic.ds"
+dest_files=["res://.godot/imported/create-group-basic.ds-f390bbe2427ec4eb03f92f1badf743e4.tres"]
+
+[params]
+

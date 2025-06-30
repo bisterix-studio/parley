@@ -70,21 +70,14 @@ Your settings should look like the following:
 
 ![parley-store-paths](../../../www/static/docs/installation/parley-store-paths.png)
 
+<!-- TODO: move up -->
+
 ### Activate
 
 1. From the menu choose Project->Project Settings, click the Plugins tab and
-   activate Gut. Once activated, the GUT Panel will appear at the bottom of your
+   activate Plugin. Once activated, the Parley will appear at the top of your
    editor:
 
-![Gut Panel Location](_static/images/gut_panel_where.png)
+<!-- TODO: fix -->
 
-### Setup directories for tests
-
-The next few steps cover the suggested configuration. Feel free to deviate where
-you see fit.
-
-1. Create directories to store your tests and test related code (suggested
-   config)
-   - `res://test`
-   - `res://test/unit`
-   - `res://test/integration`
+<!-- ### Setup stores -->
