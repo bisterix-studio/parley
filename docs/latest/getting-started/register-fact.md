@@ -3,9 +3,10 @@ description: |
   Register a Fact
 ---
 
-Facts are resources in Parley used by Condition Nodes for comparisons within the
-running game. For example, one might want to display different dialogue
-depending on whether Alice gave a coffee or not.
+Facts are resources in Parley used by Condition and Match Nodes for comparisons
+within the currently running game. For example, one might want to display
+different dialogue depending on whether a condition check is passed or not (e.g.
+whether Alice gave a coffee or not).
 
 Facts are stored in a fact store which can be configured in the Parley settings.
 
