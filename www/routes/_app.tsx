@@ -47,9 +47,7 @@ export default define.page(function App({ Component, state, url }) {
           // deno-lint-ignore react-no-danger
           dangerouslySetInnerHTML={{
             __html: `
-const isDarkMode = localStorage.theme === "dark"
-  || (!("theme" in localStorage)
-    && window.matchMedia("(prefers-color-scheme: dark)").matches);
+const isDarkMode = localStorage.theme !== "light";
 document.documentElement.dataset.theme = isDarkMode ? "dark" : "light";`,
           }}
         >

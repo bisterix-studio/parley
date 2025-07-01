@@ -10,8 +10,9 @@ functionality to: emit a signal, register a journal entry, or update state.
 Actions are stored in an action store which can be configured in the Parley
 settings.
 
-In this guide, we will create a action that can be used to create an Action Node
-in the corresponding [create an Action Node guide](./create-action-node.md).
+In this guide, we will create an action that can be used to create an Action
+Node in the corresponding
+[create an Action Node guide](./create-action-node.md).
 
 ## Pre-requisites
 
@@ -25,13 +26,13 @@ in the corresponding [create an Action Node guide](./create-action-node.md).
 
 ![Register an Action](../../../www/static/docs/register-action/register-action.gif)
 
-> [info]: it is assumed that the default Parley settings are used for the fact
-> store and it is stored at: `res://facts/fact_store_main.tres`. You can find
-> more information on changing the default Parley settings
+> [info]: it is assumed that the default Parley settings are used for the action
+> store and it is stored at: `res://actions/action_store_main.tres`. You can
+> find more information on changing the default Parley settings
 > [here](../reference/parley-settings.md).
 
-- Create an Action script (ensure that it extends the `ParleyActionInterface`
-  class) at: `res://actions/advance_time_action.gd`
+1. Create an Action script (ensure that it extends the `ParleyActionInterface`
+   class) at: `res://actions/advance_time_action.gd`
 
 ```gdscript
 extends ParleyActionInterface
@@ -41,18 +42,20 @@ func execute(_ctx: Dictionary, values: Array) -> int:
 	return OK
 ```
 
-1. Open up the `ParleyStores` dock in the Godot Editor and click `Add Action`.
-2. Give your new action an ID. In our example, we use: `main:advance_time`.
-3. Give your new action a name. In our example, we use: `Advance Time`.
-4. Link your created action script with the Action using the resource inspector
+2. Open up the `ParleyStores` dock in the Godot Editor and open the `Action`
+   tab.
+3. Click `Add Action`.
+4. Give your new action an ID. In our example, we use: `main:advance_time`.
+5. Give your new action a name. In our example, we use: `Advance Time`.
+6. Link your created action script with the Action using the resource inspector
    (labelled `Ref`).
 
 > [tip]: You can use the resource editors in `ParleyStores` to quickly navigate
 > to the relevant resource for editing. You can also add resources using the
 > resource editor dropdown field instead of dragging.
 
-5. You should now see that the Action is available in the Action node dropdown
+7. You should now see that the Action is available in the Action node dropdown
    options. Select `Advance Time` in the options to associate it with the
    selected Action Node.
-6. Test out your new Action within the Dialogue Sequence by clicking the Test
+8. Test out your new Action within the Dialogue Sequence by clicking the Test
    Dialogue Sequence from start button.

@@ -1,96 +1,54 @@
 ---
 description: |
-  Register an Action
+	Register a Character
 ---
 
-TODO
+As the name suggests, Characters are resources in Parley used to define
+characters within a Dialogue Sequence.
 
-Actions are resources in Parley used to: TODO.
+Characters are stored in a Character Store which can be configured in the Parley
+settings.
 
-<!-- For example, one might want to display different dialogue
-depending on whether Alice gave a coffee or not.
-
-Facts are stored in a fact store which can be configured in the Parley settings.
-
-In this guide, we will create a fact that can be used to create a Condition Node
-in the corresponding
-[create a Condition Node guide](./create-condition-node.md).
+In this guide, we will create a character that can be used to create
+[Dialogue](../nodes/dialogue-node.md) and
+[Dialogue Option](../nodes/dialogue-option-node.md) nodes.
 
 ## Pre-requisites
 
 - Ensure you have familiarised yourself with the
-  [Condition Node](../nodes/condition-node.md) docs.
+  [Character Node](../nodes/character.md) docs.
 - Parley is [installed](./installation.md) and running in your Godot Editor.
 - You have created a basic Dialogue Sequence before. Consult the
-  [getting started guide](./create-dialogue-sequence.md) for more info. -->
+  [getting started guide](./create-dialogue-sequence.md) for more info.
 
-<!-- TODO: update when Parley supports creation of Fact -->
+## Instructions
 
-<!-- ## Instructions
+![Register a Character](../../../www/static/docs/register-character/register-character.gif)
 
-> **Note:** it is assumed that the default Parley settings are used for the fact
-> store and it is stored at: `res://facts/fact_store_main.tres`
+> [info]: it is assumed that the default Parley settings are used for the
+> character store and it is stored at:
+> `res://characters/character_store_main.tres`. You can find more information on
+> changing the default Parley settings [here](../reference/parley-settings.md).
 
-- Create a Fact script (ensure that it extends the `FactInterface` class) at:
-  `res://facts/alice_gave_coffee_fact.gd`
+1. Open up the `ParleyStores` dock in the Godot Editor and open the `Character`
+   tab.
+2. Click `Add Character`.
+3. Give your new character an ID. In our example, we use: `frankie`.
+4. Give your new character a name. In our example, we use: `Frankie`.
 
-```gdscript
-extends FactInterface
+> [tip]: You can use the resource editors in `ParleyStores` to quickly navigate
+> to the relevant resource for editing. You can also add resources using the
+> resource editor dropdown field instead of dragging.
 
-func execute(_ctx: Dictionary, _values: Array) -> bool:
-	print('Alice did indeed give coffee')
-  # Note, you can return any value here, it doesn't
-  # necessarily have to be a bool
-	return true
-```
+5. You should now see that the Character is available in the Dialogue node
+   dropdown options for the associated character. Select `Frankie` in the
+   options to associate it with the selected Dialogue Node.
+6. Test out your new Character within the Dialogue Sequence by clicking the Test
+   Dialogue Sequence from start button.
 
-- [OPTIONAL] If the return type of your fact, is **not** of type `bool`, it is
-  recommended to return well-known values of the fact (for example, when using a
-  [Match Node](../nodes/match-node.md)). For example:
-
-```gdscript
-extends FactInterface
-
-enum Ball {
-	RED = 1,
-	YELLOW = 2,
-	PINK = 6,
-	BLUE = 5,
-}
-
-func execute(ctx: Dictionary, _values: Array) -> int:
-	return ctx.get('ball', 0)
-
-func available_values() -> Array[Ball]:
-	return [
-		Ball.RED,
-		Ball.YELLOW,
-		Ball.PINK,
-		Ball.BLUE,
-	]
-```
-
-- Open up the inspector for `res://facts/fact_store_main.tres` in the Godot
-  Editor and click `Add Element`:
-
-![Add Element](../../../www/static/docs/register-fact/add-element.png)
-
-- Then, click the empty element and choose `New Fact`:
-
-![Click Empty Element](../../../www/static/docs/register-fact/click-empty-element.png)
-
-- Now populate the fact ID by using the same element ID (recommended but not
-  essential) and choose a sensible name for the Fact in the store:
-
-![Populate basic fact data](../../../www/static/docs/register-fact/populate-basic-fact-data.png)
-
-- Then, drag the fact script created earlier to the `<empty>` ref field:
-
-![Drag Fact Script](../../../www/static/docs/register-fact/drag-fact-script.png)
-
-<!-- TODO: change/remove this when supported Parley -->
-
-<!-- - Finally, reload the Godot project and the new fact should be available to use
-  in Parley!
-
-![Reload Godot Editor](../../../www/static/docs/register-fact/reload-godot-editor.png) -->
+> [tip]: You may want to define a custom character rather than using the Parley
+> Character so you can add custom attributes. ATM, Parley does not support
+> adding this via the `ParleyStores` editor but you can do by adding to the raw
+> character store resource in the Godot editor. When doing this, it is **vital**
+> to ensure that you include `@tool` at the top of the your custom character
+> definition.
