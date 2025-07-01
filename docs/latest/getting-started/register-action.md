@@ -54,8 +54,8 @@ func execute(_ctx: Dictionary, values: Array) -> int:
 > to the relevant resource for editing. You can also add resources using the
 > resource editor dropdown field instead of dragging.
 
-7. You should now see that the Action is available in the Action node dropdown
-   options. Select `Advance Time` in the options to associate it with the
-   selected Action Node.
+7. You should now see that the Action is available in the Action dropdown
+   options in the Action node editor. Select `Advance Time` in the options to
+   associate it with the selected Action Node.
 8. Test out your new Action within the Dialogue Sequence by clicking the Test
    Dialogue Sequence from start button.

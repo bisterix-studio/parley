@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_ast_compiler_0.2.0"
+type="Resource"
+uid="uid://dlcr5lltkb0nr"
+path="res://.godot/imported/create-condition-basic.ds-94c6607bd22704d7fc2e128789bcd3b8.tres"
+
+[deps]
+
+source_file="res://examples/create-condition-basic.ds"
+dest_files=["res://.godot/imported/create-condition-basic.ds-94c6607bd22704d7fc2e128789bcd3b8.tres"]
+
+[params]
+

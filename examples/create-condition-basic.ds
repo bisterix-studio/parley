@@ -1,0 +1,94 @@
+{
+  "title": "",
+  "nodes": [
+    {
+      "id": "node:1",
+      "type": "START",
+      "position": "(620.0, 440.0)"
+    },
+    {
+      "id": "node:2",
+      "type": "END",
+      "position": "(1940.0, 500.0)"
+    },
+    {
+      "id": "node:3",
+      "type": "DIALOGUE",
+      "position": "(1400.0, 680.0)",
+      "character": "uid://ceouii84qmu0w::bob",
+      "text": "Where's my coffee??"
+    },
+    {
+      "id": "node:4",
+      "type": "DIALOGUE",
+      "position": "(1400.0, 200.0)",
+      "character": "uid://ceouii84qmu0w::bob",
+      "text": "Thanks for the coffee!"
+    },
+    {
+      "id": "node:5",
+      "type": "CONDITION",
+      "position": "(900.0, 400.0)",
+      "description": "Did Alice give coffee",
+      "combiner": "ALL",
+      "conditions": [
+        {
+          "fact_ref": "uid://cpwr6bc02ec7a",
+          "operator": 0,
+          "value": "true"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:1",
+      "from_node": "node:1",
+      "from_slot": 0,
+      "to_node": "node:5",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:2",
+      "from_node": "node:5",
+      "from_slot": 0,
+      "to_node": "node:4",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:3",
+      "from_node": "node:5",
+      "from_slot": 1,
+      "to_node": "node:3",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:4",
+      "from_node": "node:4",
+      "from_slot": 0,
+      "to_node": "node:2",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:5",
+      "from_node": "node:3",
+      "from_slot": 0,
+      "to_node": "node:2",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    }
+  ],
+  "stores": {
+    "character": [],
+    "fact": []
+  }
+}

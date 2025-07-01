@@ -49,7 +49,7 @@ class log:
 
 class resource:
 	static func get_uid(resource: Resource) -> String:
-		if not resource.resource_path:
+		if not resource or not resource.resource_path:
 			ParleyUtils.log.warn("Unable to get UID for Resource (resource: %s): resource_path is not defined. Returning empty string." % [resource])
 			return ""
 		var id: int = ResourceLoader.get_resource_uid(resource.resource_path)

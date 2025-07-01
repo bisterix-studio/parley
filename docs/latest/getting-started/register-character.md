@@ -1,6 +1,6 @@
 ---
 description: |
-	Register a Character
+   Register a Character
 ---
 
 As the name suggests, Characters are resources in Parley used to define
