@@ -28,8 +28,8 @@
     {
       "id": "node:5",
       "type": "CONDITION",
-      "position": "(900.0, 400.0)",
-      "description": "Did Alice give coffee",
+      "position": "(920.0, 340.0)",
+      "description": "Alice gave a coffee",
       "combiner": "ALL",
       "conditions": [
         {
@@ -41,33 +41,6 @@
     }
   ],
   "edges": [
-    {
-      "id": "edge:1",
-      "from_node": "node:1",
-      "from_slot": 0,
-      "to_node": "node:5",
-      "to_slot": 0,
-      "should_override_colour": false,
-      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
-    },
-    {
-      "id": "edge:2",
-      "from_node": "node:5",
-      "from_slot": 0,
-      "to_node": "node:4",
-      "to_slot": 0,
-      "should_override_colour": false,
-      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
-    },
-    {
-      "id": "edge:3",
-      "from_node": "node:5",
-      "from_slot": 1,
-      "to_node": "node:3",
-      "to_slot": 0,
-      "should_override_colour": false,
-      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
-    },
     {
       "id": "edge:4",
       "from_node": "node:4",
@@ -82,6 +55,33 @@
       "from_node": "node:3",
       "from_slot": 0,
       "to_node": "node:2",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:6",
+      "from_node": "node:1",
+      "from_slot": 0,
+      "to_node": "node:5",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:7",
+      "from_node": "node:5",
+      "from_slot": 0,
+      "to_node": "node:4",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:8",
+      "from_node": "node:5",
+      "from_slot": 1,
+      "to_node": "node:3",
       "to_slot": 0,
       "should_override_colour": false,
       "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"

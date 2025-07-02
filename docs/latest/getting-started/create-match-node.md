@@ -3,8 +3,6 @@ description: |
   Create a Match Node
 ---
 
-<!-- TODO: add Parley examples folder -->
-
 A Match Node is useful for selecting the next node based on the well-known value
 of a variable or expression. You can find all sorts of Dialogue Sequence
 examples in the Parley
@@ -23,41 +21,27 @@ folder.
 
 ## Instructions
 
-- Create a Match Node using the `Insert` dropdown:
+![Create a Match Node](../../../www/static/docs/create-match-node/create-match-node.gif)
 
-![Create Match Node](../../../www/static/docs/create-match-node/create-match-node-button.png)
+1. Create a Match Node using the `Insert` dropdown.
+2. Click on the created Match Node in the graph view to open up the Match Node
+   Editor.
+3. Enter a high-level descriptive name for what the Match Node represents. This
+   is because it can be sometimes hard to work out what matches are doing so the
+   more info you can provide up front the better! In this example, we write:
+   `Alice coffee status`.
+4. Select a fact using the dropdown. In this case, we will select the
+   `Snooker balls` fact. Facts are manually defined scripts that execute when a
+   match is evaluated and return a value to be checked later in the match. These
+   also define well-known values that are used to select against.
 
-- Click on the created Match Node in the graph view to open up the Match Node
-  Editor:
+> [tip]: You can click on the pencil icon to the right of the Fact to view the
+> selected fact in the Godot GDScript editor and optionally edit it.
 
-![Match Node Editor](../../../www/static/docs/create-match-node/match-node-editor.png)
-
-- Enter a high-level descriptive name for what the Match Node represents. This
-  is because it can be sometimes hard to work out what matches are doing so the
-  more info you can provide up front the better!
-
-![Match Node Editor Description](../../../www/static/docs/create-match-node/match-node-editor-description.png)
-
-- Select a fact using the dropdown. In this case, we will select the
-  `Snooker balls` fact. Facts are manually defined scripts that execute when a
-  match is evaluated and return a value to be checked later in the match. These
-  also define well-known values that are used to select against.
-
-![Match Node Editor Select Fact](../../../www/static/docs/create-match-node/match-node-editor-select-fact.png)
-
-- Now choose your cases you want to select against. Here we will choose all of
-  the available cases including the fallback case. This means that even if we
-  don't select on a case, the fallback will be chosen as the next path.
-
-![Match Node Editor Cases](../../../www/static/docs/create-match-node/match-node-editor-cases.png)
-
-- Click the `Save` button in the Parley editor and there we have it! Our first
-  Match Node. Now connect this Node up with other Nodes (here, we define a basic
-  setup for each possible input and output of the Match Node):
-
-![Define other Nodes](../../../www/static/docs/create-match-node/define-other-nodes.png)
-
-- You can test out your Dialogue Sequence by clicking the Test Dialogue Sequence
-  from start button:
-
-![Test Dialogue Sequence](../../../www/static/docs/create-match-node/test-dialogue-sequence.png)
+5. Now choose your cases you want to select against. Here we will choose all of
+   the available cases including the fallback case. This means that even if we
+   don't select on a case, the fallback will be chosen as the next path.
+6. Click the `Save` button in the Parley editor and there we have it! Our first
+   Match Node.
+7. You can test out your Dialogue Sequence by clicking the Test Dialogue
+   Sequence from start button.

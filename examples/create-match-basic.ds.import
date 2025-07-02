@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_ast_compiler_0.2.0"
+type="Resource"
+uid="uid://cljyraeik6b3d"
+path="res://.godot/imported/create-match-basic.ds-7869499d17a2a543fbfb5dfa7e865884.tres"
+
+[deps]
+
+source_file="res://examples/create-match-basic.ds"
+dest_files=["res://.godot/imported/create-match-basic.ds-7869499d17a2a543fbfb5dfa7e865884.tres"]
+
+[params]
+

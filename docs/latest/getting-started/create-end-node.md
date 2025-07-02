@@ -3,8 +3,6 @@ description: |
   Create an End Node
 ---
 
-<!-- TODO: add Parley examples folder -->
-
 An End Node defines the end of the Dialogue Sequence. Although Dialogue
 Sequences do not require the presence of End Nodes to end a running Dialogue
 Sequence, it is recommended to do so to make it clear to the Dialogue Sequence
