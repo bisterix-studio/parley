@@ -186,9 +186,9 @@ func _setup() -> void:
 func _setup_theme() -> void:
 	# TODO: we might need to register this dynamically at a later date
 	# it seems that it only does this at the project level atm.
-	save_button.tooltip_text = "Save the current dialogue sequence."
-	arrange_nodes_button.tooltip_text = "Arrange the current dialogue sequence nodes."
-	refresh_button.tooltip_text = "Refresh the current dialogue sequence."
+	save_button.tooltip_text = "Save the current Dialogue Sequence."
+	arrange_nodes_button.tooltip_text = "Arrange the current Dialogue Sequence nodes."
+	refresh_button.tooltip_text = "Refresh the current Dialogue Sequence."
 
 
 ## Set up the file menu
@@ -266,7 +266,10 @@ func _on_new_dialogue_modal_dialogue_ast_created(new_dialogue_ast: ParleyDialogu
 	dialogue_ast = new_dialogue_ast
 	# TODO: emit as a signal and handle in the plugin
 	if parley_manager:
-		parley_manager.set_current_dialogue_sequence(dialogue_ast.resource_path)
+		var current: Variant = null
+		if dialogue_ast and dialogue_ast.resource_path:
+			current = dialogue_ast.resource_path
+		parley_manager.set_current_dialogue_sequence(current)
 	refresh(true)
 
 
@@ -318,21 +321,21 @@ func _on_test_dialogue_from_selected_button_pressed() -> void:
 
 #region SIGNALS
 func _on_action_store_changed() -> void:
-	if action_store:
+	if action_store and dialogue_ast:
 		var nodes: Array[ParleyNodeAst] = dialogue_ast.find_nodes_by_types([ParleyDialogueSequenceAst.Type.ACTION])
 		for node_ast: ParleyActionNodeAst in nodes:
 			_set_node_ast(node_ast)
 
 
 func _on_fact_store_changed() -> void:
-	if fact_store:
+	if fact_store and dialogue_ast:
 		var nodes: Array[ParleyNodeAst] = dialogue_ast.find_nodes_by_types([ParleyDialogueSequenceAst.Type.MATCH, ParleyDialogueSequenceAst.Type.CONDITION])
 		for node_ast: ParleyNodeAst in nodes:
 			_set_node_ast(node_ast)
 
 
 func _on_character_store_changed() -> void:
-	if character_store:
+	if character_store and dialogue_ast:
 		var nodes: Array[ParleyNodeAst] = dialogue_ast.find_nodes_by_types([ParleyDialogueSequenceAst.Type.DIALOGUE, ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION])
 		for node_ast: ParleyNodeAst in nodes:
 			_set_node_ast(node_ast)
@@ -351,6 +354,8 @@ func _on_graph_view_scroll_offset_changed(offset: Vector2) -> void:
 
 # TODO: remove ast stuff
 func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: String, new_dialogue_text: String) -> void:
+	if not dialogue_ast:
+		return
 	var _ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
 	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
 	if not _ast_node or not _selected_node:
@@ -367,6 +372,8 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 
 # TODO: remove ast stuff
 func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, new_character: String, new_option_text: String) -> void:
+	if not dialogue_ast:
+		return
 	var _ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
 	var _selected_node: ParleyGraphNode = graph_view.find_node_by_id(id)
 	if not _ast_node or not _selected_node:
@@ -383,6 +390,8 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, ne
 
 # TODO: remove ast stuff
 func _on_condition_node_editor_condition_node_changed(id: String, description: String, combiner: ParleyConditionNodeAst.Combiner, conditions: Array) -> void:
+	if not dialogue_ast:
+		return
 	var node_ast: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
 	var parley_graph_node_variant: ParleyGraphNode = graph_view.find_node_by_id(id)
 	if node_ast is not ParleyConditionNodeAst or not parley_graph_node_variant:
@@ -399,6 +408,8 @@ func _on_condition_node_editor_condition_node_changed(id: String, description: S
 
 # TODO: remove ast stuff
 func _on_match_node_editor_match_node_changed(id: String, description: String, fact_ref: String, cases: Array[Variant]) -> void:
+	if not dialogue_ast:
+		return
 	var _ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
 	var parley_graph_node_variant: ParleyGraphNode = graph_view.find_node_by_id(id)
 	if _ast_node is not ParleyMatchNodeAst or not parley_graph_node_variant:
@@ -451,6 +462,8 @@ func _on_match_node_editor_match_node_changed(id: String, description: String, f
 
 # TODO: remove ast stuff
 func _on_action_node_editor_action_node_changed(id: String, description: String, action_type: ParleyActionNodeAst.ActionType, action_script_ref: String, values: Array) -> void:
+	if not dialogue_ast:
+		return
 	var ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
 	var parley_graph_node_variant: Variant = graph_view.find_node_by_id(id)
 	if ast_node is not ParleyActionNodeAst or not parley_graph_node_variant:
@@ -473,6 +486,8 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 
 
 func _on_group_node_editor_group_node_changed(id: String, group_name: String, colour: Color) -> void:
+	if not dialogue_ast:
+		return
 	var ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
 	var selected_node: Variant = graph_view.find_node_by_id(id)
 	if ast_node is not ParleyGroupNodeAst or not selected_node:
@@ -493,6 +508,8 @@ func _on_graph_view_connection_request(from_node_name: StringName, from_slot: in
 
 # TODO: add to docs
 func _on_graph_view_connection_to_empty(from_node_name: StringName, from_slot: int, release_position: Vector2) -> void:
+	if not dialogue_ast:
+		return
 	# TODO: it may be better to create a helper for this calculation
 	var ast_node_variant: Variant = dialogue_ast.add_new_node(ParleyDialogueSequenceAst.Type.DIALOGUE, ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90))
 	if ast_node_variant and ast_node_variant is ParleyNodeAst:
@@ -533,6 +550,8 @@ func update_edge(edge: ParleyEdgeAst) -> void:
 
 # TODO: add to docs
 func delete_node_by_id(id: String) -> void:
+	if not dialogue_ast:
+		return
 	if not selected_node_id or not is_instance_of(selected_node_id, TYPE_STRING):
 		ParleyUtils.log.info("No node is selected, not deleting anything")
 		return
@@ -570,6 +589,8 @@ func _on_bottom_panel_sidebar_toggled(is_sidebar_open: bool) -> void:
 
 #region HELPERS
 func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:
+	if not dialogue_ast:
+		return
 	# TODO: handle _result
 	var _result: int = dialogue_ast.remove_edge(from_node, from_slot, to_node, to_slot)
 	graph_view.ast = dialogue_ast

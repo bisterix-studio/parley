@@ -170,12 +170,14 @@ func _on_register_button_pressed() -> void:
 				return
 			store = load(resource.resource_path)
 		else:
-			var path: String = path_edit.text
-			var ok: int = ResourceSaver.save(resource, path)
-			if ok != OK:
-				ParleyUtils.log.error("Error creating %s: %s" % [store_name, ok])
+			var created_store: ParleyStore = await ParleyUtils.file.create_new_resource(
+				resource,
+				path_edit.text,
+				get_tree().create_timer(30).timeout)
+			if not created_store:
+				ParleyUtils.log.warn("Unable to create Store, please check the errors.")
 				return
-			store = load(path)
+			store = created_store
 		store_registered.emit(store)
 		hide()
 	else:

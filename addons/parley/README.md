@@ -1,11 +1,11 @@
 # Parley
 
 Parley is an addon for [Godot 4.4+](https://godotengine.org/) that provides a
-graph-based dialogue manager for easy writing, testing, and running of dialogue
-sequences at scale and is designed to be used by game writers and developers
+graph-based dialogue manager for easy writing, testing, and running of Dialogue
+Sequences at scale and is designed to be used by game writers and developers
 alike.
 
-Write your dialogue sequences by defining the graph for your dialogue sequence
+Write your Dialogue Sequences by defining the graph for your Dialogue Sequence
 which are backed by a well-defined Dialogue AST for easy management and
 integration within your game.
 
@@ -33,7 +33,7 @@ Installation Features Examples Support Useful links Licence Contributions
 
 ## Features
 
-- An easy to use and well-defined Graph Editor
+- An easy-to-use and well-defined Graph Editor
 - A wide variety of nodes for maximum flexibility and creativity:
   - [Dialogue](https://parley.bisterixstudio.com/docs/nodes/dialogue-node)
   - [Dialogue Option](https://parley.bisterixstudio.com/docs/nodes/dialogue-option-node)
@@ -51,7 +51,7 @@ Installation Features Examples Support Useful links Licence Contributions
 - Action store for management of actions for use with Action nodes
 - Fact store for management of facts for use with Condition and Match nodes
 - An out of the box dialogue balloon to get started straight away
-- Easy management of your dialogue sequences, including node filtering
+- Easy management of your Dialogue Sequences, including node filtering
 - Export your Dialogue passages to CSV
 
 ## Installation

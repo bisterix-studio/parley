@@ -10,7 +10,7 @@ in the Parley
 [`examples`](https://github.com/bisterix-studio/parley/tree/main/examples)
 folder.
 
-## Pre-requisites
+## Prerequisites
 
 - Ensure you have familiarised yourself with the
   [Action Node](../nodes/action-node.md) docs.
@@ -18,7 +18,7 @@ folder.
 - You have followed the [instructions](./register-action.md) to add the relevant
   actions to the system.
 - You have created a basic Dialogue Sequence before. Consult the
-  [getting started guide](./create-dialogue-sequence.md) for more info.
+  [Getting Started guide](./create-dialogue-sequence.md) for more info.
 
 ## Instructions
 
@@ -37,14 +37,14 @@ folder.
    choose: `Advance Time`.
 
 > [tip]: You can click on the pencil icon to the right of the Action to view the
-> selected script in the Godot GDScript editor and optionally edit it.
+> selected script in the Godot GDScript Editor and optionally edit it.
 
 6. Choose a value to pass to the Action Node. This must be a value understood by
    the underlying script (chosen in the previous step). In this example, we set
    to: `4h`.
-7. Click the `Save` button in the Parley editor and there we have it! Our first
-   dialogue sequence with an Action Node.
+7. Click the `Save` button in the Parley Editor and there we have it! Our first
+   Dialogue Sequence with an Action Node.
 8. Now connect this Node up with other Nodes to continue the Dialogue Sequence
    with your awesome game writing!
 9. You can test out your Dialogue Sequence by clicking the Test Dialogue
-   Sequence from start button.
+   Sequence From Start Button.

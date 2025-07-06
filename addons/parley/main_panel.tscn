@@ -1,6 +1,4 @@
-; Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
-
-[gd_scene load_steps=37 format=3 uid="uid://ckubjbp3e7yy3"]
+[gd_scene load_steps=35 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_4ui00"]
@@ -27,7 +25,6 @@
 [ext_resource type="Script" uid="uid://b3tj6amhgmct6" path="res://addons/parley/stores/action/action_store.gd" id="26_anq7l"]
 [ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="28_anq7l"]
 [ext_resource type="PackedScene" uid="uid://c6cagjh7y5wn4" path="res://addons/parley/modals/export_to_csv_modal.tscn" id="29_wngpy"]
-[ext_resource type="Script" uid="uid://dlvt1tv8850a" path="res://addons/parley/models/stores_ast.gd" id="29_xjep8"]
 [ext_resource type="PackedScene" uid="uid://cjgxxvotxhj1g" path="res://addons/parley/components/bottom_panel.tscn" id="29_xxhvx"]
 [ext_resource type="Script" uid="uid://ob0am6au6mmt" path="res://addons/parley/stores/fact/fact_store.gd" id="30_7jaih"]
 [ext_resource type="Script" uid="uid://cjo7uxv32sr14" path="res://addons/parley/models/edge_ast.gd" id="30_rspbv"]
@@ -49,17 +46,11 @@ script = ExtResource("28_anq7l")
 characters = Array[ExtResource("11_7jaih")]([])
 id = ""
 
-[sub_resource type="Resource" id="Resource_7jaih"]
-script = ExtResource("29_xjep8")
-character = Array[ExtResource("28_anq7l")]([])
-fact = Array[ExtResource("30_7jaih")]([])
-
 [sub_resource type="Resource" id="Resource_7hjis"]
 script = ExtResource("32_pogw7")
 title = ""
 edges = Array[ExtResource("30_rspbv")]([])
 nodes = Array[ExtResource("31_tp54n")]([])
-stores = SubResource("Resource_7jaih")
 
 [node name="MainPanel" type="VBoxContainer" node_paths=PackedStringArray("save_button", "arrange_nodes_button", "refresh_button", "open_file_dialogue")]
 auto_translate_mode = 1
@@ -180,7 +171,7 @@ layout_mode = 2
 [node name="SaveButton" type="Button" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions"]
 z_index = 4096
 layout_mode = 2
-tooltip_text = "Save the current dialogue sequence."
+tooltip_text = "Save the current Dialogue Sequence."
 theme_type_variation = &"FlatButton"
 icon = ExtResource("3_qx68p")
 icon_alignment = 1
@@ -188,7 +179,7 @@ icon_alignment = 1
 [node name="ArrangeNodesButton" type="Button" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions"]
 z_index = 4096
 layout_mode = 2
-tooltip_text = "Arrange the current dialogue sequence nodes."
+tooltip_text = "Arrange the current Dialogue Sequence nodes."
 theme_type_variation = &"FlatButton"
 icon = ExtResource("4_idh4w")
 flat = true
@@ -196,7 +187,7 @@ flat = true
 [node name="RefreshButton" type="Button" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions"]
 z_index = 4096
 layout_mode = 2
-tooltip_text = "Refresh the current dialogue sequence."
+tooltip_text = "Refresh the current Dialogue Sequence."
 theme_type_variation = &"FlatButton"
 icon = ExtResource("13_oy825")
 flat = true
@@ -210,7 +201,7 @@ layout_mode = 2
 [node name="TestDialogueFromStartButton" type="Button" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/Testing"]
 z_index = 4096
 layout_mode = 2
-tooltip_text = "Test dialogue sequence from the start."
+tooltip_text = "Test Dialogue Sequence from the start."
 theme_type_variation = &"FlatButton"
 icon = ExtResource("5_u6vvd")
 flat = true
@@ -218,7 +209,7 @@ flat = true
 [node name="TestDialogueFromSelectedButton" type="Button" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/Testing"]
 z_index = 4096
 layout_mode = 2
-tooltip_text = "Test dialogue sequence from the currently selected passage.
+tooltip_text = "Test Dialogue Sequence from the currently selected passage.
 If no passage is selected, then it will run from the start of the sequence."
 theme_type_variation = &"FlatButton"
 icon = ExtResource("9_dmt7g")

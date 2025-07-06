@@ -9,9 +9,9 @@ example, one might want to display different dialogue depending on whether a
 condition check is passed or not (e.g. whether Alice gave a coffee or not).
 
 Parley provides the ability for users to manage facts via the `Fact` tab in the
-`ParleyStore` dock:
+`ParleyStores` dock:
 
 ![fact-store](../../../www/static/docs/fact-store/fact-store.png)
 
-To find out how to register a fact to the store, follow
+To find out how to register a Fact to the Store, follow
 [this guide](../getting-started/register-fact.md).

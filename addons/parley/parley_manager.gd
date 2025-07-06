@@ -23,7 +23,6 @@ var action_store: ParleyActionStore:
 func _init() -> void:
 	if Engine.is_editor_hint():
 		ParleySettings.prepare()
-	_init_character_store()
 #endregion
 
 
@@ -133,21 +132,10 @@ func _get_fact_store() -> ParleyFactStore:
 #endregion
 
 
-#region INIT
-func _init_character_store() -> void:
-	var character_store_path: String = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATH)
-	if ResourceLoader.exists(character_store_path):
-		character_store = ResourceLoader.load(character_store_path)
-	else:
-		character_store = ParleyCharacterStore.new()
-		var _result: bool = ResourceSaver.save(character_store, character_store_path)
-#endregion
-
-
 # TODO: should this file be split into editor and non-editor files (e.g. ParleyManager, ParleyRuntime)
 #region EDITOR
 ## Plugin use only
-func set_current_dialogue_sequence(path: String) -> void:
+func set_current_dialogue_sequence(path: Variant) -> void:
 	if not Engine.is_editor_hint():
 		return
 	ParleySettings.set_user_value(ParleyConstants.EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH, path)

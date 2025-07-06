@@ -1,7 +1,7 @@
 ---
 description: |
-  This chapter goes over the Parley stores.
+  This chapter goes over the Parley Stores.
 ---
 
-This chapter goes over the Parley stores. It covers all the available features
-of the Parley stores and how to manage and use them.
+This chapter goes over the Parley Stores. It covers all the available features
+of the Parley Stores and how to manage and use them.

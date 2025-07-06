@@ -17,8 +17,6 @@ import { escape as escapeHtml } from "@std/html";
 import { mangle } from "marked-mangle";
 import GitHubSlugger from "github-slugger";
 
-const slugger = new GitHubSlugger();
-
 Marked.marked.use(mangle());
 
 const ADMISSION_REG = /^\[(info|warn|tip)\]:\s/;
@@ -58,7 +56,7 @@ class DefaultRenderer extends Marked.Renderer {
     depth,
     raw,
   }: Marked.Tokens.Heading): string {
-    const slug = slugger.slug(raw);
+    const slug = new GitHubSlugger().slug(raw).replace(/^-/, "");
     const text = this.parser.parseInline(tokens);
     this.headings.push({ id: slug, html: text });
     return `<h${depth} id="${slug}"><a class="md-anchor" tabindex="-1" href="#${slug}">${text}<span aria-hidden="true">#</span></a></h${depth}>`;
@@ -132,16 +130,21 @@ class DefaultRenderer extends Marked.Renderer {
           token.text = token.text.slice(match[0].length);
         }
         if (token.type === "link" && token.href) {
-          token.href = parseLink(token.href)[0];
+          const [parsedHref] = parseLink(token.href);
+          token.href = parsedHref;
         }
       });
       const type = match[1];
       const icon = `<svg class="icon"><use href="/icons.svg#${type}" /></svg>`;
       return `<blockquote class="admonition ${type} text-foreground-tertiary">\n<span class="admonition-header">${icon}${
         label[type]
-      }</span>${Marked.parser(tokens)}</blockquote>\n`;
+      }</span>${
+        Marked.parser(tokens, { renderer: new DefaultRenderer() })
+      }</blockquote>\n`;
     }
-    return `<blockquote>\n${Marked.parser(tokens)}</blockquote>\n`;
+    return `<blockquote>\n${
+      Marked.parser(tokens, { renderer: new DefaultRenderer() })
+    }</blockquote>\n`;
   }
 }
 

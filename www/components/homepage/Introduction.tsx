@@ -11,9 +11,8 @@ export function Introduction() {
           A graph-based dialogue management plugin for Godot.
         </h2>
         <p class="text-xl text-balance max-w-prose mx-auto">
-          Parley is designed to be used by game writers and developers alike for
-          easy writing, testing, running of Dialogue Sequences at scale to make
-          game writing a breeze.
+          Designed for game writers and developers alike, Parley makes writing,
+          testing, and running Dialogue Sequences at scale a breeze.
         </p>
       </div>
     </PageSection>

@@ -16,8 +16,10 @@ class_name ParleyDialogueSequenceAst extends Resource
 @export var nodes: Array[ParleyNodeAst]
 
 
+# TODO: for some reason removing this field creates a memory leak in the tests. Keep for now
+# and do nothing with it and don't expose it to the user
 ## The stores of the Dialogue Sequence AST
-@export var stores: StoresAst
+var stores: StoresAst
 
 
 ## The type name of the Dialogue Sequence AST
@@ -37,14 +39,13 @@ signal dialogue_updated(new_dialogue_ast: Variant)
 signal dialogue_ended(dialogue_ast: Variant)
 
 
-func _init(_title: String = "", _nodes: Array = [], _edges: Array = [], _stores: Dictionary = {}) -> void:
+func _init(_title: String = "", _nodes: Array = [], _edges: Array = []) -> void:
 	title = _title
 	# TODO: add validation to ensure IDs are globally unique within the context of the dialogue
 	for node: Dictionary in _nodes:
 		add_ast_node(node)
 	for edge: Dictionary in _edges:
 		add_ast_edge(edge)
-	add_ast_stores(_stores)
 	is_ready = true
 
 
@@ -162,15 +163,6 @@ func add_ast_edge(edge: Dictionary) -> void:
 	var edge_ast: ParleyEdgeAst = ParleyEdgeAst.new(edge_id, from_node, from_slot, to_node, to_slot, should_override_colour, colour_override)
 
 	edges.append(edge_ast)
-
-
-## Add a store to from an AST
-func add_ast_stores(_stores: Dictionary) -> void:
-	# TODO: add validation before instantiation to ensure that
-	# all values are defined
-	var character_store: Array = _stores.get('character', [])
-	var fact_store: Array = _stores.get('fact', [])
-	stores = StoresAst.new(character_store, fact_store)
 
 
 ## Add a new edge to the list of edges. It will not add an edge if it already exists
@@ -412,7 +404,7 @@ func _run_action(node_ast: ParleyNodeAst, ctx: Dictionary) -> void:
 
 
 # TODO: make context a class that can be extended
-## Indicator for whether the node is at the end of the current dialogue sequence
+## Indicator for whether the node is at the end of the current Dialogue Sequence
 func is_at_end(ctx: Dictionary, current_node: ParleyNodeAst) -> bool:
 	# Perform a dry run to infer whether we are at the final node
 	var next_nodes: Array[ParleyNodeAst] = process_next(ctx, current_node, true)
@@ -523,7 +515,6 @@ func to_dict() -> Dictionary:
 		'title': title,
 		'nodes': nodes.map(func(node: ParleyNodeAst) -> Dictionary: return node.to_dict()),
 		'edges': edges.map(func(edge: ParleyEdgeAst) -> Dictionary: return edge.to_dict()),
-		'stores': stores.to_dict()
 	}
 
 

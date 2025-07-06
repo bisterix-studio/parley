@@ -66,3 +66,32 @@ class generate:
 		else:
 			local_id = name.to_snake_case().to_lower()
 		return "%s:%s" % [parent_id.to_snake_case().to_lower(), local_id]
+
+
+class file:
+	static func create_new_resource(resource: Resource, raw_path: String, timeout: Signal) -> Resource:
+		var path: String = raw_path.simplify_path() if raw_path.begins_with('res://') else "res://%s" % raw_path.simplify_path()
+		var dir: String = path.get_base_dir()
+		if not DirAccess.dir_exists_absolute(dir):
+			var dir_ok: int = DirAccess.make_dir_recursive_absolute(dir)
+			if dir_ok != OK:
+				ParleyUtils.log.error("Error creating directory at path %s for %s: %s" % [dir, resource, dir_ok])
+				return null
+		var ok: int = ResourceSaver.save(resource, path)
+		if ok != OK:
+			ParleyUtils.log.error("Error creating resource %s at path %s: %s" % [resource, path, ok])
+			return null
+		# When a file is created (especially one that has a new directory), the file system is not
+		# immediately updated. Therefore, we must wait for this to be updated before loading
+		# the saved resource into memory for use within the Parley Graph view.
+		if Engine.is_editor_hint():
+			EditorInterface.get_resource_filesystem().scan()
+			signals.safe_connect(timeout, _emit_filesystem_changed.bind(timeout))
+			while EditorInterface.get_resource_filesystem().get_scanning_progress() < 1:
+				await EditorInterface.get_resource_filesystem().filesystem_changed
+			signals.safe_disconnect(timeout, _emit_filesystem_changed)
+		return load(path)
+	
+	static func _emit_filesystem_changed(timeout: Signal) -> void:
+		EditorInterface.get_resource_filesystem().filesystem_changed.emit()
+		signals.safe_disconnect(timeout, _emit_filesystem_changed)

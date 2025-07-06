@@ -10,14 +10,14 @@ examples in the Parley
 [`examples`](https://github.com/bisterix-studio/parley/tree/main/examples)
 folder.
 
-## Pre-requisites
+## Prerequisites
 
 - Familiarise yourself with the [Dialogue Node](../nodes/dialogue-node.md) docs.
 - Parley is [installed](./installation.md) and running in your Godot Editor.
 - You have followed the [instructions](./register-character.md) to add the
   relevant characters to the system.
 - You have created a basic Dialogue Sequence before. Consult the
-  [getting started guide](./create-dialogue-sequence.md) for more info.
+  [Getting Started guide](./create-dialogue-sequence.md) for more info.
 
 ## Instructions
 
@@ -28,13 +28,13 @@ folder.
    Node Editor.
 3. Choose a character for your Dialogue Node form the dropdown.
 4. Write some text for your Dialogue that will be displayed to the user.
-5. Click the `Save` button in the Parley editor and there we have it! Our first
-   dialogue sequence with dialogue.
+5. Click the `Save` button in the Parley Editor and there we have it! Our first
+   Dialogue Sequence with dialogue.
 6. Now connect this Node up with other Nodes to continue the Dialogue Sequence
    with your awesome game writing!
 7. You can test out your Dialogue Sequence by clicking the Test Dialogue
-   Sequence from start button.
+   Sequence From Start Button.
 
-> [tip]: You can quickly create dialogue nodes by creating an edge on the right
-> hand side of the node and dragging it into empty space. A Dialogue Node will
-> be created when the mouse is released.
+> [tip]: You can quickly create Dialogue Nodes by creating an edge on the right
+> hand side of the Noe and dragging it into empty space. A Dialogue Node will be
+> created when the mouse is released.

@@ -1,5 +1,3 @@
-; Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
-
 [gd_scene load_steps=3 format=3 uid="uid://bnfp7wifletst"]
 
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_ffxbg"]

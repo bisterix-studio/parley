@@ -13,9 +13,9 @@ import { define } from "../utils/state.ts";
 export const handler = define.handlers({
   GET(ctx) {
     ctx.state.title =
-      "Parley - The easy to use, writer-first, scalable dialogue management system.";
+      "Parley - The easy-to-use, writer-first, scalable dialogue management system.";
     ctx.state.description =
-      "Parley is designed to be used by game writers and developers alike for easy writing, testing, running of Dialogue Sequences at scale to make game writing a breeze.";
+      "Designed for game writers and developers alike, Parley makes writing, testing, and running Dialogue Sequences at scale a breeze.";
     ctx.state.ogImage = new URL(asset("/og-image.png"), ctx.url).href;
 
     return page();
