@@ -37,10 +37,10 @@ signal store_changed(type: ParleyStore.Type, store: ParleyStore)
 
 #region LIFECYCLE
 func _ready() -> void:
-	current_store = Store.CHARACTER
 	character_store_editor.parley_manager = parley_manager
 	fact_store_editor.parley_manager = parley_manager
 	action_store_editor.parley_manager = parley_manager
+	current_store = Store.CHARACTER
 	ParleyUtils.signals.safe_connect(action_store_editor.action_store_changed, _on_action_store_changed)
 	ParleyUtils.signals.safe_connect(fact_store_editor.fact_store_changed, _on_fact_store_changed)
 	ParleyUtils.signals.safe_connect(character_store_editor.character_store_changed, _on_character_store_changed)
@@ -56,14 +56,17 @@ func _exit_tree() -> void:
 #region SETTERS
 func _set_action_store(new_action_store: ParleyActionStore) -> void:
 	action_store = new_action_store
+	_set_current_store(current_store)
 
 
 func _set_fact_store(new_fact_store: ParleyFactStore) -> void:
 	fact_store = new_fact_store
+	_set_current_store(current_store)
 
 
 func _set_character_store(new_character_store: ParleyCharacterStore) -> void:
 	character_store = new_character_store
+	_set_current_store(current_store)
 
 
 func _set_dialogue_ast(new_dialogue_ast: ParleyDialogueSequenceAst) -> void:

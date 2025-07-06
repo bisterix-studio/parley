@@ -14,7 +14,7 @@ They have the following characteristics:
 ## Character
 
 The character associated with the Dialogue Node. These are stored in the
-character store and determine the available characters that can be used to
+Character Store and determine the available characters that can be used to
 select against.
 
 ## Text
@@ -22,5 +22,5 @@ select against.
 The text of the Dialogue. For example, something that the character says.
 
 > [tip]: The text input supports Godot
-> [BBCode](https://docs.godotengine.org/en/latest/tutorials/ui/bbcode_in_richtextlabel.html)
+> [BBCode](https://docs.godotengine.org/en/stable/tutorials/ui/bbcode_in_richtextlabel.html)
 > which can be used to enhance the look of your displayed dialogue.

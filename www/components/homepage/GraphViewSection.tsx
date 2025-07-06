@@ -8,7 +8,7 @@ export function GraphViewSection() {
       <SideBySide mdColSplit="2/3" lgColSplit="2/3" class="!items-start">
         <div class="flex flex-col gap-4 md:sticky md:top-4 md:mt-8">
           <SectionHeading>
-            Build complex dialogue sequences with ease
+            Build complex Dialogue Sequences with ease
           </SectionHeading>
           <p>
             Parley utilises the inbuilt Godot Graph View system to provide a

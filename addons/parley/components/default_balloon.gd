@@ -68,7 +68,7 @@ func _build_next_children(current_children: Array[Node], current_node_ast: Parle
 	elif current_node_asts.filter(func(_n: ParleyNodeAst) -> bool: return is_instance_of(current_node_ast, ParleyDialogueOptionNodeAst)).size() == current_node_asts.size():
 		next_children.append_array(_build_next_dialogue_option_children(current_children))
 	else:
-		ParleyUtils.log.error("Invalid dialogue balloon nodes. Stopping processing.")
+		ParleyUtils.log.error("Invalid dialogue balloon nodes. Stopping processing. Check whether the Dialogue and Dialogue Option Nodes are fully populated with data.")
 		return []
 	return next_children
 

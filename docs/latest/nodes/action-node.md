@@ -13,8 +13,8 @@ They have the following characteristics:
 
 ## Description
 
-A human-readable description of the action node to aid future understanding of
-the node at a quick glance.
+A human-readable description of the Action Node to aid future understanding of
+the Node at a quick glance.
 
 ## Type
 
@@ -22,13 +22,13 @@ The type of the Action Node. This defines how the Action Node will be executed.
 Supported types are:
 
 - `Script` - the script associated with the Action Node will be executed when
-  the node is processed during the Dialogue Sequence. This is the most flexible
-  way of defining action nodes.
+  the Node is processed during the Dialogue Sequence. This is the most flexible
+  way of defining Action Nodes.
 
 ## Action Script
 
-The action script to execute when the action node is processed. These are stored
-in the action store.
+The action script to execute when the Action Node is processed. These are stored
+in the Action Store.
 
 Valid action scripts must implement the `ParleyActionInterface` by providing an
 `execute` method. For example:
@@ -44,12 +44,12 @@ The `ctx` parameter contains the context passed throughout the processing of the
 Dialogue Sequence. This is useful to attach state to that can be used by the
 Action Script processing.
 
-The [`values`](#-values) parameter is defined on the Action Node itself and
+The [`values`](#values) parameter is defined on the Action Node itself and
 provided as-is to the action script.
 
 ## Values
 
 The array of values passed to the Action Script. This is useful for providing
-specific overrides and information to the Action Script for the defined node. At
+specific overrides and information to the Action Script for the defined Node. At
 the moment, these are passed as a string and must be parsed within the Action
 Script itself. For example: `4h`.

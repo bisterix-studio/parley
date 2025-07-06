@@ -39,7 +39,7 @@ func start_dialogue(ctx: Dictionary, dialogue_ast: ParleyDialogueSequenceAst, st
 		balloon.start(ctx, dialogue_ast, start_node)
 	else:
 		# TODO: add translation for error here
-		assert(false, "dialogue_balloon_scene_missing_start_method")
+		assert(false, "Dialogue balloon is missing the `start` method can cannot execute the Dialogue Sequence")
 	return balloon
 
 func get_current_scene() -> Node:

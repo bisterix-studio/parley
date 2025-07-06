@@ -91,20 +91,23 @@ func _set_edges() -> void:
 func _setup_data() -> void:
 	var parley_manager: ParleyManager = ParleyManager.get_instance()
 
+	var character_store: ParleyCharacterStore = parley_manager.character_store
+	var fact_store: ParleyFactStore = parley_manager.fact_store
+	var action_store: ParleyActionStore = parley_manager.action_store
 	if stores_editor:
-		stores_editor.action_store = parley_manager.action_store
-		stores_editor.fact_store = parley_manager.fact_store
-		stores_editor.character_store = parley_manager.character_store
+		stores_editor.action_store = action_store
+		stores_editor.fact_store = fact_store
+		stores_editor.character_store = character_store
 
 	if node_editor:
-		node_editor.action_store = parley_manager.action_store
-		node_editor.fact_store = parley_manager.fact_store
-		node_editor.character_store = parley_manager.character_store
+		node_editor.action_store = action_store
+		node_editor.fact_store = fact_store
+		node_editor.character_store = character_store
 
 	if main_panel_instance:
-		main_panel_instance.action_store = parley_manager.action_store
-		main_panel_instance.fact_store = parley_manager.fact_store
-		main_panel_instance.character_store = parley_manager.character_store
+		main_panel_instance.action_store = action_store
+		main_panel_instance.fact_store = fact_store
+		main_panel_instance.character_store = character_store
 #endregion
 
 

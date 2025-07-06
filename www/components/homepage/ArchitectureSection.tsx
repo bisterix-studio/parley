@@ -18,9 +18,9 @@ export function ArchitectureSection() {
         <div class="flex flex-col gap-4 md:sticky md:top-4 md:mt-4">
           <SectionHeading>Graph-based architecture</SectionHeading>
           <p>
-            At its core, Parley uses a graph-based architecture to provide a
-            wide variety of functionality and an incredibly flexible approach to
-            writing complex dialogue sequences.
+            Parley uses graph-based architecture to offer a wide range of
+            functionalities and an innately flexible approach to writing complex
+            Dialogue Sequences.
           </p>
           <FancyLink href="/docs/concepts" class="mt-2">
             Learn more

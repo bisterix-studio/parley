@@ -16,9 +16,9 @@ export function StoresSection() {
           <SectionHeading>Stores for your data</SectionHeading>
           <p>
             Parley provides Fact, Action, and Character stores to manage data
-            associated with each entity. These off the shelf building blocks can
-            be used by nodes to customise the behaviour of dialogue sequences
-            with ease.
+            associated with each entity. Nodes can use these off-the-shelf
+            building blocks to easily customise the behaviour of Dialogue
+            Sequences.
           </p>
           <p>
             Examples include: conditionally displaying dialogue according to
@@ -26,7 +26,7 @@ export function StoresSection() {
             dialogue responses. The list goes on!
           </p>
           <FancyLink href="/docs/stores" class="mt-2">
-            Learn more about stores
+            Learn more
           </FancyLink>
         </div>
         <div class="flex flex-col gap-4 h-full">

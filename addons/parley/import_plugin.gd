@@ -76,7 +76,6 @@ func _import(source_file: String, save_path: String, _options: Dictionary, _plat
 	var _title: Variant = ast_dict.get('title')
 	var _nodes: Variant = ast_dict.get('nodes')
 	var _edges: Variant = ast_dict.get('edges')
-	var _stores: Variant = ast_dict.get('stores')
 	if not is_instance_of(_title, TYPE_STRING):
 		ParleyUtils.log.error("Unable to load Parley Dialogue JSON as valid AST because required field 'title' is not a valid string")
 		return ERR_PARSE_ERROR
@@ -86,14 +85,10 @@ func _import(source_file: String, save_path: String, _options: Dictionary, _plat
 	if not is_instance_of(_edges, TYPE_ARRAY):
 		ParleyUtils.log.error("Unable to load Parley Dialogue JSON as valid AST because required field 'edges' is not a valid Array")
 		return ERR_PARSE_ERROR
-	if not is_instance_of(_stores, TYPE_DICTIONARY):
-		ParleyUtils.log.error("Unable to load Parley Dialogue JSON as valid AST because required field 'stores' is not a valid Dictionary")
-		return ERR_PARSE_ERROR
 	var title: String = _title
 	var nodes: Array = _nodes
 	var edges: Array = _edges
-	var stores: Dictionary = _stores
 
 	# Compilation
-	var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(title, nodes, edges, stores)
+	var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(title, nodes, edges)
 	return ResourceSaver.save(dialogue_ast, "%s.%s" % [save_path, _get_save_extension()])

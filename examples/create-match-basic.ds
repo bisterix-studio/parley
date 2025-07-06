@@ -151,14 +151,5 @@
       "should_override_colour": false,
       "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
     }
-  ],
-  "stores": {
-    "character": [
-      {
-        "id": "main",
-        "ref": "uid://ceouii84qmu0w"
-      }
-    ],
-    "fact": []
-  }
+  ]
 }

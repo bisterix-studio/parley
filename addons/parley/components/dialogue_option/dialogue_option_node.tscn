@@ -1,5 +1,3 @@
-; Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
-
 [gd_scene load_steps=5 format=3 uid="uid://cq5d5bmrc40wr"]
 
 [ext_resource type="Texture2D" uid="uid://b4bvbns7oq1fv" path="res://addons/parley/assets/ArrowHead.svg" id="1_ew2oa"]

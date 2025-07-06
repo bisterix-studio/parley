@@ -11,22 +11,22 @@ settings.
 
 In this guide, we will create a character that can be used to create
 [Dialogue](../nodes/dialogue-node.md) and
-[Dialogue Option](../nodes/dialogue-option-node.md) nodes.
+[Dialogue Option](../nodes/dialogue-option-node.md) Nodes.
 
-## Pre-requisites
+## Prerequisites
 
 - Ensure you have familiarised yourself with the
   [Character Node](../nodes/character.md) docs.
 - Parley is [installed](./installation.md) and running in your Godot Editor.
 - You have created a basic Dialogue Sequence before. Consult the
-  [getting started guide](./create-dialogue-sequence.md) for more info.
+  [Getting Started guide](./create-dialogue-sequence.md) for more info.
 
 ## Instructions
 
 ![Register a Character](../../../www/static/docs/register-character/register-character.gif)
 
 > [info]: it is assumed that the default Parley settings are used for the
-> character store and it is stored at:
+> Character Store and it is stored at:
 > `res://characters/character_store_main.tres`. You can find more information on
 > changing the default Parley settings [here](../reference/parley-settings.md).
 
@@ -36,19 +36,19 @@ In this guide, we will create a character that can be used to create
 3. Give your new character an ID. In our example, we use: `frankie`.
 4. Give your new character a name. In our example, we use: `Frankie`.
 
-> [tip]: You can use the resource editors in `ParleyStores` to quickly navigate
+> [tip]: You can use the resource Editors in `ParleyStores` to quickly navigate
 > to the relevant resource for editing. You can also add resources using the
-> resource editor dropdown field instead of dragging.
+> resource Editor dropdown field instead of dragging.
 
-5. You should now see that the Character is available in the Dialogue node
+5. You should now see that the Character is available in the Dialogue Node
    dropdown options for the associated character. Select `Frankie` in the
    options to associate it with the selected Dialogue Node.
 6. Test out your new Character within the Dialogue Sequence by clicking the Test
-   Dialogue Sequence from start button.
+   Dialogue Sequence From Start Button.
 
 > [tip]: You may want to define a custom character rather than using the Parley
 > Character so you can add custom attributes. ATM, Parley does not support
-> adding this via the `ParleyStores` editor but you can do by adding to the raw
-> character store resource in the Godot editor. When doing this, it is **vital**
+> adding this via the `ParleyStores` Editor but you can do by adding to the raw
+> Character Store resource in the Godot Editor. When doing this, it is **vital**
 > to ensure that you include `@tool` at the top of the your custom character
 > definition.

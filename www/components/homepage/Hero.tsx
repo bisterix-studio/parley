@@ -10,7 +10,7 @@ export function Hero() {
         </div>
         <div class="flex-1 text-center md:text-left md:col-span-3 pb-8 md:pb-32">
           <h2 class="text-foreground-primary text-[calc(1rem+4vw)] leading-tight sm:text-5xl lg:text-6xl sm:tracking-tight sm:leading-none! font-extrabold">
-            The easy to use, writer-first, scalable dialogue management system
+            The easy-to-use, writer-first, scalable dialogue management system
           </h2>
           <div class="mt-12 flex flex-wrap justify-center items-stretch md:justify-start gap-4">
             <FancyLink href="/docs/getting-started">Get started</FancyLink>
