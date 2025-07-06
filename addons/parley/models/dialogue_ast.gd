@@ -16,6 +16,12 @@ class_name ParleyDialogueSequenceAst extends Resource
 @export var nodes: Array[ParleyNodeAst]
 
 
+# TODO: for some reason removing this field creates a memory leak in the tests. Keep for now
+# and do nothing with it and don't expose it to the user
+## The stores of the Dialogue Sequence AST
+var stores: StoresAst
+
+
 ## The type name of the Dialogue Sequence AST
 const type_name: String = "ParleyDialogueSequenceAst"
 
