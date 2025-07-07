@@ -1,6 +1,10 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { useSignal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
 import type { MarkdownHeading } from "../utils/markdown.ts";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export interface TableOfContentsProps {
   headings: MarkdownHeading[];

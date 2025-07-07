@@ -1,7 +1,11 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { BisterixStudioLogo } from "./BisterixStudioLogo.tsx";
 import { Divider } from "./Divider.tsx";
 import NavigationBar from "./NavigationBar.tsx";
 import { ParleyLogo } from "./Logo.tsx";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export default function Header(props: HeaderProps) {
   const isDocs = props.active == "/docs";

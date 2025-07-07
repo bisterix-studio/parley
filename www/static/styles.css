@@ -1,6 +1,10 @@
+/* Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license. */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Adapted from: https://github.com/denoland/fresh */
 
 /* Light and dark theme variables */
 :root {

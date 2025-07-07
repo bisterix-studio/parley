@@ -1,4 +1,8 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import type { JSX } from "preact/jsx-runtime";
+
+// Adapted from: https://github.com/denoland/fresh
 
 type ColumnConfiguration = "1/1" | "2/3" | "3/2";
 

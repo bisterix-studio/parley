@@ -2,6 +2,8 @@
 
 // Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
 
+// Adapted from: https://github.com/denoland/fresh
+
 import { Builder } from "fresh/dev";
 import { app } from "./main.ts";
 import { tailwind } from "@fresh/plugin-tailwind";

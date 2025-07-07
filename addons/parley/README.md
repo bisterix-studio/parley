@@ -54,6 +54,16 @@ Installation Features Examples Support Useful links Licence Contributions
 - Easy management of your Dialogue Sequences, including node filtering
 - Export your Dialogue passages to CSV
 
+## Upcoming Features
+
+Here are some key features on the Parley horizon. We are always open to new
+ideas, please don't hesitate to
+[get-in-touch](https://github.com/bisterix-studio/parley/issues).
+
+- Translation support
+- Jump Nodes
+- Dialogue text expressions
+
 ## Installation
 
 You can install it via the Asset Library or
