@@ -10,6 +10,8 @@ import "prismjs/components/prism-bash.js";
 import "prismjs/components/prism-yaml.js";
 import "prismjs/components/prism-gdscript.js";
 
+// Adapted from: https://github.com/denoland/fresh
+
 export { extractYaml as frontMatter } from "@std/front-matter";
 
 import * as Marked from "marked";

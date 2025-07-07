@@ -1,5 +1,9 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { useSignal } from "@preact/signals";
 import { IS_BROWSER } from "fresh/runtime";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export default function ThemeToggle() {
   const theme = useSignal(
@@ -22,7 +26,7 @@ export default function ThemeToggle() {
       {theme.value === "light"
         ? (
           <svg
-            class="fill-foreground-primary hover:fill-fresh w-6 h-6"
+            class="fill-foreground-primary hover:fill-info w-6 h-6"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -32,7 +36,7 @@ export default function ThemeToggle() {
         )
         : (
           <svg
-            class="fill-foreground-primary hover:fill-fresh w-6 h-6"
+            class="fill-foreground-primary hover:fill-info w-6 h-6"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
           >

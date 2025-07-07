@@ -1,4 +1,8 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import Prism from "prismjs";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export function CodeBlock(
   { code, lang }: {

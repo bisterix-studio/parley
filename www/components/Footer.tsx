@@ -1,3 +1,5 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import type { JSX } from "preact";
 
 const LINKS = [
@@ -15,6 +17,8 @@ const LINKS = [
       "https://github.com/bisterix-studio/parley/blob/main/CODE_OF_CONDUCT.md",
   },
 ];
+
+// Adapted from: https://github.com/denoland/fresh
 
 export default function Footer(props: JSX.HTMLAttributes<HTMLElement>) {
   return (

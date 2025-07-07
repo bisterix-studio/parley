@@ -21,9 +21,9 @@ static func get_instance() -> ParleyRuntime:
 #region GAME
 ## Start a dialogue session with the provided Dialogue AST
 ## Example: parley_runtime.start_dialogue(dialogue)
-func start_dialogue(ctx: Dictionary, dialogue_ast: ParleyDialogueSequenceAst, start_node: ParleyNodeAst = null) -> Node:
+func start_dialogue(ctx: Dictionary, dialogue_sequence_ast: ParleyDialogueSequenceAst, start_node: ParleyNodeAst = null) -> Node:
 	# TODO: maybe pass this in instead of getting from the engine - gives us a bit more flexibility
-	var current_scene: Node = get_current_scene()
+	var current_scene: Node = _get_current_scene()
 	var dialogue_balloon_path: String = ParleySettings.get_setting(ParleyConstants.DIALOGUE_BALLOON_PATH)
 	if not ResourceLoader.exists(dialogue_balloon_path):
 		ParleyUtils.log.info("Dialogue balloon does not exist at: %s. Falling back to default balloon." % [dialogue_balloon_path])
@@ -31,18 +31,18 @@ func start_dialogue(ctx: Dictionary, dialogue_ast: ParleyDialogueSequenceAst, st
 	var dialogue_balloon_scene: PackedScene = load(dialogue_balloon_path)
 	var balloon: Node = dialogue_balloon_scene.instantiate()
 	current_scene.add_child(balloon)
-	if not dialogue_ast:
+	if not dialogue_sequence_ast:
 		ParleyUtils.log.error("No active Dialogue AST set, exiting.")
 		return balloon
 	if balloon.has_method(&"start"):
 		@warning_ignore("UNSAFE_METHOD_ACCESS") # Covered by the if statement
-		balloon.start(ctx, dialogue_ast, start_node)
+		balloon.start(ctx, dialogue_sequence_ast, start_node)
 	else:
 		# TODO: add translation for error here
 		assert(false, "Dialogue balloon is missing the `start` method can cannot execute the Dialogue Sequence")
 	return balloon
 
-func get_current_scene() -> Node:
+func _get_current_scene() -> Node:
 	@warning_ignore("UNSAFE_PROPERTY_ACCESS")
 	var current_scene: Node = Engine.get_main_loop().current_scene
 	if current_scene == null:

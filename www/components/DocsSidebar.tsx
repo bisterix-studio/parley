@@ -1,7 +1,11 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import type {
   TableOfContentsCategory,
   TableOfContentsCategoryEntry,
 } from "../data/docs.ts";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export function SidebarCategory(props: {
   category: TableOfContentsCategory;

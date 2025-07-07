@@ -5,12 +5,15 @@
 import { walk } from "jsr:@std/fs/walk";
 import { globToRegExp } from "jsr:@std/path/glob-to-regexp";
 
-const EXTENSIONS: [string, string][] = [
-  [".ts", "//"],
-  [".gd", "#"],
+const EXTENSIONS: [string, string, string][] = [
+  [".ts", "//", ""],
+  [".tsx", "//", ""],
+  [".css", "/*", " */"],
+  [".gd", "#", ""],
 ];
 const EXCLUDED_DIRS = [
   "**/.godot",
+  "**/_fresh",
   "**/addons/gut",
 ];
 
@@ -19,7 +22,7 @@ const CHECK = Deno.args.includes("--check");
 const FIRST_YEAR = 2024;
 const CURRENT_YEAR = new Date().getFullYear();
 const RX_COPYRIGHT = new RegExp(
-  "Copyright ([0-9]{4})-([0-9]{4}) the Bisterix Studio authors\\. All rights reserved\\. MIT license\\.\n",
+  "Copyright ([0-9]{4})-([0-9]{4}) the Bisterix Studio authors\\. All rights reserved\\. MIT license\\.",
 );
 const COPYRIGHT =
   `Copyright ${FIRST_YEAR}-${CURRENT_YEAR} the Bisterix Studio authors. All rights reserved. MIT license.`;
@@ -41,12 +44,14 @@ for await (
       console.error(`Missing copyright header: ${path}`);
       failed = true;
     } else {
-      const prefix = EXTENSIONS.find((ext) => path.endsWith(ext[0]))?.[1];
-      if (!prefix) {
-        console.error(`Unable to find comment prefix for path: ${path}`);
+      const extension = EXTENSIONS.find((ext) => path.endsWith(ext[0]));
+      if (!extension) {
+        console.error(`Unable to find extension for path: ${path}`);
         failed = true;
       } else {
-        const contentWithCopyright = prefix + " " + COPYRIGHT + "\n\n" +
+        const [, prefix, suffix] = extension;
+        const contentWithCopyright = prefix + " " + COPYRIGHT + suffix +
+          "\n\n" +
           content;
         await Deno.writeTextFile(path, contentWithCopyright);
         console.log("Copyright header automatically added to " + path);

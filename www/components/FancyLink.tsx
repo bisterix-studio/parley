@@ -1,4 +1,8 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import type { ComponentChildren } from "preact";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export function FancyLink(
   props: { href: string; children: ComponentChildren; class?: string },

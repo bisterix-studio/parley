@@ -1,4 +1,8 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import type { JSX } from "preact";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export function ExampleArrow(
   props: JSX.HTMLAttributes<HTMLDivElement>,

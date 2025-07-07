@@ -55,5 +55,6 @@
   },
   "css.customData": [
     ".vscode/tailwind.json"
-  ]
+  ],
+  "markdown.extension.toc.updateOnSave": false
 }

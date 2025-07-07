@@ -1,4 +1,8 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { FancyLink } from "../FancyLink.tsx";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export function CTA() {
   return (

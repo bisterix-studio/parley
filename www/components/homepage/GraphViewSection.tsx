@@ -1,3 +1,5 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { SectionHeading } from "./SectionHeading.tsx";
 import { PageSection } from "../../components/PageSection.tsx";
 import { SideBySide } from "../../components/SideBySide.tsx";

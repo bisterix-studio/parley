@@ -2,6 +2,8 @@
 
 import { App, fsRoutes, staticFiles, trailingSlashes } from "fresh";
 
+// Adapted from: https://github.com/denoland/fresh
+
 export const app = new App({ root: import.meta.url })
   .use(staticFiles())
   .use(trailingSlashes("never"));

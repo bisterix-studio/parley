@@ -1,5 +1,9 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { HttpError, type PageProps } from "fresh";
 import Header from "../components/Header.tsx";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export function ServerCodePage(
   props: ServerCodePageProps,

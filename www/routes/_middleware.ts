@@ -2,6 +2,8 @@
 
 import type { FreshContext } from "fresh";
 
+// Adapted from: https://github.com/denoland/fresh
+
 export async function handler(
   ctx: FreshContext,
 ): Promise<Response> {

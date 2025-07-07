@@ -1,7 +1,9 @@
-// Copyright 2022-2023 the Deno authors. All rights reserved. MIT license.
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
 
 import { IS_BROWSER } from "fresh/runtime";
 import type { VersionLink } from "../routes/docs/[...slug].tsx";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export default function VersionSelect(
   { versions, selectedVersion }: {

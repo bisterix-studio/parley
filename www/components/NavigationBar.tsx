@@ -1,5 +1,9 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import ThemeToggle from "../islands/ThemeToggle.tsx";
 import * as Icons from "./Icons.tsx";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export default function NavigationBar(
   props: NavigationBarProps,

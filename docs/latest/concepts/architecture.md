@@ -42,6 +42,8 @@ in Parley is at its core a Node. These can be defined and combined countless
 times within a Dialogue Sequence to create highly intricate behaviours and
 gameplay. The sky is the limit for how these can be combined!
 
+For information about Nodes can be found [here](../nodes/index.md).
+
 ## Edge
 
 A connection between two nodes. They have a direction defined by two attributes:

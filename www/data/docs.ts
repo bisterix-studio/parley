@@ -2,6 +2,8 @@
 
 import toc from "../../docs/toc.ts";
 
+// Adapted from: https://github.com/denoland/fresh
+
 export interface TableOfContentsEntry {
   slug: string;
   title: string;

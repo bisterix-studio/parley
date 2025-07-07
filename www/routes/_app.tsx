@@ -1,5 +1,9 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { asset } from "fresh/runtime";
 import { define } from "../utils/state.ts";
+
+// Adapted from: https://github.com/denoland/fresh
 
 export default define.page(function App({ Component, state, url }) {
   return (

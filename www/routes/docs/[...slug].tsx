@@ -1,3 +1,5 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { HttpError, page } from "fresh";
 import { asset, Partial } from "fresh/runtime";
 import toc from "../../../docs/toc.ts";
@@ -16,6 +18,8 @@ import VersionSelect from "../../islands/VersionSelect.tsx";
 import { frontMatter, renderMarkdown } from "../../utils/markdown.ts";
 import { define } from "../../utils/state.ts";
 import Footer from "../../components/Footer.tsx";
+
+// Adapted from: https://github.com/denoland/fresh
 
 interface Data {
   page: Page;

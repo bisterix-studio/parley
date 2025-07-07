@@ -2,6 +2,8 @@
 
 import PARLEY_VERSIONS from "../versions.json" with { type: "json" };
 
+// Adapted from: https://github.com/denoland/fresh
+
 type RawTableOfContents = Record<
   string,
   {

@@ -1,3 +1,5 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 import { page } from "fresh";
 import { asset } from "fresh/runtime";
 import Footer from "../components/Footer.tsx";
@@ -13,7 +15,7 @@ import { define } from "../utils/state.ts";
 export const handler = define.handlers({
   GET(ctx) {
     ctx.state.title =
-      "Parley - The easy-to-use, writer-first, scalable dialogue management system.";
+      "Parley | The easy-to-use, writer-first, scalable dialogue management system.";
     ctx.state.description =
       "Designed for game writers and developers alike, Parley makes writing, testing, and running Dialogue Sequences at scale a breeze.";
     ctx.state.ogImage = new URL(asset("/og-image.png"), ctx.url).href;

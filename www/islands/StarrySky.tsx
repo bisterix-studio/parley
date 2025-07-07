@@ -1,3 +1,5 @@
+// Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
+
 // @ts-types="@types/animejs"
 import anime from "animejs";
 import { ComponentChildren } from "preact";

@@ -2,6 +2,8 @@
 
 import { createDefine } from "fresh";
 
+// Adapted from: https://github.com/denoland/fresh
+
 export interface State {
   title?: string;
   description?: string;
