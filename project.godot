@@ -13,7 +13,7 @@ config_version=5
 config/name="Parley"
 run/main_scene="uid://ckubjbp3e7yy3"
 config/features=PackedStringArray("4.4")
-config/icon="res://icon.svg"
+config/icon="res://icon.png"
 
 [debug]
 

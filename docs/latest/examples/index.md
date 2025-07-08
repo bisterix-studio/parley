@@ -9,6 +9,8 @@ raise
 [a GitHub issue](https://github.com/bisterix-studio/parley/issues/new?category=ideas).
 
 - [All Nodes showcase](https://github.com/bisterix-studio/parley/blob/main/examples/all.ds)
+- [Basic Dialogue Node](https://github.com/bisterix-studio/parley/blob/main/examples/create-dialogue-basic.ds)
+- [Basic Dialogue Option Node](https://github.com/bisterix-studio/parley/blob/main/examples/create-dialogue-option-basic.ds)
 - [Basic Action Node](https://github.com/bisterix-studio/parley/blob/main/examples/create-action-basic.ds)
 - [Basic Condition Node](https://github.com/bisterix-studio/parley/blob/main/examples/create-condition-basic.ds)
 - [Basic Match Node](https://github.com/bisterix-studio/parley/blob/main/examples/create-match-basic.ds)
