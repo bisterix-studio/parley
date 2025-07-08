@@ -56,5 +56,8 @@
   "css.customData": [
     ".vscode/tailwind.json"
   ],
-  "markdown.extension.toc.updateOnSave": false
+  "markdown.extension.toc.updateOnSave": false,
+  "github.copilot.enable": {
+    "*": false
+  }
 }
