@@ -16,7 +16,7 @@ You can install it via the Asset Library or
 from GitHub.
 
 [![GitHub Licence](https://img.shields.io/github/license/bisterix-studio/parley?style=flat-square)](https://raw.githubusercontent.com/bisterix-studio/parley/main/LICENSE)
-[![Plant Tree](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=Plant%20Tree&query=%24.total&url=https%3A%2F%2Fpublic.offset.earth%2Fusers%2Ftreeware%2Ftrees)](https://plant.treeware.earth/bisterix-studio/parley)
+[![Buy us a tree](https://img.shields.io/badge/Treeware-%F0%9F%8C%B3-lightgreen)](https://plant.treeware.earth/bisterix-studio/parley)
 
 ![Example usage of Parley](https://parley.bisterixstudio.com/illustration/parley-graph-view.gif)
 
