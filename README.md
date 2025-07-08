@@ -1,5 +1,7 @@
 # Parley
 
+![parley-icon](./icon.png)
+
 Parley is an addon for [Godot 4.4+](https://godotengine.org/) that provides a
 graph-based dialogue manager for easy writing, testing, and running of Dialogue
 Sequences at scale and is designed to be used by game writers and developers

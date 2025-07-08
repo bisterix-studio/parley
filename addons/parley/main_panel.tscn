@@ -248,8 +248,10 @@ layout_mode = 2
 [node name="DocsButton" type="Button" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/Misc"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Navigate to the Parley Documentation."
 text = "Docs"
 icon = SubResource("ImageTexture_7jaih")
+flat = true
 
 [node name="EditorView" type="HSplitContainer" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer"]
 unique_name_in_owner = true

@@ -5,6 +5,7 @@ extends EditorPlugin
 
 
 #region DEFS
+const ParleyIcon: CompressedTexture2D = preload("./assets/ParleyIconBubble.svg")
 const ParleyConstants = preload("./constants.gd")
 const ParleyImportPlugin: GDScript = preload("./import_plugin.gd")
 const StoresEditorScene: PackedScene = preload("./stores/stores_editor.tscn")
@@ -228,8 +229,7 @@ func _get_plugin_name() -> String:
 
 
 func _get_plugin_icon() -> Texture2D:
-	# Must return some kind of Texture for the icon.
-	return EditorInterface.get_editor_theme().get_icon("ScriptCreateDialog", "EditorIcons")
+	return ParleyIcon
 
 
 func _enable_plugin() -> void:

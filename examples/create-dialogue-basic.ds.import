@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_ast_compiler_0.2.0"
+type="Resource"
+uid="uid://c6nmnpi7cxdlc"
+path="res://.godot/imported/create-dialogue-basic.ds-70e1c26f36df6ef28d4ba64d6bf17858.tres"
+
+[deps]
+
+source_file="res://examples/create-dialogue-basic.ds"
+dest_files=["res://.godot/imported/create-dialogue-basic.ds-70e1c26f36df6ef28d4ba64d6bf17858.tres"]
+
+[params]
+

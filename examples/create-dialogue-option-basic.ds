@@ -1,0 +1,156 @@
+{
+  "title": "",
+  "nodes": [
+    {
+      "id": "node:1",
+      "type": "START",
+      "position": "(-560.0, 800.0)"
+    },
+    {
+      "id": "node:2",
+      "type": "END",
+      "position": "(1360.0, 800.0)"
+    },
+    {
+      "id": "node:3",
+      "type": "DIALOGUE",
+      "position": "(-220.0, 760.0)",
+      "character": "uid://ceouii84qmu0w::alice",
+      "text": "Hi Bob!"
+    },
+    {
+      "id": "node:4",
+      "type": "DIALOGUE",
+      "position": "(840.0, 360.0)",
+      "character": "uid://ceouii84qmu0w::bob",
+      "text": "Yes please!"
+    },
+    {
+      "id": "node:5",
+      "type": "DIALOGUE_OPTION",
+      "position": "(320.0, 360.0)",
+      "character": "uid://ceouii84qmu0w::alice",
+      "text": "Would you like some coffee?"
+    },
+    {
+      "id": "node:6",
+      "type": "DIALOGUE_OPTION",
+      "position": "(320.0, 760.0)",
+      "character": "uid://ceouii84qmu0w::alice",
+      "text": "How are you?"
+    },
+    {
+      "id": "node:7",
+      "type": "DIALOGUE_OPTION",
+      "position": "(320.0, 1180.0)",
+      "character": "uid://ceouii84qmu0w::alice",
+      "text": "Goodbye!"
+    },
+    {
+      "id": "node:8",
+      "type": "DIALOGUE",
+      "position": "(840.0, 760.0)",
+      "character": "uid://ceouii84qmu0w::bob",
+      "text": "Not too bad thanks!"
+    },
+    {
+      "id": "node:9",
+      "type": "DIALOGUE",
+      "position": "(840.0, 1180.0)",
+      "character": "uid://ceouii84qmu0w::bob",
+      "text": "See ya!"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:1",
+      "from_node": "node:1",
+      "from_slot": 0,
+      "to_node": "node:3",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:3",
+      "from_node": "node:4",
+      "from_slot": 0,
+      "to_node": "node:2",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:4",
+      "from_node": "node:3",
+      "from_slot": 0,
+      "to_node": "node:5",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:5",
+      "from_node": "node:3",
+      "from_slot": 0,
+      "to_node": "node:6",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:6",
+      "from_node": "node:3",
+      "from_slot": 0,
+      "to_node": "node:7",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:7",
+      "from_node": "node:5",
+      "from_slot": 0,
+      "to_node": "node:4",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:8",
+      "from_node": "node:6",
+      "from_slot": 0,
+      "to_node": "node:8",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:9",
+      "from_node": "node:7",
+      "from_slot": 0,
+      "to_node": "node:9",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:10",
+      "from_node": "node:8",
+      "from_slot": 0,
+      "to_node": "node:2",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:11",
+      "from_node": "node:9",
+      "from_slot": 0,
+      "to_node": "node:2",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    }
+  ]
+}

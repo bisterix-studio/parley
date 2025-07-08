@@ -4,6 +4,8 @@ import type { JSX } from "preact";
 
 // Adapted from: https://github.com/denoland/fresh
 
+// TODO: refactor this
+
 export function ExampleArrow(
   props: JSX.HTMLAttributes<HTMLDivElement>,
 ): JSX.Element {
