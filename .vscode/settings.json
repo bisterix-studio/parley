@@ -28,7 +28,8 @@
     "printerr",
     "printwarn",
     "stylebox",
-    "titlebar"
+    "titlebar",
+    "Treeware"
   ],
   "files.associations": {
     "*.djson": "json",
@@ -56,5 +57,8 @@
   "css.customData": [
     ".vscode/tailwind.json"
   ],
-  "markdown.extension.toc.updateOnSave": false
+  "markdown.extension.toc.updateOnSave": false,
+  "github.copilot.enable": {
+    "*": false
+  }
 }

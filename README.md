@@ -16,6 +16,7 @@ You can install it via the Asset Library or
 from GitHub.
 
 [![GitHub Licence](https://img.shields.io/github/license/bisterix-studio/parley?style=flat-square)](https://raw.githubusercontent.com/bisterix-studio/parley/main/LICENSE)
+[![Plant Tree](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=Plant%20Tree&query=%24.total&url=https%3A%2F%2Fpublic.offset.earth%2Fusers%2Ftreeware%2Ftrees)](https://plant.treeware.earth/bisterix-studio/parley)
 
 ![Example usage of Parley](https://parley.bisterixstudio.com/illustration/parley-graph-view.gif)
 
@@ -99,6 +100,12 @@ submit an issue if you have any further data on this issue.
 
 Parley is 100% free and open-source, under the MIT licence.
 [The license is distributed with Parley and can be found in the `addons/parley` folder](https://github.com/bisterix-studio/parley/blob/main/addons/parley/LICENSE).
+
+This package is [Treeware](https://treeware.earth). If you use it in production,
+then we ask that you
+[**buy the world a tree**](https://plant.treeware.earth/bisterix-studio/parley)
+to thank us for our work. By contributing to the Treeware forest you’ll be
+creating employment for local families and restoring wildlife habitats.
 
 ## Contributions
 
