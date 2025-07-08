@@ -28,7 +28,8 @@
     "printerr",
     "printwarn",
     "stylebox",
-    "titlebar"
+    "titlebar",
+    "Treeware"
   ],
   "files.associations": {
     "*.djson": "json",
