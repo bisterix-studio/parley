@@ -7,6 +7,7 @@ class_name ParleyResourceEditor extends HBoxContainer
 #region DEFS
 @export var key: String = "": set = _set_key
 @export var base_type: String = "": set = _set_base_type
+@export var editable: bool = true: set = _set_editable
 @export var resource: Resource: set = _set_resource
 @export var minimum_x: float = 100: set = _set_minimum_x
 
@@ -26,6 +27,7 @@ func _ready() -> void:
 		_resource_picker = EditorResourcePicker.new()
 		_resource_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_resource_picker.base_type = base_type
+		_resource_picker.editable = editable
 		ParleyUtils.signals.safe_connect(_resource_picker.resource_selected, _on_resource_picker_resource_selected)
 		ParleyUtils.signals.safe_connect(_resource_picker.resource_changed, _on_resource_picker_resource_changed)
 		add_child(_resource_picker)
@@ -47,6 +49,11 @@ func _set_base_type(new_base_type: String) -> void:
 	_render_base_type()
 
 
+func _set_editable(new_editable: bool) -> void:
+	editable = new_editable
+	_render_editable()
+
+
 func _set_resource(new_resource: Resource) -> void:
 	resource = new_resource
 	_render_resource()
@@ -66,6 +73,11 @@ func _render_key() -> void:
 func _render_base_type() -> void:
 	if Engine.is_editor_hint() and _resource_picker:
 		_resource_picker.base_type = base_type
+
+
+func _render_editable() -> void:
+	if Engine.is_editor_hint() and _resource_picker:
+		_resource_picker.editable = editable
 
 
 func _render_resource() -> void:

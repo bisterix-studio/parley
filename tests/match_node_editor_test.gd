@@ -192,7 +192,7 @@ class Test_match_node_editor:
 		assert_signal_emitted_with_parameters(match_node_editor, 'match_node_changed', [expected['id'], expected['description'], expected['fact_ref'], expected['cases']])
 
 
-class TestUtils:
+class TestUtils extends GutTest:
 	static func string_array(array: Variant) -> Array[String]:
 		if not is_instance_of(array, TYPE_ARRAY):
 			return []

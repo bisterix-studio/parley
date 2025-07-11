@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://ckubjbp3e7yy3"]
+[gd_scene load_steps=37 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_4ui00"]
@@ -29,13 +29,7 @@
 [ext_resource type="Script" uid="uid://ob0am6au6mmt" path="res://addons/parley/stores/fact/fact_store.gd" id="30_7jaih"]
 [ext_resource type="Script" uid="uid://cjo7uxv32sr14" path="res://addons/parley/models/edge_ast.gd" id="30_rspbv"]
 [ext_resource type="Script" uid="uid://3nqtsewsmim0" path="res://addons/parley/models/node_ast.gd" id="31_tp54n"]
-[ext_resource type="Script" uid="uid://btn7s5anok7p4" path="res://addons/parley/models/dialogue_ast.gd" id="32_pogw7"]
-
-[sub_resource type="Resource" id="Resource_xjep8"]
-script = ExtResource("32_pogw7")
-title = ""
-edges = Array[ExtResource("30_rspbv")]([])
-nodes = Array[ExtResource("31_tp54n")]([])
+[ext_resource type="Script" uid="uid://btn7s5anok7p4" path="res://addons/parley/models/dialogue_sequence_ast.gd" id="32_pogw7"]
 
 [sub_resource type="Resource" id="Resource_s5oy3"]
 script = ExtResource("26_anq7l")
@@ -81,7 +75,6 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_06n3w")
-dialogue_ast = SubResource("Resource_xjep8")
 action_store = SubResource("Resource_s5oy3")
 fact_store = SubResource("Resource_kaj3b")
 character_store = SubResource("Resource_h2jtb")
@@ -143,7 +136,7 @@ popup/item_3/id = 2
 unique_name_in_owner = true
 layout_mode = 2
 text = "Insert"
-item_count = 12
+item_count = 13
 popup/item_0/text = "Dialogue"
 popup/item_0/id = -1
 popup/item_0/separator = true
@@ -168,18 +161,21 @@ popup/item_6/separator = true
 popup/item_7/text = "Action"
 popup/item_7/icon = ExtResource("7_lxbr4")
 popup/item_7/id = 3
-popup/item_8/text = "Misc"
-popup/item_8/id = -1
-popup/item_8/separator = true
-popup/item_9/text = "Start"
-popup/item_9/icon = ExtResource("8_2fjw0")
-popup/item_9/id = 4
-popup/item_10/text = "End"
-popup/item_10/icon = ExtResource("9_lpmhi")
-popup/item_10/id = 5
-popup/item_11/text = "Group"
-popup/item_11/icon = ExtResource("10_h0et1")
-popup/item_11/id = 6
+popup/item_8/text = "Jump"
+popup/item_8/icon = ExtResource("7_lxbr4")
+popup/item_8/id = 8
+popup/item_9/text = "Misc"
+popup/item_9/id = -1
+popup/item_9/separator = true
+popup/item_10/text = "Start"
+popup/item_10/icon = ExtResource("8_2fjw0")
+popup/item_10/id = 4
+popup/item_11/text = "End"
+popup/item_11/icon = ExtResource("9_lpmhi")
+popup/item_11/id = 5
+popup/item_12/text = "Group"
+popup/item_12/icon = ExtResource("10_h0et1")
+popup/item_12/id = 6
 
 [node name="VSeparator" type="VSeparator" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar"]
 layout_mode = 2

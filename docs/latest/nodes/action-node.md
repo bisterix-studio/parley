@@ -34,7 +34,7 @@ Valid action scripts must implement the `ParleyActionInterface` by providing an
 `execute` method. For example:
 
 ```gdscript Example Action Script
-func execute(ctx: Dictionary, values: Array) -> int:
+func execute(ctx: ParleyContext, values: Array) -> int:
   print("Advancing time by %s" % [values[0]])
   ctx.get('advance_time').emit(values[0])
   return OK

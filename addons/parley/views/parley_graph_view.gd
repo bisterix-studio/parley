@@ -17,6 +17,7 @@ const match_node_scene: PackedScene = preload("../components/match/match_node.ts
 const start_node_scene: PackedScene = preload("../components/start/start_node.tscn")
 const end_node_scene: PackedScene = preload("../components/end/end_node.tscn")
 const group_node_scene: PackedScene = preload("../components/group/group_node.tscn")
+const jump_node_scene: PackedScene = preload("../components/jump/jump_node.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -84,8 +85,10 @@ func _register_node(ast_node: ParleyNodeAst) -> ParleyGraphNode:
 			graph_node = _create_end_node(ast_node as ParleyEndNodeAst)
 		ParleyDialogueSequenceAst.Type.GROUP:
 			graph_node = _create_group_node(ast_node as ParleyGroupNodeAst)
+		ParleyDialogueSequenceAst.Type.JUMP:
+			graph_node = _create_jump_node(ast_node as ParleyJumpNodeAst)
 		_:
-			ParleyUtils.log.info("AST Node {type} is not supported".format({"type": type}))
+			print_rich(ParleyUtils.log.info_msg("AST Node {type} is not supported".format({"type": type})))
 			return
 	var ast_node_id: String = ast_node.id
 	# TODO: v. bad to change ast stuff here - refactor to avoid horrible bugs
@@ -194,15 +197,15 @@ func add_edge(edge: ParleyEdgeAst, from_node_name: StringName, to_node_name: Str
 func set_edge_colour(edge: ParleyEdgeAst) -> void:
 	var nodes: Array[ParleyGraphNode] = get_nodes_for_edge(edge)
 	if nodes.size() != 2:
-		ParleyUtils.log.error("Invalid edge, expected 2 nodes but found %d" % nodes.size())
+		push_error(ParleyUtils.log.error_msg("Invalid edge, expected 2 nodes but found %d" % nodes.size()))
 		return
 	var from_node_index: int = nodes.find_custom(func(n: ParleyGraphNode) -> bool: return n.id == edge.from_node)
 	var to_node_index: int = nodes.find_custom(func(n: ParleyGraphNode) -> bool: return n.id == edge.to_node)
 	if from_node_index == -1:
-		ParleyUtils.log.error("Unable to get from node for edge")
+		push_error(ParleyUtils.log.error_msg("Unable to get from node for edge"))
 		return
 	if to_node_index == -1:
-		ParleyUtils.log.error("Unable to get from node for edge")
+		push_error(ParleyUtils.log.error_msg("Unable to get from node for edge"))
 		return
 	var from_node: ParleyGraphNode = nodes[from_node_index]
 	var to_node: ParleyGraphNode = nodes[to_node_index]
@@ -318,6 +321,15 @@ func _create_condition_node(ast_node: ParleyConditionNodeAst) -> ParleyGraphNode
 	node.id = ast_node.id
 	node.name = get_ast_node_name(ast_node)
 	node.description = ast_node.description
+	return node
+
+
+func _create_jump_node(ast_node: ParleyJumpNodeAst) -> ParleyGraphNode:
+	var node: ParleyJumpNode = jump_node_scene.instantiate()
+	node.id = ast_node.id
+	node.name = get_ast_node_name(ast_node)
+	if ResourceLoader.exists(ast_node.dialogue_sequence_ast_ref):
+		node.dialogue_sequence_ast = load(ast_node.dialogue_sequence_ast_ref)
 	return node
 
 

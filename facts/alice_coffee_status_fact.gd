@@ -1,9 +1,9 @@
 # Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
 
-extends FactInterface
+extends ParleyFactInterface
 
-func execute(ctx: Dictionary, _values: Array) -> String:
-	return ctx.get('alice_coffee_status', 'UNKNOWN_COFFEE_STATUS')
+func evaluate(ctx: ParleyContext, _values: Array) -> String:
+	return ctx.p_data.get('alice_coffee_status', 'UNKNOWN_COFFEE_STATUS')
 
 
 func available_values() -> Array[String]:

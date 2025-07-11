@@ -59,7 +59,7 @@ func get_fact_by_ref(ref: String) -> ParleyFact:
 		return fact.ref and ParleyUtils.resource.get_uid(fact.ref) == ref)
 	if filtered_facts.size() == 0:
 		if ref != "":
-			ParleyUtils.log.warn("Fact with ref not found in store (store:%s, ref:%s), returning an empty Fact" % [id, ref])
+			push_warning(ParleyUtils.log.warn_msg("Fact with ref not found in store (store:%s, ref:%s), returning an empty Fact" % [id, ref]))
 		return ParleyFact.new()
 	return filtered_facts.front()
 #endregion

@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_ast_compiler_0.2.0"
+type="Resource"
+uid="uid://cfaambg2fkgnh"
+path="res://.godot/imported/next_dialogue.ds-1f2d2ca9751962b670972e838b0d73c3.tres"
+
+[deps]
+
+source_file="res://dialogue_sequences/next_dialogue.ds"
+dest_files=["res://.godot/imported/next_dialogue.ds-1f2d2ca9751962b670972e838b0d73c3.tres"]
+
+[params]
+

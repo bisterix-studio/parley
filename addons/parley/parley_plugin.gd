@@ -123,7 +123,7 @@ func _on_store_changed(type: ParleyStore.Type, new_store: ParleyStore) -> void:
 		ParleyStore.Type.Character:
 			parley_manager.character_store = new_store
 		_:
-			ParleyUtils.log.error("Error handling store change (type:%s, store:%s): unhandled store type" % [type, new_store])
+			push_error(ParleyUtils.log.error_msg("Error handling store change (type:%s, store:%s): unhandled store type" % [type, new_store]))
 			return
 	_setup_data()
 	await main_panel_instance.refresh()

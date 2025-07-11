@@ -13,6 +13,7 @@ const MatchNodeEditorScene: PackedScene = preload('../components/match/match_nod
 const StartNodeEditorScene: PackedScene = preload('../components/start/start_node_editor.tscn')
 const EndNodeEditorScene: PackedScene = preload('../components/end/end_node_editor.tscn')
 const GroupNodeEditorScene: PackedScene = preload('../components/group/group_node_editor.tscn')
+const JumpNodeEditorScene: PackedScene = preload('../components/jump/jump_node_editor.tscn')
 
 
 var dialogue_sequence_ast: ParleyDialogueSequenceAst: set = _set_dialogue_sequence_ast
@@ -70,14 +71,15 @@ func _render_node() -> void:
 			ParleyDialogueSequenceAst.Type.GROUP: _render_group_node_editor()
 			ParleyDialogueSequenceAst.Type.START: _render_start_node_editor()
 			ParleyDialogueSequenceAst.Type.END: _render_end_node_editor()
+			ParleyDialogueSequenceAst.Type.JUMP: _render_jump_node_editor()
 			_:
-				ParleyUtils.log.error("Unsupported Node type: %s for Node with ID: %s" % [ParleyDialogueSequenceAst.get_type_name(node_ast.type), node_ast.id])
+				push_error(ParleyUtils.log.error_msg("Unsupported Node type: %s for Node with ID: %s" % [ParleyDialogueSequenceAst.get_type_name(node_ast.type), node_ast.id]))
 				return
 
 
 func _render_dialogue_node_editor() -> void:
 	if not dialogue_sequence_ast:
-		ParleyUtils.log.error("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast])
+		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
 		return
 	var dialogue_node_ast: ParleyDialogueNodeAst = node_ast
 	var dialogue_node_editor: ParleyDialogueNodeEditor = DialogueNodeEditorScene.instantiate()
@@ -92,7 +94,7 @@ func _render_dialogue_node_editor() -> void:
 
 func _render_dialogue_option_node_editor() -> void:
 	if not dialogue_sequence_ast:
-		ParleyUtils.log.error("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast])
+		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
 		return
 	var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = node_ast
 	var dialogue_option_node_editor: ParleyDialogueOptionNodeEditor = DialogueOptionNodeEditorScene.instantiate()
@@ -107,7 +109,7 @@ func _render_dialogue_option_node_editor() -> void:
 
 func _render_condition_node_editor() -> void:
 	if not dialogue_sequence_ast:
-		ParleyUtils.log.error("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast])
+		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
 		return
 	var condition_node_ast: ParleyConditionNodeAst = node_ast
 	var combiner: ParleyConditionNodeAst.Combiner = condition_node_ast.combiner
@@ -117,7 +119,7 @@ func _render_condition_node_editor() -> void:
 			var fact_ref: String = condition_item['fact_ref']
 			var exists: bool = ResourceLoader.exists(fact_ref)
 			if not exists:
-				ParleyUtils.log.warn("Condition fact ref '%s' does not exist within the file system meaning this Dialogue Sequence will likely fail at runtime." % fact_ref)
+				push_warning(ParleyUtils.log.warn_msg("Condition fact ref '%s' does not exist within the file system meaning this Dialogue Sequence will likely fail at runtime." % fact_ref))
 			return {
 				'fact_ref': fact_ref,
 				'operator': condition_item['operator'],
@@ -137,7 +139,7 @@ func _render_condition_node_editor() -> void:
 
 func _render_match_node_editor() -> void:
 	if not dialogue_sequence_ast:
-		ParleyUtils.log.error("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast])
+		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
 		return
 	var match_node_ast: ParleyMatchNodeAst = node_ast
 	## TODO: create from ast
@@ -154,12 +156,12 @@ func _render_match_node_editor() -> void:
 
 func _render_action_node_editor() -> void:
 	if not dialogue_sequence_ast:
-		ParleyUtils.log.error("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast])
+		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
 		return
 	var action_node_ast: ParleyActionNodeAst = node_ast
 	var exists: bool = ResourceLoader.exists(action_node_ast.action_script_ref)
 	if not exists and action_node_ast.action_script_ref != "":
-		ParleyUtils.log.warn("Action script ref '%s' does not exist within the file system meaning this Dialogue Sequence will likely fail at runtime." % action_node_ast.action_script_ref)
+		push_warning(ParleyUtils.log.warn_msg("Action script ref '%s' does not exist within the file system meaning this Dialogue Sequence will likely fail at runtime." % action_node_ast.action_script_ref))
 
 	## TODO: create from ast
 	var action_node_editor: ParleyActionNodeEditor = ActionNodeEditorScene.instantiate()
@@ -174,9 +176,27 @@ func _render_action_node_editor() -> void:
 	node_editor_container.add_child(action_node_editor)
 
 
+func _render_jump_node_editor() -> void:
+	if not dialogue_sequence_ast:
+		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
+		return
+	var jump_node_ast: ParleyJumpNodeAst = node_ast
+	var exists: bool = ResourceLoader.exists(jump_node_ast.dialogue_sequence_ast_ref)
+	if not exists and jump_node_ast.dialogue_sequence_ast_ref != "":
+		push_warning(ParleyUtils.log.warn_msg("Jump Node Dialogue Sequence ref '%s' does not exist within the file system meaning this Dialogue Sequence will likely fail at runtime." % jump_node_ast.dialogue_sequence_ast_ref))
+
+	## TODO: create from ast
+	var jump_node_editor: ParleyJumpNodeEditor = JumpNodeEditorScene.instantiate()
+	jump_node_editor.id = jump_node_ast.id
+	jump_node_editor.dialogue_sequence_ast_ref = jump_node_ast.dialogue_sequence_ast_ref
+	ParleyUtils.signals.safe_connect(jump_node_editor.jump_node_changed, _on_jump_node_editor_jump_node_changed)
+	ParleyUtils.signals.safe_connect(jump_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
+	node_editor_container.add_child(jump_node_editor)
+
+
 func _render_group_node_editor() -> void:
 	if not dialogue_sequence_ast:
-		ParleyUtils.log.error("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast])
+		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
 		return
 	var group_node_ast: ParleyGroupNodeAst = node_ast
 	## TODO: create from ast
@@ -191,7 +211,7 @@ func _render_group_node_editor() -> void:
 
 func _render_start_node_editor() -> void:
 	if not dialogue_sequence_ast:
-		ParleyUtils.log.error("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast])
+		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
 		return
 	var start_node_ast: ParleyStartNodeAst = node_ast
 	## TODO: create from ast
@@ -203,7 +223,7 @@ func _render_start_node_editor() -> void:
 
 func _render_end_node_editor() -> void:
 	if not dialogue_sequence_ast:
-		ParleyUtils.log.error("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast])
+		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
 		return
 	var end_node_ast: ParleyEndNodeAst = node_ast
 	## TODO: create from ast
@@ -268,6 +288,13 @@ func _on_match_node_editor_match_node_changed(_id: String, description: String, 
 	new_node_ast.description = description
 	new_node_ast.fact_ref = uid
 	new_node_ast.cases = cases.duplicate()
+	node_changed.emit(new_node_ast)
+
+
+func _on_jump_node_editor_jump_node_changed(_id: String, dialogue_sequence_ast_ref: String) -> void:
+	# TODO: we should probably just update the resource here - it would make things way easier!
+	var new_node_ast: ParleyJumpNodeAst = node_ast.duplicate(true)
+	new_node_ast.dialogue_sequence_ast_ref = dialogue_sequence_ast_ref
 	node_changed.emit(new_node_ast)
 
 

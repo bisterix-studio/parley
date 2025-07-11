@@ -1,0 +1,58 @@
+{
+  "title": "",
+  "nodes": [
+    {
+      "id": "node:1",
+      "type": "DIALOGUE",
+      "position": "(1500.0, 1060.0)",
+      "character": "uid://ceouii84qmu0w::alice",
+      "text": "Let's talk about something else."
+    },
+    {
+      "id": "node:2",
+      "type": "START",
+      "position": "(1200.0, 1100.0)"
+    },
+    {
+      "id": "node:3",
+      "type": "DIALOGUE",
+      "position": "(1940.0, 1060.0)",
+      "character": "uid://ceouii84qmu0w::bob",
+      "text": "Okey dokey."
+    },
+    {
+      "id": "node:4",
+      "type": "END",
+      "position": "(2380.0, 1100.0)"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:1",
+      "from_node": "node:2",
+      "from_slot": 0,
+      "to_node": "node:1",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:2",
+      "from_node": "node:1",
+      "from_slot": 0,
+      "to_node": "node:3",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:3",
+      "from_node": "node:3",
+      "from_slot": 0,
+      "to_node": "node:4",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    }
+  ]
+}

@@ -43,21 +43,41 @@ const basic_dialogue: ParleyDialogueSequenceAst = preload("res://dialogue_sequen
    Sequence processing using the `Parley` autoload with the following code:
 
 ```gdscript
+var ctx: ParleyContext
+
 func _ready() -> void:
   # Trigger the start of the Dialogue Sequence processing using the Parley autoload
-	var _result: Node = Parley.start_dialogue({}, basic_dialogue)
+  ctx = ParleyContext.create(basic_dialogue)
+	var _result: Node = Parley.run_dialogue(ctx, basic_dialogue)
 ```
 
-3. And that's it! Your script should look something like:
+3. Clean up upon tree exit from scene:
+
+```gdscript
+func _exit_tree() -> void:
+	# Ensure ctx is fully cleaned up
+	if ctx:
+		ctx.free()
+```
+
+4. And that's it! Your script should look something like:
 
 ```gdscript
 extends Node
 
 const basic_dialogue: ParleyDialogueSequenceAst = preload("res://dialogue_sequences/my_dialogue.ds")
 
+var ctx: ParleyContext
+
 func _ready() -> void:
   # Trigger the start of the Dialogue Sequence processing using the Parley autoload
-	var _result: Node = Parley.start_dialogue({}, basic_dialogue)
+  ctx = ParleyContext.create(basic_dialogue)
+	var _result: Node = Parley.run_dialogue(ctx, basic_dialogue)
+
+func _exit_tree() -> void:
+	# Ensure ctx is fully cleaned up
+	if ctx:
+		ctx.free()
 ```
 
 > [tip]: If you would like to customise the running of Parley Dialogue Sequences

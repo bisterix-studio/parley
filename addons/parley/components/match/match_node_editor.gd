@@ -70,11 +70,11 @@ func _set_fact_ref(new_fact_ref: String) -> void:
 	if fact_store and fact.id != "":
 		var script: GDScript = load(fact_ref)
 		if script is not GDScript:
-			ParleyUtils.log.error("Fact is not valid GDScript (def:%s)" % fact)
+			push_error(ParleyUtils.log.error_msg("Fact is not valid GDScript (def:%s)" % fact))
 			return
-		var fact_interface: FactInterface = script.new()
-		if fact_interface is not FactInterface:
-			ParleyUtils.log.error("Fact script is not a valid Fact interface (def:%s, fact:%s)" % [fact, fact_interface])
+		var fact_interface: ParleyFactInterface = script.new()
+		if fact_interface is not ParleyFactInterface or not fact_interface.has_method(&"evaluate"):
+			push_error(ParleyUtils.log.error_msg("Fact script is not a valid Fact interface (def:%s, fact:%s)" % [fact, fact_interface]))
 			return
 		var new_available_cases: Array[Variant] = []
 		new_available_cases.append_array(fact_interface.available_values())

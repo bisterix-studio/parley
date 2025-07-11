@@ -167,8 +167,11 @@ func _set_node_ast(new_node_ast: ParleyNodeAst) -> void:
 		ParleyDialogueSequenceAst.Type.GROUP:
 			var group_node_ast: ParleyGroupNodeAst = new_node_ast
 			_on_group_node_editor_group_node_changed(group_node_ast.id, group_node_ast.name, group_node_ast.colour)
+		ParleyDialogueSequenceAst.Type.JUMP:
+			var jump_node_ast: ParleyJumpNodeAst = new_node_ast
+			_on_jump_node_editor_action_node_changed(jump_node_ast.id, jump_node_ast.dialogue_sequence_ast_ref)
 		_:
-			ParleyUtils.log.error("Unsupported Node type: %s for Node with ID: %s" % [ParleyDialogueSequenceAst.get_type_name(selected_node_ast.type), selected_node_ast.id])
+			push_error(ParleyUtils.log.error_msg("Unsupported Node type: %s for Node with ID: %s" % [ParleyDialogueSequenceAst.get_type_name(selected_node_ast.type), selected_node_ast.id]))
 			return
 
 
@@ -226,6 +229,8 @@ func _setup_insert_menu() -> void:
 	popup.add_icon_item(condition_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.MATCH), ParleyDialogueSequenceAst.Type.MATCH)
 	popup.add_separator("Actions")
 	popup.add_icon_item(action_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.ACTION), ParleyDialogueSequenceAst.Type.ACTION)
+	# TODO: add jump node icon
+	popup.add_icon_item(action_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.JUMP), ParleyDialogueSequenceAst.Type.JUMP)
 	popup.add_separator("Misc")
 	popup.add_icon_item(start_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.START), ParleyDialogueSequenceAst.Type.START)
 	popup.add_icon_item(end_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.END), ParleyDialogueSequenceAst.Type.END)
@@ -247,7 +252,7 @@ func _on_file_id_pressed(id: int) -> void:
 			export_to_csv_modal.dialogue_ast = dialogue_ast
 			export_to_csv_modal.render()
 		_:
-			ParleyUtils.log.info("Unknown option ID pressed: {id}".format({'id': id}))
+			print_rich(ParleyUtils.log.info_msg("Unknown option ID pressed: {id}".format({'id': id})))
 
 
 func _on_graph_view_node_selected(node: ParleyGraphNode) -> void:
@@ -302,7 +307,7 @@ func _on_save_pressed() -> void:
 func _save_dialogue() -> void:
 	var ok: int = ResourceSaver.save(dialogue_ast)
 	if ok != OK:
-		ParleyUtils.log.warn("Error saving the Dialogue AST: %d" % [ok])
+		push_warning(ParleyUtils.log.warn_msg("Error saving the Dialogue AST: %d" % [ok]))
 		return
 	# This is needed to correctly reload upon file saves
 	if Engine.is_editor_hint():
@@ -497,6 +502,22 @@ func _on_action_node_editor_action_node_changed(id: String, description: String,
 		action_node.values = values
 
 
+func _on_jump_node_editor_action_node_changed(id: String, dialogue_sequence_ast_ref: String) -> void:
+	if not dialogue_ast:
+		return
+	var ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
+	var parley_graph_node_variant: Variant = graph_view.find_node_by_id(id)
+	if ast_node is not ParleyJumpNodeAst or not parley_graph_node_variant or parley_graph_node_variant is not ParleyJumpNode:
+		return
+	# AST
+	var jump_node_ast: ParleyJumpNodeAst = ast_node
+	jump_node_ast.dialogue_sequence_ast_ref = dialogue_sequence_ast_ref
+	# Graph View
+	# TODO: move into Graph View
+	var jump_node: ParleyJumpNode = parley_graph_node_variant
+	jump_node.dialogue_sequence_ast = load(jump_node_ast.dialogue_sequence_ast_ref) if ResourceLoader.exists(jump_node_ast.dialogue_sequence_ast_ref) else ParleyDialogueSequenceAst.new()
+
+
 func _on_group_node_editor_group_node_changed(id: String, group_name: String, colour: Color) -> void:
 	if not dialogue_ast:
 		return
@@ -565,10 +586,10 @@ func delete_node_by_id(id: String) -> void:
 	if not dialogue_ast:
 		return
 	if not selected_node_id or not is_instance_of(selected_node_id, TYPE_STRING):
-		ParleyUtils.log.info("No node is selected, not deleting anything")
+		print_rich(ParleyUtils.log.info_msg("No node is selected, not deleting anything"))
 		return
 	if id != selected_node_id:
-		ParleyUtils.log.info("Node ID to delete does not match the selected Node ID, not deleting anything")
+		print_rich(ParleyUtils.log.info_msg("Node ID to delete does not match the selected Node ID, not deleting anything"))
 		return
 		
 	var valid_selected_node_id: String = selected_node_id
@@ -602,7 +623,7 @@ func _on_docs_button_pressed() -> void:
 	var href: StringName = &"https://parley.bisterixstudio.com"
 	var result: int = OS.shell_open(href)
 	if result != OK:
-		ParleyUtils.log.error("Unable to navigate to Parley Documentation at %s: %s" % [href, result])
+		push_error(ParleyUtils.log.error_msg("Unable to navigate to Parley Documentation at %s: %s" % [href, result]))
 #endregion
 
 
@@ -625,6 +646,6 @@ func _add_edge(from_node_name: StringName, from_slot: int, to_node_name: StringN
 func _is_selected_node(id: String) -> bool:
 	var is_selected_node: bool = selected_node_id == id
 	if not is_selected_node:
-		ParleyUtils.log.warn("Node with ID %s is not selected" % id)
+		push_warning(ParleyUtils.log.warn_msg("Node with ID %s is not selected" % id))
 	return is_selected_node
 #endregion

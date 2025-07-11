@@ -16,17 +16,57 @@ const next_dialogue_button: PackedScene = preload('./next_dialogue_button.tscn')
 @onready var balloon_container: VBoxContainer = %BalloonContainer
 
 
-var ctx: Dictionary = {}
-var dialogue_ast: ParleyDialogueSequenceAst
+var ctx: ParleyContext = ParleyContext.new()
+var dialogue_sequence_ast: ParleyDialogueSequenceAst
 var dialogue_history: Array = []
-## Temporary game states
-var temporary_game_states: Array = []
 ## See if we are waiting for the player
 var is_waiting_for_input: bool = false
 var previous_node_ast: ParleyNodeAst = null
 var current_node_asts: Array[ParleyNodeAst]: set = _set_current_node_asts
 
 
+#region LIFECYCLE
+func _exit_tree() -> void:
+	# Ensure the ctx is fully cleaned up
+	if ctx and not ctx.is_queued_for_deletion():
+		ctx.free()
+#endregion
+
+
+#region PROCESSING
+## Start some dialogue
+func start(p_ctx: ParleyContext, p_dialogue_sequence_ast: ParleyDialogueSequenceAst, p_start_node: ParleyNodeAst = null) -> void:
+	balloon.show()
+	is_waiting_for_input = false
+	ctx = p_ctx
+	dialogue_sequence_ast = p_dialogue_sequence_ast
+	if p_start_node is ParleyDialogueNodeAst or p_start_node is ParleyDialogueOptionNodeAst:
+		current_node_asts = [p_start_node]
+	elif p_start_node:
+		var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.run(ctx, dialogue_sequence_ast, p_start_node)
+		current_node_asts = run_result.node_asts
+		dialogue_sequence_ast = run_result.dialogue_sequence
+		run_result.free() # Needed to ensure that everything is correctly freed up at exit
+	else:
+		var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.run(ctx, dialogue_sequence_ast)
+		current_node_asts = run_result.node_asts
+		dialogue_sequence_ast = run_result.dialogue_sequence
+		run_result.free() # Needed to ensure that everything is correctly freed up at exit
+
+
+## Process the next Nodes
+func next(current_node_ast: ParleyNodeAst) -> void:
+	# Probably want to emit at this point? Or maybe earlier
+	dialogue_history.append(current_node_ast)
+	previous_node_ast = current_node_ast
+	var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.run(ctx, dialogue_sequence_ast, current_node_ast)
+	current_node_asts = run_result.node_asts
+	dialogue_sequence_ast = run_result.dialogue_sequence
+	run_result.free() # Needed to ensure that everything is correctly freed up at exit
+#endregion
+
+
+#region SETTERS
 func _set_current_node_asts(p_current_node_asts: Array[ParleyNodeAst]) -> void:
 	is_waiting_for_input = false
 	balloon.focus_mode = Control.FOCUS_ALL
@@ -46,7 +86,7 @@ func _set_current_node_asts(p_current_node_asts: Array[ParleyNodeAst]) -> void:
 	current_node_asts = p_current_node_asts
 	var current_children: Array[Node] = balloon_container.get_children()
 	var first_node: ParleyNodeAst = p_current_node_asts.front()
-	var next_children: Array[Node] = _build_next_children(current_children, first_node)
+	var next_children: Array[Node] = await _build_next_children(current_children, first_node)
 	if next_children.size() == 0:
 		return
 
@@ -59,16 +99,18 @@ func _set_current_node_asts(p_current_node_asts: Array[ParleyNodeAst]) -> void:
 		if not next_button.is_node_ready():
 			await next_button.ready
 		next_button.grab_focus()
+#endregion
 
 
+#region RENDERERS
 func _build_next_children(current_children: Array[Node], current_node_ast: ParleyNodeAst) -> Array[Node]:
 	var next_children: Array[Node] = []
 	if is_instance_of(current_node_ast, ParleyDialogueNodeAst) and not (current_node_ast as ParleyDialogueNodeAst).text.is_empty():
-		next_children.append_array(_build_next_dialogue_children(current_node_ast))
+		next_children.append_array(await _build_next_dialogue_children(current_node_ast))
 	elif current_node_asts.filter(func(_n: ParleyNodeAst) -> bool: return is_instance_of(current_node_ast, ParleyDialogueOptionNodeAst)).size() == current_node_asts.size():
 		next_children.append_array(_build_next_dialogue_option_children(current_children))
 	else:
-		ParleyUtils.log.error("Invalid dialogue balloon nodes. Stopping processing. Check whether the Dialogue and Dialogue Option Nodes are fully populated with data.")
+		push_error(ParleyUtils.log.error_msg("Invalid dialogue balloon nodes. Stopping processing. Check whether the Dialogue and Dialogue Option Nodes are fully populated with data."))
 		return []
 	return next_children
 
@@ -90,7 +132,7 @@ func _build_next_dialogue_children(current_node_ast: ParleyNodeAst) -> Array[Nod
 	next_dialogue_container.set_meta('ast', current_node_ast)
 	next_children.append(next_dialogue_container)
 	var next_dialogue_button_control: ParleyNextDialogueButton = next_dialogue_button.instantiate()
-	if dialogue_ast.is_at_end(ctx, current_node_ast):
+	if await dialogue_sequence_ast.is_at_end(ctx, current_node_ast):
 		next_dialogue_button_control.text = 'Leave'
 	next_children.append(next_dialogue_button_control)
 	return next_children
@@ -155,6 +197,7 @@ func _create_horizontal_separator(sibling_above: Control) -> Node:
 	horizontal_separator.add_theme_constant_override('margin_bottom', 0)
 	horizontal_separator.add_child(HSeparator.new())
 	return horizontal_separator
+#endregion
 
 
 #region ACTIONS
@@ -216,30 +259,7 @@ func _ready() -> void:
 func _unhandled_input(_event: InputEvent) -> void:
 	# Only the balloon is allowed to handle input while it's showing
 	get_viewport().set_input_as_handled()
-
-
-# TODO: add a context param
-## Start some dialogue
-func start(_ctx: Dictionary, _dialogue_ast: ParleyDialogueSequenceAst, start_node: ParleyNodeAst = null) -> void:
-	balloon.show()
-	temporary_game_states = [self]
-	is_waiting_for_input = false
-	ctx = _ctx
-	dialogue_ast = _dialogue_ast
-	if start_node is ParleyDialogueNodeAst or start_node is ParleyDialogueOptionNodeAst:
-		current_node_asts = [start_node]
-	elif start_node:
-		current_node_asts = dialogue_ast.process_next(ctx, start_node)
-	else:
-		current_node_asts = dialogue_ast.process_next(ctx)
-
-
-## Process the next Nodes
-func next(current_node_ast: ParleyNodeAst) -> void:
-	# Probably want to emit at this point? Or maybe earlier
-	dialogue_history.append(current_node_ast)
-	previous_node_ast = current_node_ast
-	current_node_asts = dialogue_ast.process_next(ctx, current_node_ast)
+#endregion
 
 
 #region Signals

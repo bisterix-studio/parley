@@ -29,6 +29,7 @@ const toc: RawTableOfContents = {
         title: "Getting Started",
         pages: [
           ["installation", "Installation"],
+          ["upgrading", "Upgrading"],
           ["create-dialogue-sequence", "Create a Dialogue Sequence"],
           ["run-dialogue-sequence", "Run a Dialogue Sequence"],
           ["create-start-node", "Create a Start Node"],

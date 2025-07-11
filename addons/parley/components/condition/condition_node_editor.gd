@@ -146,7 +146,7 @@ func _on_condition_removed(condition_id: String) -> void:
 	var index: int = int(condition_id)
 	var new_conditions: Array = conditions.duplicate(true)
 	if index < 0 or index >= new_conditions.size():
-		ParleyUtils.log.error("Unable to remove Condition from Condition Node (id:%s, index:%i)" % [id, index])
+		push_error(ParleyUtils.log.error_msg("Unable to remove Condition from Condition Node (id:%s, index:%i)" % [id, index]))
 		return
 	new_conditions.remove_at(int(condition_id))
 	conditions = new_conditions

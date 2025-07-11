@@ -1,6 +1,6 @@
 # Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
 
-extends FactInterface
+extends ParleyFactInterface
 
-func execute(ctx: Dictionary, _values: Array) -> bool:
-	return ctx.get('alice_gave_coffee', true)
+func evaluate(ctx: ParleyContext, _values: Array) -> bool:
+	return ctx.p_data.get('alice_gave_coffee', true)

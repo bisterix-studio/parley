@@ -37,7 +37,7 @@ func _update_current_dialogue_ast(new_current_dialogue_ast: ParleyDialogueSequen
 		if not node_filter or raw_node_string.containsn(node_filter):
 			var index: int = node_list.add_item("%s [ID: %s]" % [ParleyDialogueSequenceAst.get_type_name(node.type), node.id])
 			if index == -1:
-				ParleyUtils.log.error("Unable to add item to Sidebar Node list")
+				push_error(ParleyUtils.log.error_msg("Unable to add item to Sidebar Node list"))
 				return
 			filtered_nodes.append(node)
 
@@ -67,7 +67,7 @@ func _update_dialogue_asts(updated_dialogue_asts: Array[ParleyDialogueSequenceAs
 			if not dialogue_ast_filter or filename.containsn(dialogue_ast_filter):
 				var index: int = dialogue_sequences_list.add_item(filename)
 				if index == -1:
-					ParleyUtils.log.error("Unable to add item to Sidebar Dialogue Sequences list")
+					push_error(ParleyUtils.log.error_msg("Unable to add item to Sidebar Dialogue Sequences list"))
 					return
 				filtered_dialogue_asts.append(dialogue_ast)
 

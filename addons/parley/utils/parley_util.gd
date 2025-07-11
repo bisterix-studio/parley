@@ -14,9 +14,9 @@ class signals:
 			return
 		if connect_result == ERR_INVALID_PARAMETER:
 			if log_error:
-				log.error("Signal %s already connected" % [signal_to_connect.get_name()])
+				push_error(log.error_msg("Signal %s already connected" % [signal_to_connect.get_name()]))
 		else:
-			log.error("Error connecting signal %s: %d" % [signal_to_connect.get_name(), connect_result])
+			push_error(log.error_msg("Error connecting signal %s: %d" % [signal_to_connect.get_name(), connect_result]))
 
 
 	## Disconnect safely from a signal and handle any errors accordingly
@@ -26,35 +26,32 @@ class signals:
 			return signal_to_disconnect.disconnect(callable)
 		if connect_result == ERR_INVALID_PARAMETER:
 			if log_error:
-				log.error("Signal %s already disconnected" % [signal_to_disconnect.get_name()])
+				push_error(log.error_msg("Signal %s already disconnected" % [signal_to_disconnect.get_name()]))
 		else:
-			log.error("Error disconnecting signal %s: %d" % [signal_to_disconnect.get_name(), connect_result])
+			push_error(log.error_msg("Error disconnecting signal %s: %d" % [signal_to_disconnect.get_name(), connect_result]))
 
 
 class log:
-	static func info(message: String, dry_run: bool = false) -> void:
-		if not dry_run:
-			print_rich("[color=web_gray]PARLEY_DBG: %s[/color]" % [message])
+	static func info_msg(message: String) -> String:
+		return "[color=web_gray]PARLEY_DBG: %s[/color]" % [message]
 
 
-	static func warn(message: String, dry_run: bool = false) -> void:
-		if not dry_run:
-			push_warning("PARLEY_WRN: %s" % [message])
+	static func warn_msg(message: String) -> String:
+		return "PARLEY_WRN: %s" % [message]
 
 
-	static func error(message: String, dry_run: bool = false) -> void:
-		if not dry_run:
-			push_error("PARLEY_ERR: %s" % [message])
+	static func error_msg(message: String) -> String:
+		return "PARLEY_ERR: %s" % [message]
 
 
 class resource:
 	static func get_uid(resource: Resource) -> String:
 		if not resource or not resource.resource_path:
-			ParleyUtils.log.warn("Unable to get UID for Resource (resource: %s): resource_path is not defined. Returning empty string." % [resource])
+			push_warning(ParleyUtils.log.warn_msg("Unable to get UID for Resource (resource: %s): resource_path is not defined. Returning empty string." % [resource]))
 			return ""
 		var id: int = ResourceLoader.get_resource_uid(resource.resource_path)
 		if id == -1:
-			ParleyUtils.log.warn("Unable to get UID for Resource (resource: %s): no such ID exists. Returning empty string." % [resource])
+			push_warning(ParleyUtils.log.warn_msg("Unable to get UID for Resource (resource: %s): no such ID exists. Returning empty string." % [resource]))
 			return ""
 		return ResourceUID.id_to_text(id)
 
@@ -75,11 +72,11 @@ class file:
 		if not DirAccess.dir_exists_absolute(dir):
 			var dir_ok: int = DirAccess.make_dir_recursive_absolute(dir)
 			if dir_ok != OK:
-				ParleyUtils.log.error("Error creating directory at path %s for %s: %s" % [dir, resource, dir_ok])
+				push_error(ParleyUtils.log.error_msg("Error creating directory at path %s for %s: %s" % [dir, resource, dir_ok]))
 				return null
 		var ok: int = ResourceSaver.save(resource, path)
 		if ok != OK:
-			ParleyUtils.log.error("Error creating resource %s at path %s: %s" % [resource, path, ok])
+			push_error(ParleyUtils.log.error_msg("Error creating resource %s at path %s: %s" % [resource, path, ok]))
 			return null
 		# When a file is created (especially one that has a new directory), the file system is not
 		# immediately updated. Therefore, we must wait for this to be updated before loading

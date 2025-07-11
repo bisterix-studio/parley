@@ -5,6 +5,14 @@ extends GutTest
 class Test_process_next:
 	extends GutTest
 
+
+	func map_to_dict(node: ParleyNodeAst) -> Dictionary:
+		var d: Dictionary = inst_to_dict(node)
+		var _path_result: bool = d.erase('@path')
+		var _subpath_result: bool = d.erase('@subpath')
+		return d
+
+
 	func _resolve_expected(params: Dictionary, dialogue_ast: ParleyDialogueSequenceAst) -> Array:
 		var expected: Array = []
 		if params.get('expected', null):
@@ -17,8 +25,24 @@ class Test_process_next:
 					expected.append(found.front())
 		return expected
 
+
+	var result: ParleyRunResult
+	var ctx: ParleyContext
 	var test_dialogue_ast: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
-	
+
+
+	func before_each() -> void:
+		test_dialogue_ast = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
+
+
+	func after_each() -> void:
+		if ctx:
+			ctx.free()
+		if result:
+			result.free()
+
+
+	# var test_dialogue_ast: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
 	var test_process_next_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:4"]},
 		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:7"]},
@@ -33,18 +57,20 @@ class Test_process_next:
 		{"ctx": {}, "current_id": "node:14", "expected_ids": ["node:15"]},
 		{"ctx": {}, "current_id": "node:15", "expected_ids": ["node:21"]},
 	]
-	
+
+
 	func test_process_next(params: Dictionary = use_parameters(test_process_next_cases)) -> void:
 		# Arrange
 		var current_node: ParleyNodeAst = test_dialogue_ast.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
 		var expected: Array = _resolve_expected(params, test_dialogue_ast)
-		var ctx: Dictionary = params.get('ctx', {})
+		var ctx_data: Dictionary = params.get('ctx', {})
+		ctx = ParleyContext.create(test_dialogue_ast, ctx_data)
 		
 		# Act
-		var result: Array[ParleyNodeAst] = test_dialogue_ast.process_next(ctx, current_node)
+		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_ast, current_node)
 
 		# Assert
-		assert_eq_deep(result.map(map_to_dict), expected.map(map_to_dict))
+		assert_eq_deep(result.node_asts.map(map_to_dict), expected.map(map_to_dict))
 
 
 	var test_dialogue_ast_sort_cases: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds')
@@ -58,14 +84,16 @@ class Test_process_next:
 		# Arrange
 		var current_node: ParleyNodeAst = test_dialogue_ast_sort_cases.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
 		var expected: Array = _resolve_expected(params, test_dialogue_ast_sort_cases)
-		var ctx: Dictionary = params.get('ctx', {})
+		var ctx_data: Dictionary = params.get('ctx', {})
+		ctx = ParleyContext.create(test_dialogue_ast_sort_cases, ctx_data)
 		
 		# Act
-		var result: Array[ParleyNodeAst] = test_dialogue_ast_sort_cases.process_next(ctx, current_node)
+		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_ast_sort_cases, current_node)
 
 		# Assert
-		assert_eq_deep(result.map(func(i: ParleyDialogueOptionNodeAst) -> String: return i.text), ['Top', 'Middle', 'Bottom'])
-		assert_eq_deep(result.map(map_to_dict), expected.map(map_to_dict))
+		assert_eq_deep(result.node_asts.map(func(i: ParleyDialogueOptionNodeAst) -> String: return i.text), ['Top', 'Middle', 'Bottom'])
+		assert_eq_deep(result.node_asts.map(map_to_dict), expected.map(map_to_dict))
+
 
 	var test_dialogue_ast_with_match_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_match_input.ds')
 	
@@ -93,19 +121,15 @@ class Test_process_next:
 		# Arrange
 		var current_node: ParleyNodeAst = test_dialogue_ast_with_match_node.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id']).front()
 		var expected: Array = _resolve_expected(params, test_dialogue_ast_with_match_node)
-		var ctx: Dictionary = params.get('ctx', {})
+		var ctx_data: Dictionary = params.get('ctx', {})
+		ctx = ParleyContext.create(test_dialogue_ast_with_match_node, ctx_data)
 		
 		# Act
-		var result: Array[ParleyNodeAst] = test_dialogue_ast_with_match_node.process_next(ctx, current_node)
+		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_ast_with_match_node, current_node)
 
 		# Assert
-		assert_eq_deep(result.map(map_to_dict), expected.map(map_to_dict))
+		assert_eq_deep(result.node_asts.map(map_to_dict), expected.map(map_to_dict))
 
-	func map_to_dict(node: ParleyNodeAst) -> Dictionary:
-		var d: Dictionary = inst_to_dict(node)
-		var _path_result: bool = d.erase('@path')
-		var _subpath_result: bool = d.erase('@subpath')
-		return d
 
 class Test_add_edge:
 	extends GutTest
