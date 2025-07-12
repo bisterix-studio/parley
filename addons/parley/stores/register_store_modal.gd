@@ -53,7 +53,7 @@ func _ready() -> void:
 			default_current_dir = "res://actions"
 			default_current_file = "new_action_store.tres"
 		_:
-			ParleyUtils.log.warn("Unknown store type: %s" % [type])
+			push_warning(ParleyUtils.log.warn_msg("Unknown store type: %s" % [type]))
 	clear()
 
 
@@ -71,7 +71,7 @@ func clear() -> void:
 
 
 #region SETTERS
-# TODO: enure uniqueness
+# TODO: ensure uniqueness
 func _set_id_valid(_id_valid: bool) -> void:
 	id_valid = _id_valid
 	_render_status()
@@ -166,7 +166,7 @@ func _on_register_button_pressed() -> void:
 		if resource.resource_path:
 			var ok: int = ResourceSaver.save(resource)
 			if ok != OK:
-				ParleyUtils.log.error("Error saving %s: %s" % [store_name, ok])
+				push_error(ParleyUtils.log.error_msg("Error saving %s: %s" % [store_name, ok]))
 				return
 			store = load(resource.resource_path)
 		else:
@@ -175,11 +175,11 @@ func _on_register_button_pressed() -> void:
 				path_edit.text,
 				get_tree().create_timer(30).timeout)
 			if not created_store:
-				ParleyUtils.log.warn("Unable to create Store, please check the errors.")
+				push_warning(ParleyUtils.log.warn_msg("Unable to create Store, please check the errors."))
 				return
 			store = created_store
 		store_registered.emit(store)
 		hide()
 	else:
-		ParleyUtils.log.warn("Resource not ready to register, please check the errors.")
+		push_warning(ParleyUtils.log.warn_msg("Resource not ready to register, please check the errors."))
 #endregion

@@ -48,7 +48,7 @@ func _get_character_by_id(character_id: String) -> ParleyCharacter:
 	var filtered_characters: Array = characters.filter(func(character: ParleyCharacter) -> bool: return character.id == character_id)
 	if filtered_characters.size() == 0:
 		if character_id != "":
-			ParleyUtils.log.warn("Character not found in store (id:%s, store:%s), returning an empty Character" % [character_id, self])
+			push_warning(ParleyUtils.log.warn_msg("Character not found in store (id:%s, store:%s), returning an empty Character" % [character_id, self]))
 		return ParleyCharacter.new()
 	return filtered_characters.front()
 
@@ -63,7 +63,7 @@ func get_character_index_by_ref(character_ref: String) -> int:
 	var parts: PackedStringArray = character_ref.split('::')
 	if parts.size() != 2 or not ResourceLoader.exists(parts[0]):
 		if character_ref != "":
-			ParleyUtils.log.warn("Unable to find Character index, defaulting to -1 (ref:%s)" % character_ref)
+			push_warning(ParleyUtils.log.warn_msg("Unable to find Character index, defaulting to -1 (ref:%s)" % character_ref))
 		return -1
 	var idx: int = 0
 	for character: ParleyCharacter in characters:
@@ -77,7 +77,7 @@ func get_character_by_ref(character_ref: String) -> ParleyCharacter:
 	var parts: PackedStringArray = character_ref.split('::')
 	if parts.size() == 0 or not ResourceLoader.exists(parts[0]):
 		if character_ref != "":
-			ParleyUtils.log.warn("Unable to find Character, defaulting to Unknown (ref:%s)" % character_ref)
+			push_warning(ParleyUtils.log.warn_msg("Unable to find Character, defaulting to Unknown (ref:%s)" % character_ref))
 		return ParleyCharacter.new("", "Unknown")
 	if parts.size() > 1:
 		return _get_character_by_id(parts[1])
@@ -90,7 +90,7 @@ func get_character_by_ref(character_ref: String) -> ParleyCharacter:
 static func resolve_character_ref(character_ref: String) -> ParleyCharacter:
 	var parts: PackedStringArray = character_ref.split('::')
 	if parts.size() == 0 or not ResourceLoader.exists(parts[0]):
-		ParleyUtils.log.warn("Unable to find Character, defaulting to Unknown (ref:%s)" % character_ref)
+		push_warning(ParleyUtils.log.warn_msg("Unable to find Character, defaulting to Unknown (ref:%s)" % character_ref))
 		return ParleyCharacter.new("", "Unknown")
 	var resource: Variant = load(parts[0])
 	if resource is ParleyCharacterStore and parts.size() > 1:

@@ -27,7 +27,7 @@ func render() -> void:
 
 func _on_export_button_pressed() -> void:
 	if not dialogue_ast:
-		ParleyUtils.log.error("No Dialogue AST associated with export.")
+		push_error(ParleyUtils.log.error_msg("No Dialogue AST associated with export."))
 		return
 	var csv_lines: Array[PackedStringArray] = dialogue_ast.to_csv_lines()
 	var dir: DirAccess = DirAccess.open(base_path)
@@ -41,10 +41,10 @@ func _on_export_button_pressed() -> void:
 				var _result: bool = file.store_csv_line(line)
 			file.close()
 		else:
-			ParleyUtils.log.error("An error occurred while exporting Dialogue to CSV at path: %s." % [export_path])
+			push_error(ParleyUtils.log.error_msg("An error occurred while exporting Dialogue to CSV at path: %s." % [export_path]))
 			
 	else:
-		ParleyUtils.log.error("An error occurred when trying to access the base path: %s." % [base_path])
+		push_error(ParleyUtils.log.error_msg("An error occurred when trying to access the base path: %s." % [base_path]))
 	hide()
 
 

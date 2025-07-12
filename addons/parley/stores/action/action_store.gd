@@ -59,7 +59,7 @@ func get_action_by_ref(ref: String) -> ParleyAction:
 		return action.ref and ParleyUtils.resource.get_uid(action.ref) == ref)
 	if filtered_actions.size() == 0:
 		if ref != "":
-			ParleyUtils.log.warn("Action with ref not found in store (store:%s, ref:%s), returning an empty Action" % [id, ref])
+			push_warning(ParleyUtils.log.warn_msg("Action with ref not found in store (store:%s, ref:%s), returning an empty Action" % [id, ref]))
 		return ParleyAction.new()
 	return filtered_actions.front()
 #endregion

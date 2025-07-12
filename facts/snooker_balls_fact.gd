@@ -1,6 +1,6 @@
 # Copyright 2024-2025 the Bisterix Studio authors. All rights reserved. MIT license.
 
-extends FactInterface
+extends ParleyFactInterface
 
 enum Ball {
 	RED = 1,
@@ -9,8 +9,8 @@ enum Ball {
 	BLUE = 5,
 }
 
-func execute(ctx: Dictionary, _values: Array) -> int:
-	return ctx.get('ball', 0)
+func evaluate(ctx: ParleyContext, _values: Array) -> int:
+	return ctx.p_data.get('ball', 0)
 
 func available_values() -> Array[Ball]:
 	return [

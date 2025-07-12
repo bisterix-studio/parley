@@ -229,6 +229,6 @@ func _register_fact_store(store: ParleyStore, new: bool) -> void:
 func _save() -> void:
 	var result: int = ResourceSaver.save(fact_store)
 	if result != OK:
-		ParleyUtils.log.error("Error saving fact store [ID: %s]. Code: %d" % [fact_store.id, result])
+		push_error(ParleyUtils.log.error_msg("Error saving fact store [ID: %s]. Code: %d" % [fact_store.id, result]))
 		return
 #endregion

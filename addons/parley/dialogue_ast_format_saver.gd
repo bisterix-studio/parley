@@ -19,14 +19,14 @@ func _save(resource: Resource, path: String, _flags: int) -> Error:
 	if not resource:
 		return ERR_INVALID_PARAMETER
 	if not _recognize(resource):
-		ParleyUtils.log.error("Unable to save resource, not a ParleyDialogueSequenceAst instance.")
+		push_error(ParleyUtils.log.error_msg("Unable to save resource, not a ParleyDialogueSequenceAst instance."))
 		return ERR_FILE_UNRECOGNIZED
 	var dialogue_ast: ParleyDialogueSequenceAst = resource
 	var raw_file: Variant = FileAccess.open(path, FileAccess.WRITE)
 	if not raw_file:
 		var err: int = FileAccess.get_open_error()
 		if err != OK:
-			ParleyUtils.log.error("Cannot save GDScript file %s." % path)
+			push_error(ParleyUtils.log.error_msg("Cannot save GDScript file %s." % path))
 			return err as Error
 		return ERR_CANT_CREATE
 	var file: FileAccess = raw_file

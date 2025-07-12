@@ -23,12 +23,10 @@ Editor.
 
 ### Option 2: Download and install
 
-<!-- TODO: correct the link -->
-
 1. Download the compressed zip file from the
    [Parley releases page on GitHub](https://github.com/bisterix-studio/parley/releases)
    or from the
-   [Godot Asset Library](https://godotengine.org/asset-library/asset/TODO).
+   [Godot Asset Library](https://godotengine.org/asset-library/asset/4132).
 2. Extract the compressed zip file and place the `parley` directory into your
    `addons` directory in your project.
 3. Complete the first-time installation by following the

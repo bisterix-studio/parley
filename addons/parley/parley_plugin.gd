@@ -22,8 +22,9 @@ var edges_editor: ParleyEdgesEditor
 
 
 enum Component {
-  MainPanel,
-  StoresEditor
+	MainPanel,
+	StoresEditor,
+	NodeEditor,
 }
 #endregion
 
@@ -49,6 +50,7 @@ func _enter_tree() -> void:
 		node_editor = ParleyNodeScene.instantiate()
 		ParleyUtils.signals.safe_connect(node_editor.node_changed, _on_node_editor_node_changed)
 		ParleyUtils.signals.safe_connect(node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
+		ParleyUtils.signals.safe_connect(node_editor.dialogue_sequence_ast_selected, _on_dialogue_sequence_ast_selected.bind(Component.NodeEditor))
 		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_UL, node_editor)
 
 		# Edges Editor Dock
@@ -123,7 +125,7 @@ func _on_store_changed(type: ParleyStore.Type, new_store: ParleyStore) -> void:
 		ParleyStore.Type.Character:
 			parley_manager.character_store = new_store
 		_:
-			ParleyUtils.log.error("Error handling store change (type:%s, store:%s): unhandled store type" % [type, new_store])
+			push_error(ParleyUtils.log.error_msg("Error handling store change (type:%s, store:%s): unhandled store type" % [type, new_store]))
 			return
 	_setup_data()
 	await main_panel_instance.refresh()
@@ -233,7 +235,7 @@ func _get_plugin_icon() -> Texture2D:
 
 
 func _enable_plugin() -> void:
-	add_autoload_singleton(ParleyConstants.PARLEY_RUNTIME_AUTOLOAD, "./parley_runtime.gd")
+	add_autoload_singleton(ParleyConstants.PARLEY_RUNTIME_AUTOLOAD, "parley_runtime.gd")
 
 
 func _disable_plugin() -> void:

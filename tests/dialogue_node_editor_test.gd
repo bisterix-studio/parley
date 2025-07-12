@@ -2,7 +2,7 @@
 
 extends GutTest
 
-# TODO: move  test file next to the scene
+# TODO: move test file next to the scene
 const DialogueNodeEditorScene: PackedScene = preload('res://addons/parley/components//dialogue/dialogue_node_editor.tscn')
 
 

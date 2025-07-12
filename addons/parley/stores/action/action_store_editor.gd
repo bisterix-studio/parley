@@ -229,6 +229,6 @@ func _register_action_store(store: ParleyStore, new: bool) -> void:
 func _save() -> void:
 	var result: int = ResourceSaver.save(action_store)
 	if result != OK:
-		ParleyUtils.log.error("Error saving action store [ID: %s]. Code: %d" % [action_store.id, result])
+		push_error(ParleyUtils.log.error_msg("Error saving action store [ID: %s]. Code: %d" % [action_store.id, result]))
 		return
 #endregion

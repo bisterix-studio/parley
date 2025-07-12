@@ -1,5 +1,5 @@
 {
-  "title": "All",
+  "title": "All features showcase",
   "nodes": [
     {
       "id": "node:1",
@@ -199,6 +199,12 @@
       "position": "(960.0, 1480.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "Coffee please."
+    },
+    {
+      "id": "node:28",
+      "type": "JUMP",
+      "position": "(5940.0, 360.0)",
+      "dialogue_sequence_ast_ref": "uid://cfaambg2fkgnh"
     }
   ],
   "edges": [
@@ -338,15 +344,6 @@
       "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
     },
     {
-      "id": "edge:16",
-      "from_node": "node:12",
-      "from_slot": 0,
-      "to_node": "node:21",
-      "to_slot": 0,
-      "should_override_colour": false,
-      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
-    },
-    {
       "id": "edge:17",
       "from_node": "node:15",
       "from_slot": 0,
@@ -450,6 +447,15 @@
       "from_node": "node:23",
       "from_slot": 3,
       "to_node": "node:27",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:29",
+      "from_node": "node:12",
+      "from_slot": 0,
+      "to_node": "node:28",
       "to_slot": 0,
       "should_override_colour": false,
       "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"

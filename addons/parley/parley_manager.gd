@@ -38,11 +38,11 @@ func register_action_store(store: ParleyActionStore) -> void:
 	var path: String = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATH)
 	var uid: String = ParleyUtils.resource.get_uid(store)
 	if not uid:
-		ParleyUtils.log.error("Unable to get UID for Action Store")
+		push_error(ParleyUtils.log.error_msg("Unable to get UID for Action Store"))
 		return
 	if path != uid:
 		ParleySettings.set_setting(ParleyConstants.ACTION_STORE_PATH, uid, true)
-		ParleyUtils.log.info("Registered new Action Store: %s" % [store])
+		print_rich(ParleyUtils.log.info_msg("Registered new Action Store: %s" % [store]))
 	action_store = store
 
 
@@ -50,11 +50,11 @@ func register_fact_store(store: ParleyFactStore) -> void:
 	var path: String = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)
 	var uid: String = ParleyUtils.resource.get_uid(store)
 	if not uid:
-		ParleyUtils.log.error("Unable to get UID for Fact Store")
+		push_error(ParleyUtils.log.error_msg("Unable to get UID for Fact Store"))
 		return
 	if path != uid:
 		ParleySettings.set_setting(ParleyConstants.FACT_STORE_PATH, uid, true)
-		ParleyUtils.log.info("Registered new Fact Store: %s" % [store])
+		print_rich(ParleyUtils.log.info_msg("Registered new Fact Store: %s" % [store]))
 	fact_store = store
 
 
@@ -62,11 +62,11 @@ func register_character_store(store: ParleyCharacterStore) -> void:
 	var path: String = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATH)
 	var uid: String = ParleyUtils.resource.get_uid(store)
 	if not uid:
-		ParleyUtils.log.error("Unable to get UID for Character Store")
+		push_error(ParleyUtils.log.error_msg("Unable to get UID for Character Store"))
 		return
 	if path != uid:
 		ParleySettings.set_setting(ParleyConstants.CHARACTER_STORE_PATH, uid, true)
-		ParleyUtils.log.info("Registered new Character Store: %s" % [store])
+		print_rich(ParleyUtils.log.info_msg("Registered new Character Store: %s" % [store]))
 	character_store = store
 #endregion
 
@@ -90,7 +90,7 @@ func _get_action_store() -> ParleyActionStore:
 	var path: String = ParleySettings.get_setting(ParleyConstants.ACTION_STORE_PATH)
 	if not ResourceLoader.exists(path):
 		if not action_store:
-			ParleyUtils.log.warn("Parley Action Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Action Store, data within this Action Store will be lost upon reload." % path)
+			push_warning(ParleyUtils.log.warn_msg("Parley Action Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Action Store, data within this Action Store will be lost upon reload." % path))
 			action_store = ParleyActionStore.new()
 		return action_store
 	if not action_store:
@@ -105,7 +105,7 @@ func _get_character_store() -> ParleyCharacterStore:
 	var path: String = ParleySettings.get_setting(ParleyConstants.CHARACTER_STORE_PATH)
 	if not ResourceLoader.exists(path):
 		if not character_store:
-			ParleyUtils.log.warn("Parley Character Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Character Store, data within this Character Store will be lost upon reload." % path)
+			push_warning(ParleyUtils.log.warn_msg("Parley Character Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Character Store, data within this Character Store will be lost upon reload." % path))
 			character_store = ParleyCharacterStore.new()
 		return character_store
 	if not character_store:
@@ -120,7 +120,7 @@ func _get_fact_store() -> ParleyFactStore:
 	var path: String = ParleySettings.get_setting(ParleyConstants.FACT_STORE_PATH)
 	if not ResourceLoader.exists(path):
 		if not fact_store:
-			ParleyUtils.log.warn("Parley Fact Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Fact Store, data within this Fact Store will be lost upon reload." % path)
+			push_warning(ParleyUtils.log.warn_msg("Parley Fact Store is not registered (path: %s), please register via the ParleyStores Dock. Returning in-memory Fact Store, data within this Fact Store will be lost upon reload." % path))
 			fact_store = ParleyFactStore.new()
 		return fact_store
 	if not fact_store:

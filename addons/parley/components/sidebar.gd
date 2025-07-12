@@ -3,30 +3,42 @@
 @tool
 class_name ParleySidebar extends VBoxContainer
 
-var current_dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(): set = _update_current_dialogue_ast
-var filtered_nodes: Array[ParleyNodeAst] = []
 
-var dialogue_asts: Array[ParleyDialogueSequenceAst] = []: set = _update_dialogue_asts
+#region DEFS
+var current_dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(): set = _set_current_dialogue_ast
+var filtered_nodes: Array[ParleyNodeAst] = []
+var dialogue_asts: Array[ParleyDialogueSequenceAst] = []: set = _set_dialogue_asts
 var filtered_dialogue_asts: Array[ParleyDialogueSequenceAst] = []
+var node_filter: String = "": set = _set_node_filter
+var dialogue_ast_filter: String = "": set = _set_dialogue_ast_filter
+
 
 @onready var node_list: ItemList = %NodesItemList
 @onready var dialogue_sequences_list: ItemList = %DialogueSequencesList
+@onready var current_dialogue_sequence_label: LineEdit = %CurrentDialogueSequence
 
-var node_filter: String = "": set = _update_node_filter
-var dialogue_ast_filter: String = "": set = _update_dialogue_ast_filter
 
 signal dialogue_ast_selected(dialogue_ast: ParleyDialogueSequenceAst)
+signal edit_dialogue_ast_pressed(dialogue_ast: ParleyDialogueSequenceAst)
 signal node_selected(node: ParleyNodeAst)
+#endregion
 
+
+#region LIFECYCLE
 func _ready() -> void:
 	dialogue_asts = []
-	_update_current_dialogue_ast(current_dialogue_ast)
+	_set_current_dialogue_ast(current_dialogue_ast)
+	current_dialogue_sequence_label.tooltip_text = "Edit the Dialogue Sequence"
+#endregion
 
-func _update_node_filter(new_node_filter: String) -> void:
+
+#region SETTERS
+func _set_node_filter(new_node_filter: String) -> void:
 	node_filter = new_node_filter
-	_update_current_dialogue_ast(current_dialogue_ast)
+	_set_current_dialogue_ast(current_dialogue_ast)
 
-func _update_current_dialogue_ast(new_current_dialogue_ast: ParleyDialogueSequenceAst) -> void:
+
+func _set_current_dialogue_ast(new_current_dialogue_ast: ParleyDialogueSequenceAst) -> void:
 	current_dialogue_ast = new_current_dialogue_ast
 	if not node_list:
 		return
@@ -37,24 +49,18 @@ func _update_current_dialogue_ast(new_current_dialogue_ast: ParleyDialogueSequen
 		if not node_filter or raw_node_string.containsn(node_filter):
 			var index: int = node_list.add_item("%s [ID: %s]" % [ParleyDialogueSequenceAst.get_type_name(node.type), node.id])
 			if index == -1:
-				ParleyUtils.log.error("Unable to add item to Sidebar Node list")
+				push_error(ParleyUtils.log.error_msg("Unable to add item to Sidebar Node list"))
 				return
 			filtered_nodes.append(node)
+	_render_current_dialogue_sequence()
 
-func _on_search_nodes_text_changed(new_text: String) -> void:
-	_update_node_filter(new_text)
 
-func _on_item_list_item_selected(index: int) -> void:
-	node_selected.emit(filtered_nodes[index])
-
-func _on_dialogue_sequences_list_item_selected(index: int) -> void:
-	dialogue_ast_selected.emit(filtered_dialogue_asts[index])
-
-func _update_dialogue_ast_filter(new_dialogue_ast_filter: String) -> void:
+func _set_dialogue_ast_filter(new_dialogue_ast_filter: String) -> void:
 	dialogue_ast_filter = new_dialogue_ast_filter
-	_update_dialogue_asts(dialogue_asts)
+	_set_dialogue_asts(dialogue_asts)
 
-func _update_dialogue_asts(updated_dialogue_asts: Array[ParleyDialogueSequenceAst]) -> void:
+
+func _set_dialogue_asts(updated_dialogue_asts: Array[ParleyDialogueSequenceAst]) -> void:
 	dialogue_asts = updated_dialogue_asts
 	if not dialogue_sequences_list:
 		return
@@ -62,14 +68,14 @@ func _update_dialogue_asts(updated_dialogue_asts: Array[ParleyDialogueSequenceAs
 	filtered_dialogue_asts = []
 	for dialogue_ast: ParleyDialogueSequenceAst in dialogue_asts:
 		if dialogue_ast.resource_path:
-			var parts: PackedStringArray = dialogue_ast.resource_path.split('/')
-			var filename: String = parts[parts.size() - 1]
+			var filename: String = dialogue_ast.resource_path.get_file()
 			if not dialogue_ast_filter or filename.containsn(dialogue_ast_filter):
 				var index: int = dialogue_sequences_list.add_item(filename)
 				if index == -1:
-					ParleyUtils.log.error("Unable to add item to Sidebar Dialogue Sequences list")
+					push_error(ParleyUtils.log.error_msg("Unable to add item to Sidebar Dialogue Sequences list"))
 					return
 				filtered_dialogue_asts.append(dialogue_ast)
+
 
 func add_dialogue_ast(dialogue_ast: ParleyDialogueSequenceAst) -> void:
 	# We don't want to add a Dialogue AST that already exists
@@ -78,4 +84,34 @@ func add_dialogue_ast(dialogue_ast: ParleyDialogueSequenceAst) -> void:
 		return
 	dialogue_asts.append(dialogue_ast)
 	current_dialogue_ast = dialogue_ast
-	_update_dialogue_asts(dialogue_asts)
+	_set_dialogue_asts(dialogue_asts)
+#endregion
+
+
+#region RENDERERS
+func _render_current_dialogue_sequence() -> void:
+	if current_dialogue_sequence_label:
+		if current_dialogue_ast and current_dialogue_ast.resource_path:
+			current_dialogue_sequence_label.text = current_dialogue_ast.resource_path.get_file()
+		else:
+			current_dialogue_sequence_label.text = "No Dialogue Sequence Selected"
+#endregion
+
+
+#region SIGNALS
+func _on_search_nodes_text_changed(new_text: String) -> void:
+	_set_node_filter(new_text)
+
+
+func _on_item_list_item_selected(index: int) -> void:
+	node_selected.emit(filtered_nodes[index])
+
+
+func _on_dialogue_sequences_list_item_selected(index: int) -> void:
+	dialogue_ast_selected.emit(filtered_dialogue_asts[index])
+
+
+func _on_manage_dialogue_sequence_button_pressed() -> void:
+	if current_dialogue_ast:
+		edit_dialogue_ast_pressed.emit(current_dialogue_ast)
+#endregion

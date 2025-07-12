@@ -1,15 +1,15 @@
 [gd_scene load_steps=3 format=3 uid="uid://1alef4tqlskn"]
 
-[ext_resource type="Script" uid="uid://k61ki1a2kh34" path="res://addons/parley/modals/new_dialogue_modal.gd" id="1_71u4d"]
-[ext_resource type="Texture2D" uid="uid://d4d8bblglcblx" path="res://addons/parley/assets/Folder.svg" id="2_02wlb"]
+[ext_resource type="Script" uid="uid://k61ki1a2kh34" path="res://addons/parley/modals/new_dialogue_sequence_modal.gd" id="1_r74fp"]
+[ext_resource type="Texture2D" uid="uid://d4d8bblglcblx" path="res://addons/parley/assets/Folder.svg" id="2_1rnpk"]
 
-[node name="NewDialogueModal" type="Window"]
+[node name="NewDialogueSequenceModal" type="Window"]
 auto_translate_mode = 1
 title = "New Dialogue"
 initial_position = 2
 size = Vector2i(800, 400)
 min_size = Vector2i(800, 400)
-script = ExtResource("1_71u4d")
+script = ExtResource("1_r74fp")
 
 [node name="NewDialogueMarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -38,13 +38,25 @@ text = "Path:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "res://dialogue_sequences/new_dialogue.ds"
 expand_to_text_length = true
 
 [node name="ChoosePathButton" type="Button" parent="NewDialogueMarginContainer/NewDialogueContainer/PathContainer"]
 layout_mode = 2
-icon = ExtResource("2_02wlb")
+icon = ExtResource("2_1rnpk")
 flat = true
+
+[node name="TitleContainer" type="HBoxContainer" parent="NewDialogueMarginContainer/NewDialogueContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="NewDialogueMarginContainer/NewDialogueContainer/TitleContainer"]
+layout_mode = 2
+text = "Title:"
+
+[node name="TitleEdit" type="LineEdit" parent="NewDialogueMarginContainer/NewDialogueContainer/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+expand_to_text_length = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="NewDialogueMarginContainer/NewDialogueContainer"]
 layout_mode = 2

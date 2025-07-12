@@ -227,6 +227,6 @@ func _register_character_store(store: ParleyStore, new: bool) -> void:
 func _save() -> void:
 	var result: int = ResourceSaver.save(character_store)
 	if result != OK:
-		ParleyUtils.log.error("Error saving character store [ID: %s]. Code: %d" % [character_store.id, result])
+		push_error(ParleyUtils.log.error_msg("Error saving character store [ID: %s]. Code: %d" % [character_store.id, result]))
 		return
 #endregion
