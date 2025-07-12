@@ -22,8 +22,9 @@ var edges_editor: ParleyEdgesEditor
 
 
 enum Component {
-  MainPanel,
-  StoresEditor
+	MainPanel,
+	StoresEditor,
+	NodeEditor,
 }
 #endregion
 
@@ -49,6 +50,7 @@ func _enter_tree() -> void:
 		node_editor = ParleyNodeScene.instantiate()
 		ParleyUtils.signals.safe_connect(node_editor.node_changed, _on_node_editor_node_changed)
 		ParleyUtils.signals.safe_connect(node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
+		ParleyUtils.signals.safe_connect(node_editor.dialogue_sequence_ast_selected, _on_dialogue_sequence_ast_selected.bind(Component.NodeEditor))
 		add_control_to_dock(DockSlot.DOCK_SLOT_RIGHT_UL, node_editor)
 
 		# Edges Editor Dock
@@ -233,7 +235,7 @@ func _get_plugin_icon() -> Texture2D:
 
 
 func _enable_plugin() -> void:
-	add_autoload_singleton(ParleyConstants.PARLEY_RUNTIME_AUTOLOAD, "./parley_runtime.gd")
+	add_autoload_singleton(ParleyConstants.PARLEY_RUNTIME_AUTOLOAD, "parley_runtime.gd")
 
 
 func _disable_plugin() -> void:

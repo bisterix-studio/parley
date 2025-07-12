@@ -5,7 +5,7 @@ class_name ParleyDialogueSequenceAst extends Resource
 
 
 ## The title of the Dialogue Sequence AST
-@export var title: String
+@export var title: String : set = _set_title
 
 
 ### The edges of the Dialogue Sequence AST
@@ -47,6 +47,13 @@ func _init(_title: String = "", _nodes: Array = [], _edges: Array = []) -> void:
 	for edge: Dictionary in _edges:
 		add_ast_edge(edge)
 	is_ready = true
+
+
+#region SETTERS
+func _set_title(new_title: String) -> void:
+	title = new_title
+	emit_changed()
+#endregion
 
 
 #region BUILDING DIALOGUE
@@ -375,7 +382,6 @@ func next(ctx: ParleyContext, current_node: ParleyNodeAst = null, dry_run: bool 
 			Type.JUMP:
 				var jump_node_ast: ParleyJumpNodeAst = next_node
 				if not ResourceLoader.exists(jump_node_ast.dialogue_sequence_ast_ref):
-					# TODO: Add log to ctx
 					push_error(ParleyUtils.log.error_msg("Unable to jump to Dialogue Sequence with ref %s: does not exist. Stopping the Dialogue Sequence processing."))
 					return _process_end(ctx, dry_run)
 				next_dialogue_sequence_ast = load(jump_node_ast.dialogue_sequence_ast_ref)
@@ -420,7 +426,6 @@ func next(ctx: ParleyContext, current_node: ParleyNodeAst = null, dry_run: bool 
 	return run_result
 
 
-# TODO: make this async/await
 func _run_action(ctx: ParleyContext, node_ast: ParleyNodeAst) -> void:
 	if node_ast is not ParleyActionNodeAst:
 		push_error(ParleyUtils.log.error_msg("Action Node to execute is not an Action Node (node:%s)" % node_ast))
@@ -448,7 +453,6 @@ func _run_action(ctx: ParleyContext, node_ast: ParleyNodeAst) -> void:
 		push_error(ParleyUtils.log.error_msg("Unable to execute Action (code:%i)" % result))
 
 
-# TODO: make context a class that can be extended
 ## Indicator for whether the node is at the end of the current Dialogue Sequence
 func is_at_end(ctx: ParleyContext, current_node: ParleyNodeAst) -> bool:
 	# Perform a dry run to infer whether we are at the final node

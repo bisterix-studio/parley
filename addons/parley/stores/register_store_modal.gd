@@ -71,7 +71,7 @@ func clear() -> void:
 
 
 #region SETTERS
-# TODO: enure uniqueness
+# TODO: ensure uniqueness
 func _set_id_valid(_id_valid: bool) -> void:
 	id_valid = _id_valid
 	_render_status()

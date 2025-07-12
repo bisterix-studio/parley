@@ -1,0 +1,87 @@
+[gd_scene load_steps=2 format=3 uid="uid://brdwtctohmwso"]
+
+[ext_resource type="Script" uid="uid://c08skt634b7fa" path="res://addons/parley/modals/edit_dialogue_sequence_modal.gd" id="1_oeibl"]
+
+[node name="EditDialogueSequenceModal" type="Window"]
+auto_translate_mode = 1
+title = "New Dialogue"
+initial_position = 2
+size = Vector2i(800, 400)
+min_size = Vector2i(800, 400)
+script = ExtResource("1_oeibl")
+
+[node name="EditDialogueMarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="EditDialogueContainer" type="VBoxContainer" parent="EditDialogueMarginContainer"]
+layout_mode = 2
+
+[node name="PathContainer" type="HBoxContainer" parent="EditDialogueMarginContainer/EditDialogueContainer"]
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="EditDialogueMarginContainer/EditDialogueContainer/PathContainer"]
+layout_mode = 2
+text = "Path:"
+
+[node name="PathEdit" type="LineEdit" parent="EditDialogueMarginContainer/EditDialogueContainer/PathContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+editable = false
+expand_to_text_length = true
+
+[node name="TitleContainer" type="HBoxContainer" parent="EditDialogueMarginContainer/EditDialogueContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="EditDialogueMarginContainer/EditDialogueContainer/TitleContainer"]
+layout_mode = 2
+text = "Title:"
+
+[node name="TitleEdit" type="LineEdit" parent="EditDialogueMarginContainer/EditDialogueContainer/TitleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+expand_to_text_length = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="EditDialogueMarginContainer/EditDialogueContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[color=#19e34f]
+[ul]Script/path name is valid[/ul][/color][color=#19e34f]
+[ul]Will edit an existing Dialogue Sequence[/ul][/color]
+"
+fit_content = true
+
+[node name="ActionButonContainer" type="HBoxContainer" parent="EditDialogueMarginContainer/EditDialogueContainer"]
+layout_mode = 2
+
+[node name="CancelContainer" type="MarginContainer" parent="EditDialogueMarginContainer/EditDialogueContainer/ActionButonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CancelButton" type="Button" parent="EditDialogueMarginContainer/EditDialogueContainer/ActionButonContainer/CancelContainer"]
+layout_mode = 2
+text = "Cancel"
+
+[node name="ConfirmContainer" type="MarginContainer" parent="EditDialogueMarginContainer/EditDialogueContainer/ActionButonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ConfirmButton" type="Button" parent="EditDialogueMarginContainer/EditDialogueContainer/ActionButonContainer/ConfirmContainer"]
+layout_mode = 2
+text = "Confirm"
+
+[connection signal="text_changed" from="EditDialogueMarginContainer/EditDialogueContainer/TitleContainer/TitleEdit" to="." method="_on_title_edit_text_changed"]
+[connection signal="pressed" from="EditDialogueMarginContainer/EditDialogueContainer/ActionButonContainer/CancelContainer/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="EditDialogueMarginContainer/EditDialogueContainer/ActionButonContainer/ConfirmContainer/ConfirmButton" to="." method="_on_confirm_button_pressed"]

@@ -5,6 +5,9 @@ class_name ParleyJumpNodeEditor extends ParleyBaseNodeEditor
 
 
 #region DEFS
+const ParleyConstants = preload('../../constants.gd')
+
+
 @export var dialogue_sequence_ast_ref: String = "": set = _set_dialogue_sequence_ast_ref
 
 
@@ -12,6 +15,7 @@ class_name ParleyJumpNodeEditor extends ParleyBaseNodeEditor
 
 
 signal jump_node_changed(id: String, dialogue_sequence_ast_ref: String)
+signal dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: ParleyDialogueSequenceAst)
 #endregion
 
 
@@ -46,4 +50,14 @@ func _on_dialogue_sequence_ast_editor_resource_changed(resource: Resource) -> vo
 
 func _emit_jump_node_changed() -> void:
 	jump_node_changed.emit(id, dialogue_sequence_ast_ref)
+
+
+func _on_edit_dialogue_sequence_button_pressed() -> void:
+	if not dialogue_sequence_ast_ref or not ResourceLoader.exists(dialogue_sequence_ast_ref):
+		return
+	var dialogue_sequence_ast: ParleyDialogueSequenceAst = load(dialogue_sequence_ast_ref)
+	if dialogue_sequence_ast is ParleyDialogueSequenceAst:
+		if Engine.is_editor_hint():
+			EditorInterface.set_main_screen_editor("Parley")
+		dialogue_sequence_ast_selected.emit(dialogue_sequence_ast_editor.resource)
 #endregion

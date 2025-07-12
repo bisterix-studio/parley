@@ -1,7 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://bl5g47dhb7hmk"]
+[gd_scene load_steps=5 format=3 uid="uid://bl5g47dhb7hmk"]
 
 [ext_resource type="Script" uid="uid://dbqp7dc5s5e3n" path="res://addons/parley/components/sidebar.gd" id="1_d0u7e"]
 [ext_resource type="Texture2D" uid="uid://cr4knibdm85n1" path="res://addons/parley/assets/Search.svg" id="2_sqyhy"]
+[ext_resource type="Texture2D" uid="uid://c4qx01xbrjp7h" path="res://addons/parley/assets/Edit.svg" id="3_l7xuh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l7xuh"]
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+bg_color = Color(0.109804, 0.12549, 0.152941, 0.670588)
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [node name="Sidebar" type="VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
@@ -34,7 +49,7 @@ layout_mode = 2
 size_flags_vertical = 3
 allow_search = false
 
-[node name="NodeListContainer" type="MarginContainer" parent="VSplitContainer"]
+[node name="DialogueSequenceContainer" type="MarginContainer" parent="VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
@@ -42,22 +57,43 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="NodeList" type="VBoxContainer" parent="VSplitContainer/NodeListContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/DialogueSequenceContainer"]
+layout_mode = 2
+
+[node name="ManageDialogueSequenceContainer" type="HBoxContainer" parent="VSplitContainer/DialogueSequenceContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CurrentDialogueSequence" type="LineEdit" parent="VSplitContainer/DialogueSequenceContainer/VBoxContainer/ManageDialogueSequenceContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Edit the Dialogue Sequence"
+theme_override_styles/read_only = SubResource("StyleBoxFlat_l7xuh")
+text = "No Dialogue Sequence Selected"
+placeholder_text = "No Dialogue Sequence Selected"
+editable = false
+
+[node name="ManageDialogueSequenceButton" type="Button" parent="VSplitContainer/DialogueSequenceContainer/VBoxContainer/ManageDialogueSequenceContainer"]
+layout_mode = 2
+icon = ExtResource("3_l7xuh")
+
+[node name="NodeList" type="VBoxContainer" parent="VSplitContainer/DialogueSequenceContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SearchNodes" type="LineEdit" parent="VSplitContainer/NodeListContainer/NodeList"]
+[node name="SearchNodes" type="LineEdit" parent="VSplitContainer/DialogueSequenceContainer/VBoxContainer/NodeList"]
 layout_mode = 2
 placeholder_text = "Filter nodes..."
 clear_button_enabled = true
 right_icon = ExtResource("2_sqyhy")
 
-[node name="NodesItemList" type="ItemList" parent="VSplitContainer/NodeListContainer/NodeList"]
+[node name="NodesItemList" type="ItemList" parent="VSplitContainer/DialogueSequenceContainer/VBoxContainer/NodeList"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 allow_search = false
 
 [connection signal="item_selected" from="VSplitContainer/DialogueSequenceListContainer/DialogueSequenceList/DialogueSequencesList" to="." method="_on_dialogue_sequences_list_item_selected"]
-[connection signal="text_changed" from="VSplitContainer/NodeListContainer/NodeList/SearchNodes" to="." method="_on_search_nodes_text_changed"]
-[connection signal="item_selected" from="VSplitContainer/NodeListContainer/NodeList/NodesItemList" to="." method="_on_item_list_item_selected"]
+[connection signal="pressed" from="VSplitContainer/DialogueSequenceContainer/VBoxContainer/ManageDialogueSequenceContainer/ManageDialogueSequenceButton" to="." method="_on_manage_dialogue_sequence_button_pressed"]
+[connection signal="text_changed" from="VSplitContainer/DialogueSequenceContainer/VBoxContainer/NodeList/SearchNodes" to="." method="_on_search_nodes_text_changed"]
+[connection signal="item_selected" from="VSplitContainer/DialogueSequenceContainer/VBoxContainer/NodeList/NodesItemList" to="." method="_on_item_list_item_selected"]

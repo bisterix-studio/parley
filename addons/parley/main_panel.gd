@@ -38,7 +38,8 @@ var parley_manager: ParleyManager
 @onready var file_menu: MenuButton = %FileMenu
 @onready var insert_menu: MenuButton = %InsertMenu
 @onready var docs_button: Button = %DocsButton
-@onready var new_dialogue_modal: Window = %NewDialogueModal
+@onready var new_dialogue_sequence_modal: Window = %NewDialogueSequenceModal
+@onready var edit_dialogue_sequence_modal: ParleyEditDialogueSequenceModal = %EditDialogueSequenceModal
 @onready var export_to_csv_modal: ParleyExportToCsvModal = %ExportToCsvModal
 @onready var editor: HSplitContainer = %EditorView
 @onready var sidebar: ParleySidebar = %Sidebar
@@ -243,7 +244,7 @@ func _setup_insert_menu() -> void:
 func _on_file_id_pressed(id: int) -> void:
 	match id:
 		0:
-			new_dialogue_modal.show()
+			new_dialogue_sequence_modal.show()
 		1:
 			open_file_dialogue.show()
 			# TODO: get this from config (note, see the Node inspector as well)
@@ -279,7 +280,7 @@ func _on_open_dialog_file_selected(path: String) -> void:
 		parley_manager.set_current_dialogue_sequence(path)
 
 
-func _on_new_dialogue_modal_dialogue_ast_created(new_dialogue_ast: ParleyDialogueSequenceAst) -> void:
+func _on_new_dialogue_sequence_modal_dialogue_ast_created(new_dialogue_ast: ParleyDialogueSequenceAst) -> void:
 	dialogue_ast = new_dialogue_ast
 	# TODO: emit as a signal and handle in the plugin
 	if parley_manager:
@@ -609,6 +610,21 @@ func _on_sidebar_node_selected(node: ParleyNodeAst) -> void:
 func _on_sidebar_dialogue_ast_selected(selected_dialogue_ast: ParleyDialogueSequenceAst) -> void:
 	if ParleyUtils.resource.get_uid(dialogue_ast) != ParleyUtils.resource.get_uid(selected_dialogue_ast):
 		dialogue_ast = selected_dialogue_ast
+
+
+func _on_sidebar_edit_dialogue_ast_pressed(selected_dialogue_ast_for_edit: ParleyDialogueSequenceAst) -> void:
+	if ParleyUtils.resource.get_uid(dialogue_ast) != ParleyUtils.resource.get_uid(selected_dialogue_ast_for_edit):
+		dialogue_ast = selected_dialogue_ast_for_edit
+	edit_dialogue_sequence_modal.dialogue_sequence_ast = dialogue_ast
+	edit_dialogue_sequence_modal.show()
+
+
+func _on_edit_dialogue_sequence_modal_dialogue_ast_edited(_dialogue_ast: ParleyDialogueSequenceAst) -> void:
+	_save_dialogue()
+	# This is needed to reset the Graph and ensure
+	# that no weirdness is going to happen. For example
+	# move the group nodes after a save when refresh isn't present
+	await refresh()
 
 
 func _on_bottom_panel_sidebar_toggled(is_sidebar_open: bool) -> void:

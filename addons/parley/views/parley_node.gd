@@ -28,6 +28,7 @@ var node_ast: ParleyNodeAst: set = _set_node_ast
 
 signal node_changed(node_ast: ParleyNodeAst)
 signal delete_node_button_pressed(id: String)
+signal dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: ParleyDialogueSequenceAst)
 #endregion
 
 
@@ -191,6 +192,7 @@ func _render_jump_node_editor() -> void:
 	jump_node_editor.dialogue_sequence_ast_ref = jump_node_ast.dialogue_sequence_ast_ref
 	ParleyUtils.signals.safe_connect(jump_node_editor.jump_node_changed, _on_jump_node_editor_jump_node_changed)
 	ParleyUtils.signals.safe_connect(jump_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
+	ParleyUtils.signals.safe_connect(jump_node_editor.dialogue_sequence_ast_selected, _on_dialogue_sequence_ast_selected)
 	node_editor_container.add_child(jump_node_editor)
 
 
@@ -296,6 +298,10 @@ func _on_jump_node_editor_jump_node_changed(_id: String, dialogue_sequence_ast_r
 	var new_node_ast: ParleyJumpNodeAst = node_ast.duplicate(true)
 	new_node_ast.dialogue_sequence_ast_ref = dialogue_sequence_ast_ref
 	node_changed.emit(new_node_ast)
+
+
+func _on_dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
+	dialogue_sequence_ast_selected.emit(selected_dialogue_sequence_ast)
 
 
 func _on_action_node_editor_action_node_changed(_id: String, description: String, action_type: ParleyActionNodeAst.ActionType, action_script_ref: String, values: Array) -> void:
