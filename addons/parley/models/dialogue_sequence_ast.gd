@@ -450,7 +450,7 @@ func _run_action(ctx: ParleyContext, node_ast: ParleyNodeAst) -> void:
 	var result: int = await action.run(ctx, action_node_ast.values)
 	action.free()
 	if result != OK:
-		push_error(ParleyUtils.log.error_msg("Unable to run Action (code:%i)" % result))
+		push_error(ParleyUtils.log.error_msg("Unable to run Action (code:%d)" % result))
 
 
 ## Indicator for whether the node is at the end of the current Dialogue Sequence

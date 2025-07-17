@@ -37,6 +37,9 @@
     "*.ds": "json"
   },
   "editor.renderWhitespace": "all",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": false,
+  "editor.detectIndentation": false,
   "deno.enable": true,
   "deno.lint": true,
   "editor.defaultFormatter": "denoland.vscode-deno",
