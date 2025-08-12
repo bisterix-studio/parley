@@ -1,0 +1,100 @@
+# LANGUAGE translation for Parley for the following files:
+# res://dialogue_sequences/all.ds
+#
+# Automatically generated, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Parley\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:3::text"
+msgid "Look. I made a whatdyamacallit."
+msgstr "Regarde. J'ai fait un truc du genre."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:4::text"
+msgid "Wow. Great."
+msgstr "Waouh. Génial."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:7::text"
+msgid "I have a coffee."
+msgstr "Je prends un café."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:8::text"
+msgid "Give to Alice."
+msgstr "Donnez à Alice."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:13::text"
+msgid "Keep it."
+msgstr "Gardez-le."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:10::text"
+msgid "Here you go."
+msgstr "Voici."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:11::text"
+msgid "Cheers."
+msgstr "Acclamations."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:12::text"
+msgid "You're welcome."
+msgstr "Vous êtes les bienvenus."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:14::text"
+msgid "But it's mine."
+msgstr "Mais c'est à moi."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:15::text"
+msgid "Fair enough."
+msgstr "Assez juste."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:17::text"
+msgid "Mmm. Coffee. Now, what did you want me to look at?"
+msgstr "Mmm. Du café. Et maintenant, que voulais-tu que je regarde ?"
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:19::text"
+msgid "I NEED COFFEE!"
+msgstr "J'AI BESOIN DE CAFÉ !"
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:20::text"
+msgid "I'll get you coffee, Mama. But first, CATNIP."
+msgstr "Je vais te chercher du café, maman. Mais d'abord, de l'herbe à chat."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:24::text"
+msgid "Look, I need coffee."
+msgstr "Écoute, j'ai besoin de café."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:25::text"
+msgid "Look, I really need coffee."
+msgstr "Écoute, j'ai vraiment besoin de café."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:26::text"
+msgid "Look, I really really REALLY need coffee."
+msgstr "Écoute, j'ai vraiment, VRAIMENT, VRAIMENT besoin de café."
+
+#: dialogue_sequences/all.ds
+msgctxt "uid://d2883lul36r1d::node:27::text"
+msgid "Coffee please."
+msgstr "Du café s'il vous plaît."

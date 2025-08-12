@@ -41,6 +41,15 @@ static func get_colour() -> Color:
 
 
 #region UTILS
+func to_resolved(resolved_text: String) -> ParleyDialogueNodeAst:
+	return ParleyDialogueNodeAst.new(
+		id,
+		position,
+		character,
+		resolved_text
+	)
+
+
 func resolve_character() -> ParleyCharacter:
 	return ParleyCharacterStore.resolve_character_ref(character)
 #endregion

@@ -8,6 +8,7 @@ extends EditorPlugin
 const ParleyIcon: CompressedTexture2D = preload("./assets/ParleyIconBubble.svg")
 const ParleyConstants = preload("./constants.gd")
 const ParleyImportPlugin: GDScript = preload("./import_plugin.gd")
+const ParleyTranslationParserPlugin: GDScript = preload("./translation_parser.gd")
 const StoresEditorScene: PackedScene = preload("./stores/stores_editor.tscn")
 const ParleyNodeScene: PackedScene = preload("./views/parley_node.tscn")
 const ParleyEdges: PackedScene = preload("./views/parley_edges.tscn")
@@ -16,6 +17,7 @@ const MainPanelScene: PackedScene = preload("./main_panel.tscn")
 
 var main_panel_instance: ParleyMainPanel
 var import_plugin: EditorImportPlugin
+var translation_parser_plugin: EditorTranslationParserPlugin
 var stores_editor: ParleyStoresEditor
 var node_editor: ParleyNodeEditor
 var edges_editor: ParleyEdgesEditor
@@ -38,6 +40,10 @@ func _enter_tree() -> void:
 		# Import plugin setup
 		import_plugin = ParleyImportPlugin.new()
 		add_import_plugin(import_plugin)
+
+		# Translation plugin setup
+		translation_parser_plugin = ParleyTranslationParserPlugin.new()
+		add_translation_parser_plugin(translation_parser_plugin)
 		
 		# Stores Editor Dock
 		stores_editor = StoresEditorScene.instantiate()
@@ -90,6 +96,10 @@ func _exit_tree() -> void:
 		
 	if import_plugin:
 		remove_import_plugin(import_plugin)
+		import_plugin = null
+
+	if translation_parser_plugin:
+		remove_translation_parser_plugin(translation_parser_plugin)
 		import_plugin = null
 		
 	if node_editor:

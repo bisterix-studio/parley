@@ -357,11 +357,23 @@ func next(ctx: ParleyContext, current_node: ParleyNodeAst = null, dry_run: bool 
 			continue
 		var next_node: ParleyNodeAst = filtered_next_nodes.front()
 		var next_type: Type = next_node.type
+		# TODO: handle in settings or move to ctx
+		var should_translate: bool = true
 		match next_type:
 			Type.DIALOGUE:
-				next_nodes.append(next_node)
+				if should_translate:
+					var dialogue_node_ast: ParleyDialogueNodeAst = next_node
+					var resolved_text: String = resolve_value(ctx, dialogue_node_ast.text, dialogue_node_ast, 'text')
+					next_nodes.append(dialogue_node_ast.to_resolved(resolved_text))
+				else:
+					next_nodes.append(next_node)
 			Type.DIALOGUE_OPTION:
-				next_nodes.append(next_node)
+				if should_translate:
+					var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = next_node
+					var resolved_text: String = resolve_value(ctx, dialogue_option_node_ast.text, dialogue_option_node_ast, 'text')
+					next_nodes.append(dialogue_option_node_ast.to_resolved(resolved_text))
+				else:
+					next_nodes.append(next_node)
 			Type.ACTION:
 				if not dry_run:
 					await _run_action(ctx, next_node)
@@ -479,12 +491,12 @@ func _evaluate_condition_node(ctx: ParleyContext, condition_node: ParleyConditio
 		@warning_ignore("REDUNDANT_AWAIT")
 		var result: Variant = await fact.evaluate(ctx, [])
 		fact.free() # Previous this was call_deferred, although I'm not sure why
-		var evaluated_value: Variant = _evaluate_value(value)
+		var evaluated_value: Variant = resolve_value(ctx, value)
 		match operator:
 			ParleyConditionNodeAst.Operator.EQUAL:
 				results.append(typeof(result) == typeof(evaluated_value) and result == evaluated_value)
 			ParleyConditionNodeAst.Operator.NOT_EQUAL:
-				results.append(typeof(result) != typeof(evaluated_value) or result != _evaluate_value(value))
+				results.append(typeof(result) != typeof(evaluated_value) or result != resolve_value(ctx, value))
 			_:
 				if not dry_run:
 					print_rich(ParleyUtils.log.info_msg("Operator of type %s is not supported" % [operator]))
@@ -511,20 +523,43 @@ func _evaluate_match_node(ctx: ParleyContext, match_node: ParleyMatchNodeAst) ->
 	@warning_ignore("REDUNDANT_AWAIT")
 	var result: Variant = await fact.evaluate(ctx, [])
 	fact.free() # Previous this was call_deferred, although I'm not sure why
-	var evaluated_result: Variant = _evaluate_value(result)
+	var evaluated_result: Variant = resolve_value(ctx, result)
 	var cases: Array = match_node.cases
-	var case_index: int = cases.map(func(case: Variant) -> Variant: return _map_value(case)).find(evaluated_result)
+	var case_index: int = cases.map(func(case: Variant) -> Variant: return resolve_value(ctx, case)).find(evaluated_result)
 	if case_index == -1:
 		return cases.find(ParleyMatchNodeAst.fallback_key)
 	return case_index
 
 
-func _evaluate_value(value_expr: Variant) -> Variant:
-	# TODO: add evaluation here
-	return _map_value(value_expr)
+func resolve_value(ctx: ParleyContext, value_expr: Variant, node_to_translate: ParleyNodeAst = null, field_to_translate: String = &"") -> Variant:
+	var resolved_value: Variant = value_expr
+	if is_instance_of(value_expr, TYPE_STRING):
+		# Resolve expressions
+		var raw_expression: String = value_expr
+		var value: String = _evaluate_expression(ctx, raw_expression)
+		# Apply translations
+		if node_to_translate:
+			value = _translate_value(ctx, node_to_translate, field_to_translate, value)
+		resolved_value = value
+
+	return _coerce_value(resolved_value)
 
 
-func _map_value(value_expr: Variant) -> Variant:
+func _evaluate_expression(_ctx: ParleyContext, value_expr: String) -> String:
+	# TODO: to be handled in: https://github.com/bisterix-studio/parley/pull/26
+	return value_expr
+
+
+# TODO: add translation key to NodeAst
+func _translate_value(_ctx: ParleyContext, translate_node: ParleyNodeAst, translate_field: String, value: String) -> Variant:
+	var translate_ctx: String = &""
+	if ResourceLoader.exists(self.resource_path):
+		var uid: String = ParleyUtils.resource.get_uid(self)
+		translate_ctx = ParleyUtils.translation.get_msg_ctx(uid, translate_node, translate_field)
+	return str(tr(value, translate_ctx))
+
+
+func _coerce_value(value_expr: Variant) -> Variant:
 	if value_expr is String and value_expr == 'true':
 		return true
 	if value_expr is String and value_expr == 'false':

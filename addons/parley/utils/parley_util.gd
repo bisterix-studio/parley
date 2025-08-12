@@ -92,3 +92,8 @@ class file:
 	static func _emit_filesystem_changed(timeout: Signal) -> void:
 		EditorInterface.get_resource_filesystem().filesystem_changed.emit()
 		signals.safe_disconnect(timeout, _emit_filesystem_changed)
+
+
+class translation:
+	static func get_msg_ctx(uid: String, node: ParleyNodeAst, field: String) -> String:
+		return "%s::%s::%s" % [uid, node.id, field]

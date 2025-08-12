@@ -87,6 +87,7 @@ func get_character_by_ref(character_ref: String) -> ParleyCharacter:
 	return ParleyCharacter.new("", "Unknown")
 
 
+# TODO: add translation support here
 static func resolve_character_ref(character_ref: String) -> ParleyCharacter:
 	var parts: PackedStringArray = character_ref.split('::')
 	if parts.size() == 0 or not ResourceLoader.exists(parts[0]):
