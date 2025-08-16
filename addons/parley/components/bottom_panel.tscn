@@ -4,9 +4,12 @@
 [ext_resource type="Script" uid="uid://gu5an32ya6bh" path="res://addons/parley/components/bottom_panel.gd" id="1_v1no1"]
 
 [node name="BottomPanel" type="MarginContainer"]
+offset_right = 286.0
+offset_bottom = 73.0
 size_flags_horizontal = 3
 theme_override_constants/margin_top = 0
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 0
 script = ExtResource("1_v1no1")
 
 [node name="BottomPanelContainer" type="HBoxContainer" parent="."]
@@ -25,4 +28,13 @@ flat = true
 [node name="RightContainer" type="HBoxContainer" parent="BottomPanelContainer"]
 layout_mode = 2
 
+[node name="Version" type="LinkButton" parent="BottomPanelContainer/RightContainer"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.6)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+underline = 1
+
 [connection signal="pressed" from="BottomPanelContainer/LeftContainer/ToggleSidebarButton" to="." method="_on_toggle_sidebar_button_pressed"]
+[connection signal="pressed" from="BottomPanelContainer/RightContainer/Version" to="." method="_on_version_pressed"]

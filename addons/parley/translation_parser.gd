@@ -14,6 +14,7 @@ func _parse_file(path: String) -> Array[PackedStringArray]:
 		# TODO: handle this at the node level to be much more maintainable
 		var text: Variant = node.get("text")
 		if is_instance_of(text, TYPE_STRING) and text:
+			# TODO: add support for nodes to have a custom translation key
 			ret.append(PackedStringArray([text, ParleyUtils.translation.get_msg_ctx(uid, node, 'text')])) # id,ctx
 	return ret
 

@@ -44,7 +44,7 @@ var parley_manager: ParleyManager
 @onready var export_to_csv_modal: ParleyExportToCsvModal = %ExportToCsvModal
 @onready var editor: HSplitContainer = %EditorView
 @onready var sidebar: ParleySidebar = %Sidebar
-@onready var bottom_panel: MarginContainer = %BottomPanel
+@onready var bottom_panel: ParleyBottomPanel = %BottomPanel
 
 
 # TODO: remove this
@@ -186,18 +186,27 @@ func _on_dialogue_ast_changed(new_dialogue_ast: ParleyDialogueSequenceAst) -> vo
 
 #region RENDERERS
 func _render_toolbar() -> void:
-	# TODO: we might need to register this dynamically at a later date
-	# it seems that it only does this at the project level atm.
-	save_button.tooltip_text = &"Save the current Dialogue Sequence."
+	if save_button:
+		# TODO: we might need to register this dynamically at a later date
+		# it seems that it only does this at the project level atm.
+		save_button.tooltip_text = &"Save the current Dialogue Sequence."
 
-	arrange_nodes_button.tooltip_text = &"Arrange the current Dialogue Sequence nodes."
+	if arrange_nodes_button:
+		arrange_nodes_button.tooltip_text = &"Arrange the current Dialogue Sequence nodes."
 
-	refresh_button.tooltip_text = &"Refresh the current Dialogue Sequence."
+	if refresh_button:
+		refresh_button.tooltip_text = &"Refresh the current Dialogue Sequence."
 
-	docs_button.icon = get_theme_icon("Help", "EditorIcons")
-	docs_button.text = &"Docs"
-	docs_button.tooltip_text = &"Navigate to the Parley Documentation."
-	docs_button.flat = true
+	if docs_button:
+		docs_button.icon = get_theme_icon("Help", "EditorIcons")
+		docs_button.text = &"Docs"
+		docs_button.tooltip_text = &"Navigate to the Parley Documentation."
+		docs_button.flat = true
+
+
+func _render_bottom_panel() -> void:
+	if bottom_panel and parley_manager:
+		bottom_panel.version = parley_manager.get_plugin_version()
 #endregion
 
 
@@ -206,6 +215,7 @@ func _setup() -> void:
 	_setup_file_menu()
 	_setup_insert_menu()
 	_render_toolbar()
+	_render_bottom_panel()
 
 
 ## Set up the file menu

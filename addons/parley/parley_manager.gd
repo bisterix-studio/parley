@@ -146,7 +146,14 @@ func _get_fact_store() -> ParleyFactStore:
 
 # TODO: should this file be split into editor and non-editor files (e.g. ParleyManager, ParleyRuntime)
 #region EDITOR
-## Plugin use only
+## Get Parley plugin version
+func get_plugin_version() -> String:
+	var plugin: EditorPlugin = Engine.get_meta(ParleyConstants.PARLEY_PLUGIN_METADATA)
+	if not plugin:
+		return "Unknown"
+	return plugin.get_plugin_version()
+
+
 func set_current_dialogue_sequence(path: Variant) -> void:
 	if not Engine.is_editor_hint():
 		return
