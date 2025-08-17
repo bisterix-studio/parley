@@ -38,7 +38,7 @@ func _enter_tree() -> void:
 		var parley_manager: ParleyManager = ParleyManager.get_instance()
 
 		# Import plugin setup
-		import_plugin = ParleyImportPlugin.new()
+		import_plugin = ParleyImportPlugin.new(parley_manager)
 		add_import_plugin(import_plugin)
 
 		# Translation plugin setup

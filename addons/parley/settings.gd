@@ -14,6 +14,8 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",
 	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
+	# Internationalisation
+	ParleyConstants.TRANSLATION_MODE: TranslationMode.keys()[TranslationMode.PO],
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
 	# hardcode it for now but allow people to edit it in settings
@@ -21,29 +23,54 @@ static var DEFAULT_SETTINGS: Dictionary = {
 }
 
 
+enum TranslationMode {
+	PO,
+	# TODO: add CSV
+	# CSV,
+	# TODO: add None
+	# None,
+}
+
+
 static var TYPES: Dictionary = {
+	# Dialogue
 	ParleyConstants.DIALOGUE_BALLOON_PATH: {
 		"name": ParleyConstants.DIALOGUE_BALLOON_PATH,
+		"description": "Defines the path to the default Dialogue balloon that is used to render the dialogue when testing and running Dialogue Sequences.",
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_FILE,
 	},
+	# Stores
 	ParleyConstants.ACTION_STORE_PATH: {
 		"name": ParleyConstants.ACTION_STORE_PATH,
+		"description": "Defines the path to the Action Store resource that is used to store actions.",
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_FILE,
 	},
 	ParleyConstants.CHARACTER_STORE_PATH: {
 		"name": ParleyConstants.CHARACTER_STORE_PATH,
+		"description": "Defines the path to the Character Store resource that is used to store characters.",
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_FILE,
 	},
 	ParleyConstants.FACT_STORE_PATH: {
 		"name": ParleyConstants.FACT_STORE_PATH,
+		"description": "Defines the path to the Fact Store resource that is used to store facts.",
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_FILE,
 	},
+	# Internationalisation
+	ParleyConstants.TRANSLATION_MODE: {
+		"name": ParleyConstants.TRANSLATION_MODE,
+		"description": "Defines the translation mode to determine how to find and interpret translations.",
+		"type": TYPE_STRING,
+		"hint": PROPERTY_HINT_ENUM,
+		"hint_string": ",".join(TranslationMode.keys())
+	},
+	# Testing
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: {
 		"name": ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH,
+		"description": "Defines the path to the default test scene that is rendered when testing Dialogue Sequences.",
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_FILE,
 	}
@@ -58,9 +85,9 @@ static func prepare(save: bool = true) -> void:
 		if not ProjectSettings.has_setting(setting_name):
 			set_setting(setting_name, DEFAULT_SETTINGS[setting_name])
 		ProjectSettings.set_initial_value(setting_name, DEFAULT_SETTINGS[setting_name])
-		var _info: Variant = TYPES.get(setting_name)
-		if is_instance_of(_info, TYPE_DICTIONARY):
-			var info: Dictionary = _info
+		var info_variant: Variant = TYPES.get(setting_name)
+		if is_instance_of(info_variant, TYPE_DICTIONARY):
+			var info: Dictionary = info_variant
 			ProjectSettings.add_property_info(info)
 	
 	# Reset some user values upon load that might cause weirdness:

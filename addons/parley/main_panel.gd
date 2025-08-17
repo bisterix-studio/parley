@@ -175,12 +175,6 @@ func _set_node_ast(new_node_ast: ParleyNodeAst) -> void:
 		_:
 			push_error(ParleyUtils.log.error_msg("Unsupported Node type: %s for Node with ID: %s" % [ParleyDialogueSequenceAst.get_type_name(selected_node_ast.type), selected_node_ast.id]))
 			return
-
-
-# TODO: move to the correct region in this file
-func _on_dialogue_ast_changed(new_dialogue_ast: ParleyDialogueSequenceAst) -> void:
-	if sidebar:
-		sidebar.current_dialogue_ast = new_dialogue_ast
 #endregion
 
 
@@ -294,10 +288,15 @@ func _on_new_dialogue_sequence_modal_dialogue_ast_created(new_dialogue_ast: Parl
 	dialogue_ast = new_dialogue_ast
 	# TODO: emit as a signal and handle in the plugin
 	if parley_manager:
-		var current: Variant = null
+		var current_path: Variant = null
 		if dialogue_ast and dialogue_ast.resource_path:
-			current = dialogue_ast.resource_path
-		parley_manager.set_current_dialogue_sequence(current)
+			current_path = dialogue_ast.resource_path
+		parley_manager.set_current_dialogue_sequence(current_path)
+		# This is needed to correctly reload upon file saves
+		if dialogue_ast:
+			var update_result: int = parley_manager.update_localisations([dialogue_ast])
+			if update_result != OK:
+				push_warning(ParleyUtils.log.warn_msg("Unable to update localisations for new Dialogue Sequence (ds:%s): %s" % [dialogue_ast, error_string(update_result)]))
 	refresh(true)
 
 
@@ -317,6 +316,10 @@ func _on_save_pressed() -> void:
 	# This is needed to reset the Graph and ensure
 	# that no weirdness is going to happen. For example
 	# move the group nodes after a save when refresh isn't present
+	if parley_manager and dialogue_ast:
+		var update_result: int = parley_manager.update_localisations([dialogue_ast])
+		if update_result != OK:
+			push_warning(ParleyUtils.log.warn_msg("Unable to update localisations when saving Dialogue Sequence (ds:%s): %s" % [dialogue_ast, error_string(update_result)]))
 	await refresh()
 
 
@@ -363,6 +366,11 @@ func _on_test_dialogue_from_selected_button_pressed() -> void:
 
 
 #region SIGNALS
+func _on_dialogue_ast_changed(new_dialogue_ast: ParleyDialogueSequenceAst) -> void:
+	if sidebar:
+		sidebar.current_dialogue_ast = new_dialogue_ast
+
+
 func _on_action_store_changed() -> void:
 	if action_store and dialogue_ast:
 		var nodes: Array[ParleyNodeAst] = dialogue_ast.find_nodes_by_types([ParleyDialogueSequenceAst.Type.ACTION])

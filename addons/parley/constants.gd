@@ -4,8 +4,8 @@
 
 #region General
 # TODO: figure out better way of getting this version as it is duplicated
-const VERSION: String = "2.0.0"
-const AST_VERSION: String = "1.0.0"
+const VERSION: String = "2.1.0"
+const AST_VERSION: String = "1.1.0"
 const USER_CONFIG_PATH: String = "user://parley_user_config.json"
 #endregion
 
@@ -27,12 +27,16 @@ const EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH: String = "parley/editor/current_dia
 const DIALOGUE_BALLOON_PATH: String = "parley/dialogue/dialogue_balloon_path"
 #endregion
 
+#region Internationalisation
+# Project settings
+const TRANSLATION_MODE: String = "parley/translations/mode"
+const TRANSLATIONS_POT_FILES: String = "internationalization/locale/translations_pot_files"
+#endregion
+
 #region Stores
 # Project settings
 const ACTION_STORE_PATH: String = "parley/stores/action_store_path"
 const CHARACTER_STORE_PATH: String = "parley/stores/character_store_path"
-const CHARACTER_STORE_PATHS: String = "parley/stores/character_store_paths"
-const FACT_STORE_PATHS: String = "parley/stores/fact_store_paths"
 const FACT_STORE_PATH: String = "parley/stores/fact_store_path"
 #endregion
 
