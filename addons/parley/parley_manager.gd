@@ -156,6 +156,7 @@ func get_plugin_version() -> String:
 
 ## Update localisation for all known Dialogue Sequences
 func register_localisation_path(path: String) -> int:
+	# TODO: do we need to consider the translation mode?
 	var pot_generation_candidates: PackedStringArray = ProjectSettings.get_setting(ParleyConstants.TRANSLATIONS_POT_FILES, [])
 	var changed: bool = false
 
@@ -174,6 +175,7 @@ func register_localisation_path(path: String) -> int:
 
 ## Update localisation for all known Dialogue Sequences
 func update_localisations(dialogue_sequences_to_register: Array[ParleyDialogueSequenceAst] = [], clean: bool = true) -> int:
+	# TODO: do we need to consider the translation mode?
 	var pot_generation_candidates: PackedStringArray = ProjectSettings.get_setting(ParleyConstants.TRANSLATIONS_POT_FILES, [])
 	var changed: bool = false
 

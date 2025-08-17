@@ -72,6 +72,9 @@ translations. It can be one of several values:
 <!-- TODO: CSV -->
 <!-- TODO: - `OFF` - No internationalisation will be applied. -->
 
+More information about internationalisation support in Parley can be found
+[here](../i18n/index.md).
+
 Setting path: `parley/translations/mode`
 
 Default: `PO`
