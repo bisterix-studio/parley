@@ -14,6 +14,11 @@ class_name ParleyDialogueOptionNodeAst extends ParleyNodeAst
 @export var text: String
 
 
+## The translation id for the text field of the Dialogue Node AST.
+## Example: "world_dialect__I_need_some_coffee"
+@export var text_translation_key: String
+
+
 ## Create a new instance of a Dialogue Option Node AST.
 ## Example: ParleyDialogueOptionNodeAst.new("1", Vector2.ZERO, "Alice", "Slurp some coffee.")
 func _init(

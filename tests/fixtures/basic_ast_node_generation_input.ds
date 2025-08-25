@@ -11,14 +11,16 @@
       "type": "DIALOGUE",
       "position": "(240.0, 400.0)",
       "character": "Alice",
-      "text": "Look. I made a thing."
+      "text": "Look. I made a thing.",
+      "text_translation_key": ""
     },
     {
       "id": "node:4",
       "type": "DIALOGUE",
       "position": "(600.0, 400.0)",
       "character": "Bob",
-      "text": "Wow. Great."
+      "text": "Wow. Great.",
+      "text_translation_key": ""
     },
     {
       "id": "node:6",
@@ -39,21 +41,24 @@
       "type": "DIALOGUE",
       "position": "(1480.0, 400.0)",
       "character": "Alice",
-      "text": "LOOK AT MY THING!"
+      "text": "LOOK AT MY THING!",
+      "text_translation_key": ""
     },
     {
       "id": "node:8",
       "type": "DIALOGUE_OPTION",
       "position": "(2040.0, 340.0)",
       "character": "Carol",
-      "text": "Give to Alice"
+      "text": "Give to Alice",
+      "text_translation_key": ""
     },
     {
       "id": "node:13",
       "type": "DIALOGUE_OPTION",
       "position": "(2040.0, 700.0)",
       "character": "Carol",
-      "text": "Keep it"
+      "text": "Keep it",
+      "text_translation_key": ""
     },
     {
       "id": "node:9",
@@ -71,35 +76,40 @@
       "type": "DIALOGUE",
       "position": "(3000.0, 340.0)",
       "character": "Carol",
-      "text": "Here you go."
+      "text": "Here you go.",
+      "text_translation_key": ""
     },
     {
       "id": "node:11",
       "type": "DIALOGUE",
       "position": "(3360.0, 340.0)",
       "character": "Dave",
-      "text": "Cheers."
+      "text": "Cheers.",
+      "text_translation_key": ""
     },
     {
       "id": "node:12",
       "type": "DIALOGUE",
       "position": "(3720.0, 340.0)",
       "character": "Carol",
-      "text": "You're welcome."
+      "text": "You're welcome.",
+      "text_translation_key": ""
     },
     {
       "id": "node:14",
       "type": "DIALOGUE",
       "position": "(2460.0, 700.0)",
       "character": "Carol",
-      "text": "But it's mine."
+      "text": "But it's mine.",
+      "text_translation_key": ""
     },
     {
       "id": "node:15",
       "type": "DIALOGUE",
       "position": "(2820.0, 700.0)",
       "character": "Dave",
-      "text": "Fair enough."
+      "text": "Fair enough.",
+      "text_translation_key": ""
     },
     {
       "id": "node:16",
@@ -120,21 +130,24 @@
       "type": "DIALOGUE",
       "position": "(2040.0, 960.0)",
       "character": "Bob",
-      "text": "Mmm. Coffee. Now, what did you want me to look at?"
+      "text": "Mmm. Coffee. Now, what did you want me to look at?",
+      "text_translation_key": ""
     },
     {
       "id": "node:19",
       "type": "DIALOGUE",
       "position": "(2020.0, 1340.0)",
       "character": "Bob",
-      "text": "I NEED COFFEE!"
+      "text": "I NEED COFFEE!",
+      "text_translation_key": ""
     },
     {
       "id": "node:20",
       "type": "DIALOGUE",
       "position": "(2420.0, 1340.0)",
       "character": "Carol",
-      "text": "I'll get you coffee, Mama. But first, CATNIP."
+      "text": "I'll get you coffee, Mama. But first, CATNIP.",
+      "text_translation_key": ""
     },
     {
       "id": "node:21",

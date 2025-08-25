@@ -10,12 +10,14 @@ class_name ParleyNodeAst extends Resource
 ## Example: "1"
 @export var id: String: set = _set_id
 
+
 # TODO: is there a circular dep issue for ParleyDialogueSequenceAst.Type here?
 # Is this symptomatic of a wider problem perhaps?
 
 ## The type of the Node AST.
 ## Example: ParleyDialogueSequenceAst.Type.START
 @export var type: ParleyDialogueSequenceAst.Type = ParleyDialogueSequenceAst.Type.UNKNOWN
+
 
 ## The position of the Node AST.
 ## Example: "(1, 2)"

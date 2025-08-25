@@ -97,3 +97,21 @@ class file:
 class translation:
 	static func get_msg_ctx(uid: String, node: ParleyNodeAst, field: String) -> String:
 		return "%s::%s::%s" % [uid, node.id, field]
+
+
+	static func translate(input: StringName) -> String:
+		var instance: Object = new()
+		var resource_path: String = instance.get_script().resource_path
+		var base_path: String = resource_path.get_base_dir()
+		instance.free()
+
+		var paths: Array[String] = [
+			TranslationServer.get_tool_locale(),
+			TranslationServer.get_tool_locale().substr(0, 2),
+			"en",
+		].map(func (locale: String) -> String: return "%s/locale/%s.po" % [base_path, locale])
+		for path: String in paths:
+			if FileAccess.file_exists(path):
+				var translations: Translation = load(path)
+				return translations.get_message(input)
+		return input

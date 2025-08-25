@@ -40,18 +40,12 @@ func start(p_ctx: ParleyContext, p_dialogue_sequence_ast: ParleyDialogueSequence
 	is_waiting_for_input = false
 	ctx = p_ctx
 	dialogue_sequence_ast = p_dialogue_sequence_ast
-	if p_start_node is ParleyDialogueNodeAst or p_start_node is ParleyDialogueOptionNodeAst:
-		current_node_asts = [p_start_node]
-	elif p_start_node:
-		var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.run(ctx, dialogue_sequence_ast, p_start_node)
-		current_node_asts = run_result.node_asts
-		dialogue_sequence_ast = run_result.dialogue_sequence
-		run_result.free() # Needed to ensure that everything is correctly freed up at exit
-	else:
-		var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.run(ctx, dialogue_sequence_ast)
-		current_node_asts = run_result.node_asts
-		dialogue_sequence_ast = run_result.dialogue_sequence
-		run_result.free() # Needed to ensure that everything is correctly freed up at exit
+	# TODO: remove
+	ctx.start_of_run = true
+	var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.run(ctx, dialogue_sequence_ast, p_start_node if p_start_node else null)
+	current_node_asts = run_result.node_asts
+	dialogue_sequence_ast = run_result.dialogue_sequence
+	run_result.free() # Needed to ensure that everything is correctly freed up at exit
 
 
 ## Process the next Nodes
@@ -83,31 +77,6 @@ func _set_current_node_asts(p_current_node_asts: Array[ParleyNodeAst]) -> void:
 		await ready
 
 	balloon.show()
-	# TODO: remove
-	# current_node_asts = []
-	# for node_ast: ParleyNodeAst in p_current_node_asts:
-	# 	# TODO: add a resolve method to each node
-	# 	var resolved_node_ast: ParleyNodeAst
-	# 	if node_ast is ParleyDialogueNodeAst:
-	# 		var dialogue_node_ast: ParleyDialogueNodeAst = node_ast
-	# 		var resolved_text: String = dialogue_sequence_ast.resolve_value(ctx, dialogue_node_ast.text, true, dialogue_node_ast, 'text')
-	# 		resolved_node_ast = ParleyDialogueNodeAst.new(
-	# 			dialogue_node_ast.id,
-	# 			dialogue_node_ast.position,
-	# 			dialogue_node_ast.character,
-	# 			resolved_text,
-	# 		)
-	# 	elif node_ast is ParleyDialogueOptionNodeAst:
-	# 		var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = node_ast
-	# 		var resolved_text: String = dialogue_sequence_ast.resolve_value(ctx, dialogue_option_node_ast.text, true, dialogue_option_node_ast, 'text')
-	# 		resolved_node_ast = ParleyDialogueOptionNodeAst.new(
-	# 			dialogue_option_node_ast.id,
-	# 			dialogue_option_node_ast.position,
-	# 			dialogue_option_node_ast.character,
-	# 			resolved_text,
-	# 		)
-	# 	if resolved_node_ast:
-	# 		current_node_asts.append(resolved_node_ast)
 	current_node_asts = p_current_node_asts
 	var current_children: Array[Node] = balloon_container.get_children()
 	var first_node: ParleyNodeAst = current_node_asts.front()

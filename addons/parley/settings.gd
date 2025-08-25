@@ -15,20 +15,11 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
 	# Internationalisation
-	ParleyConstants.TRANSLATION_MODE: TranslationMode.keys()[TranslationMode.PO],
+	ParleyConstants.TRANSLATION_MODE: ParleyContext.TranslationMode.keys()[ParleyContext.TranslationMode.PO],
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
 	# hardcode it for now but allow people to edit it in settings
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: "res://addons/parley/views/test_dialogue_sequence_scene.tscn",
-}
-
-
-enum TranslationMode {
-	PO,
-	# TODO: add CSV
-	# CSV,
-	# TODO: add None
-	# None,
 }
 
 
@@ -65,7 +56,7 @@ static var TYPES: Dictionary = {
 		"description": "Defines the translation mode to determine how to find and interpret translations.",
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_ENUM,
-		"hint_string": ",".join(TranslationMode.keys())
+		"hint_string": ",".join(ParleyContext.TranslationMode.keys())
 	},
 	# Testing
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: {

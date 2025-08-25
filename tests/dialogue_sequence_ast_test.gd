@@ -2,37 +2,20 @@
 
 extends GutTest
 
-class Test_process_next:
+
+const ParleyConstants = preload("res://addons/parley/constants.gd")
+
+
+class Test_dialogue_sequence_ast:
 	extends GutTest
-
-
-	func map_to_dict(node: ParleyNodeAst) -> Dictionary:
-		var d: Dictionary = inst_to_dict(node)
-		var _path_result: bool = d.erase('@path')
-		var _subpath_result: bool = d.erase('@subpath')
-		return d
-
-
-	func _resolve_expected(params: Dictionary, dialogue_ast: ParleyDialogueSequenceAst) -> Array:
-		var expected: Array = []
-		if params.get('expected', null):
-			expected = params['expected']
-		else:
-			var expected_ids: PackedStringArray = params['expected_ids']
-			for expected_id: String in expected_ids:
-				var found: Array[ParleyNodeAst] = dialogue_ast.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == expected_id)
-				if found.size() > 0:
-					expected.append(found.front())
-		return expected
-
 
 	var result: ParleyRunResult
 	var ctx: ParleyContext
-	var test_dialogue_ast: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
-
-
-	func before_each() -> void:
-		test_dialogue_ast = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
+	var test_dialogue_sequence_ast: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
+	var test_dialogue_sequence_ast_with_match_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_match_input.ds')
+	var test_dialogue_sequence_ast_sort_cases: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds')
+	var test_dialogue_sequence_ast_from_jump_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/from_jump_node_input.ds')
+	var test_dialogue_sequence_ast_to_jump_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/to_jump_node_input.ds')
 
 
 	func after_each() -> void:
@@ -41,9 +24,109 @@ class Test_process_next:
 		if result:
 			result.free()
 
+	#region INIT
+	var test_init_cases: Array[Dictionary] = [
+		{"ctx": {}, "current_id": "node:1", "expected_ids": ["node:3"]},
+		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:3"]},
+		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:4"]},
+		{"ctx": {}, "current_id": "node:6", "expected_ids": ["node:7"]},
+		{"ctx": {"bob_has_coffee": false}, "current_id": "node:6", "expected_ids": ["node:17"]},
+		{"ctx": {"bob_has_coffee": false, "alice_gave_coffee": false}, "current_id": "node:6", "expected_ids": ["node:19"]},
+		{"ctx": {}, "current_id": "node:7", "expected_ids": ["node:7"]},
+		{"ctx": {}, "current_id": "node:8", "expected_ids": ["node:8"]},
+		{"ctx": {}, "current_id": "node:9", "expected_ids": ["node:10"]},
+		{"ctx": {}, "current_id": "node:10", "expected_ids": ["node:10"]},
+		{"ctx": {}, "current_id": "node:11", "expected_ids": ["node:11"]},
+		{"ctx": {}, "current_id": "node:12", "expected_ids": ["node:12"]},
+		{"ctx": {}, "current_id": "node:13", "expected_ids": ["node:13"]},
+		{"ctx": {}, "current_id": "node:14", "expected_ids": ["node:14"]},
+		{"ctx": {}, "current_id": "node:15", "expected_ids": ["node:15"]},
+		{"ctx": {}, "current_id": "node:17", "expected_ids": ["node:17"]},
+		{"ctx": {}, "current_id": "node:19", "expected_ids": ["node:19"]},
+		{"ctx": {}, "current_id": "node:20", "expected_ids": ["node:20"]},
+		{"ctx": {}, "current_id": "node:21", "expected_ids": ["node:21"]},
+	]
 
-	# var test_dialogue_ast: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
-	var test_process_next_cases: Array[Dictionary] = [
+
+	func test_init(params: Dictionary = use_parameters(test_init_cases)) -> void:
+		# Arrange
+		var current_node: ParleyNodeAst = test_dialogue_sequence_ast.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
+		var expected: Array = TestUtils._resolve_expected(params, test_dialogue_sequence_ast)
+		var ctx_data: Dictionary = params.get('ctx', {})
+		ctx = ParleyContext.create(test_dialogue_sequence_ast, ctx_data)
+		
+		# Act
+		result = await ParleyDialogueSequenceAst.init(ctx, test_dialogue_sequence_ast, current_node)
+
+		# Assert
+		assert_eq_deep(result.node_asts.map(TestUtils.map_to_dict), expected.map(TestUtils.map_to_dict))
+
+
+	var test_init_with_match_node_cases: Array[Dictionary] = [
+		{"ctx": {}, "current_id": "node:1", "expected_ids": ["node:16"]},
+		{"ctx": {}, "current_id": "node:2", "expected_ids": ["node:6"]},
+		{"ctx": {"alice_coffee_status": "NEEDS_COFFEE"}, "current_id": "node:2", "expected_ids": ["node:3"]},
+		{"ctx": {"alice_coffee_status": "NEEDS_MORE_COFFEE"}, "current_id": "node:2", "expected_ids": ["node:4"]},
+		{"ctx": {"alice_coffee_status": "NEEDS_EVEN_MORE_COFFEE"}, "current_id": "node:2", "expected_ids": ["node:5"]},
+		{"ctx": {"alice_coffee_status": "INVALID"}, "current_id": "node:2", "expected_ids": ["node:6"]},
+		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:3"]},
+		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:4"]},
+		{"ctx": {}, "current_id": "node:5", "expected_ids": ["node:5"]},
+		{"ctx": {}, "current_id": "node:6", "expected_ids": ["node:6"]},
+		{"ctx": {}, "current_id": "node:8", "expected_ids": ["node:8"]},
+		{"ctx": {"ball": 1}, "current_id": "node:9", "expected_ids": ["node:10"]},
+		{"ctx": {"ball": 2}, "current_id": "node:9", "expected_ids": ["node:14"]},
+		{"ctx": {"ball": 6}, "current_id": "node:9", "expected_ids": ["node:13"]},
+		{"ctx": {"ball": 5}, "current_id": "node:9", "expected_ids": ["node:12"]},
+		{"ctx": {"ball": 7}, "current_id": "node:9", "expected_ids": ["node:11"]},
+		{"ctx": {}, "current_id": "node:10", "expected_ids": ["node:10"]},
+		{"ctx": {}, "current_id": "node:14", "expected_ids": ["node:14"]},
+		{"ctx": {}, "current_id": "node:13", "expected_ids": ["node:13"]},
+		{"ctx": {}, "current_id": "node:12", "expected_ids": ["node:12"]},
+		{"ctx": {}, "current_id": "node:11", "expected_ids": ["node:11"]},
+		{"ctx": {}, "current_id": "node:15", "expected_ids": ["node:15"]},
+	]
+	
+	func test_init_with_match_node(params: Dictionary = use_parameters(test_init_with_match_node_cases)) -> void:
+		# Arrange
+		var current_node: ParleyNodeAst = test_dialogue_sequence_ast_with_match_node.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id']).front()
+		var expected: Array = TestUtils._resolve_expected(params, test_dialogue_sequence_ast_with_match_node)
+		var ctx_data: Dictionary = params.get('ctx', {})
+		ctx = ParleyContext.create(test_dialogue_sequence_ast_with_match_node, ctx_data)
+		
+		# Act
+		result = await ParleyDialogueSequenceAst.init(ctx, test_dialogue_sequence_ast_with_match_node, current_node)
+
+		# Assert
+		assert_eq_deep(result.node_asts.map(TestUtils.map_to_dict), expected.map(TestUtils.map_to_dict))
+
+
+	var test_init_from_jump_node_cases: Array[Dictionary] = [
+		{"ctx": {}, "current_id": "node:1", "expected_ids": ["node:2"], "expected_dialogue_sequence_ref": "from_jump_node_input.ds" },
+		{"ctx": {}, "current_id": "node:2", "expected_ids": ["node:2"], "expected_dialogue_sequence_ref": "from_jump_node_input.ds" },
+		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:2"], "expected_dialogue_sequence_ref": "to_jump_node_input.ds" },
+	]
+
+	func test_init_from_jump_node(params: Dictionary = use_parameters(test_init_from_jump_node_cases)) -> void:
+		# Arrange
+		var expected_dialogue_sequence_ref: String = params.get('expected_dialogue_sequence_ref', 'unknown')
+
+		var current_node: ParleyNodeAst = test_dialogue_sequence_ast_from_jump_node.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id']).front()
+		var expected_ids: Array = TestUtils._resolve_expected(params, test_dialogue_sequence_ast_to_jump_node if expected_dialogue_sequence_ref.begins_with('to_') else test_dialogue_sequence_ast_from_jump_node)
+		var ctx_data: Dictionary = params.get('ctx', {})
+		ctx = ParleyContext.create(test_dialogue_sequence_ast_from_jump_node, ctx_data)
+		
+		# Act
+		result = await ParleyDialogueSequenceAst.init(ctx, test_dialogue_sequence_ast_from_jump_node, current_node)
+
+		# Assert
+		assert_eq(result.dialogue_sequence.resource_path.get_file(), expected_dialogue_sequence_ref)
+		assert_eq_deep(result.node_asts.map(TestUtils.map_to_dict), expected_ids.map(TestUtils.map_to_dict))
+	#endregion
+
+	#region RUN
+	var test_run_cases: Array[Dictionary] = [
+		{"ctx": {}, "current_id": "node:1", "expected_ids": ["node:3"]},
 		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:4"]},
 		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:7"]},
 		{"ctx": {"bob_has_coffee": false}, "current_id": "node:4", "expected_ids": ["node:17"]},
@@ -59,45 +142,40 @@ class Test_process_next:
 	]
 
 
-	func test_process_next(params: Dictionary = use_parameters(test_process_next_cases)) -> void:
+	func test_run(params: Dictionary = use_parameters(test_run_cases)) -> void:
 		# Arrange
-		var current_node: ParleyNodeAst = test_dialogue_ast.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
-		var expected: Array = _resolve_expected(params, test_dialogue_ast)
+		var current_node: ParleyNodeAst = test_dialogue_sequence_ast.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
+		var expected: Array = TestUtils._resolve_expected(params, test_dialogue_sequence_ast)
 		var ctx_data: Dictionary = params.get('ctx', {})
-		ctx = ParleyContext.create(test_dialogue_ast, ctx_data)
+		ctx = ParleyContext.create(test_dialogue_sequence_ast, ctx_data)
 		
 		# Act
-		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_ast, current_node)
+		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_sequence_ast, current_node)
 
 		# Assert
-		assert_eq_deep(result.node_asts.map(map_to_dict), expected.map(map_to_dict))
+		assert_eq_deep(result.node_asts.map(TestUtils.map_to_dict), expected.map(TestUtils.map_to_dict))
 
 
-	var test_dialogue_ast_sort_cases: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds')
-
-	var test_process_next_sort_cases: Array[Dictionary] = [
+	var test_run_sort_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "node:6", "expected_ids": ["node:9", "node:10", "node:11"]},
 		{"ctx": {}, "current_id": "node:8", "expected_ids": ["node:14", "node:12", "node:13"]},
 	]
 
-	func test_process_next_sort_by_y_position(params: Dictionary = use_parameters(test_process_next_sort_cases)) -> void:
+	func test_run_sort_by_y_position(params: Dictionary = use_parameters(test_run_sort_cases)) -> void:
 		# Arrange
-		var current_node: ParleyNodeAst = test_dialogue_ast_sort_cases.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
-		var expected: Array = _resolve_expected(params, test_dialogue_ast_sort_cases)
+		var current_node: ParleyNodeAst = test_dialogue_sequence_ast_sort_cases.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
+		var expected: Array = TestUtils._resolve_expected(params, test_dialogue_sequence_ast_sort_cases)
 		var ctx_data: Dictionary = params.get('ctx', {})
-		ctx = ParleyContext.create(test_dialogue_ast_sort_cases, ctx_data)
+		ctx = ParleyContext.create(test_dialogue_sequence_ast_sort_cases, ctx_data)
 		
 		# Act
-		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_ast_sort_cases, current_node)
+		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_sequence_ast_sort_cases, current_node)
 
 		# Assert
 		assert_eq_deep(result.node_asts.map(func(i: ParleyDialogueOptionNodeAst) -> String: return i.text), ['Top', 'Middle', 'Bottom'])
-		assert_eq_deep(result.node_asts.map(map_to_dict), expected.map(map_to_dict))
-
-
-	var test_dialogue_ast_with_match_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_match_input.ds')
+		assert_eq_deep(result.node_asts.map(TestUtils.map_to_dict), expected.map(TestUtils.map_to_dict))
 	
-	var test_process_next_with_match_node_cases: Array[Dictionary] = [
+	var test_run_with_match_node_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "node:1", "expected_ids": ["node:16"]},
 		{"ctx": {"alice_coffee_status": "NEEDS_COFFEE"}, "current_id": "node:16", "expected_ids": ["node:3"]},
 		{"ctx": {"alice_coffee_status": "NEEDS_MORE_COFFEE"}, "current_id": "node:16", "expected_ids": ["node:4"]},
@@ -117,44 +195,124 @@ class Test_process_next:
 		{"ctx": {}, "current_id": "node:11", "expected_ids": ["node:15"]},
 	]
 	
-	func test_process_next_with_match_node(params: Dictionary = use_parameters(test_process_next_with_match_node_cases)) -> void:
+	func test_run_with_match_node(params: Dictionary = use_parameters(test_run_with_match_node_cases)) -> void:
 		# Arrange
-		var current_node: ParleyNodeAst = test_dialogue_ast_with_match_node.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id']).front()
-		var expected: Array = _resolve_expected(params, test_dialogue_ast_with_match_node)
+		var current_node: ParleyNodeAst = test_dialogue_sequence_ast_with_match_node.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id']).front()
+		var expected: Array = TestUtils._resolve_expected(params, test_dialogue_sequence_ast_with_match_node)
 		var ctx_data: Dictionary = params.get('ctx', {})
-		ctx = ParleyContext.create(test_dialogue_ast_with_match_node, ctx_data)
+		ctx = ParleyContext.create(test_dialogue_sequence_ast_with_match_node, ctx_data)
 		
 		# Act
-		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_ast_with_match_node, current_node)
+		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_sequence_ast_with_match_node, current_node)
 
 		# Assert
-		assert_eq_deep(result.node_asts.map(map_to_dict), expected.map(map_to_dict))
+		assert_eq_deep(result.node_asts.map(TestUtils.map_to_dict), expected.map(TestUtils.map_to_dict))
 
 
-	var test_dialogue_ast_from_jump_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/from_jump_node_input.ds')
-	var test_dialogue_ast_to_jump_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/to_jump_node_input.ds')
-
-
-	var test_process_next_from_jump_node_cases: Array[Dictionary] = [
+	var test_run_from_jump_node_cases: Array[Dictionary] = [
 		{"ctx": {}, "current_id": "node:1", "expected_ids": ["node:2"], "expected_dialogue_sequence_ref": "from_jump_node_input.ds" },
 		{"ctx": {}, "current_id": "node:2", "expected_ids": ["node:2"], "expected_dialogue_sequence_ref": "to_jump_node_input.ds" },
 	]
 
-	func test_process_next_from_jump_node(params: Dictionary = use_parameters(test_process_next_from_jump_node_cases)) -> void:
+	func test_run_from_jump_node(params: Dictionary = use_parameters(test_run_from_jump_node_cases)) -> void:
 		# Arrange
 		var expected_dialogue_sequence_ref: String = params.get('expected_dialogue_sequence_ref', 'unknown')
 
-		var current_node: ParleyNodeAst = test_dialogue_ast_from_jump_node.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id']).front()
-		var expected_ids: Array = _resolve_expected(params, test_dialogue_ast_to_jump_node if expected_dialogue_sequence_ref.begins_with('to_') else test_dialogue_ast_from_jump_node)
+		var current_node: ParleyNodeAst = test_dialogue_sequence_ast_from_jump_node.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id']).front()
+		var expected_ids: Array = TestUtils._resolve_expected(params, test_dialogue_sequence_ast_to_jump_node if expected_dialogue_sequence_ref.begins_with('to_') else test_dialogue_sequence_ast_from_jump_node)
 		var ctx_data: Dictionary = params.get('ctx', {})
-		ctx = ParleyContext.create(test_dialogue_ast_from_jump_node, ctx_data)
+		ctx = ParleyContext.create(test_dialogue_sequence_ast_from_jump_node, ctx_data)
 		
 		# Act
-		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_ast_from_jump_node, current_node)
+		result = await ParleyDialogueSequenceAst.run(ctx, test_dialogue_sequence_ast_from_jump_node, current_node)
 
 		# Assert
 		assert_eq(result.dialogue_sequence.resource_path.get_file(), expected_dialogue_sequence_ref)
-		assert_eq_deep(result.node_asts.map(map_to_dict), expected_ids.map(map_to_dict))
+		assert_eq_deep(result.node_asts.map(TestUtils.map_to_dict), expected_ids.map(TestUtils.map_to_dict))
+	#endregion
+
+
+class Test_translations:
+	extends GutTest
+
+
+	var result: ParleyRunResult
+	var ctx: ParleyContext
+	var test_dialogue_sequence_ast_pot_translations: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_pot_translations.ds')
+	var test_dialogue_sequence_ast_csv_translations: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_csv_translations.ds')
+	var original_locale: String = TranslationServer.get_locale()
+	var original_translation_mode: Variant = ProjectSettings.get(ParleyConstants.TRANSLATION_MODE)
+
+
+	func after_each() -> void:
+		if ctx:
+			ctx.free()
+		if result:
+			result.free()
+		TranslationServer.set_locale(original_locale)
+		ProjectSettings.set(ParleyConstants.TRANSLATION_MODE, original_translation_mode)
+	
+
+	var test_init_pot_translations_cases: Array[Dictionary] = [
+		{"ctx": {}, "current_id": "node:2", "expected_ids": ["node:2"], "locale": "en", "expected_texts": ["[PO]: Some text in English."]},
+		{"ctx": {}, "current_id": "node:2", "expected_ids": ["node:2"], "locale": "fr", "expected_texts": ["[PO]: Quelques textes en anglais."]},
+		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:3"], "locale": "en", "expected_texts": ["[PO]: Some option in English."]},
+		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:3"], "locale": "fr", "expected_texts": ["[PO]: Quelques options en anglais."]},
+		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:4"], "locale": "en", "expected_texts": ["[PO]: Another option in English."]},
+		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:4"], "locale": "fr", "expected_texts": ["[PO]: Une autre option en anglais."]},
+		{"ctx": {}, "current_id": "node:5", "expected_ids": ["node:5"], "locale": "en", "expected_texts": ["[PO]: Some text with no translation."]},
+		{"ctx": {}, "current_id": "node:5", "expected_ids": ["node:5"], "locale": "fr", "expected_texts": ["[PO]: Some text with no translation."]},
+	]
+
+
+	func test_init_pot_translations(params: Dictionary = use_parameters(test_init_pot_translations_cases)) -> void:
+		# Arrange
+		var current_node: ParleyNodeAst = test_dialogue_sequence_ast_pot_translations.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
+		var expected_ids: Array = params.get('expected_ids', [])
+		var expected_texts: Array = params.get('expected_texts', [])
+		var ctx_data: Dictionary = params.get('ctx', {})
+		var locale: String = params.get('locale', 'en')
+		ctx = ParleyContext.create(test_dialogue_sequence_ast_pot_translations, ctx_data)
+		ProjectSettings.set(ParleyConstants.TRANSLATION_MODE, ParleyContext.TranslationMode.PO)
+		
+		# Act
+		TranslationServer.set_locale(locale)
+		result = await ParleyDialogueSequenceAst.init(ctx, test_dialogue_sequence_ast_pot_translations, current_node)
+
+		# Assert
+		assert_eq_deep(result.node_asts.map(func (n: ParleyNodeAst) -> String: return n.id), expected_ids)
+		assert_eq_deep(result.node_asts.map(func (n: ParleyNodeAst) -> String: return n.get('text')), expected_texts)
+
+
+	var test_init_csv_translations_cases: Array[Dictionary] = [
+		{"ctx": {}, "current_id": "node:2", "expected_ids": ["node:2"], "locale": "en", "expected_texts": ["[CSV]: Some text in English."]},
+		{"ctx": {}, "current_id": "node:2", "expected_ids": ["node:2"], "locale": "fr", "expected_texts": ["[CSV]: Quelques textes en anglais."]},
+		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:3"], "locale": "en", "expected_texts": ["[CSV]: Some option in English."]},
+		{"ctx": {}, "current_id": "node:3", "expected_ids": ["node:3"], "locale": "fr", "expected_texts": ["[CSV]: Quelques options en anglais."]},
+		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:4"], "locale": "en", "expected_texts": ["[CSV]: Another option in English."]},
+		{"ctx": {}, "current_id": "node:4", "expected_ids": ["node:4"], "locale": "fr", "expected_texts": ["[CSV]: Une autre option en anglais."]},
+		{"ctx": {}, "current_id": "node:5", "expected_ids": ["node:5"], "locale": "en", "expected_texts": ["[CSV]: Some text with no translation."]},
+		{"ctx": {}, "current_id": "node:5", "expected_ids": ["node:5"], "locale": "fr", "expected_texts": ["[CSV]: Some text with no translation."]},
+	]
+
+
+	func test_init_csv_translations(params: Dictionary = use_parameters(test_init_csv_translations_cases)) -> void:
+		# Arrange
+		var current_node: ParleyNodeAst = test_dialogue_sequence_ast_csv_translations.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == params['current_id'])[0]
+		var expected_ids: Array = params.get('expected_ids', [])
+		var expected_texts: Array = params.get('expected_texts', [])
+		var ctx_data: Dictionary = params.get('ctx', {})
+		var locale: String = params.get('locale', 'en')
+		ctx = ParleyContext.create(test_dialogue_sequence_ast_csv_translations, ctx_data)
+		ProjectSettings.set(ParleyConstants.TRANSLATION_MODE, ParleyContext.TranslationMode.CSV)
+		
+		# Act
+		TranslationServer.set_locale(locale)
+		result = await ParleyDialogueSequenceAst.init(ctx, test_dialogue_sequence_ast_csv_translations, current_node)
+
+		# Assert
+		assert_eq_deep(result.node_asts.map(func (n: ParleyNodeAst) -> String: return n.id), expected_ids)
+		assert_eq_deep(result.node_asts.map(func (n: ParleyNodeAst) -> String: return n.get('text')), expected_texts)
 
 
 class Test_add_edge:
@@ -443,3 +601,24 @@ class Test_remove_edges:
 		assert_eq_deep(updated_edges, expected_edges)
 		if expected_emitted:
 			assert_signal_emitted(dialogue_ast, 'dialogue_updated')
+
+
+class TestUtils:
+	static func map_to_dict(node: ParleyNodeAst) -> Dictionary:
+		var d: Dictionary = inst_to_dict(node)
+		var _path_result: bool = d.erase('@path')
+		var _subpath_result: bool = d.erase('@subpath')
+		return d
+
+
+	static func _resolve_expected(params: Dictionary, dialogue_ast: ParleyDialogueSequenceAst) -> Array:
+		var expected: Array = []
+		if params.get('expected', null):
+			expected = params['expected']
+		else:
+			var expected_ids: PackedStringArray = params['expected_ids']
+			for expected_id: String in expected_ids:
+				var found: Array[ParleyNodeAst] = dialogue_ast.nodes.filter(func(node: ParleyNodeAst) -> bool: return node.id == expected_id)
+				if found.size() > 0:
+					expected.append(found.front())
+		return expected

@@ -2,10 +2,25 @@ class_name ParleyContext extends Object
 
 
 #region DEFS
+## The current Dialogue Sequence AST of the Parley Context.
 var dialogue_sequence_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(): set = _set_dialogue_sequence_ast
 
 
+## The translation mode of the Parley Context.
+var translation_mode: TranslationMode = TranslationMode.Auto
+
+
+## The data of the Parley Context.
 var p_data: Dictionary = {}
+
+
+## The available Translation Mode options of the Parley Context.
+enum TranslationMode {
+	Auto,
+	PO,
+	CSV,
+	Off,
+}
 
 
 signal dialogue_ended

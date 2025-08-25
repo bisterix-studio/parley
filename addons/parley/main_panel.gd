@@ -278,7 +278,7 @@ func _on_graph_view_node_deselected(_node: Node) -> void:
 
 #region BUTTONS
 func _on_open_dialog_file_selected(path: String) -> void:
-	dialogue_ast = load(path)
+	dialogue_ast = ResourceLoader.load(path, 'ParleyDialogueSequenceAst')
 	# TODO: emit as a signal and handle in the plugin
 	if parley_manager:
 		parley_manager.set_current_dialogue_sequence(path)
@@ -549,7 +549,7 @@ func _on_jump_node_editor_action_node_changed(id: String, dialogue_sequence_ast_
 	# Graph View
 	# TODO: move into Graph View
 	var jump_node: ParleyJumpNode = parley_graph_node_variant
-	jump_node.dialogue_sequence_ast = load(jump_node_ast.dialogue_sequence_ast_ref) if ResourceLoader.exists(jump_node_ast.dialogue_sequence_ast_ref) else ParleyDialogueSequenceAst.new()
+	jump_node.dialogue_sequence_ast = ResourceLoader.load(jump_node_ast.dialogue_sequence_ast_ref, 'ParleyDialogueSequenceAst') if ResourceLoader.exists(jump_node_ast.dialogue_sequence_ast_ref) else ParleyDialogueSequenceAst.new()
 
 
 func _on_group_node_editor_group_node_changed(id: String, group_name: String, colour: Color) -> void:

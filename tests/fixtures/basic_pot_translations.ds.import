@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_sequence_ast_1.1.0"
+type="Resource"
+uid="uid://bqmv0f42cxsdt"
+path="res://.godot/imported/basic_pot_translations.ds-c91ec51910d0bc3656fb8c2067351fa2.tres"
+
+[deps]
+
+source_file="res://tests/fixtures/basic_pot_translations.ds"
+dest_files=["res://.godot/imported/basic_pot_translations.ds-c91ec51910d0bc3656fb8c2067351fa2.tres"]
+
+[params]
+

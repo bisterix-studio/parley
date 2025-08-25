@@ -6,7 +6,8 @@
       "type": "DIALOGUE",
       "position": "(1500.0, 1060.0)",
       "character": "uid://ceouii84qmu0w::alice",
-      "text": "Let's talk about something else."
+      "text": "Let's talk about something else.",
+      "text_translation_key": ""
     },
     {
       "id": "node:2",
@@ -18,7 +19,8 @@
       "type": "DIALOGUE",
       "position": "(1940.0, 1060.0)",
       "character": "uid://ceouii84qmu0w::bob",
-      "text": "Okey dokey."
+      "text": "Okey dokey.",
+      "text_translation_key": ""
     },
     {
       "id": "node:4",

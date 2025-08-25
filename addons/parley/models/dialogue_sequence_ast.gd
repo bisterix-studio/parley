@@ -4,6 +4,9 @@
 class_name ParleyDialogueSequenceAst extends Resource
 
 
+const ParleyConstants = preload("../constants.gd")
+
+
 ## The title of the Dialogue Sequence AST
 @export var title: String : set = _set_title
 
@@ -299,7 +302,36 @@ func remove_edges(edges_to_remove: Array[ParleyEdgeAst], emit: bool = true) -> i
 
 #region DIALOGUE RUNTIME
 
-## Run the Dialogue Sequences
+## Initialise the Dialogue Sequence, ready for processing.
+## This will process all nodes it sees until it lands on a node it
+## can stop on. For example, a Dialogue Node or a Dialogue Option Node.
+static func init(ctx: ParleyContext, dialogue_sequence_ast: ParleyDialogueSequenceAst, current_node: ParleyNodeAst = null) -> ParleyRunResult:
+	if ctx.dialogue_sequence_ast != dialogue_sequence_ast:
+		ctx.dialogue_sequence_ast = dialogue_sequence_ast
+	var run_result: ParleyRunResult
+	# TODO: need to test this on every type of node to ensure it's correctly working
+	if current_node is ParleyStartNodeAst or not current_node:
+		run_result = await ctx.dialogue_sequence_ast.next(ctx, current_node)
+	else:
+		var node_run_result: ParleyRunResult = await ctx.dialogue_sequence_ast._process_node(ctx, current_node)
+		run_result = ctx.dialogue_sequence_ast._process_results(
+			ctx,
+			current_node,
+			node_run_result.dialogue_sequence,
+			node_run_result.node_asts
+		)
+		node_run_result.free()
+	var next_dialogue_sequence_ast: ParleyDialogueSequenceAst = run_result.dialogue_sequence if run_result.dialogue_sequence else ctx.dialogue_sequence_ast
+	if next_dialogue_sequence_ast != ctx.dialogue_sequence_ast and not run_result.finished:
+		run_result.free() # Needed to ensure that everything is correctly freed up at exit
+		return await ParleyDialogueSequenceAst.init(ctx, next_dialogue_sequence_ast)
+	else:
+		return run_result
+
+
+## Run the initialised Dialogue Sequence.
+## This will process all nodes it sees until it lands on a node it
+## can stop on. For example, a Dialogue Node or a Dialogue Option Node.
 static func run(ctx: ParleyContext, dialogue_sequence_ast: ParleyDialogueSequenceAst, current_node: ParleyNodeAst = null) -> ParleyRunResult:
 	if ctx.dialogue_sequence_ast != dialogue_sequence_ast:
 		ctx.dialogue_sequence_ast = dialogue_sequence_ast
@@ -307,7 +339,7 @@ static func run(ctx: ParleyContext, dialogue_sequence_ast: ParleyDialogueSequenc
 	var next_dialogue_sequence_ast: ParleyDialogueSequenceAst = run_result.dialogue_sequence if run_result.dialogue_sequence else ctx.dialogue_sequence_ast
 	if next_dialogue_sequence_ast != ctx.dialogue_sequence_ast and not run_result.finished:
 		run_result.free() # Needed to ensure that everything is correctly freed up at exit
-		return await ParleyDialogueSequenceAst.run(ctx, next_dialogue_sequence_ast)
+		return await ParleyDialogueSequenceAst.init(ctx, next_dialogue_sequence_ast)
 	else:
 		return run_result
 
@@ -356,57 +388,17 @@ func next(ctx: ParleyContext, current_node: ParleyNodeAst = null, dry_run: bool 
 				push_warning(ParleyUtils.log.warn_msg('Node: {id} not found for Edge: {edge}'.format({'id': next_id, 'edge': next_edge})))
 			continue
 		var next_node: ParleyNodeAst = filtered_next_nodes.front()
-		var next_type: Type = next_node.type
-		# TODO: handle in settings or move to ctx
-		var should_translate: bool = true
-		match next_type:
-			Type.DIALOGUE:
-				if should_translate:
-					var dialogue_node_ast: ParleyDialogueNodeAst = next_node
-					var resolved_text: String = resolve_value(ctx, dialogue_node_ast.text, dialogue_node_ast, 'text')
-					next_nodes.append(dialogue_node_ast.to_resolved(resolved_text))
-				else:
-					next_nodes.append(next_node)
-			Type.DIALOGUE_OPTION:
-				if should_translate:
-					var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = next_node
-					var resolved_text: String = resolve_value(ctx, dialogue_option_node_ast.text, dialogue_option_node_ast, 'text')
-					next_nodes.append(dialogue_option_node_ast.to_resolved(resolved_text))
-				else:
-					next_nodes.append(next_node)
-			Type.ACTION:
-				if not dry_run:
-					await _run_action(ctx, next_node)
-				var next_run_result: ParleyRunResult = await next(ctx, next_node, dry_run)
-				next_nodes.append_array(next_run_result.node_asts)
-				next_dialogue_sequence_ast = next_run_result.dialogue_sequence
-				next_run_result.free() # Needed to ensure that everything is correctly freed up at exit
-			Type.CONDITION:
-				var next_run_result: ParleyRunResult = await next(ctx, next_node, dry_run)
-				next_nodes.append_array(next_run_result.node_asts)
-				next_dialogue_sequence_ast = next_run_result.dialogue_sequence
-				next_run_result.free() # Needed to ensure that everything is correctly freed up at exit
-			Type.MATCH:
-				var next_run_result: ParleyRunResult = await next(ctx, next_node, dry_run)
-				next_nodes.append_array(next_run_result.node_asts)
-				next_dialogue_sequence_ast = next_run_result.dialogue_sequence
-				next_run_result.free() # Needed to ensure that everything is correctly freed up at exit
-			Type.JUMP:
-				var jump_node_ast: ParleyJumpNodeAst = next_node
-				if not ResourceLoader.exists(jump_node_ast.dialogue_sequence_ast_ref):
-					push_error(ParleyUtils.log.error_msg("Unable to jump to Dialogue Sequence with ref %s: does not exist. Stopping the Dialogue Sequence processing."))
-					return _process_end(ctx, dry_run)
-				next_dialogue_sequence_ast = load(jump_node_ast.dialogue_sequence_ast_ref)
-				next_nodes.append(next_node)
-			Type.START:
-				next_nodes.append(next_node)
-			Type.END:
-				next_nodes.append(next_node)
-			_:
-				if not dry_run:
-					push_warning(ParleyUtils.log.warn_msg("AST Node {type} is not supported".format({"type": next_type})))
-				continue
-	
+		var result: ParleyRunResult = await _process_node(ctx, next_node, dry_run)
+		if result.finished:
+			return result
+		next_dialogue_sequence_ast = result.dialogue_sequence
+		next_nodes.append_array(result.node_asts)
+		result.free() # Needed to ensure that everything is correctly freed up at exit
+
+	return _process_results(ctx, current_node, next_dialogue_sequence_ast, next_nodes, dry_run)
+
+
+func _process_results(ctx: ParleyContext, current_node: ParleyNodeAst, next_dialogue_sequence_ast: ParleyDialogueSequenceAst, next_nodes: Array[ParleyNodeAst], dry_run: bool = false) -> ParleyRunResult:
 	var types: Array[Type] = []
 	# TODO: check for multiple of Dialogue
 	# TODO: check for multiple of End
@@ -436,6 +428,52 @@ func next(ctx: ParleyContext, current_node: ParleyNodeAst = null, dry_run: bool 
 		end.free() # Needed to ensure that everything is correctly freed up at exit
 		run_result.finished = true
 	return run_result
+
+
+func _process_node(ctx: ParleyContext, node: ParleyNodeAst, dry_run: bool = false) -> ParleyRunResult:
+	var next_dialogue_sequence_ast: ParleyDialogueSequenceAst = ctx.dialogue_sequence_ast
+	var next_nodes: Array[ParleyNodeAst] = []
+	match node.type:
+		Type.DIALOGUE:
+			var dialogue_node_ast: ParleyDialogueNodeAst = node
+			var resolved_text: String = resolve_value(ctx, dialogue_node_ast.text, dialogue_node_ast, 'text')
+			next_nodes.append(dialogue_node_ast.to_resolved(resolved_text))
+		Type.DIALOGUE_OPTION:
+			var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = node
+			var resolved_text: String = resolve_value(ctx, dialogue_option_node_ast.text, dialogue_option_node_ast, 'text')
+			next_nodes.append(dialogue_option_node_ast.to_resolved(resolved_text))
+		Type.ACTION:
+			if not dry_run:
+				await _run_action(ctx, node)
+			var next_run_result: ParleyRunResult = await next(ctx, node, dry_run)
+			next_nodes.append_array(next_run_result.node_asts)
+			next_dialogue_sequence_ast = next_run_result.dialogue_sequence
+			next_run_result.free() # Needed to ensure that everything is correctly freed up at exit
+		Type.CONDITION:
+			var next_run_result: ParleyRunResult = await next(ctx, node, dry_run)
+			next_nodes.append_array(next_run_result.node_asts)
+			next_dialogue_sequence_ast = next_run_result.dialogue_sequence
+			next_run_result.free() # Needed to ensure that everything is correctly freed up at exit
+		Type.MATCH:
+			var next_run_result: ParleyRunResult = await next(ctx, node, dry_run)
+			next_nodes.append_array(next_run_result.node_asts)
+			next_dialogue_sequence_ast = next_run_result.dialogue_sequence
+			next_run_result.free() # Needed to ensure that everything is correctly freed up at exit
+		Type.JUMP:
+			var jump_node_ast: ParleyJumpNodeAst = node
+			if not ResourceLoader.exists(jump_node_ast.dialogue_sequence_ast_ref):
+				push_error(ParleyUtils.log.error_msg("Unable to jump to Dialogue Sequence with ref %s: does not exist. Stopping the Dialogue Sequence processing."))
+				return _process_end(ctx, dry_run)
+			next_dialogue_sequence_ast = load(jump_node_ast.dialogue_sequence_ast_ref)
+			next_nodes.append(node)
+		Type.START:
+			next_nodes.append(node)
+		Type.END:
+			next_nodes.append(node)
+		_:
+			if not dry_run:
+				push_warning(ParleyUtils.log.warn_msg("AST Node {type} is not supported".format({"type": node.type})))
+	return ParleyRunResult.create(next_dialogue_sequence_ast, next_nodes)
 
 
 func _run_action(ctx: ParleyContext, node_ast: ParleyNodeAst) -> void:
@@ -551,12 +589,41 @@ func _evaluate_expression(_ctx: ParleyContext, value_expr: String) -> String:
 
 
 # TODO: add translation key to NodeAst
-func _translate_value(_ctx: ParleyContext, translate_node: ParleyNodeAst, translate_field: String, value: String) -> Variant:
-	var translate_ctx: String = &""
-	if ResourceLoader.exists(self.resource_path):
-		var uid: String = ParleyUtils.resource.get_uid(self)
-		translate_ctx = ParleyUtils.translation.get_msg_ctx(uid, translate_node, translate_field)
-	return str(tr(value, translate_ctx))
+func _translate_value(ctx: ParleyContext, node_to_translate: ParleyNodeAst, translate_field: String, value: String) -> Variant:
+	var translation_mode: ParleyContext.TranslationMode = ctx.translation_mode if ctx.translation_mode else ParleyContext.TranslationMode.Auto
+
+	# Return untranslated value if translation mode is off
+	if translation_mode == ParleyContext.TranslationMode.Off:
+		return value
+
+	# Try and figure out the translation mode, defaulting to CSV if unknown
+	if translation_mode == ParleyContext.TranslationMode.Auto:
+		var project_translation_files: Array = ProjectSettings.get_setting(ParleyConstants.TRANSLATION_FILES, [])
+		if project_translation_files.filter(func(f: String) -> bool: return f.get_extension() in [&"po", &"mo"]).size() > 0:
+			translation_mode = ParleyContext.TranslationMode.PO
+		else:
+			translation_mode = ParleyContext.TranslationMode.CSV
+
+	# If the translation key is the same as the value, immediately try and translate
+	var translation_key: Variant = node_to_translate.get('translation_key')
+	if translation_key == value:
+		return tr(value)
+
+	# Otherwise, translate according to the translation mode
+	var translation_ctx: StringName = &""
+	if translation_key:
+		translation_ctx = StringName(str(translation_key))
+	match translation_mode:
+		ParleyContext.TranslationMode.PO:
+			if not translation_key and ResourceLoader.exists(self.resource_path):
+				var uid: String = ParleyUtils.resource.get_uid(self)
+				translation_ctx = StringName(ParleyUtils.translation.get_msg_ctx(uid, node_to_translate, translate_field))
+			return tr(value, translation_ctx)
+		ParleyContext.TranslationMode.CSV:
+			return tr(translation_ctx)
+
+	# If the mode is still not found, return the untranslated value
+	return value
 
 
 func _coerce_value(value_expr: Variant) -> Variant:

@@ -2,50 +2,58 @@
 
 @tool
 
+
 #region General
 # TODO: figure out better way of getting this version as it is duplicated
-const VERSION: String = "2.1.0"
-const AST_VERSION: String = "1.1.0"
-const USER_CONFIG_PATH: String = "user://parley_user_config.json"
+const VERSION: StringName = &"2.1.0"
+const AST_VERSION: StringName = &"1.1.0"
+const USER_CONFIG_PATH: StringName = &"user://parley_user_config.json"
 #endregion
 
+
 #region Parley Plugin
-const PLUGIN_NAME: String = "Parley"
-const PARLEY_PLUGIN_METADATA: String = "ParleyPlugin"
-const PARLEY_RUNTIME_AUTOLOAD: String = "Parley"
-const PARLEY_MANAGER_SINGLETON: String = "ParleyManager"
-const PARLEY_RUNTIME_SINGLETON: String = "ParleyRuntime"
+const PLUGIN_NAME: StringName = &"Parley"
+const PARLEY_PLUGIN_METADATA: StringName = &"ParleyPlugin"
+const PARLEY_RUNTIME_AUTOLOAD: StringName = &"Parley"
+const PARLEY_MANAGER_SINGLETON: StringName = &"ParleyManager"
+const PARLEY_RUNTIME_SINGLETON: StringName = &"ParleyRuntime"
 #endregion
+
 
 #region Editor
 # User settings
-const EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH: String = "parley/editor/current_dialogue_sequence_path"
+const EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH: StringName = &"parley/editor/current_dialogue_sequence_path"
 #endregion
+
 
 #region Dialogue
 # Project settings
-const DIALOGUE_BALLOON_PATH: String = "parley/dialogue/dialogue_balloon_path"
+const DIALOGUE_BALLOON_PATH: StringName = &"parley/dialogue/dialogue_balloon_path"
 #endregion
+
 
 #region Internationalisation
 # Project settings
-const TRANSLATION_MODE: String = "parley/translations/mode"
-const TRANSLATIONS_POT_FILES: String = "internationalization/locale/translations_pot_files"
+const TRANSLATION_MODE: StringName = &"parley/translations/mode"
+const TRANSLATION_FILES: StringName = &"internationalization/locale/translations"
+const TRANSLATIONS_POT_FILES: StringName = &"internationalization/locale/translations_pot_files"
 #endregion
+
 
 #region Stores
 # Project settings
-const ACTION_STORE_PATH: String = "parley/stores/action_store_path"
-const CHARACTER_STORE_PATH: String = "parley/stores/character_store_path"
-const FACT_STORE_PATH: String = "parley/stores/fact_store_path"
+const ACTION_STORE_PATH: StringName = &"parley/stores/action_store_path"
+const CHARACTER_STORE_PATH: StringName = &"parley/stores/character_store_path"
+const FACT_STORE_PATH: StringName = &"parley/stores/fact_store_path"
 #endregion
+
 
 #region Test Dialogue Sequence
 # Project settings
-const TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: String = "parley/test_dialogue_sequence/test_scene_path"
+const TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: StringName = &"parley/test_dialogue_sequence/test_scene_path"
 # User settings
-const TEST_DIALOGUE_SEQUENCE_IS_RUNNING_DIALOGUE_TEST: String = "parley/test_dialogue_sequence/is_running_test_scene"
-const TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH: String = "parley/test_dialogue_sequence/dialogue_ast_resource_path"
-const TEST_DIALOGUE_SEQUENCE_FROM_START: String = "parley/test_dialogue_sequence/from_start"
-const TEST_DIALOGUE_SEQUENCE_START_NODE_ID: String = "parley/test_dialogue_sequence/start_node_id"
+const TEST_DIALOGUE_SEQUENCE_IS_RUNNING_DIALOGUE_TEST: StringName = &"parley/test_dialogue_sequence/is_running_test_scene"
+const TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH: StringName = &"parley/test_dialogue_sequence/dialogue_ast_resource_path"
+const TEST_DIALOGUE_SEQUENCE_FROM_START: StringName = &"parley/test_dialogue_sequence/from_start"
+const TEST_DIALOGUE_SEQUENCE_START_NODE_ID: StringName = &"parley/test_dialogue_sequence/start_node_id"
 #endregion
