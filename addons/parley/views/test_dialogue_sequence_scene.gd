@@ -5,9 +5,13 @@ extends Node2D
 
 var ctx: ParleyContext
 var current_dialogue_ast: ParleyDialogueSequenceAst
+var original_translation_server_locale: String = TranslationServer.get_locale()
 
 
 func _ready() -> void:
+	var test_locale: String = ParleyManager.get_instance().get_test_locale()
+	if test_locale:
+		TranslationServer.set_locale(test_locale)
 	current_dialogue_ast = ParleyManager.get_instance().load_test_dialogue_sequence()
 	ctx = ParleyContext.create(current_dialogue_ast)
 	ParleyUtils.signals.safe_connect(ctx.dialogue_ended, _on_dialogue_ended)
@@ -34,3 +38,4 @@ func _clear() -> void:
 		ParleyUtils.signals.safe_disconnect(ctx.dialogue_ended, _on_dialogue_ended)
 		if not ctx.is_queued_for_deletion():
 			ctx.free()
+	TranslationServer.set_locale(original_translation_server_locale)

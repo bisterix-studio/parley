@@ -153,6 +153,22 @@
       "id": "node:21",
       "type": "END",
       "position": "(4160.0, 860.0)"
+    },
+    {
+      "id": "node:22",
+      "type": "DIALOGUE",
+      "position": "(3600.0, -180.0)",
+      "character": "",
+      "text": "Some really really really long dialogue text that never ends because of reasons. Let's repeat! Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. ",
+      "text_translation_key": ""
+    },
+    {
+      "id": "node:23",
+      "type": "DIALOGUE",
+      "position": "(3620.0, -600.0)",
+      "character": "",
+      "text": "Sp    aces\n\n\nReturns\n\n\n\tTab1\n\n\n             \t\t\tTab2",
+      "text_translation_key": ""
     }
   ],
   "edges": [

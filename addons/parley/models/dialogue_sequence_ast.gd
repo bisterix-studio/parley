@@ -574,6 +574,7 @@ func resolve_value(ctx: ParleyContext, value_expr: Variant, node_to_translate: P
 	if is_instance_of(value_expr, TYPE_STRING):
 		# Resolve expressions
 		var raw_expression: String = value_expr
+		# TODO: consider doing this after the translation is complete
 		var value: String = _evaluate_expression(ctx, raw_expression)
 		# Apply translations
 		if node_to_translate:
@@ -605,8 +606,8 @@ func _translate_value(ctx: ParleyContext, node_to_translate: ParleyNodeAst, tran
 			translation_mode = ParleyContext.TranslationMode.CSV
 
 	# If the translation key is the same as the value, immediately try and translate
-	var translation_key: Variant = node_to_translate.get('translation_key')
-	if translation_key == value:
+	var translation_key: Variant = ParleyUtils.translation.get_msg_ctx(node_to_translate, translate_field)
+	if not translation_key or translation_key == value:
 		return tr(value)
 
 	# Otherwise, translate according to the translation mode
@@ -615,9 +616,6 @@ func _translate_value(ctx: ParleyContext, node_to_translate: ParleyNodeAst, tran
 		translation_ctx = StringName(str(translation_key))
 	match translation_mode:
 		ParleyContext.TranslationMode.PO:
-			if not translation_key and ResourceLoader.exists(self.resource_path):
-				var uid: String = ParleyUtils.resource.get_uid(self)
-				translation_ctx = StringName(ParleyUtils.translation.get_msg_ctx(uid, node_to_translate, translate_field))
 			return tr(value, translation_ctx)
 		ParleyContext.TranslationMode.CSV:
 			return tr(translation_ctx)

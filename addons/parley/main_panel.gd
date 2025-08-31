@@ -42,9 +42,11 @@ var parley_manager: ParleyManager
 @onready var new_dialogue_sequence_modal: ParleyNewDialogueSequenceModal = %NewDialogueSequenceModal
 @onready var edit_dialogue_sequence_modal: ParleyEditDialogueSequenceModal = %EditDialogueSequenceModal
 @onready var export_to_csv_modal: ParleyExportToCsvModal = %ExportToCsvModal
+@onready var select_locale_modal: Window = %SelectLocaleModal
 @onready var editor: HSplitContainer = %EditorView
 @onready var sidebar: ParleySidebar = %Sidebar
 @onready var bottom_panel: ParleyBottomPanel = %BottomPanel
+@onready var test_locale_editor: Button = %TestLocaleEditor
 
 
 # TODO: remove this
@@ -58,7 +60,7 @@ signal node_selected(node_ast: ParleyNodeAst)
 
 #region SETUP
 func _ready() -> void:
-	_setup()
+	_setup(true)
 
 
 func refresh(arrange: bool = false) -> void:
@@ -201,15 +203,24 @@ func _render_toolbar() -> void:
 func _render_bottom_panel() -> void:
 	if bottom_panel and parley_manager:
 		bottom_panel.version = parley_manager.get_plugin_version()
+
+
+func _render_test_locale_editor(on_ready: bool = false) -> void:
+	if test_locale_editor:
+		if on_ready:
+			test_locale_editor.tooltip_text = &"Set the default locale that will be used when testing Dialogue Sequences."
+		if parley_manager:
+			test_locale_editor.text = parley_manager.get_test_locale()
 #endregion
 
 
 #region SETUP
-func _setup() -> void:
+func _setup(on_ready: bool = false) -> void:
 	_setup_file_menu()
 	_setup_insert_menu()
 	_render_toolbar()
 	_render_bottom_panel()
+	_render_test_locale_editor(on_ready)
 
 
 ## Set up the file menu
@@ -390,10 +401,20 @@ func _on_character_store_changed() -> void:
 		var nodes: Array[ParleyNodeAst] = dialogue_ast.find_nodes_by_types([ParleyDialogueSequenceAst.Type.DIALOGUE, ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION])
 		for node_ast: ParleyNodeAst in nodes:
 			_set_node_ast(node_ast)
-		
+
 
 func _on_node_editor_node_changed(new_node_ast: ParleyNodeAst) -> void:
 	selected_node_ast = new_node_ast
+
+
+func _on_test_locale_editor_pressed() -> void:
+	select_locale_modal.show()
+
+
+func _on_select_locale_modal_locale_changed(new_test_locale: String) -> void:
+	if parley_manager:
+			parley_manager.set_test_locale(new_test_locale)
+	_render_test_locale_editor()
 
 
 func _on_graph_view_scroll_offset_changed(offset: Vector2) -> void:

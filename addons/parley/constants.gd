@@ -51,9 +51,11 @@ const FACT_STORE_PATH: StringName = &"parley/stores/fact_store_path"
 #region Test Dialogue Sequence
 # Project settings
 const TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: StringName = &"parley/test_dialogue_sequence/test_scene_path"
+const TEST_DEFAULT_LOCALE: StringName = &"parley/test_dialogue_sequence/default_locale"
 # User settings
 const TEST_DIALOGUE_SEQUENCE_IS_RUNNING_DIALOGUE_TEST: StringName = &"parley/test_dialogue_sequence/is_running_test_scene"
 const TEST_DIALOGUE_SEQUENCE_DIALOGUE_AST_RESOURCE_PATH: StringName = &"parley/test_dialogue_sequence/dialogue_ast_resource_path"
 const TEST_DIALOGUE_SEQUENCE_FROM_START: StringName = &"parley/test_dialogue_sequence/from_start"
 const TEST_DIALOGUE_SEQUENCE_START_NODE_ID: StringName = &"parley/test_dialogue_sequence/start_node_id"
+const TEST_LOCALE: StringName = &"parley/test_dialogue_sequence/locale"
 #endregion

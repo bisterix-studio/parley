@@ -35,6 +35,7 @@ signal dialogue_sequence_ast_selected(selected_dialogue_sequence_ast: ParleyDial
 #region SETTERS
 func _set_dialogue_sequence_ast(new_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	dialogue_sequence_ast = new_dialogue_sequence_ast
+	_render_node()
 
 
 func _set_node_ast(new_node_ast: ParleyNodeAst) -> void:
@@ -78,16 +79,23 @@ func _render_node() -> void:
 				return
 
 
+func _render_base_node_editor(node_editor: ParleyBaseNodeEditor) -> void:
+	node_editor.dialogue_sequence_ast = dialogue_sequence_ast
+	node_editor.node_ast = node_ast
+
+
 func _render_dialogue_node_editor() -> void:
 	if not dialogue_sequence_ast:
 		push_error(ParleyUtils.log.error_msg("No Dialogue Sequence AST selected for %s, unable to render node editor" % [node_ast]))
 		return
 	var dialogue_node_ast: ParleyDialogueNodeAst = node_ast
 	var dialogue_node_editor: ParleyDialogueNodeEditor = DialogueNodeEditorScene.instantiate()
+	_render_base_node_editor(dialogue_node_editor)
 	dialogue_node_editor.character_store = character_store
 	dialogue_node_editor.id = dialogue_node_ast.id
 	dialogue_node_editor.character = dialogue_node_ast.character
 	dialogue_node_editor.dialogue = dialogue_node_ast.text
+	dialogue_node_editor.text_translation_key = dialogue_node_ast.text_translation_key
 	ParleyUtils.signals.safe_connect(dialogue_node_editor.dialogue_node_changed, _on_dialogue_node_editor_dialogue_node_changed)
 	ParleyUtils.signals.safe_connect(dialogue_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(dialogue_node_editor)
@@ -99,6 +107,7 @@ func _render_dialogue_option_node_editor() -> void:
 		return
 	var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = node_ast
 	var dialogue_option_node_editor: ParleyDialogueOptionNodeEditor = DialogueOptionNodeEditorScene.instantiate()
+	_render_base_node_editor(dialogue_option_node_editor)
 	dialogue_option_node_editor.character_store = character_store
 	dialogue_option_node_editor.id = dialogue_option_node_ast.id
 	dialogue_option_node_editor.character = dialogue_option_node_ast.character
@@ -128,6 +137,7 @@ func _render_condition_node_editor() -> void:
 			}
 	)
 	var condition_node_editor: ParleyConditionNodeEditor = ConditionNodeEditorScene.instantiate()
+	_render_base_node_editor(condition_node_editor)
 	condition_node_editor.fact_store = fact_store
 	condition_node_editor.id = condition_node_ast.id
 	condition_node_editor.description = condition_node_ast.description
@@ -145,6 +155,7 @@ func _render_match_node_editor() -> void:
 	var match_node_ast: ParleyMatchNodeAst = node_ast
 	## TODO: create from ast
 	var match_node_editor: ParleyMatchNodeEditor = MatchNodeEditorScene.instantiate()
+	_render_base_node_editor(match_node_editor)
 	match_node_editor.fact_store = fact_store
 	match_node_editor.id = match_node_ast.id
 	match_node_editor.description = match_node_ast.description
@@ -166,6 +177,7 @@ func _render_action_node_editor() -> void:
 
 	## TODO: create from ast
 	var action_node_editor: ParleyActionNodeEditor = ActionNodeEditorScene.instantiate()
+	_render_base_node_editor(action_node_editor)
 	action_node_editor.action_store = action_store
 	action_node_editor.id = action_node_ast.id
 	action_node_editor.description = action_node_ast.description
@@ -188,6 +200,7 @@ func _render_jump_node_editor() -> void:
 
 	## TODO: create from ast
 	var jump_node_editor: ParleyJumpNodeEditor = JumpNodeEditorScene.instantiate()
+	_render_base_node_editor(jump_node_editor)
 	jump_node_editor.id = jump_node_ast.id
 	jump_node_editor.dialogue_sequence_ast_ref = jump_node_ast.dialogue_sequence_ast_ref
 	ParleyUtils.signals.safe_connect(jump_node_editor.jump_node_changed, _on_jump_node_editor_jump_node_changed)
@@ -203,6 +216,7 @@ func _render_group_node_editor() -> void:
 	var group_node_ast: ParleyGroupNodeAst = node_ast
 	## TODO: create from ast
 	var group_node_editor: ParleyGroupNodeEditor = GroupNodeEditorScene.instantiate()
+	_render_base_node_editor(group_node_editor)
 	group_node_editor.id = group_node_ast.id
 	group_node_editor.group_name = group_node_ast.name
 	group_node_editor.colour = group_node_ast.colour
@@ -218,6 +232,7 @@ func _render_start_node_editor() -> void:
 	var start_node_ast: ParleyStartNodeAst = node_ast
 	## TODO: create from ast
 	var start_node_editor: ParleyStartNodeEditor = StartNodeEditorScene.instantiate()
+	_render_base_node_editor(start_node_editor)
 	start_node_editor.id = start_node_ast.id
 	ParleyUtils.signals.safe_connect(start_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(start_node_editor)
@@ -230,6 +245,7 @@ func _render_end_node_editor() -> void:
 	var end_node_ast: ParleyEndNodeAst = node_ast
 	## TODO: create from ast
 	var end_node_editor: ParleyEndNodeEditor = EndNodeEditorScene.instantiate()
+	_render_base_node_editor(end_node_editor)
 	end_node_editor.id = end_node_ast.id
 	ParleyUtils.signals.safe_connect(end_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(end_node_editor)
@@ -238,11 +254,12 @@ func _render_end_node_editor() -> void:
 
 # TODO: check ID exists in the Dialogue Sequence ast and is of the correct type
 #region SIGNALS
-func _on_dialogue_node_editor_dialogue_node_changed(_id: String, character: String, dialogue: String) -> void:
+func _on_dialogue_node_editor_dialogue_node_changed(_id: String, character: String, dialogue: String, text_translation_key: String) -> void:
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: ParleyDialogueNodeAst = node_ast.duplicate(true)
 	new_node_ast.character = character
 	new_node_ast.text = dialogue
+	new_node_ast.text_translation_key = text_translation_key
 	node_changed.emit(new_node_ast)
 
 

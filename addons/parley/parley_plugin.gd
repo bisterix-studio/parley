@@ -84,7 +84,9 @@ func _enter_tree() -> void:
 		# TODO: it may be better to not refresh automatically upon a dialogue ast change
 		# or defer the refresh so it happens after all the other setters are made.
 		_setup_data()
-		main_panel_instance.dialogue_ast = parley_manager.load_current_dialogue_sequence()
+		var dialogue_sequence_ast: ParleyDialogueSequenceAst = parley_manager.load_current_dialogue_sequence()
+		main_panel_instance.dialogue_ast = dialogue_sequence_ast
+		node_editor.dialogue_sequence_ast = dialogue_sequence_ast
 
 		# Hide the main panel. Very much required.
 		_make_visible(false)

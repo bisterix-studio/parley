@@ -76,12 +76,14 @@ editable = false
 
 [node name="ManageDialogueSequenceButton" type="Button" parent="VSplitContainer/DialogueSequenceContainer/VBoxContainer/ManageDialogueSequenceContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 icon = ExtResource("3_l7xuh")
 
 [node name="NoDialogueSequenceWarningButton" type="Button" parent="VSplitContainer/DialogueSequenceContainer/VBoxContainer/ManageDialogueSequenceContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "No Dialogue Sequence opened. Please create or open one via the Parley file menu in the top left-hand side."
 icon = ExtResource("4_0tc7b")
 
 [node name="NodeList" type="VBoxContainer" parent="VSplitContainer/DialogueSequenceContainer/VBoxContainer"]

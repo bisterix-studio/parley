@@ -21,241 +21,157 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:3::text"
 msgid "Look. I made a whatdyamacallit."
 msgstr ""
 
-#: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:4::text"
-msgid "Wow. Great."
-msgstr ""
-
-#: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:4::text"
+#: dialogue_sequences/all.ds tests/fixtures/basic_ast_node_generation_input.ds
 msgid "Wow. Great."
 msgstr ""
 
 #: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:7::text"
 msgid "I have a coffee."
 msgstr ""
 
 #: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:8::text"
 msgid "Give to Alice."
 msgstr ""
 
 #: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:13::text"
 msgid "Keep it."
 msgstr ""
 
-#: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:10::text"
+#: dialogue_sequences/all.ds tests/fixtures/basic_ast_node_generation_input.ds
 msgid "Here you go."
 msgstr ""
 
-#: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:10::text"
-msgid "Here you go."
-msgstr ""
-
-#: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:11::text"
+#: dialogue_sequences/all.ds tests/fixtures/basic_ast_node_generation_input.ds
 msgid "Cheers."
 msgstr ""
 
-#: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:11::text"
-msgid "Cheers."
-msgstr ""
-
-#: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:12::text"
+#: dialogue_sequences/all.ds tests/fixtures/basic_ast_node_generation_input.ds
 msgid "You're welcome."
 msgstr ""
 
-#: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:12::text"
-msgid "You're welcome."
-msgstr ""
-
-#: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:14::text"
+#: dialogue_sequences/all.ds tests/fixtures/basic_ast_node_generation_input.ds
 msgid "But it's mine."
 msgstr ""
 
-#: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:14::text"
-msgid "But it's mine."
-msgstr ""
-
-#: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:15::text"
+#: dialogue_sequences/all.ds tests/fixtures/basic_ast_node_generation_input.ds
 msgid "Fair enough."
 msgstr ""
 
-#: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:15::text"
-msgid "Fair enough."
-msgstr ""
-
-#: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:17::text"
+#: dialogue_sequences/all.ds tests/fixtures/basic_ast_node_generation_input.ds
 msgid "Mmm. Coffee. Now, what did you want me to look at?"
 msgstr ""
 
-#: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:17::text"
-msgid "Mmm. Coffee. Now, what did you want me to look at?"
-msgstr ""
-
-#: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:19::text"
+#: dialogue_sequences/all.ds tests/fixtures/basic_ast_node_generation_input.ds
 msgid "I NEED COFFEE!"
 msgstr ""
 
-#: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:19::text"
-msgid "I NEED COFFEE!"
-msgstr ""
-
-#: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:20::text"
-msgid "I'll get you coffee, Mama. But first, CATNIP."
-msgstr ""
-
-#: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:20::text"
+#: dialogue_sequences/all.ds tests/fixtures/basic_ast_node_generation_input.ds
 msgid "I'll get you coffee, Mama. But first, CATNIP."
 msgstr ""
 
 #: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:24::text"
 msgid "Look, I need coffee."
 msgstr ""
 
 #: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:25::text"
 msgid "Look, I really need coffee."
 msgstr ""
 
 #: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:26::text"
 msgid "Look, I really really REALLY need coffee."
 msgstr ""
 
 #: dialogue_sequences/all.ds
-msgctxt "uid://d2883lul36r1d::node:27::text"
 msgid "Coffee please."
 msgstr ""
 
 #: dialogue_sequences/next_dialogue.ds
-msgctxt "uid://cfaambg2fkgnh::node:1::text"
 msgid "Let's talk about something else."
 msgstr ""
 
 #: dialogue_sequences/next_dialogue.ds
-msgctxt "uid://cfaambg2fkgnh::node:3::text"
 msgid "Okey dokey."
 msgstr ""
 
 #: tests/fixtures/basic_pot_translations.ds
-msgctxt "uid://bqmv0f42cxsdt::node:2::text"
 msgid "[PO]: Some text in English."
 msgstr "[PO]: Quelques textes en anglais."
 
 #: tests/fixtures/basic_pot_translations.ds
-msgctxt "uid://bqmv0f42cxsdt::node:3::text"
 msgid "[PO]: Some option in English."
 msgstr "[PO]: Quelques options en anglais."
 
 #: tests/fixtures/basic_pot_translations.ds
-msgctxt "uid://bqmv0f42cxsdt::node:4::text"
 msgid "[PO]: Another option in English."
 msgstr "[PO]: Une autre option en anglais."
 
 #: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:3::text"
 msgid "Look. I made a thing."
 msgstr ""
 
 #: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:7::text"
 msgid "LOOK AT MY THING!"
 msgstr ""
 
 #: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:8::text"
 msgid "Give to Alice"
 msgstr ""
 
 #: tests/fixtures/basic_ast_node_generation_input.ds
-msgctxt "uid://dm0pdramhs72h::node:13::text"
 msgid "Keep it"
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:3::text"
 msgid "Yep, coffee please."
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:4::text"
 msgid "Seriously, I need coffee."
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:5::text"
 msgid "COFFEE."
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:6::text"
 msgid "If in doubt, coffee please."
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:8::text"
 msgid "Let's play some snooker!"
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:10::text"
 msgid "You potted the red ball!"
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:11::text"
 msgid "And that's a bad miss."
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:12::text"
 msgid "You potted the blue ball!"
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:13::text"
 msgid "You potted the pink ball!"
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:14::text"
 msgid "You potted the yellow ball!"
 msgstr ""
 
 #: tests/fixtures/basic_match_input.ds
-msgctxt "uid://rc12mdidlka8::node:16::text"
 msgid "Let's find Alice's coffee status."
 msgstr ""
 
 #: tests/fixtures/from_jump_node_input.ds
-msgctxt "uid://bhkl60rjr16mx::node:2::text"
 msgid "About to jump..."
 msgstr ""
 
 #: tests/fixtures/to_jump_node_input.ds
-msgctxt "uid://ke0fhj4tdr7x::node:2::text"
 msgid "Jumped!"
 msgstr ""

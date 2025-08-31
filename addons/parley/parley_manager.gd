@@ -235,6 +235,28 @@ func load_test_dialogue_sequence() -> ParleyDialogueSequenceAst:
 
 
 ## Plugin use only
+func get_test_locale() -> String:
+	var test_locale: Variant = ParleySettings.get_user_value(ParleyConstants.TEST_LOCALE, "")
+	if test_locale and is_instance_of(test_locale, TYPE_STRING):
+		return test_locale
+
+	test_locale = ParleySettings.get_setting(ParleyConstants.TEST_DEFAULT_LOCALE, "")
+	if test_locale and is_instance_of(test_locale, TYPE_STRING):
+		return test_locale
+	# TODO: constant
+	test_locale = ProjectSettings.get_setting("internationalization/locale/test", "")
+	if test_locale and is_instance_of(test_locale, TYPE_STRING):
+		return test_locale
+	return TranslationServer.get_tool_locale()
+
+
+## Plugin use only
+func set_test_locale(new_test_locale: String) -> void:
+	ParleySettings.set_user_value(ParleyConstants.TEST_LOCALE, new_test_locale)
+	print_rich(ParleyUtils.log.info_msg("Set test locale to: %s" % new_test_locale))
+
+
+## Plugin use only
 func get_test_start_node(dialogue_ast: ParleyDialogueSequenceAst) -> Variant:
 	var start_node_id_variant: Variant = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_START_NODE_ID)
 	var from_start: Variant = ParleySettings.get_user_value(ParleyConstants.TEST_DIALOGUE_SEQUENCE_FROM_START)

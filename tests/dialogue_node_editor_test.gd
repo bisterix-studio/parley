@@ -131,11 +131,11 @@ class Test_dialogue_node_editor:
 	func test_update_render_with_text_input(params: Variant = use_parameters([
 		{
 			"input": {"id": "1", "dialogue": "Some dialogue"},
-			"expected": {"id": "1", "character_id": "", "selected_character": - 1, "dialogue": "Some dialogue"},
+			"expected": {"id": "1", "character_id": "", "selected_character": -1, "dialogue": "Some dialogue", "text_translation_key": ""},
 		},
 		{
 			"input": {"id": "1", "selected_character": 0},
-			"expected": {"id": "1", "character_id": "%s::default_character" % ParleyUtils.resource.get_uid(character_store), "selected_character": 0, "dialogue": ""},
+			"expected": {"id": "1", "character_id": "%s::default_character" % ParleyUtils.resource.get_uid(character_store), "selected_character": 0, "dialogue": "", "text_translation_key": ""},
 		},
 	])) -> void:
 		# Arrange
@@ -155,4 +155,4 @@ class Test_dialogue_node_editor:
 		assert_eq(dialogue_node_editor.dialogue, str(expected['dialogue']))
 		assert_eq(dialogue_node_editor.dialogue_editor.text, str(expected['dialogue']))
 		assert_eq(dialogue_node_editor.character_selector.selected, expected_selected_character)
-		assert_signal_emitted_with_parameters(dialogue_node_editor, 'dialogue_node_changed', [expected['id'], expected['character_id'], expected['dialogue']])
+		assert_signal_emitted_with_parameters(dialogue_node_editor, 'dialogue_node_changed', [expected['id'], expected['character_id'], expected['dialogue'], expected['text_translation_key']])

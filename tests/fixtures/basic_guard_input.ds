@@ -11,28 +11,32 @@
       "type": "DIALOGUE",
       "position": "(120.0, 1020.0)",
       "character": "Unknown",
-      "text": "Start"
+      "text": "Start",
+      "text_translation_key": ""
     },
     {
       "id": "node:3",
       "type": "DIALOGUE_OPTION",
       "position": "(1500.0, 580.0)",
       "character": "Bob",
-      "text": "SHOULD NOT BE RENDERED"
+      "text": "SHOULD NOT BE RENDERED",
+      "text_translation_key": ""
     },
     {
       "id": "node:4",
       "type": "DIALOGUE_OPTION",
       "position": "(1000.0, 1100.0)",
       "character": "Bob",
-      "text": "No guard 1"
+      "text": "No guard 1",
+      "text_translation_key": ""
     },
     {
       "id": "node:5",
       "type": "DIALOGUE_OPTION",
       "position": "(1000.0, 1540.0)",
       "character": "Bob",
-      "text": "No guard 2"
+      "text": "No guard 2",
+      "text_translation_key": ""
     },
     {
       "id": "node:6",
@@ -53,14 +57,16 @@
       "type": "DIALOGUE",
       "position": "(2020.0, 1000.0)",
       "character": "Alice",
-      "text": "End"
+      "text": "End",
+      "text_translation_key": ""
     },
     {
       "id": "node:8",
       "type": "DIALOGUE_OPTION",
       "position": "(1500.0, 60.0)",
       "character": "Bob",
-      "text": "Behind truthy guard"
+      "text": "Behind truthy guard",
+      "text_translation_key": ""
     },
     {
       "id": "node:9",

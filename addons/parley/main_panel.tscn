@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://ckubjbp3e7yy3"]
+[gd_scene load_steps=41 format=3 uid="uid://ckubjbp3e7yy3"]
 
 [ext_resource type="Script" uid="uid://ctp441gxhvg80" path="res://addons/parley/main_panel.gd" id="1_06n3w"]
 [ext_resource type="Texture2D" uid="uid://ct6iywe1qjuh3" path="res://addons/parley/assets/New.svg" id="3_4ui00"]
@@ -24,6 +24,7 @@
 [ext_resource type="PackedScene" uid="uid://bl5g47dhb7hmk" path="res://addons/parley/components/sidebar.tscn" id="18_re0cy"]
 [ext_resource type="PackedScene" uid="uid://dcdua1f2ah8xa" path="res://addons/parley/views/parley_graph_view.tscn" id="20_8yxrj"]
 [ext_resource type="Script" uid="uid://b3tj6amhgmct6" path="res://addons/parley/stores/action/action_store.gd" id="26_anq7l"]
+[ext_resource type="Texture2D" uid="uid://es7k6io6r0lm" path="res://addons/parley/assets/Translation.svg" id="27_owjo5"]
 [ext_resource type="Script" uid="uid://cbi8x2vk7bku1" path="res://addons/parley/stores/character/character_store.gd" id="28_anq7l"]
 [ext_resource type="PackedScene" uid="uid://c6cagjh7y5wn4" path="res://addons/parley/modals/export_to_csv_modal.tscn" id="29_wngpy"]
 [ext_resource type="PackedScene" uid="uid://cjgxxvotxhj1g" path="res://addons/parley/components/bottom_panel.tscn" id="29_xxhvx"]
@@ -32,6 +33,7 @@
 [ext_resource type="PackedScene" uid="uid://brdwtctohmwso" path="res://addons/parley/modals/edit_dialogue_sequence_modal.tscn" id="31_7jaih"]
 [ext_resource type="Script" uid="uid://3nqtsewsmim0" path="res://addons/parley/models/node_ast.gd" id="31_tp54n"]
 [ext_resource type="Script" uid="uid://btn7s5anok7p4" path="res://addons/parley/models/dialogue_sequence_ast.gd" id="32_pogw7"]
+[ext_resource type="PackedScene" uid="uid://d3d5w0atvk7y1" path="res://addons/parley/modals/select_locale_modal.tscn" id="33_s5oy3"]
 
 [sub_resource type="Resource" id="Resource_s5oy3"]
 script = ExtResource("26_anq7l")
@@ -48,7 +50,7 @@ script = ExtResource("28_anq7l")
 characters = Array[ExtResource("11_7jaih")]([])
 id = ""
 
-[sub_resource type="Image" id="Image_kaj3b"]
+[sub_resource type="Image" id="Image_owjo5"]
 data = {
 "data": PackedByteArray(255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 42, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 93, 93, 41, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 92, 92, 0, 255, 92, 92, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 93, 93, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0),
 "format": "RGBA8",
@@ -57,8 +59,8 @@ data = {
 "width": 16
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_s5oy3"]
-image = SubResource("Image_kaj3b")
+[sub_resource type="ImageTexture" id="ImageTexture_8yxrj"]
+image = SubResource("Image_owjo5")
 
 [sub_resource type="Resource" id="Resource_7hjis"]
 script = ExtResource("32_pogw7")
@@ -232,6 +234,13 @@ theme_type_variation = &"FlatButton"
 icon = ExtResource("9_dmt7g")
 flat = true
 
+[node name="TestLocaleEditor" type="Button" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/Testing"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Set the default locale that will be used when testing Dialogue Sequences."
+icon = ExtResource("27_owjo5")
+flat = true
+
 [node name="VSeparator3" type="VSeparator" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar"]
 layout_mode = 2
 
@@ -248,7 +257,7 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Navigate to the Parley Documentation."
 text = "Docs"
-icon = SubResource("ImageTexture_s5oy3")
+icon = SubResource("ImageTexture_8yxrj")
 flat = true
 
 [node name="EditorView" type="HSplitContainer" parent="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer"]
@@ -296,11 +305,16 @@ dialogue_ast = SubResource("Resource_7hjis")
 unique_name_in_owner = true
 visible = false
 
+[node name="SelectLocaleModal" parent="." instance=ExtResource("33_s5oy3")]
+unique_name_in_owner = true
+visible = false
+
 [connection signal="pressed" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/SaveButton" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/ArrangeNodesButton" to="." method="_on_arrange_nodes_button_pressed"]
 [connection signal="pressed" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/EditorActions/RefreshButton" to="." method="_on_refresh_button_pressed"]
 [connection signal="pressed" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/Testing/TestDialogueFromStartButton" to="." method="_on_test_dialogue_from_start_button_pressed"]
 [connection signal="pressed" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/Testing/TestDialogueFromSelectedButton" to="." method="_on_test_dialogue_from_selected_button_pressed"]
+[connection signal="pressed" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/Testing/TestLocaleEditor" to="." method="_on_test_locale_editor_pressed"]
 [connection signal="pressed" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/Toolbar/Misc/DocsButton" to="." method="_on_docs_button_pressed"]
 [connection signal="dialogue_ast_selected" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/Sidebar" to="." method="_on_sidebar_dialogue_ast_selected"]
 [connection signal="edit_dialogue_ast_pressed" from="MarginContainer/MainContainer/HSplitContainer/MainViewPanel/MainViewContainer/EditorView/Sidebar" to="." method="_on_sidebar_edit_dialogue_ast_pressed"]
@@ -315,3 +329,4 @@ visible = false
 [connection signal="file_selected" from="OpenFileDialog" to="." method="_on_open_dialog_file_selected"]
 [connection signal="dialogue_ast_created" from="NewDialogueSequenceModal" to="." method="_on_new_dialogue_sequence_modal_dialogue_ast_created"]
 [connection signal="dialogue_ast_edited" from="EditDialogueSequenceModal" to="." method="_on_edit_dialogue_sequence_modal_dialogue_ast_edited"]
+[connection signal="locale_changed" from="SelectLocaleModal" to="." method="_on_select_locale_modal_locale_changed"]

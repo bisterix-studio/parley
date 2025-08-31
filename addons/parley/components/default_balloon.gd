@@ -40,9 +40,7 @@ func start(p_ctx: ParleyContext, p_dialogue_sequence_ast: ParleyDialogueSequence
 	is_waiting_for_input = false
 	ctx = p_ctx
 	dialogue_sequence_ast = p_dialogue_sequence_ast
-	# TODO: remove
-	ctx.start_of_run = true
-	var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.run(ctx, dialogue_sequence_ast, p_start_node if p_start_node else null)
+	var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.init(ctx, dialogue_sequence_ast, p_start_node if p_start_node else null)
 	current_node_asts = run_result.node_asts
 	dialogue_sequence_ast = run_result.dialogue_sequence
 	run_result.free() # Needed to ensure that everything is correctly freed up at exit

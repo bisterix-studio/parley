@@ -1,0 +1,40 @@
+[gd_scene load_steps=4 format=3 uid="uid://n4t3w6dhkt6a"]
+
+[ext_resource type="Script" uid="uid://bbk5c0urv1ug" path="res://addons/parley/components/editor/translation_key_editor.gd" id="1_nxxod"]
+[ext_resource type="Texture2D" uid="uid://dymfq1lumomnh" path="res://addons/parley/assets/Generate.svg" id="2_15ow8"]
+[ext_resource type="Texture2D" uid="uid://c4qx01xbrjp7h" path="res://addons/parley/assets/Edit.svg" id="3_wy1by"]
+
+[node name="TranslationKeyEditor" type="VBoxContainer"]
+size_flags_vertical = 3
+script = ExtResource("1_nxxod")
+
+[node name="TranslationKeyLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TranslationKeyEditorContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TranslationKeyEditor" type="LineEdit" parent="TranslationKeyEditorContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Set the translation key for the associated field"
+editable = false
+
+[node name="GenerateTranslationKeyButton" type="Button" parent="TranslationKeyEditorContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Generate the translation key for this Node AST. Be cautious when regenerating this as it is likely to affect existing translations."
+icon = ExtResource("2_15ow8")
+
+[node name="EditTranslationKeyButton" type="Button" parent="TranslationKeyEditorContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Edit the translation key for this Node AST. Be cautious when changing this as it is likely to affect existing translations."
+toggle_mode = true
+icon = ExtResource("3_wy1by")
+
+[connection signal="text_changed" from="TranslationKeyEditorContainer/TranslationKeyEditor" to="." method="_on_translation_key_editor_text_changed"]
+[connection signal="pressed" from="TranslationKeyEditorContainer/GenerateTranslationKeyButton" to="." method="_on_generate_translation_key_button_pressed"]
+[connection signal="toggled" from="TranslationKeyEditorContainer/EditTranslationKeyButton" to="." method="_on_edit_translation_key_button_toggled"]

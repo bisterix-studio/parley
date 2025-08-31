@@ -95,10 +95,17 @@ class file:
 
 
 class translation:
-	static func get_msg_ctx(uid: String, node: ParleyNodeAst, field: String) -> String:
-		return "%s::%s::%s" % [uid, node.id, field]
+	## Get the translation context for a node field.
+	## If it can't be found, default to empty string.
+	static func get_msg_ctx(node: ParleyNodeAst, field: String) -> String:
+		var result_variant: Variant = node.get(field)
+		if is_instance_of(result_variant, TYPE_STRING):
+			var result: String = result_variant
+			return result
+		return ""
 
 
+	## Translate the input string
 	static func translate(input: StringName) -> String:
 		var instance: Object = new()
 		var resource_path: String = instance.get_script().resource_path
@@ -115,3 +122,30 @@ class translation:
 				var translations: Translation = load(path)
 				return translations.get_message(input)
 		return input
+
+
+	## Generate a translation key for the target node field.
+	## For a correctly generated key, the following must be true: [br]
+	##  - The Dialogue Sequence AST must exist in the file system[br]
+	##  - The field must exist and be populated on the node[br]
+	##  - The field on the node must be of type String[br]
+	static func generate_key(input: String, dialogue_sequence_ast: ParleyDialogueSequenceAst = null, node_ast: ParleyNodeAst = null, field: String = "") -> String:
+		if not dialogue_sequence_ast or not dialogue_sequence_ast.resource_path or not ResourceLoader.exists(dialogue_sequence_ast.resource_path):
+			push_warning(log.warn_msg("Unable to generate translation key: No Dialogue Sequence AST exists (dialogue_sequence_ast: %s, node: %s, field: %s)" % [dialogue_sequence_ast, node_ast, field]))
+			return ""
+
+		if not is_instance_of(node_ast.get(field), TYPE_STRING):
+			push_warning(log.warn_msg("Unable to generate translation key: field does not exist on Node AST (dialogue_sequence_ast: %s, node: %s, field: %s)" % [dialogue_sequence_ast, node_ast, field]))
+			return ""
+
+		var suffix: String = "__" + "_".join([
+			resource.get_uid(dialogue_sequence_ast).replace("uid://", ''),
+			node_ast.id.replace(node_ast.id_prefix, ''),
+			field
+		])
+
+		var special_character_regex: RegEx = RegEx.create_from_string("[^\\w\\s]")
+		var space_regex: RegEx = RegEx.create_from_string("[\\s]+")
+		var result: String = special_character_regex.sub(input.strip_edges(), '', true)
+		result = space_regex.sub(result, ' ', true)
+		return result.to_snake_case().substr(0, 32) + suffix
