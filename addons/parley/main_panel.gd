@@ -155,10 +155,10 @@ func _set_node_ast(new_node_ast: ParleyNodeAst) -> void:
 	match new_node_ast.type:
 		ParleyDialogueSequenceAst.Type.DIALOGUE:
 			var dialogue_node_ast: ParleyDialogueNodeAst = new_node_ast
-			_on_dialogue_node_editor_dialogue_node_changed(dialogue_node_ast.id, dialogue_node_ast.character, dialogue_node_ast.text)
+			_on_dialogue_node_editor_dialogue_node_changed(dialogue_node_ast.id, dialogue_node_ast.character, dialogue_node_ast.text, dialogue_node_ast.text_translation_key)
 		ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION:
 			var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = new_node_ast
-			_on_dialogue_option_node_editor_dialogue_option_node_changed(dialogue_option_node_ast.id, dialogue_option_node_ast.character, dialogue_option_node_ast.text)
+			_on_dialogue_option_node_editor_dialogue_option_node_changed(dialogue_option_node_ast.id, dialogue_option_node_ast.character, dialogue_option_node_ast.text, dialogue_option_node_ast.text_translation_key)
 		ParleyDialogueSequenceAst.Type.CONDITION:
 			var condition_node_ast: ParleyConditionNodeAst = new_node_ast
 			_on_condition_node_editor_condition_node_changed(condition_node_ast.id, condition_node_ast.description, condition_node_ast.combiner, condition_node_ast.conditions)
@@ -425,7 +425,7 @@ func _on_graph_view_scroll_offset_changed(offset: Vector2) -> void:
 
 
 # TODO: remove ast stuff
-func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: String, new_dialogue_text: String) -> void:
+func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: String, new_dialogue_text: String, new_text_translation_key: String) -> void:
 	if not dialogue_ast:
 		return
 	var _ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
@@ -434,7 +434,7 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 		return
 	if _ast_node is ParleyDialogueNodeAst:
 		var ast_node: ParleyDialogueNodeAst = _ast_node
-		ast_node.update(new_character, new_dialogue_text)
+		ast_node.update(new_character, new_dialogue_text, new_text_translation_key)
 	# TODO: move into graph view
 	if _selected_node is ParleyDialogueNode:
 		var selected_node: ParleyDialogueNode = _selected_node
@@ -443,7 +443,7 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 
 
 # TODO: remove ast stuff
-func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, new_character: String, new_option_text: String) -> void:
+func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, new_character: String, new_option_text: String, new_text_translation_key: String) -> void:
 	if not dialogue_ast:
 		return
 	var _ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
@@ -452,7 +452,7 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, ne
 		return
 	if _ast_node is ParleyDialogueOptionNodeAst:
 		var ast_node: ParleyDialogueOptionNodeAst = _ast_node
-		ast_node.update(new_character, new_option_text)
+		ast_node.update(new_character, new_option_text, new_text_translation_key)
 	# TODO: move into graph view
 	if _selected_node is ParleyDialogueOptionNode:
 		var selected_node: ParleyDialogueOptionNode = _selected_node

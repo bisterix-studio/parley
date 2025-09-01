@@ -22,23 +22,26 @@ class_name ParleyDialogueNodeAst extends ParleyNodeAst
 ## Create a new instance of a Dialogue Node AST.
 ## Example: ParleyDialogueNodeAst.new("1", Vector2.ZERO, "Alice", "I need some coffee.")
 func _init(
-	_id: String = "",
-	_position: Vector2 = Vector2.ZERO,
-	_character: String = "",
-	_text: String = ""
+	p_id: String = "",
+	p_position: Vector2 = Vector2.ZERO,
+	p_character: String = "",
+	p_text: String = "",
+	p_text_translation_key: String = ""
 ) -> void:
 	type = ParleyDialogueSequenceAst.Type.DIALOGUE
-	id = _id
-	position = _position
-	character = _character
-	text = _text
+	id = p_id
+	position = p_position
+	character = p_character
+	text = p_text
+	text_translation_key = p_text_translation_key
 
 
 ## Update a Dialogue Node AST.
 ## Example: node.update("Alice", "I need some coffee.")
-func update(_character: String, _text: String) -> void:
-	character = _character
-	text = _text
+func update(p_character: String, p_text: String, p_text_translation_key: String) -> void:
+	character = p_character
+	text = p_text
+	text_translation_key = p_text_translation_key
 
 
 static func get_colour() -> Color:
@@ -51,7 +54,8 @@ func to_resolved(resolved_text: String) -> ParleyDialogueNodeAst:
 		id,
 		position,
 		character,
-		resolved_text
+		resolved_text,
+		text_translation_key
 	)
 
 

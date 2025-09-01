@@ -74,11 +74,13 @@ func add_ast_node(node: Dictionary) -> void:
 		Type.DIALOGUE:
 			var character: String = node.get('character', '')
 			var text: String = node.get('text', '')
-			ast_node = ParleyDialogueNodeAst.new(id, position, character, text)
+			var text_translation_key: String = node.get('text_translation_key', '')
+			ast_node = ParleyDialogueNodeAst.new(id, position, character, text, text_translation_key)
 		Type.DIALOGUE_OPTION:
 			var character: String = node.get('character', '')
 			var text: String = node.get('text', '')
-			ast_node = ParleyDialogueOptionNodeAst.new(id, position, character, text)
+			var text_translation_key: String = node.get('text_translation_key', '')
+			ast_node = ParleyDialogueOptionNodeAst.new(id, position, character, text, text_translation_key)
 		Type.CONDITION:
 			var combiner: ParleyConditionNodeAst.Combiner = ParleyConditionNodeAst.Combiner.get(node.get('combiner'), ParleyConditionNodeAst.Combiner.ALL)
 			var description: String = node.get('description', '')

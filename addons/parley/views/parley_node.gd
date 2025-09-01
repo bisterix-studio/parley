@@ -112,6 +112,7 @@ func _render_dialogue_option_node_editor() -> void:
 	dialogue_option_node_editor.id = dialogue_option_node_ast.id
 	dialogue_option_node_editor.character = dialogue_option_node_ast.character
 	dialogue_option_node_editor.option = dialogue_option_node_ast.text
+	dialogue_option_node_editor.text_translation_key = dialogue_option_node_ast.text_translation_key
 	ParleyUtils.signals.safe_connect(dialogue_option_node_editor.dialogue_option_node_changed, _on_dialogue_option_node_editor_dialogue_option_node_changed)
 	ParleyUtils.signals.safe_connect(dialogue_option_node_editor.delete_node_button_pressed, _on_delete_node_button_pressed)
 	node_editor_container.add_child(dialogue_option_node_editor)
@@ -267,11 +268,12 @@ func _on_delete_node_button_pressed(id: String) -> void:
 	delete_node_button_pressed.emit(id)
 
 
-func _on_dialogue_option_node_editor_dialogue_option_node_changed(_id: String, character: String, option: String) -> void:
+func _on_dialogue_option_node_editor_dialogue_option_node_changed(_id: String, character: String, option: String, text_translation_key: String) -> void:
 	# TODO: we should probably just update the resource here - it would make things way easier!
 	var new_node_ast: ParleyDialogueOptionNodeAst = node_ast.duplicate(true)
 	new_node_ast.character = character
 	new_node_ast.text = option
+	new_node_ast.text_translation_key = text_translation_key
 	node_changed.emit(new_node_ast)
 
 

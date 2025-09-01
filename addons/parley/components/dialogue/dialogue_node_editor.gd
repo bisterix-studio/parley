@@ -109,10 +109,6 @@ func _on_character_store_changed() -> void:
 	_render_character_options()
 
 
-func _emit_dialogue_node_changed() -> void:
-	dialogue_node_changed.emit(id, character, dialogue, text_translation_key)
-
-
 func _on_translation_key_editor_key_changed(new_key: String) -> void:
 	text_translation_key = new_key
 	_emit_dialogue_node_changed()
@@ -121,4 +117,8 @@ func _on_translation_key_editor_key_changed(new_key: String) -> void:
 func _on_translation_key_editor_key_generation_requested() -> void:
 	text_translation_key = ParleyUtils.translation.generate_key(dialogue, dialogue_sequence_ast, node_ast, 'text')
 	_emit_dialogue_node_changed()
+
+
+func _emit_dialogue_node_changed() -> void:
+	dialogue_node_changed.emit(id, character, dialogue, text_translation_key)
 #endregion

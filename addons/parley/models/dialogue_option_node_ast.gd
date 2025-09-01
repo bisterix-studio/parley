@@ -25,20 +25,23 @@ func _init(
 	p_id: String = "",
 	p_position: Vector2 = Vector2.ZERO,
 	p_character: String = "",
-	p_text: String = ""
+	p_text: String = "",
+	p_text_translation_key: String = ""
 ) -> void:
 	type = ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION
 	id = p_id
 	position = p_position
 	character = p_character
 	text = p_text
+	text_translation_key = p_text_translation_key
 
 
 ## Update a Dialogue Option Node AST.
 ## Example: node.update("Alice", "Slurp some coffee.")
-func update(p_character: String, p_text: String) -> void:
+func update(p_character: String, p_text: String, p_text_translation_key: String) -> void:
 	character = p_character
 	text = p_text
+	text_translation_key = p_text_translation_key
 
 
 static func get_colour() -> Color:
@@ -51,7 +54,8 @@ func to_resolved(resolved_text: String) -> ParleyDialogueOptionNodeAst:
 		id,
 		position,
 		character,
-		resolved_text
+		resolved_text,
+		text_translation_key
 	)
 
 
