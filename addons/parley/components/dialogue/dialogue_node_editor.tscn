@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b0qfehwjd3bm7" path="res://addons/parley/components/dialogue/dialogue_node_editor.gd" id="1_ad3ky"]
 [ext_resource type="PackedScene" uid="uid://m3v11vm16l8y" path="res://addons/parley/components/node/node_editor.tscn" id="1_okdx1"]
-[ext_resource type="PackedScene" uid="uid://n4t3w6dhkt6a" path="res://addons/parley/components/editor/translation_key.tscn" id="3_wbci0"]
+[ext_resource type="PackedScene" uid="uid://n4t3w6dhkt6a" path="res://addons/parley/components/editor/translation_key_editor.tscn" id="3_wbci0"]
 
 [node name="DialogueNodeEditor" instance=ExtResource("1_okdx1")]
 script = ExtResource("1_ad3ky")
