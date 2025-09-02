@@ -12,7 +12,7 @@
       "position": "(760.0, 1080.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "[PO]: Some text in English.",
-      "text_translation_key": ""
+      "text_translation_key": "po_some_text_in_english__bqmv0f42cxsdt_2_text"
     },
     {
       "id": "node:3",
@@ -20,7 +20,7 @@
       "position": "(1360.0, 880.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "[PO]: Some option in English.",
-      "text_translation_key": ""
+      "text_translation_key": "po_some_option_in_english__bqmv0f42cxsdt_3_text"
     },
     {
       "id": "node:4",

@@ -61,4 +61,12 @@ func to_resolved(resolved_text: String) -> ParleyDialogueNodeAst:
 
 func resolve_character() -> ParleyCharacter:
 	return ParleyCharacterStore.resolve_character_ref(character)
+
+
+## Get translation strings for the Dialogue Node
+func get_translation_strings() -> Array[PackedStringArray]:
+	var translation_strings: Array[PackedStringArray] = []
+	if text:
+		translation_strings.append(PackedStringArray([text, ParleyUtils.translation.get_msg_ctx(self, 'text_translation_key')]))
+	return translation_strings
 #endregion

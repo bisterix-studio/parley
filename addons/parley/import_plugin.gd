@@ -31,7 +31,7 @@ func _get_visible_name() -> String:
 
 
 func _get_recognized_extensions() -> PackedStringArray:
-	return ["ds"]
+	return [ParleyConstants.DIALOGUE_SEQUENCE_EXTENSION]
 
 
 func _get_save_extension() -> String:

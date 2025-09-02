@@ -8,6 +8,7 @@
 const VERSION: StringName = &"2.1.0"
 const AST_VERSION: StringName = &"1.1.0"
 const USER_CONFIG_PATH: StringName = &"user://parley_user_config.json"
+const DIALOGUE_SEQUENCE_EXTENSION: StringName = &"ds"
 #endregion
 
 

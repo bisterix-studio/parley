@@ -57,6 +57,11 @@ func _to_string() -> String:
 	return "ParleyNodeAst<%s>" % [str(to_dict())]
 
 
+## Get translation strings for the current node
+func get_translation_strings() -> Array[PackedStringArray]:
+	return []
+
+
 static func get_colour() -> Color:
 	return Color("#7a2167")
 #endregion

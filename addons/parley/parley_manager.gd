@@ -194,7 +194,7 @@ func update_localisations(dialogue_sequences_to_register: Array[ParleyDialogueSe
 	if clean:
 		for i: int in range(pot_generation_candidates.size() - 1, -1, -1):
 			var candidate: String = pot_generation_candidates[i]
-			if candidate.get_extension() == "ds" and not ResourceLoader.exists(candidate):
+			if candidate.get_extension() == ParleyConstants.DIALOGUE_SEQUENCE_EXTENSION and not ResourceLoader.exists(candidate):
 				pot_generation_candidates.remove_at(i)
 				changed = true
 
