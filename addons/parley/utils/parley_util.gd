@@ -92,3 +92,40 @@ class file:
 	static func _emit_filesystem_changed(timeout: Signal) -> void:
 		EditorInterface.get_resource_filesystem().filesystem_changed.emit()
 		signals.safe_disconnect(timeout, _emit_filesystem_changed)
+
+class richtext_renderer:
+
+	static var function_regex: RegEx = (func():
+		var re:= RegEx.new()
+		re.compile(r"\{\{(.*)}\}")
+		return re
+	).call()
+
+	static func render(text: String) -> String:
+		var processed := text
+		var result := function_regex.search_all(text)
+
+		for r_match in result:
+			var inner_text = r_match.get_string(1)
+			if inner_text != null && inner_text != "":
+				processed = processed.replace(
+					r_match.get_string(0),
+					_calculate_expressions_runtime_values(inner_text)
+				)
+		return processed
+
+	static func _calculate_expressions_runtime_values(text: String) -> String:
+		var expression = Expression.new()
+		var result_code:= expression.parse(text)
+		if result_code == OK:
+			var result = expression.execute()
+			if not expression.has_execute_failed():
+				return str(result)
+		else:
+			var error_str: String = expression.get_error_text()
+			push_warning(
+				ParleyUtils.log.warn_msg(
+					"Unable to parse given text expressions: %s. Defaulting to %s" % [error_str, text]
+				)
+			)
+		return text

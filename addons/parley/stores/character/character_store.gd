@@ -4,13 +4,15 @@
 class_name ParleyCharacterStore extends ParleyStore
 
 #region DEFS
+const Settings = preload('../.././settings.gd')
+const Constants = preload('../../constants.gd')
+
 @export var characters: Array[ParleyCharacter] = []
 
 
 signal character_added(character: ParleyCharacter)
 signal character_removed(character_id: String)
 #endregion
-
 
 #region LIFECYCLE
 func _init(_id: String = "", _characters: Array[ParleyCharacter] = []) -> void:
@@ -50,8 +52,12 @@ func _get_character_by_id(character_id: String) -> ParleyCharacter:
 		if character_id != "":
 			push_warning(ParleyUtils.log.warn_msg("Character not found in store (id:%s, store:%s), returning an empty Character" % [character_id, self]))
 		return ParleyCharacter.new()
-	return filtered_characters.front()
-
+	var rich_text_render_enabled = Settings.get_setting(Constants.DIALOGUE_RICH_TEXT_RENDER)
+	var character = filtered_characters.front()
+	var name = character.name
+	if rich_text_render_enabled:
+		name = ParleyUtils.richtext_renderer.render(name)
+	return ParleyCharacter.new(character.id, name)
 
 func get_ref_by_index(index: int) -> String:
 	if index == -1 or index >= characters.size():
