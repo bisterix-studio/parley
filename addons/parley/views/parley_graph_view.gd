@@ -351,4 +351,172 @@ func set_selected_by_id(id: String, _goto: bool = true) -> void:
 			set_selected(node)
 			_goto_node(node as ParleyGraphNode)
 			return
+
+#region SHORTCUTS
+
+const CLICK_DISTANCE: float = 50
+var onUnselect: Array[Callable] = []
+var undoHistory: Array[GraphOperation] = []
+var redoHistory: Array[GraphOperation] = []
+var selectedConnections: Array[GraphConnection] = []
+var selectedNodes: Array[GraphNode] = []
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		_handle_mouse_select(event as InputEventMouseButton)
+
+	if event is InputEventKey:
+		var key_event: InputEventKey = event as InputEventKey
+		if key_event.pressed and not key_event.echo:
+			# Ctrl + C
+			if key_event.ctrl_pressed and key_event.keycode == KEY_C:
+				_copy()
+			# Ctrl + V
+			elif key_event.ctrl_pressed and key_event.keycode == KEY_V:
+				_paste()
+			#Ctrl + Z
+			elif key_event.ctrl_pressed and key_event.keycode == KEY_Z:
+				_undo()
+			#Ctrl + Y
+			elif key_event.ctrl_pressed and key_event.keycode == KEY_Y:
+				_redo()
+			#Ctrl + S
+			elif key_event.ctrl_pressed and key_event.keycode == KEY_S:
+				_save()
+			# Delete
+			elif key_event.keycode == KEY_DELETE:
+				_delete_selected()
+
+		
+func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
+	var foundAnyConnection: bool = false
+	if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+		var pointer_pos: Vector2 = (mouse_event.position + scroll_offset) / zoom
+		for conn: Dictionary in get_connection_list():
+			var from_node_name: String = conn.get("from_node")
+			var to_node_name: String = conn.get("to_node")
+			var from_port: int = conn.get("from_port")
+			var to_port: int = conn.get("to_port")
+
+			var from_node: ParleyGraphNode = get_node(NodePath(from_node_name)) as ParleyGraphNode
+			var to_node: ParleyGraphNode = get_node(NodePath(to_node_name)) as ParleyGraphNode
+			if not from_node or not to_node:
+				continue
+
+			var from_pos: Vector2 = _get_slot_position(from_node, from_port, true)
+			var to_pos: Vector2 = _get_slot_position(to_node, to_port, false)
+			var distance: float = get_distance_to_segment(pointer_pos, from_pos, to_pos) * zoom
+			# print("From: ",from_node ," To", to_node," Comparing x: ", from_pos.x, " ", pointer_pos.x, " ", to_pos.x , " distance: ", distance)
+
+			if  distance <= CLICK_DISTANCE:
+				# basically ctrl+click selects multiple
+				if not mouse_event.is_command_or_control_pressed():
+					for connection :GraphConnection in selectedConnections:
+						connection.unselect()
+					selectedConnections.clear()
+					selectedNodes.clear()
+				
+				foundAnyConnection = true
+				var connection: GraphConnection = GraphConnection.new(from_node, from_port, to_node, to_port)
+				connection.select()
+				selectedConnections.append(connection as GraphConnection)
+				onUnselect.append(func() -> void:
+					connection.unselect()
+					selectedConnections.erase(connection)
+				)
+				print("Clicked connection:", connection.as_string())
+				break
+
+		if not foundAnyConnection:
+			while onUnselect.size() > 0:
+				var callable: Callable = onUnselect.pop_front()
+				callable.call()
+
+func _delete_selected()-> void:
+	if selectedConnections.size() > 0 || selectedNodes.size() > 0:
+		var deleteConnection: DeleteOperation = DeleteOperation.new(self, selectedConnections, selectedNodes)
+		deleteConnection.do()
+		add_undo_operation(deleteConnection)
+
+func _copy() -> void:
+	print("Copied selected node(s)")
+	# TODO: implement copy logic
+
+func _paste() -> void:
+	print("Pasted copied node(s)")
+	# TODO: implement paste logic
+
+func add_undo_operation(operation: GraphOperation) -> void:
+	redoHistory.clear()
+	undoHistory.push_back(operation)
+
+func _undo() -> void:
+	if undoHistory.size() > 0:
+		print("Undo")
+		var operation: GraphOperation = undoHistory.pop_back()
+		operation.undo()
+		redoHistory.push_back(operation)
+
+func _redo() -> void:
+	if redoHistory.size() > 0:
+		print("Redo")
+		var operation: GraphOperation = redoHistory.pop_back()
+		operation.do()
+		add_undo_operation(operation)
+
+func _save() -> void:
+	var result: int = _save_dialogue()
+	if not result == FAILED:
+		print("Dialog saved!")
+#TODO: This doesnt work find out why
+
+func _save_dialogue() -> int:
+	if not ast or not ast.resource_path:
+		push_error(ParleyUtils.log.error_msg("Unable to save Dialogue Sequence. Dialogue Sequence does not exist in the file system, please create one using the file menu in the top left-hand side"))
+		return ERR_DOES_NOT_EXIST
+	var ok: int = ResourceSaver.save(ast)
+	if ok != OK:
+		push_warning(ParleyUtils.log.warn_msg("Error saving the Dialogue AST: %d" % [ok]))
+		return ok
+	# This is needed to correctly reload upon file saves
+	if Engine.is_editor_hint():
+		EditorInterface.get_resource_filesystem().reimport_files([ast.resource_path])
+	return OK
+
+func _get_slot_position(node: GraphNode, slot_idx: int, is_output: bool) -> Vector2:
+	var local_pos: Vector2
+	if is_output:
+		local_pos = node.get_output_port_position(slot_idx)
+	else:
+		local_pos = node.get_input_port_position(slot_idx)
+	
+	# Convert to GraphEdit local coordinates
+	return (node.position + scroll_offset) / zoom + local_pos
+
+func get_distance_to_segment(point: Vector2, segment_start: Vector2, segment_end: Vector2) -> float:
+	# Calculate the vector of the line segment.
+	var segment_vec: Vector2 = segment_end - segment_start
+	
+	# If the segment has no length, return the distance to the start point.
+	if segment_vec.length_squared() == 0.0:
+		return point.distance_to(segment_start)
+		
+	# Project the point onto the line defined by the segment.
+	# The result 't' is a factor from 0.0 (at segment_start) to 1.0 (at segment_end).
+	var t:float = (point - segment_start).dot(segment_vec) / segment_vec.length_squared()
+	
+	# Clamp 't' to the range [0, 1] to stay within the segment.
+	# - If t < 0, the closest point is segment_start.
+	# - If t > 1, the closest point is segment_end.
+	# - Otherwise, it's a point along the segment.
+	if t > 1:
+		return point.distance_to(segment_end)
+	if t < 0:
+		return point.distance_to(segment_start)
+	else:
+		var closest_point_on_segment: Vector2 = segment_start.lerp(segment_end, t)
+		
+		# Return the distance between the original point and the closest point on the segment.
+		return point.distance_to(closest_point_on_segment)
+
 #endregion
