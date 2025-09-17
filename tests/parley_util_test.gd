@@ -12,10 +12,10 @@ class Test_translation_generate_key:
 
 	#region INIT
 	var test_basic_cases: Array[Dictionary] = [
-		{"dialogue_sequence_ast": test_dialogue_sequence_ast, "node_ast_id": "node:3", "field": "text", "expected": "look_i_made_a_thing__dm0pdramhs72h_3_text"},
-		{"dialogue_sequence_ast": test_dialogue_sequence_ast, "node_ast_id": "node:19", "field": "text", "expected": "i_need_coffee__dm0pdramhs72h_19_text"},
-		{"dialogue_sequence_ast": test_dialogue_sequence_ast, "node_ast_id": "node:22", "field": "text", "expected": "some_really_really_really_long_d__dm0pdramhs72h_22_text"},
-		{"dialogue_sequence_ast": test_dialogue_sequence_ast, "node_ast_id": "node:23", "field": "text", "expected": "sp_aces_returns_tab_1_tab_2__dm0pdramhs72h_23_text"},
+		{"dialogue_sequence_ast": test_dialogue_sequence_ast, "node_ast_id": "node:3", "field": "text", "expected": "LOOK_I_MADE_A_THING__DM0PDRAMHS72H_3_TEXT"},
+		{"dialogue_sequence_ast": test_dialogue_sequence_ast, "node_ast_id": "node:19", "field": "text", "expected": "I_NEED_COFFEE__DM0PDRAMHS72H_19_TEXT"},
+		{"dialogue_sequence_ast": test_dialogue_sequence_ast, "node_ast_id": "node:22", "field": "text", "expected": "SOME_REALLY_REALLY_REALLY_LONG_D__DM0PDRAMHS72H_22_TEXT"},
+		{"dialogue_sequence_ast": test_dialogue_sequence_ast, "node_ast_id": "node:23", "field": "text", "expected": "SP_ACES_RETURNS_TAB_1_TAB_2__DM0PDRAMHS72H_23_TEXT"},
 	]
 
 

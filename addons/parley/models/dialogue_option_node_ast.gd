@@ -67,6 +67,6 @@ func resolve_character() -> ParleyCharacter:
 func get_translation_strings() -> Array[PackedStringArray]:
 	var translation_strings: Array[PackedStringArray] = []
 	if text:
-		translation_strings.append(PackedStringArray([text, ParleyUtils.translation.get_msg_ctx(self, 'text_translation_key')]))
+		translation_strings.append(PackedStringArray([text, ParleyUtils.translation.get_msg_ctx(self, 'text')]))
 	return translation_strings
 #endregion

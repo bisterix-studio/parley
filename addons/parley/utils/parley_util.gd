@@ -55,6 +55,7 @@ class resource:
 			return ""
 		return ResourceUID.id_to_text(id)
 
+
 class generate:
 	static func id(array: Array, parent_id: String, name: String = "") -> String:
 		var local_id: String
@@ -97,8 +98,8 @@ class file:
 class translation:
 	## Get the translation context for a node field.
 	## If it can't be found, default to empty string.
-	static func get_msg_ctx(node: ParleyNodeAst, field: String) -> String:
-		var result_variant: Variant = node.get(field)
+	static func get_msg_ctx(node: ParleyNodeAst, field: String, suffix: StringName = &"_translation_key") -> String:
+		var result_variant: Variant = node.get(field + suffix)
 		if is_instance_of(result_variant, TYPE_STRING):
 			var result: String = result_variant
 			return result
@@ -142,10 +143,23 @@ class translation:
 			resource.get_uid(dialogue_sequence_ast).replace("uid://", ''),
 			node_ast.id.replace(node_ast.id_prefix, ''),
 			field
-		])
+		]).to_upper()
 
 		var special_character_regex: RegEx = RegEx.create_from_string("[^\\w\\s]")
 		var space_regex: RegEx = RegEx.create_from_string("[\\s]+")
 		var result: String = special_character_regex.sub(input.strip_edges(), '', true)
 		result = space_regex.sub(result, ' ', true)
-		return result.to_snake_case().substr(0, 32) + suffix
+		return result.to_snake_case().to_upper().substr(0, 32) + suffix
+	
+
+	static func get_csv_key_value(node_ast: ParleyNodeAst, field_to_translate: StringName) -> PackedStringArray:
+		var key: String = ParleyUtils.translation.get_msg_ctx(node_ast, field_to_translate)
+		var value_variant: Variant = node_ast.get(field_to_translate)
+		var value: String = value_variant if is_instance_of(value_variant, TYPE_STRING) else ""
+		return PackedStringArray([key if key else value, value])
+
+
+class string:
+	static func get_enum_key_name(input: Dictionary, key: int) -> String:
+		var key_name: String = input.keys()[key]
+		return key_name.capitalize()

@@ -591,8 +591,7 @@ func _evaluate_expression(_ctx: ParleyContext, value_expr: String) -> String:
 	return value_expr
 
 
-# TODO: add translation key to NodeAst
-func _translate_value(ctx: ParleyContext, node_to_translate: ParleyNodeAst, translate_field: String, value: String) -> Variant:
+func _translate_value(ctx: ParleyContext, node_to_translate: ParleyNodeAst, field_to_translate: String, value: String) -> Variant:
 	var translation_mode: ParleyContext.TranslationMode = ctx.translation_mode if ctx.translation_mode else ParleyContext.TranslationMode.Auto
 
 	# Return untranslated value if translation mode is off
@@ -608,7 +607,7 @@ func _translate_value(ctx: ParleyContext, node_to_translate: ParleyNodeAst, tran
 			translation_mode = ParleyContext.TranslationMode.CSV
 
 	# If the translation key is the same as the value, immediately try and translate
-	var translation_key: Variant = ParleyUtils.translation.get_msg_ctx(node_to_translate, translate_field)
+	var translation_key: Variant = ParleyUtils.translation.get_msg_ctx(node_to_translate, field_to_translate)
 	if not translation_key or translation_key == value:
 		return tr(value)
 
@@ -683,15 +682,15 @@ func to_dict() -> Dictionary:
 ## Convert this resource into CSV lines
 func to_csv_lines() -> Array[PackedStringArray]:
 	# TODO: handle locales at scale
-	var lines: Array[PackedStringArray] = [PackedStringArray(["id", "type", "character_en", "text_en"])]
+	var lines: Array[PackedStringArray] = [PackedStringArray(["id", "type", "character_en", "text_en", "text_translation_key"])]
 	for node_ast: ParleyNodeAst in nodes:
 		match node_ast.type:
 			Type.DIALOGUE:
 				var node: ParleyDialogueNodeAst = node_ast
-				lines.append(PackedStringArray([node.id, get_type_name(node.type), node.character, node.text]))
+				lines.append(PackedStringArray([node.id, get_type_name(node.type), node.character, node.text, node.text_translation_key]))
 			Type.DIALOGUE_OPTION:
 				var node: ParleyDialogueOptionNodeAst = node_ast
-				lines.append(PackedStringArray([node.id, get_type_name(node.type), node.character, node.text]))
+				lines.append(PackedStringArray([node.id, get_type_name(node.type), node.character, node.text, node.text_translation_key]))
 			_:
 				continue
 	return lines

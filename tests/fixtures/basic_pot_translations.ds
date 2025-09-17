@@ -12,21 +12,21 @@
       "position": "(760.0, 1080.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "[PO]: Some text in English.",
-      "text_translation_key": "po_some_text_in_english__bqmv0f42cxsdt_2_text"
+      "text_translation_key": "PO_SOME_TEXT_IN_ENGLISH__BQMV0F42CXSDT_2_TEXT"
     },
     {
       "id": "node:3",
       "type": "DIALOGUE_OPTION",
       "position": "(1360.0, 880.0)",
-      "character": "uid://ceouii84qmu0w::alice",
+      "character": "uid://ceouii84qmu0w::bob",
       "text": "[PO]: Some option in English.",
-      "text_translation_key": "po_some_option_in_english__bqmv0f42cxsdt_3_text"
+      "text_translation_key": "PO_SOME_OPTION_IN_ENGLISH__BQMV0F42CXSDT_3_TEXT"
     },
     {
       "id": "node:4",
       "type": "DIALOGUE_OPTION",
       "position": "(1360.0, 1300.0)",
-      "character": "uid://ceouii84qmu0w::alice",
+      "character": "uid://ceouii84qmu0w::carol",
       "text": "[PO]: Another option in English.",
       "text_translation_key": ""
     },
@@ -34,7 +34,7 @@
       "id": "node:5",
       "type": "DIALOGUE",
       "position": "(1940.0, 1040.0)",
-      "character": "uid://ceouii84qmu0w::alice",
+      "character": "uid://ceouii84qmu0w::dave",
       "text": "[PO]: Some text with no translation.",
       "text_translation_key": ""
     }

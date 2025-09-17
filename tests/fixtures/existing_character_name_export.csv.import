@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://d1wyhrjnlfht"
+
+[deps]
+
+files=["res://tests/fixtures/existing_character_name_export.en.translation", "res://tests/fixtures/existing_character_name_export.fr.translation", "res://tests/fixtures/existing_character_name_export.es.translation"]
+
+source_file="res://tests/fixtures/existing_character_name_export.csv"
+dest_files=["res://tests/fixtures/existing_character_name_export.en.translation", "res://tests/fixtures/existing_character_name_export.fr.translation", "res://tests/fixtures/existing_character_name_export.es.translation"]
+
+[params]
+
+compress=true
+delimiter=0

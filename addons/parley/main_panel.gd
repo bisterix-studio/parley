@@ -4,9 +4,12 @@
 class_name ParleyMainPanel extends VBoxContainer
 
 
+const ParleyExport = preload("./parley_export.gd")
+
+
 const new_file_icon: CompressedTexture2D = preload("./assets/New.svg")
 const load_file_icon: CompressedTexture2D = preload("./assets/Load.svg")
-const export_to_csv_icon: CompressedTexture2D = preload("./assets/Export.svg")
+const export_icon: CompressedTexture2D = preload("./assets/Export.svg")
 const insert_after_icon: CompressedTexture2D = preload("./assets/InsertAfter.svg")
 const dialogue_icon: CompressedTexture2D = preload("./assets/Dialogue.svg")
 const dialogue_option_icon: CompressedTexture2D = preload("./assets/DialogueOption.svg")
@@ -38,10 +41,11 @@ var parley_manager: ParleyManager
 
 @onready var file_menu: MenuButton = %FileMenu
 @onready var insert_menu: MenuButton = %InsertMenu
+@onready var translations_menu: MenuButton = %TranslationMenu
 @onready var docs_button: Button = %DocsButton
 @onready var new_dialogue_sequence_modal: ParleyNewDialogueSequenceModal = %NewDialogueSequenceModal
 @onready var edit_dialogue_sequence_modal: ParleyEditDialogueSequenceModal = %EditDialogueSequenceModal
-@onready var export_to_csv_modal: ParleyExportToCsvModal = %ExportToCsvModal
+@onready var export_modal: ParleyExportModal = %ExportModal
 @onready var select_locale_modal: Window = %SelectLocaleModal
 @onready var editor: HSplitContainer = %EditorView
 @onready var sidebar: ParleySidebar = %Sidebar
@@ -218,6 +222,7 @@ func _render_test_locale_editor(on_ready: bool = false) -> void:
 func _setup(on_ready: bool = false) -> void:
 	_setup_file_menu()
 	_setup_insert_menu()
+	_render_translations_menu()
 	_render_toolbar()
 	_render_bottom_panel()
 	_render_test_locale_editor(on_ready)
@@ -230,7 +235,7 @@ func _setup_file_menu() -> void:
 	popup.add_icon_item(new_file_icon, "New Dialogue Sequence...", 0)
 	popup.add_icon_item(load_file_icon, "Open Dialogue Sequence...", 1)
 	popup.add_separator("Export")
-	popup.add_icon_item(export_to_csv_icon, "Export to CSV...", 2)
+	popup.add_icon_item(export_icon, "Export to CSV...", 2)
 	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_file_id_pressed)
 
 
@@ -252,6 +257,22 @@ func _setup_insert_menu() -> void:
 	popup.add_icon_item(end_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.END), ParleyDialogueSequenceAst.Type.END)
 	popup.add_icon_item(group_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.GROUP), ParleyDialogueSequenceAst.Type.GROUP)
 	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_insert_id_pressed)
+
+
+func _render_translations_menu() -> void:
+	var popup: PopupMenu = translations_menu.get_popup()
+	popup.clear()
+
+	popup.add_icon_item(export_icon, "Export Dialogue to CSV...", 0)
+	popup.set_item_tooltip(0, "Export Dialogue Text Translations to CSV")
+
+	popup.add_icon_item(export_icon, "Export Characters to CSV...", 1)
+	popup.set_item_tooltip(1, "Export Character Translations to CSV")
+
+	popup.add_icon_item(export_icon, "Import Dialogue from CSV...", 2)
+	popup.set_item_tooltip(2, "Import Dialogue Text Translations from CSV")
+
+	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_translations_menu_id_pressed)
 #endregion
 
 
@@ -265,8 +286,7 @@ func _on_file_id_pressed(id: int) -> void:
 			# TODO: get this from config (note, see the Node inspector as well)
 			open_file_dialogue.current_dir = "res://dialogue_sequences"
 		2:
-			export_to_csv_modal.dialogue_ast = dialogue_ast
-			export_to_csv_modal.render()
+			export_modal.render(ParleyExportModal.ExportType.Node, ParleyExportModal.FileType.Csv, dialogue_ast)
 		_:
 			print_rich(ParleyUtils.log.info_msg("Unknown option ID pressed: {id}".format({'id': id})))
 
@@ -318,6 +338,19 @@ func _on_insert_id_pressed(type: ParleyDialogueSequenceAst.Type) -> void:
 	var ast_node: Variant = dialogue_ast.add_new_node(type, (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom)
 	if ast_node:
 		await refresh()
+
+
+func _on_translations_menu_id_pressed(id: int) -> void:
+	match id:
+		0:
+			export_modal.render(ParleyExportModal.ExportType.DialogueTextTranslation, ParleyExportModal.FileType.Csv, dialogue_ast)
+		1:
+			export_modal.render(ParleyExportModal.ExportType.CharacterNameTranslation, ParleyExportModal.FileType.Csv, dialogue_ast)
+		1:
+			# IMPORT
+			return
+		_:
+			print_rich(ParleyUtils.log.info_msg("Unknown option ID pressed: {id}".format({'id': id})))
 
 
 func _on_save_pressed() -> void:
@@ -697,6 +730,21 @@ func _on_docs_button_pressed() -> void:
 	var result: int = OS.shell_open(href)
 	if result != OK:
 		push_error(ParleyUtils.log.error_msg("Unable to navigate to Parley Documentation at %s: %s" % [href, result]))
+
+
+func _on_export_requested(export_type: ParleyExportModal.ExportType, file_type: ParleyExportModal.FileType, dialogue_sequence_ast: ParleyDialogueSequenceAst, path: String) -> void:
+	var file_type_name: String = ParleyUtils.string.get_enum_key_name(ParleyExportModal.FileType, file_type)
+	var export_type_name: String = ParleyUtils.string.get_enum_key_name(ParleyExportModal.ExportType, export_type)
+	match export_type:
+		ParleyExportModal.ExportType.Node:
+			ParleyExport.export_node(file_type, dialogue_sequence_ast, path)
+		ParleyExportModal.ExportType.DialogueTextTranslation:
+			ParleyExport.export_dialogue_text_translation(file_type, dialogue_sequence_ast, path)
+		ParleyExportModal.ExportType.CharacterNameTranslation:
+			ParleyExport.export_character_name_translation(file_type, dialogue_sequence_ast, path)
+		_:
+			push_error(ParleyUtils.log.error_msg("Unable to export data: unknown export type (file_type:%s, export_type:%s)" % [file_type_name, export_type_name]))
+			return
 #endregion
 
 
