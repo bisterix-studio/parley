@@ -1,6 +1,6 @@
 # PasteShortcut.gd
-extends GraphOperation
-class_name PasteOperation
+extends ParleyGraphOperation
+class_name ParleyPasteOperation
 
 var pasted_nodes: Array = []
 var graph_edit: GraphEdit

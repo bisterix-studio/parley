@@ -1,6 +1,6 @@
 # DeleteShortcut.gd
-class_name DeleteOperation
-extends GraphOperation
+class_name ParleyDeleteOperation
+extends ParleyGraphOperation
 
 var selectedConnections: Array[ParleyGraphEdge]
 var selectedNodes: Array[ParleyGraphNode]

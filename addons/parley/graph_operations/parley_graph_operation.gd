@@ -1,5 +1,5 @@
 extends Object
-class_name GraphOperation
+class_name ParleyGraphOperation
 
 # Base class for all Graph operations
 
