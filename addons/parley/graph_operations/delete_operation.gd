@@ -1,31 +1,44 @@
 # DeleteShortcut.gd
-extends GraphOperation
 class_name DeleteOperation
+extends GraphOperation
 
-var selectedConnections: Array[GraphConnection]
-var selectedNodes: Array[GraphNode]
-var graph_edit: GraphEdit
+var selectedConnections: Array[ParleyGraphEdge]
+var selectedNodes: Array[ParleyGraphNode]
+var deletedNodes: Array[ParleyGraphNode]
+var graph_view: ParleyGraphView
 
-func _init(_graph_edit: GraphEdit, _selected_connections: Array[GraphConnection], _selected_nodes: Array[GraphNode]) -> void:
-	graph_edit = _graph_edit
+func _init(_graph_view: ParleyGraphView, _selected_connections: Array[ParleyGraphEdge], _selected_nodes: Array[ParleyGraphNode]) -> void:
+	graph_view = _graph_view
 	selectedConnections = _selected_connections.duplicate()
 	selectedNodes = _selected_nodes.duplicate()
 
 func undo() -> void:
 	# Re-add deleted nodes
-	for connection : GraphConnection in selectedConnections:
-		var result: int = connection.connect_node(graph_edit)
+
+	# TODO this will be implemented shortly
+	# for node : GraphNode in selectedNodes:
+	# 	graph_view.add_child(node)
+	# 	graph_view.ast.add_ast_node(node.)
+
+	for connection : ParleyGraphEdge in selectedConnections:
+		var result: int = connection.connect_node(graph_view)
 		if result == FAILED:
 			print("Couldn't delete connection: ", connection.as_string())
 	
-	for node : GraphNode in selectedNodes:
-		graph_edit.add_child(node)
 
 func do() -> void:
 	# Remove deleted nodes
-	for connection : GraphConnection in selectedConnections:
-		connection.disconnect_node(graph_edit)
+	for connection : ParleyGraphEdge in selectedConnections:
+		connection.disconnect_node(graph_view)
 
-	for selectedNode : GraphNode in selectedNodes:
-		if graph_edit.has_node(NodePath(selectedNode.name)):
-			graph_edit.remove_child(selectedNode)
+	for selectedNode : ParleyGraphNode in selectedNodes:
+		if graph_view.has_node(NodePath(selectedNode.name)):
+			graph_view._on_node_deselected(selectedNode)
+			graph_view.remove_child(selectedNode)
+			graph_view.ast.remove_node(selectedNode.id)
+			deletedNodes.append(selectedNode)
+
+func flush() -> void:
+	for deletedNode : ParleyGraphNode in deletedNodes:
+		deletedNode.queue_free()
+	pass

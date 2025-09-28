@@ -19,6 +19,11 @@ const end_node_scene: PackedScene = preload("../components/end/end_node.tscn")
 const group_node_scene: PackedScene = preload("../components/group/group_node.tscn")
 const jump_node_scene: PackedScene = preload("../components/jump/jump_node.tscn")
 
+signal delete_selected()
+signal save_request()
+signal undo_request()
+signal redo_request()
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	await clear()
@@ -354,12 +359,17 @@ func set_selected_by_id(id: String, _goto: bool = true) -> void:
 
 #region SHORTCUTS
 
+
 const CLICK_DISTANCE: float = 50
 var onUnselect: Array[Callable] = []
-var undoHistory: Array[GraphOperation] = []
-var redoHistory: Array[GraphOperation] = []
-var selectedConnections: Array[GraphConnection] = []
-var selectedNodes: Array[GraphNode] = []
+var selectedConnections: Array[ParleyGraphEdge] = []
+var selectedNodes: Array[ParleyGraphNode] = []
+
+func _on_node_selected(node: Node) -> void:
+	selectedNodes.append(node)
+func _on_node_deselected(node: Node) -> void:
+	selectedNodes.erase(node)
+	pass
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -368,25 +378,18 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var key_event: InputEventKey = event as InputEventKey
 		if key_event.pressed and not key_event.echo:
-			# Ctrl + C
-			if key_event.ctrl_pressed and key_event.keycode == KEY_C:
-				_copy()
-			# Ctrl + V
-			elif key_event.ctrl_pressed and key_event.keycode == KEY_V:
-				_paste()
 			#Ctrl + Z
-			elif key_event.ctrl_pressed and key_event.keycode == KEY_Z:
-				_undo()
+			if key_event.ctrl_pressed and key_event.keycode == KEY_Z:
+				undo_request.emit()
 			#Ctrl + Y
 			elif key_event.ctrl_pressed and key_event.keycode == KEY_Y:
-				_redo()
+				redo_request.emit()
 			#Ctrl + S
 			elif key_event.ctrl_pressed and key_event.keycode == KEY_S:
-				_save()
+				save_request.emit()
 			# Delete
 			elif key_event.keycode == KEY_DELETE:
-				_delete_selected()
-
+				delete_selected.emit()
 		
 func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 	var foundAnyConnection: bool = false
@@ -411,15 +414,15 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 			if  distance <= CLICK_DISTANCE:
 				# basically ctrl+click selects multiple
 				if not mouse_event.is_command_or_control_pressed():
-					for connection :GraphConnection in selectedConnections:
+					for connection :ParleyGraphEdge in selectedConnections:
 						connection.unselect()
 					selectedConnections.clear()
 					selectedNodes.clear()
 				
 				foundAnyConnection = true
-				var connection: GraphConnection = GraphConnection.new(from_node, from_port, to_node, to_port)
+				var connection: ParleyGraphEdge = ParleyGraphEdge.new(from_node, from_port, to_node, to_port)
 				connection.select()
-				selectedConnections.append(connection as GraphConnection)
+				selectedConnections.append(connection as ParleyGraphEdge)
 				onUnselect.append(func() -> void:
 					connection.unselect()
 					selectedConnections.erase(connection)
@@ -431,57 +434,6 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 			while onUnselect.size() > 0:
 				var callable: Callable = onUnselect.pop_front()
 				callable.call()
-
-func _delete_selected()-> void:
-	if selectedConnections.size() > 0 || selectedNodes.size() > 0:
-		var deleteConnection: DeleteOperation = DeleteOperation.new(self, selectedConnections, selectedNodes)
-		deleteConnection.do()
-		add_undo_operation(deleteConnection)
-
-func _copy() -> void:
-	print("Copied selected node(s)")
-	# TODO: implement copy logic
-
-func _paste() -> void:
-	print("Pasted copied node(s)")
-	# TODO: implement paste logic
-
-func add_undo_operation(operation: GraphOperation) -> void:
-	redoHistory.clear()
-	undoHistory.push_back(operation)
-
-func _undo() -> void:
-	if undoHistory.size() > 0:
-		print("Undo")
-		var operation: GraphOperation = undoHistory.pop_back()
-		operation.undo()
-		redoHistory.push_back(operation)
-
-func _redo() -> void:
-	if redoHistory.size() > 0:
-		print("Redo")
-		var operation: GraphOperation = redoHistory.pop_back()
-		operation.do()
-		add_undo_operation(operation)
-
-func _save() -> void:
-	var result: int = _save_dialogue()
-	if not result == FAILED:
-		print("Dialog saved!")
-#TODO: This doesnt work find out why
-
-func _save_dialogue() -> int:
-	if not ast or not ast.resource_path:
-		push_error(ParleyUtils.log.error_msg("Unable to save Dialogue Sequence. Dialogue Sequence does not exist in the file system, please create one using the file menu in the top left-hand side"))
-		return ERR_DOES_NOT_EXIST
-	var ok: int = ResourceSaver.save(ast)
-	if ok != OK:
-		push_warning(ParleyUtils.log.warn_msg("Error saving the Dialogue AST: %d" % [ok]))
-		return ok
-	# This is needed to correctly reload upon file saves
-	if Engine.is_editor_hint():
-		EditorInterface.get_resource_filesystem().reimport_files([ast.resource_path])
-	return OK
 
 func _get_slot_position(node: GraphNode, slot_idx: int, is_output: bool) -> Vector2:
 	var local_pos: Vector2
