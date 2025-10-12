@@ -144,6 +144,17 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> ParleyNodeAst
 	_emit_dialogue_updated()
 	return ast_node
 
+func add_node_from_ast(node_ast: ParleyNodeAst) -> ParleyNodeAst:
+	# Probably need to make sure the provided ID doesn't already exist
+	for node : ParleyNodeAst in nodes:
+		if node.id == node_ast.id:
+			print("Id already exists in dialogue sequence")
+			return
+			
+	# Also worth storing the insertion index somewhere as well?
+	nodes.append(node_ast)
+	_emit_dialogue_updated()
+	return node_ast
 
 ## Update Node AST position
 func update_node_position(ast_node_id: String, position: Vector2) -> void:
@@ -240,7 +251,6 @@ func remove_node(node_id: String) -> void:
 		index += 1
 
 	_emit_dialogue_updated()
-
 
 ## Find a Node AST by its ID.
 ## Example: ast.find_node_by_id("1")

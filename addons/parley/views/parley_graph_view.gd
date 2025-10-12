@@ -370,7 +370,6 @@ func _on_node_selected(node: Node) -> void:
 func _on_node_deselected(node: Node) -> void:
 	selectedNodes.erase(node)
 	pass
-
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		_handle_mouse_select(event as InputEventMouseButton)
@@ -420,21 +419,32 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 					selectedNodes.clear()
 				
 				foundAnyConnection = true
-				var connection: ParleyGraphEdge = ParleyGraphEdge.new(from_node, from_port, to_node, to_port)
-				connection.select()
-				selectedConnections.append(connection as ParleyGraphEdge)
-				onUnselect.append(func() -> void:
-					connection.unselect()
+				var connection: ParleyGraphEdge = _find_existing_connection(from_node, from_port, to_node, to_port)
+				if connection == null:
+					connection = ParleyGraphEdge.new(from_node, from_port, to_node, to_port)
+					connection.select()
+					selectedConnections.append(connection as ParleyGraphEdge)
+					onUnselect.append(func() -> void:
+						connection.unselect()
+						selectedConnections.erase(connection)
+					)
+					print("Selected connection:", connection.as_string())
+				else:
 					selectedConnections.erase(connection)
-				)
-				print("Clicked connection:", connection.as_string())
+					connection.unselect()
+					print("Unselected existing connection:", connection.as_string())
 				break
 
-		if not foundAnyConnection:
+		if not foundAnyConnection && not mouse_event.is_command_or_control_pressed():
 			while onUnselect.size() > 0:
 				var callable: Callable = onUnselect.pop_front()
 				callable.call()
 
+func _find_existing_connection(_from_node: ParleyGraphNode, _from_port: int, _to_node: ParleyGraphNode, _to_port: int) -> ParleyGraphEdge:
+	for con: ParleyGraphEdge in selectedConnections:
+		if con.from_node == _from_node && con.from_port == _from_port && con.to_node == _to_node && con.to_port == _to_port:
+			return con
+	return null
 func _get_slot_position(node: GraphNode, slot_idx: int, is_output: bool) -> Vector2:
 	var local_pos: Vector2
 	if is_output:
