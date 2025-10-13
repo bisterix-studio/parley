@@ -124,6 +124,7 @@ class Test_parley_import:
 				["en", "keys", "fr"],
 				["[CSV]: Some new text in English.", "SOME_TEXT", "[CSV]: Some new text in French."],
 			],
+			"expected_result": [ERR_INVALID_DATA, 'Unable to import: cannot find valid translation index: (headers:["en", "keys", "fr"], line:["en", "keys", "fr"], locale:en)'],
 			"expected": [
 				ParleyStartNodeAst.new("node:1", Vector2(440.0, 1120.0)),
 				ParleyDialogueNodeAst.new("node:2", Vector2(760.0, 1080.0), "uid://ceouii84qmu0w::alice", "[CSV]: Some text in English.", "SOME_TEXT"),
@@ -152,11 +153,13 @@ class Test_parley_import:
 				var _result: int = DirAccess.copy_absolute(absolute_fixture_path, path)
 		var file_type: ParleyImportModal.FileType = ParleyImportModal.FileType.Csv
 		var expected: Array = params.get("expected")
+		var expected_result: Array = params.get("expected_result", [OK, ""])
 		
 		# Act
-		ParleyImport.import_dialogue_text_translation(file_type, test_dialogue_sequence_ast, path)
+		var result: Array = ParleyImport.import_dialogue_text_translation(file_type, test_dialogue_sequence_ast, path)
 
 		# Assert
+		assert_eq(result, expected_result)
 		assert_typeof(expected, TYPE_ARRAY)
 		assert_gt(expected.size(), 0)
 		assert_eq_deep(

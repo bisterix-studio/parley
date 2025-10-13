@@ -12,6 +12,7 @@ const new_file_icon: CompressedTexture2D = preload("./assets/New.svg")
 const load_file_icon: CompressedTexture2D = preload("./assets/Load.svg")
 const export_icon: CompressedTexture2D = preload("./assets/Export.svg")
 const import_icon: CompressedTexture2D = preload("./assets/Import.svg")
+const generate_icon: CompressedTexture2D = preload("./assets/Generate.svg")
 const insert_after_icon: CompressedTexture2D = preload("./assets/InsertAfter.svg")
 const dialogue_icon: CompressedTexture2D = preload("./assets/Dialogue.svg")
 const dialogue_option_icon: CompressedTexture2D = preload("./assets/DialogueOption.svg")
@@ -235,10 +236,10 @@ func _setup(on_ready: bool = false) -> void:
 func _setup_file_menu() -> void:
 	var popup: PopupMenu = file_menu.get_popup()
 	popup.clear()
-	popup.add_icon_item(new_file_icon, "New Dialogue Sequence...", 0)
-	popup.add_icon_item(load_file_icon, "Open Dialogue Sequence...", 1)
-	popup.add_separator("Export")
-	popup.add_icon_item(export_icon, "Export to CSV...", 2)
+	popup.add_icon_item(new_file_icon, &"New Dialogue Sequence...", 0)
+	popup.add_icon_item(load_file_icon, &"Open Dialogue Sequence...", 1)
+	popup.add_separator(&"Export")
+	popup.add_icon_item(export_icon, &"Export to CSV...", 2)
 	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_file_id_pressed)
 
 
@@ -246,16 +247,16 @@ func _setup_file_menu() -> void:
 func _setup_insert_menu() -> void:
 	var popup: PopupMenu = insert_menu.get_popup()
 	popup.clear()
-	popup.add_separator("Dialogue")
+	popup.add_separator(&"Dialogue")
 	popup.add_icon_item(dialogue_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.DIALOGUE), ParleyDialogueSequenceAst.Type.DIALOGUE)
 	popup.add_icon_item(dialogue_option_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION), ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION)
-	popup.add_separator("Conditions")
+	popup.add_separator(&"Conditions")
 	popup.add_icon_item(condition_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.CONDITION), ParleyDialogueSequenceAst.Type.CONDITION)
 	popup.add_icon_item(condition_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.MATCH), ParleyDialogueSequenceAst.Type.MATCH)
-	popup.add_separator("Actions")
+	popup.add_separator(&"Actions")
 	popup.add_icon_item(action_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.ACTION), ParleyDialogueSequenceAst.Type.ACTION)
 	popup.add_icon_item(jump_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.JUMP), ParleyDialogueSequenceAst.Type.JUMP)
-	popup.add_separator("Misc")
+	popup.add_separator(&"Misc")
 	popup.add_icon_item(start_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.START), ParleyDialogueSequenceAst.Type.START)
 	popup.add_icon_item(end_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.END), ParleyDialogueSequenceAst.Type.END)
 	popup.add_icon_item(group_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.GROUP), ParleyDialogueSequenceAst.Type.GROUP)
@@ -266,14 +267,20 @@ func _render_translations_menu() -> void:
 	var popup: PopupMenu = translations_menu.get_popup()
 	popup.clear()
 
-	popup.add_icon_item(export_icon, "Export Dialogue to CSV...", 0)
-	popup.set_item_tooltip(0, "Export Dialogue Text Translations to CSV")
+	popup.add_separator(&"Exports")
+	popup.add_icon_item(export_icon, &"Export Dialogue to CSV...", 0)
+	popup.set_item_tooltip(0, &"Export Dialogue Text Translations to CSV")
 
-	popup.add_icon_item(export_icon, "Export Characters to CSV...", 1)
-	popup.set_item_tooltip(1, "Export Character Translations to CSV")
+	popup.add_icon_item(export_icon, &"Export Characters to CSV...", 1)
+	popup.set_item_tooltip(1, &"Export Character Translations to CSV")
 
-	popup.add_icon_item(import_icon, "Import Dialogue from CSV...", 2)
-	popup.set_item_tooltip(2, "Import Dialogue Text Translations from CSV")
+	popup.add_separator(&"Imports")
+	popup.add_icon_item(import_icon, &"Import Dialogue from CSV...", 2)
+	popup.set_item_tooltip(2, &"Import Dialogue Text Translations from CSV")
+
+	popup.add_separator(&"Generators")
+	popup.add_icon_item(generate_icon, &"Generate Text Translation keys...", 3)
+	popup.set_item_tooltip(3, &"Generate Text Translation keys for Dialogue Sequence Nodes")
 
 	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_translations_menu_id_pressed)
 #endregion
@@ -351,6 +358,20 @@ func _on_translations_menu_id_pressed(id: int) -> void:
 			export_modal.render(ParleyExportModal.ExportType.CharacterNameTranslation, ParleyExportModal.FileType.Csv, dialogue_ast)
 		2:
 			import_modal.render(ParleyImportModal.ImportType.DialogueTextTranslation, ParleyImportModal.FileType.Csv, dialogue_ast)
+		3:
+			if dialogue_ast:
+				var ast_changed: bool = dialogue_ast.generate_text_translation_keys()
+				# TODO: This is currently to make sure that the currently open editor updates when the dialogue sequence updates.
+				# However, to improve future maintainability and better software patterns, we should do this
+				# generically by just noting that the Dialogue Sequence AST has changed and inferring everything from there
+				if ast_changed and selected_node_ast and selected_node_id:
+					node_selected.emit(selected_node_ast)
+				if selected_node_id:
+					var currently_selected_node_id: String = selected_node_id
+					var currently_selected_node_ast: ParleyNodeAst = dialogue_ast.find_node_by_id(currently_selected_node_id)
+					if currently_selected_node_ast:
+						node_selected.emit(currently_selected_node_ast)
+				print_rich(ParleyUtils.log.info_msg("Generated Text Translation Keys for Dialogue Sequence AST: {dialogue_ast}".format({'dialogue_ast': dialogue_ast})))
 		_:
 			print_rich(ParleyUtils.log.info_msg("Unknown option ID pressed: {id}".format({'id': id})))
 
@@ -386,6 +407,7 @@ func _save_dialogue() -> int:
 		EditorInterface.get_resource_filesystem().reimport_files([dialogue_ast.resource_path])
 	return OK
 
+
 func _on_arrange_nodes_button_pressed() -> void:
 	selected_node_id = null
 	await refresh()
@@ -403,6 +425,7 @@ func _on_test_dialogue_from_start_button_pressed() -> void:
 		return
 	if parley_manager:
 		parley_manager.run_test_dialogue_from_start(dialogue_ast)
+
 
 func _on_test_dialogue_from_selected_button_pressed() -> void:
 	# TODO: dialogue is technically async so we should ideally wait here
@@ -802,9 +825,9 @@ func _add_edge(from_node_name: StringName, from_slot: int, to_node_name: StringN
 	if added_edge:
 		graph_view.add_edge(added_edge, from_node_name, to_node_name)
 
-func _is_selected_node(id: String) -> bool:
+func _is_selected_node(id: String, should_log: bool = true) -> bool:
 	var is_selected_node: bool = selected_node_id == id
-	if not is_selected_node:
+	if not is_selected_node and should_log:
 		push_warning(ParleyUtils.log.warn_msg("Node with ID %s is not selected" % id))
 	return is_selected_node
 #endregion

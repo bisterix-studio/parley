@@ -36,8 +36,11 @@ const DIALOGUE_BALLOON_PATH: StringName = &"parley/dialogue/dialogue_balloon_pat
 #region Internationalisation
 # Project settings
 const TRANSLATION_MODE: StringName = &"parley/translations/mode"
+const TRANSLATION_CSV_HEADER_KEY: StringName = &"parley/translations/csv_header_key"
 const TRANSLATION_FILES: StringName = &"internationalization/locale/translations"
 const TRANSLATIONS_POT_FILES: StringName = &"internationalization/locale/translations_pot_files"
+const TRANSLATION_LOCALE_TEST: StringName = &"internationalization/locale/test"
+const TRANSLATION_LOCALE_FALLBACK: StringName = &"internationalization/locale/fallback"
 #endregion
 
 

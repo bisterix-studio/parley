@@ -299,6 +299,34 @@ func remove_edges(edges_to_remove: Array[ParleyEdgeAst], emit: bool = true) -> i
 	if removed > 0 and emit:
 		_emit_dialogue_updated()
 	return removed
+
+
+## Generate text translation keys for all nodes
+## in the Dialogue Sequence AST.
+func generate_text_translation_keys() -> bool:
+	var ast_changed: bool = false
+	for node_ast: ParleyNodeAst in nodes:
+		match node_ast.type:
+			ParleyDialogueSequenceAst.Type.DIALOGUE:
+				var dialogue_node_ast: ParleyDialogueNodeAst = node_ast
+				var current_text_translation_key: String = ParleyUtils.translation.get_msg_ctx(dialogue_node_ast, &"text")
+				if not current_text_translation_key and dialogue_node_ast.text:
+					var text_translation_key: String = ParleyUtils.translation.generate_key(dialogue_node_ast.text, self, dialogue_node_ast, &"text")
+					dialogue_node_ast.update(dialogue_node_ast.character, dialogue_node_ast.text, text_translation_key)
+					ast_changed = true
+			ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION:
+				var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = node_ast
+				var current_text_translation_key: String = ParleyUtils.translation.get_msg_ctx(dialogue_option_node_ast, &"text")
+				if not current_text_translation_key and dialogue_option_node_ast.text:
+					var text_translation_key: String = ParleyUtils.translation.generate_key(dialogue_option_node_ast.text, self, dialogue_option_node_ast, &"text")
+					dialogue_option_node_ast.update(dialogue_option_node_ast.character, dialogue_option_node_ast.text, text_translation_key)
+					ast_changed = true
+			_:
+				pass
+	if ast_changed:
+		emit_changed()
+		dialogue_updated.emit(self)
+	return ast_changed
 #endregion
 
 

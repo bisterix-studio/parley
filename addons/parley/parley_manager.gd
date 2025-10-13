@@ -248,10 +248,11 @@ func get_test_locale() -> String:
 	test_locale = ParleySettings.get_setting(ParleyConstants.TEST_DEFAULT_LOCALE, "")
 	if test_locale and is_instance_of(test_locale, TYPE_STRING):
 		return test_locale
-	# TODO: constant
-	test_locale = ProjectSettings.get_setting("internationalization/locale/test", "")
+
+	test_locale = ProjectSettings.get_setting(ParleyConstants.TRANSLATION_LOCALE_TEST, "")
 	if test_locale and is_instance_of(test_locale, TYPE_STRING):
 		return test_locale
+
 	return TranslationServer.get_tool_locale()
 
 

@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_sequence_ast_1.1.0"
+type="Resource"
+uid="uid://bi26w64m677x6"
+path="res://.godot/imported/generate_text_translation_keys_translations.ds-a97878f0294bbebb1a38936ed417217b.tres"
+
+[deps]
+
+source_file="res://tests/fixtures/generate_text_translation_keys_translations.ds"
+dest_files=["res://.godot/imported/generate_text_translation_keys_translations.ds-a97878f0294bbebb1a38936ed417217b.tres"]
+
+[params]
+

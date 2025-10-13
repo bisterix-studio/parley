@@ -16,6 +16,7 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
 	# Internationalisation
 	ParleyConstants.TRANSLATION_MODE: ParleyContext.TranslationMode.keys()[ParleyContext.TranslationMode.PO],
+	ParleyConstants.TRANSLATION_CSV_HEADER_KEY: &"keys",
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's
 	# hardcode it for now but allow people to edit it in settings
@@ -59,6 +60,11 @@ static var TYPES: Dictionary = {
 		"hint": PROPERTY_HINT_ENUM,
 		"hint_string": ",".join(ParleyContext.TranslationMode.keys())
 	},
+	ParleyConstants.TRANSLATION_CSV_HEADER_KEY: {
+		"name": ParleyConstants.TRANSLATION_CSV_HEADER_KEY,
+		"description": "Defines the translation header key for use in CSV translation files. By default, this is 'keys'.",
+		"type": TYPE_STRING_NAME,
+	},
 	# Testing
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: {
 		"name": ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH,
@@ -70,6 +76,7 @@ static var TYPES: Dictionary = {
 		"name": ParleyConstants.TEST_DEFAULT_LOCALE,
 		"description": "Defines the default locale that will be used when testing Dialogue Sequences.",
 		"type": TYPE_STRING,
+		"hint": PROPERTY_HINT_LOCALE_ID
 	}
 }
 

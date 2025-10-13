@@ -226,15 +226,17 @@ class Test_parley_export:
 				var _result: int = DirAccess.copy_absolute(absolute_fixture_path, path)
 		var file_type: ParleyExportModal.FileType = ParleyExportModal.FileType.Csv
 		var expected: Array = params.get("expected")
+		var expected_result: Array = params.get("expected_result", [OK, ""])
 		
 		# Act
-		ParleyExport.export_dialogue_text_translation(file_type, test_dialogue_sequence_ast, path)
+		var result: Array = ParleyExport.export_dialogue_text_translation(file_type, test_dialogue_sequence_ast, path)
 
 		# Assert
+		assert_eq(result, expected_result)
 		assert_file_exists(path)
 		assert_file_not_empty(path)
-		var result: Array[PackedStringArray] = TestUtils.get_csv_results(path)
-		assert_eq_deep(result, expected)
+		var csv_results: Array[PackedStringArray] = TestUtils.get_csv_results(path)
+		assert_eq_deep(csv_results, expected)
 
 	var test_export_character_name_translation_cases: Array[Dictionary] = [
 		{
@@ -380,15 +382,17 @@ class Test_parley_export:
 				var _result: int = DirAccess.copy_absolute(absolute_fixture_path, path)
 		var file_type: ParleyExportModal.FileType = ParleyExportModal.FileType.Csv
 		var expected: Array = params.get("expected")
+		var expected_result: Array = params.get("expected_result", [OK, ""])
 		
 		# Act
-		ParleyExport.export_character_name_translation(file_type, test_dialogue_sequence_ast, path)
+		var result: Array = ParleyExport.export_character_name_translation(file_type, test_dialogue_sequence_ast, path)
 
 		# Assert
+		assert_eq(result, expected_result)
 		assert_file_exists(path)
 		assert_file_not_empty(path)
-		var result: Array[PackedStringArray] = TestUtils.get_csv_results(path)
-		assert_eq_deep(result, expected)
+		var csv_results: Array[PackedStringArray] = TestUtils.get_csv_results(path)
+		assert_eq_deep(csv_results, expected)
 
 
 	var test_export_node_cases: Array[Dictionary] = [
@@ -412,15 +416,17 @@ class Test_parley_export:
 		var path: String = tmp_dir.get_current_dir().path_join("export_%s.csv" % [str(int(Time.get_unix_time_from_system()))])
 		var file_type: ParleyExportModal.FileType = ParleyExportModal.FileType.Csv
 		var expected: Array = params.get("expected")
+		var expected_result: Array = params.get("expected_result", [OK, ""])
 		
 		# Act
-		ParleyExport.export_node(file_type, test_dialogue_sequence_ast, path)
+		var result: Array = ParleyExport.export_node(file_type, test_dialogue_sequence_ast, path)
 
 		# Assert
+		assert_eq(result, expected_result)
 		assert_file_exists(path)
 		assert_file_not_empty(path)
-		var result: Array[PackedStringArray] = TestUtils.get_csv_results(path)
-		assert_eq_deep(result, expected)
+		var csv_results: Array[PackedStringArray] = TestUtils.get_csv_results(path)
+		assert_eq_deep(csv_results, expected)
 
 
 class TestUtils:

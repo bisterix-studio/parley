@@ -11,11 +11,21 @@ class Test_dialogue_sequence_ast:
 
 	var result: ParleyRunResult
 	var ctx: ParleyContext
-	var test_dialogue_sequence_ast: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input.ds')
-	var test_dialogue_sequence_ast_with_match_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_match_input.ds')
-	var test_dialogue_sequence_ast_sort_cases: ParleyDialogueSequenceAst = load('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds')
-	var test_dialogue_sequence_ast_from_jump_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/from_jump_node_input.ds')
-	var test_dialogue_sequence_ast_to_jump_node: ParleyDialogueSequenceAst = load('res://tests/fixtures/to_jump_node_input.ds')
+	var test_dialogue_sequence_ast: ParleyDialogueSequenceAst
+	var test_dialogue_sequence_ast_with_match_node: ParleyDialogueSequenceAst
+	var test_dialogue_sequence_ast_sort_cases: ParleyDialogueSequenceAst
+	var test_dialogue_sequence_ast_from_jump_node: ParleyDialogueSequenceAst
+	var test_dialogue_sequence_ast_to_jump_node: ParleyDialogueSequenceAst
+	var test_dialogue_sequence_translations: ParleyDialogueSequenceAst
+
+
+	func before_each() -> void:
+		test_dialogue_sequence_ast = TestUtils.load_dialogue_sequence_ast('res://tests/fixtures/basic_ast_node_generation_input.ds')
+		test_dialogue_sequence_ast_with_match_node = TestUtils.load_dialogue_sequence_ast('res://tests/fixtures/basic_match_input.ds')
+		test_dialogue_sequence_ast_sort_cases = TestUtils.load_dialogue_sequence_ast('res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds')
+		# We need the resource paths so these must be preserved
+		test_dialogue_sequence_ast_from_jump_node = load('res://tests/fixtures/from_jump_node_input.ds')
+		test_dialogue_sequence_ast_to_jump_node = load('res://tests/fixtures/to_jump_node_input.ds')
 
 
 	func after_each() -> void:
@@ -23,6 +33,18 @@ class Test_dialogue_sequence_ast:
 			ctx.free()
 		if result:
 			result.free()
+		if test_dialogue_sequence_ast:
+			test_dialogue_sequence_ast = null
+		if test_dialogue_sequence_ast_with_match_node:
+			test_dialogue_sequence_ast_with_match_node = null
+		if test_dialogue_sequence_ast_sort_cases:
+			test_dialogue_sequence_ast_sort_cases = null
+		if test_dialogue_sequence_ast_from_jump_node:
+			test_dialogue_sequence_ast_from_jump_node = null
+		if test_dialogue_sequence_ast_to_jump_node:
+			test_dialogue_sequence_ast_to_jump_node = null
+		if test_dialogue_sequence_translations:
+			test_dialogue_sequence_translations = null
 
 	#region INIT
 	var test_init_cases: Array[Dictionary] = [
@@ -603,7 +625,67 @@ class Test_remove_edges:
 			assert_signal_emitted(dialogue_ast, 'dialogue_updated')
 
 
+class Test_generate_text_translation_keys extends GutTest:
+
+	var test_dialogue_sequence_ast: ParleyDialogueSequenceAst
+
+
+	func before_each() -> void:
+		test_dialogue_sequence_ast = load('res://tests/fixtures/generate_text_translation_keys_translations.ds')
+
+	
+	func after_each() -> void:
+		if test_dialogue_sequence_ast:
+			test_dialogue_sequence_ast = null
+
+
+	var test_generate_text_translation_keys_cases: Array[Dictionary] = [
+		{
+			"expected": [
+				{ "id": "node:1", "text_translation_key": null },
+				{ "id": "node:2", "text_translation_key": "SOME_TEXT" },
+				{ "id": "node:3", "text_translation_key": "CSV_SOME_OPTION_IN_ENGLISH__BI26W64M677X6_3_TEXT" },
+				{ "id": "node:4", "text_translation_key": "CSV_ANOTHER_OPTION_IN_ENGLISH__BI26W64M677X6_4_TEXT" },
+				{ "id": "node:5", "text_translation_key": "CSV_SOME_TEXT_WITH_NO_TRANSLATIO__BI26W64M677X6_5_TEXT" },
+				{ "id": "node:6", "text_translation_key": "SAME_OPTION_TEXT" },
+				{ "id": "node:7", "text_translation_key": "SAME_OPTION_TEXT" },
+			],
+		},
+	]
+
+	func test_generate_text_translation_keys(params: Dictionary = use_parameters(test_generate_text_translation_keys_cases)) -> void:
+		# Arrange
+		# Note, loading the Dialogue Sequence as is may cause issues in the future
+		# when we have multiple tests. However, not an issue for now.
+		var dialogue_sequence_ast: ParleyDialogueSequenceAst = test_dialogue_sequence_ast
+		var expected: Array = params.get('expected', {})
+
+		# Act
+		var result: bool = dialogue_sequence_ast.generate_text_translation_keys()
+
+		# Assert
+		assert_eq(result, true)
+		for node_ast: ParleyNodeAst in dialogue_sequence_ast.nodes:
+			var expected_node_index: int = expected.find_custom(func(node: Dictionary) -> bool: return node.get('id') == node_ast.id)
+			assert(expected_node_index != -1, "Node AST %s not found in Dialogue Sequence AST %s" % [node_ast, dialogue_sequence_ast])
+			var expected_node: Dictionary = expected[expected_node_index]
+			var text_translation_key: Variant = node_ast.get('text_translation_key')
+			var expected_text_translation_key: Variant = expected_node.get('text_translation_key', 'invalid')
+			@warning_ignore("UNSAFE_CALL_ARGUMENT") # We know this is fine
+			assert_eq(text_translation_key, expected_text_translation_key)
+
+
+
 class TestUtils:
+	static func load_dialogue_sequence_ast(path: String) -> ParleyDialogueSequenceAst:
+		var raw_test_dialogue_sequence_ast: ParleyDialogueSequenceAst = load(path)
+		var test_dialogue_sequence_ast_dict: Dictionary = JSON.parse_string(JSON.stringify(raw_test_dialogue_sequence_ast.to_dict()))
+		var title: String = test_dialogue_sequence_ast_dict.get('title')
+		var nodes: Array = test_dialogue_sequence_ast_dict.get('nodes')
+		var edges: Array = test_dialogue_sequence_ast_dict.get('edges')
+		return ParleyDialogueSequenceAst.new(title, nodes, edges)
+
+
 	static func map_to_dict(node: ParleyNodeAst) -> Dictionary:
 		var d: Dictionary = inst_to_dict(node)
 		var _path_result: bool = d.erase('@path')

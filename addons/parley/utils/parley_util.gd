@@ -3,6 +3,8 @@
 @tool
 class_name ParleyUtils
 
+const Constants = preload("res://addons/parley/constants.gd")
+const Settings = preload("res://addons/parley/settings.gd")
 
 class signals:
 	## Connect safely to a signal and handle any errors accordingly
@@ -160,17 +162,19 @@ class translation:
 	
 
 	static func get_locale() -> StringName:
-		# TODO: get locale_key from config but for now default to project-then-system locale
-		var locale: StringName = ProjectSettings.get_setting("internationalization/locale/fallback")
+		var locale: StringName = Settings.get_setting(Constants.TEST_DEFAULT_LOCALE)
+		if locale:
+			return locale
+
+		locale = ProjectSettings.get_setting(Constants.TRANSLATION_LOCALE_FALLBACK)
 		if locale:
 			return locale
 
 		return TranslationServer.get_tool_locale()
-	
+
 
 	static func get_csv_key_name() -> StringName:
-		# TODO: get from config
-		return &"keys"
+		return ParleySettings.get_setting(Constants.TRANSLATION_CSV_HEADER_KEY)
 
 
 class string:
