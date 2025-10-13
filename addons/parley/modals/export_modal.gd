@@ -37,6 +37,13 @@ signal export_requested(export_type: ExportType, file_type: FileType, dialogue_s
 #endregion
 
 
+#region LIFECYCLE
+func _ready() -> void:
+	_render_title()
+	_render_status()
+#endregion
+
+
 #region SETTERS
 func _set_export_type(new_export_type: ExportType) -> void:
 	export_type = new_export_type
@@ -51,7 +58,7 @@ func _set_file_type(new_file_type: FileType) -> void:
 #endregion
 
 
-#region LIFECYCLE
+#region RENDERERS
 # TODO: check where this is called
 func render(p_export_type: ExportType, p_file_type: FileType, p_dialogue_sequence_ast: ParleyDialogueSequenceAst) -> void:
 	file_type = p_file_type

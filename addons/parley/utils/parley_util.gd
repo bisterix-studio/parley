@@ -157,6 +157,20 @@ class translation:
 		var value_variant: Variant = node_ast.get(field_to_translate)
 		var value: String = value_variant if is_instance_of(value_variant, TYPE_STRING) else ""
 		return PackedStringArray([key if key else value, value])
+	
+
+	static func get_locale() -> StringName:
+		# TODO: get locale_key from config but for now default to project-then-system locale
+		var locale: StringName = ProjectSettings.get_setting("internationalization/locale/fallback")
+		if locale:
+			return locale
+
+		return TranslationServer.get_tool_locale()
+	
+
+	static func get_csv_key_name() -> StringName:
+		# TODO: get from config
+		return &"keys"
 
 
 class string:

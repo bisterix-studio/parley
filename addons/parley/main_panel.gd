@@ -5,11 +5,13 @@ class_name ParleyMainPanel extends VBoxContainer
 
 
 const ParleyExport = preload("./parley_export.gd")
+const ParleyImport = preload("./parley_import.gd")
 
 
 const new_file_icon: CompressedTexture2D = preload("./assets/New.svg")
 const load_file_icon: CompressedTexture2D = preload("./assets/Load.svg")
 const export_icon: CompressedTexture2D = preload("./assets/Export.svg")
+const import_icon: CompressedTexture2D = preload("./assets/Import.svg")
 const insert_after_icon: CompressedTexture2D = preload("./assets/InsertAfter.svg")
 const dialogue_icon: CompressedTexture2D = preload("./assets/Dialogue.svg")
 const dialogue_option_icon: CompressedTexture2D = preload("./assets/DialogueOption.svg")
@@ -46,6 +48,7 @@ var parley_manager: ParleyManager
 @onready var new_dialogue_sequence_modal: ParleyNewDialogueSequenceModal = %NewDialogueSequenceModal
 @onready var edit_dialogue_sequence_modal: ParleyEditDialogueSequenceModal = %EditDialogueSequenceModal
 @onready var export_modal: ParleyExportModal = %ExportModal
+@onready var import_modal: ParleyImportModal = %ImportModal
 @onready var select_locale_modal: Window = %SelectLocaleModal
 @onready var editor: HSplitContainer = %EditorView
 @onready var sidebar: ParleySidebar = %Sidebar
@@ -269,7 +272,7 @@ func _render_translations_menu() -> void:
 	popup.add_icon_item(export_icon, "Export Characters to CSV...", 1)
 	popup.set_item_tooltip(1, "Export Character Translations to CSV")
 
-	popup.add_icon_item(export_icon, "Import Dialogue from CSV...", 2)
+	popup.add_icon_item(import_icon, "Import Dialogue from CSV...", 2)
 	popup.set_item_tooltip(2, "Import Dialogue Text Translations from CSV")
 
 	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_translations_menu_id_pressed)
@@ -346,14 +349,17 @@ func _on_translations_menu_id_pressed(id: int) -> void:
 			export_modal.render(ParleyExportModal.ExportType.DialogueTextTranslation, ParleyExportModal.FileType.Csv, dialogue_ast)
 		1:
 			export_modal.render(ParleyExportModal.ExportType.CharacterNameTranslation, ParleyExportModal.FileType.Csv, dialogue_ast)
-		1:
-			# IMPORT
-			return
+		2:
+			import_modal.render(ParleyImportModal.ImportType.DialogueTextTranslation, ParleyImportModal.FileType.Csv, dialogue_ast)
 		_:
 			print_rich(ParleyUtils.log.info_msg("Unknown option ID pressed: {id}".format({'id': id})))
 
 
 func _on_save_pressed() -> void:
+	await _save_and_refresh_dialogue()
+
+
+func _save_and_refresh_dialogue() -> void:
 	var result: int = _save_dialogue()
 	if result != OK:
 		return
@@ -737,13 +743,45 @@ func _on_export_requested(export_type: ParleyExportModal.ExportType, file_type: 
 	var export_type_name: String = ParleyUtils.string.get_enum_key_name(ParleyExportModal.ExportType, export_type)
 	match export_type:
 		ParleyExportModal.ExportType.Node:
-			ParleyExport.export_node(file_type, dialogue_sequence_ast, path)
+			var result: Array = ParleyExport.export_node(file_type, dialogue_sequence_ast, path)
+			var code: int = result[0]
+			if code != OK:
+				parley_manager.push_toast("Unable to export Nodes from current Dialogue Sequence (code:%s): %s" % [error_string(code), result[1]], EditorToaster.SEVERITY_ERROR)
+				return
+			parley_manager.push_toast(&"Successfully exported Nodes from current Dialogue Sequence")
 		ParleyExportModal.ExportType.DialogueTextTranslation:
-			ParleyExport.export_dialogue_text_translation(file_type, dialogue_sequence_ast, path)
+			var result: Array = ParleyExport.export_dialogue_text_translation(file_type, dialogue_sequence_ast, path)
+			var code: int = result[0]
+			if code != OK:
+				parley_manager.push_toast("Unable to export Text Translations from current Dialogue Sequence (code:%s): %s" % [error_string(code), result[1]], EditorToaster.SEVERITY_ERROR)
+				return
+			parley_manager.push_toast(&"Successfully exported Text Translations from current Dialogue Sequence")
 		ParleyExportModal.ExportType.CharacterNameTranslation:
-			ParleyExport.export_character_name_translation(file_type, dialogue_sequence_ast, path)
+			var result: Array = ParleyExport.export_character_name_translation(file_type, dialogue_sequence_ast, path)
+			var code: int = result[0]
+			if code != OK:
+				parley_manager.push_toast("Unable to export Character Names from current Dialogue Sequence (code:%s): %s" % [error_string(code), result[1]], EditorToaster.SEVERITY_ERROR)
+				return
+			parley_manager.push_toast(&"Successfully exported Character Names from current Dialogue Sequence")
 		_:
 			push_error(ParleyUtils.log.error_msg("Unable to export data: unknown export type (file_type:%s, export_type:%s)" % [file_type_name, export_type_name]))
+			return
+
+
+func _on_import_modal_import_requested(import_type: ParleyImportModal.ImportType, file_type: ParleyImportModal.FileType, dialogue_sequence_ast: ParleyDialogueSequenceAst, path: String) -> void:
+	var file_type_name: String = ParleyUtils.string.get_enum_key_name(ParleyImportModal.FileType, file_type)
+	var import_type_name: String = ParleyUtils.string.get_enum_key_name(ParleyImportModal.ImportType, import_type)
+	match import_type:
+		ParleyImportModal.ImportType.DialogueTextTranslation:
+			var result: Array = ParleyImport.import_dialogue_text_translation(file_type, dialogue_sequence_ast, path)
+			var code: int = result[0]
+			if code != OK:
+				parley_manager.push_toast("Unable to import Text Translations into current Dialogue Sequence (code:%s): %s" % [error_string(code), result[1]], EditorToaster.SEVERITY_ERROR)
+				return
+			await _save_and_refresh_dialogue()
+			parley_manager.push_toast(&"Successfully imported Text Translations into current Dialogue Sequence", EditorToaster.SEVERITY_INFO)
+		_:
+			push_error(ParleyUtils.log.error_msg("Unable to import data: unknown import type (file_type:%s, import_type:%s)" % [file_type_name, import_type_name]))
 			return
 #endregion
 

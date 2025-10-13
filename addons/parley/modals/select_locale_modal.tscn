@@ -6,8 +6,8 @@
 auto_translate_mode = 1
 title = "Select a Locale"
 initial_position = 2
-size = Vector2i(1200, 1000)
-min_size = Vector2i(1200, 1000)
+size = Vector2i(500, 600)
+min_size = Vector2i(500, 600)
 keep_title_visible = true
 script = ExtResource("1_dtk37")
 
@@ -38,14 +38,23 @@ text = "Locale:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Invalid"
+text = "None"
 
 [node name="AvailableLocalesContainer" type="HBoxContainer" parent="SelectLocaleMarginContainer/SelectLocaleContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="LocalesList" type="ItemList" parent="SelectLocaleMarginContainer/SelectLocaleContainer/AvailableLocalesContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+item_0/text = "English [en]"
+item_1/text = "French [fr]"
+
 [node name="LanguagesList" type="ItemList" parent="SelectLocaleMarginContainer/SelectLocaleContainer/AvailableLocalesContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 item_count = 615
@@ -667,6 +676,7 @@ item_614/text = "Zaza [zza]"
 
 [node name="CountriesList" type="ItemList" parent="SelectLocaleMarginContainer/SelectLocaleContainer/AvailableLocalesContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 item_count = 262
@@ -954,6 +964,7 @@ layout_mode = 2
 disabled = true
 text = "Select"
 
+[connection signal="item_selected" from="SelectLocaleMarginContainer/SelectLocaleContainer/AvailableLocalesContainer/LocalesList" to="." method="_on_locales_list_item_selected"]
 [connection signal="item_selected" from="SelectLocaleMarginContainer/SelectLocaleContainer/AvailableLocalesContainer/LanguagesList" to="." method="_on_languages_list_item_selected"]
 [connection signal="item_selected" from="SelectLocaleMarginContainer/SelectLocaleContainer/AvailableLocalesContainer/CountriesList" to="." method="_on_countries_list_item_selected"]
 [connection signal="pressed" from="SelectLocaleMarginContainer/SelectLocaleContainer/ActionButonContainer/CancelContainer/CancelButton" to="." method="_on_cancel_button_pressed"]

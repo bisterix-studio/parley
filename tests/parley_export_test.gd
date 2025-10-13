@@ -25,16 +25,19 @@ class Test_parley_export:
 
 
 	var test_export_dialogue_text_translation_cases: Array[Dictionary] = [
+		# Initial export
 		{
 			"dialogue_sequence_ast": test_dialogue_sequence_ast,
 			"expected": [
 				PackedStringArray(["keys", "en"]),
-				PackedStringArray(["[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some text in English."]),
 				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English."]),
 				PackedStringArray(["[CSV]: Another option in English.", "[CSV]: Another option in English."]),
 				PackedStringArray(["[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "[CSV]: Same option text in English."]),
 			],
 		},
+		# Export with existing file but no overlapping rows
 		{
 			"dialogue_sequence_ast": test_dialogue_sequence_ast,
 			"existing": [
@@ -46,12 +49,14 @@ class Test_parley_export:
 				PackedStringArray(["keys", "en"]),
 				PackedStringArray(["Existing row 1", "Existing row 1"]),
 				PackedStringArray(["Existing row 2", "Existing row 2"]),
-				PackedStringArray(["[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some text in English."]),
 				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English."]),
 				PackedStringArray(["[CSV]: Another option in English.", "[CSV]: Another option in English."]),
 				PackedStringArray(["[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "[CSV]: Same option text in English."]),
 			],
 		},
+		# Export with existing file and extra locales
 		{
 			"dialogue_sequence_ast": test_dialogue_sequence_ast,
 			"existing": [
@@ -63,12 +68,14 @@ class Test_parley_export:
 				PackedStringArray(["keys", "en", "fr", "es"]),
 				PackedStringArray(["Existing keys row 1", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
 				PackedStringArray(["Existing keys row 2", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
-				PackedStringArray(["[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
 				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
 				PackedStringArray(["[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English."]),
 				PackedStringArray(["[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "[CSV]: Same option text in English.", "[CSV]: Same option text in English.", "[CSV]: Same option text in English."]),
 			],
 		},
+		# Export with existing file and non-en locales
 		{
 			"dialogue_sequence_ast": test_dialogue_sequence_ast,
 			"existing": [
@@ -80,12 +87,14 @@ class Test_parley_export:
 				PackedStringArray(["keys", "fr", "es"]),
 				PackedStringArray(["Existing keys row 1", "Existing fr row 1", "Existing es row 1"]),
 				PackedStringArray(["Existing keys row 2", "Existing fr row 1", "Existing es row 1"]),
-				PackedStringArray(["[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
 				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
 				PackedStringArray(["[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English."]),
 				PackedStringArray(["[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "[CSV]: Same option text in English.", "[CSV]: Same option text in English."]),
 			],
 		},
+		# Export with existing file with extra locales and trailing line
 		{
 			"dialogue_sequence_ast": test_dialogue_sequence_ast,
 			"existing": "fixtures/existing_dialogue_text_export.csv",
@@ -93,12 +102,14 @@ class Test_parley_export:
 				PackedStringArray(["keys", "en", "fr", "es"]),
 				PackedStringArray(["Existing keys row 1", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
 				PackedStringArray(["Existing keys row 2", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
-				PackedStringArray(["[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
 				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
 				PackedStringArray(["[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English."]),
 				PackedStringArray(["[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "[CSV]: Same option text in English.", "[CSV]: Same option text in English.", "[CSV]: Same option text in English."]),
 			],
 		},
+		# Export with existing file with extra locales and no trailing line
 		{
 			"dialogue_sequence_ast": test_dialogue_sequence_ast,
 			"existing": "fixtures/existing_dialogue_text_export_no_trailing_line.csv",
@@ -106,10 +117,95 @@ class Test_parley_export:
 				PackedStringArray(["keys", "en", "fr", "es"]),
 				PackedStringArray(["Existing keys row 1", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
 				PackedStringArray(["Existing keys row 2", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
-				PackedStringArray(["[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
 				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
 				PackedStringArray(["[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English."]),
 				PackedStringArray(["[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "[CSV]: Same option text in English.", "[CSV]: Same option text in English.", "[CSV]: Same option text in English."]),
+			],
+		},
+		# Export with existing file with extra locales and overlapping rows that are the same as the current DS
+		{
+			"dialogue_sequence_ast": test_dialogue_sequence_ast,
+			"existing": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
+				PackedStringArray(["Existing keys row 1", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["Existing keys row 2", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
+			],
+			"expected": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
+				PackedStringArray(["Existing keys row 1", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["Existing keys row 2", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English."]),
+				PackedStringArray(["[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "[CSV]: Same option text in English.", "[CSV]: Same option text in English.", "[CSV]: Same option text in English."]),
+			],
+		},
+		# Export with existing file with extra locales and overlapping rows that are different to the current DS (these should be updated)
+		{
+			"dialogue_sequence_ast": test_dialogue_sequence_ast,
+			"existing": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some old text in English.", "[CSV]: Some old text in French.", "[CSV]: Some old text in Spanish."]),
+				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
+				PackedStringArray(["Existing keys row 1", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["Existing keys row 2", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
+			],
+			"expected": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["SOME_TEXT", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
+				PackedStringArray(["Existing keys row 1", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["Existing keys row 2", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English."]),
+				PackedStringArray(["[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "[CSV]: Same option text in English.", "[CSV]: Same option text in English.", "[CSV]: Same option text in English."]),
+			],
+		},
+		# Export with existing file with _notes column and overlapping rows that are the same as the current DS
+		{
+			"dialogue_sequence_ast": test_dialogue_sequence_ast,
+			"existing": [
+				PackedStringArray(["keys", "_notes", "en", "fr", "es"]),
+				PackedStringArray(["SOME_TEXT", "Some notes", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["[CSV]: Some option in English.", "Some notes", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
+				PackedStringArray(["Existing keys row 1", "Some notes", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["Existing keys row 2", "Some notes", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
+			],
+			"expected": [
+				PackedStringArray(["keys", "_notes", "en", "fr", "es"]),
+				PackedStringArray(["SOME_TEXT", "Some notes", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["[CSV]: Some option in English.", "Some notes", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
+				PackedStringArray(["Existing keys row 1", "Some notes", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["Existing keys row 2", "Some notes", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["[CSV]: Another option in English.", "", "[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English."]),
+				PackedStringArray(["[CSV]: Some text with no translation.", "", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "", "[CSV]: Same option text in English.", "[CSV]: Same option text in English.", "[CSV]: Same option text in English."]),
+			],
+		},
+		# Export with existing file with _notes column and overlapping rows that are different to the current DS (these should be updated)
+		{
+			"dialogue_sequence_ast": test_dialogue_sequence_ast,
+			"existing": [
+				PackedStringArray(["keys", "_notes", "en", "fr", "es"]),
+				PackedStringArray(["SOME_TEXT", "Some notes", "[CSV]: Some old text in English.", "[CSV]: Some old text in French.", "[CSV]: Some old text in Spanish."]),
+				PackedStringArray(["[CSV]: Some option in English.", "Some notes", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
+				PackedStringArray(["Existing keys row 1", "Some notes", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["Existing keys row 2", "Some notes", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
+			],
+			"expected": [
+				PackedStringArray(["keys", "_notes", "en", "fr", "es"]),
+				PackedStringArray(["SOME_TEXT", "Some notes", "[CSV]: Some text in English.", "[CSV]: Some text in English.", "[CSV]: Some text in English."]),
+				PackedStringArray(["[CSV]: Some option in English.", "Some notes", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
+				PackedStringArray(["Existing keys row 1", "Some notes", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["Existing keys row 2", "Some notes", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
+				PackedStringArray(["[CSV]: Another option in English.", "", "[CSV]: Another option in English.", "[CSV]: Another option in English.", "[CSV]: Another option in English."]),
+				PackedStringArray(["[CSV]: Some text with no translation.", "", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation.", "[CSV]: Some text with no translation."]),
+				PackedStringArray(["SAME_OPTION_TEXT", "", "[CSV]: Same option text in English.", "[CSV]: Same option text in English.", "[CSV]: Same option text in English."]),
 			],
 		},
 	]
@@ -228,6 +324,44 @@ class Test_parley_export:
 				PackedStringArray(["Dave", "Dave", "Dave", "Dave"]),
 			],
 		},
+		{
+			"dialogue_sequence_ast": test_dialogue_sequence_ast,
+			"existing": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["Alice", "Alice", "Alice", "Alice"]),
+				PackedStringArray(["Bob", "Bob", "Bob", "Bob"]),
+				PackedStringArray(["Eve", "Eve [en]", "Eve [fr]", "Eve [es]"]),
+				PackedStringArray(["Fred", "Fred [en]", "Fred [fr]", "Fred [es]"]),
+			],
+			"expected": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["Alice", "Alice", "Alice", "Alice"]),
+				PackedStringArray(["Bob", "Bob", "Bob", "Bob"]),
+				PackedStringArray(["Eve", "Eve [en]", "Eve [fr]", "Eve [es]"]),
+				PackedStringArray(["Fred", "Fred [en]", "Fred [fr]", "Fred [es]"]),
+				PackedStringArray(["Carol", "Carol", "Carol", "Carol"]),
+				PackedStringArray(["Dave", "Dave", "Dave", "Dave"]),
+			],
+		},
+		{
+			"dialogue_sequence_ast": test_dialogue_sequence_ast,
+			"existing": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["Alice", "Alice [en]", "Alice [fr]", "Alice [es]"]),
+				PackedStringArray(["Bob", "Bob [en]", "Bob [fr]", "Bob [es]"]),
+				PackedStringArray(["Eve", "Eve [en]", "Eve [fr]", "Eve [es]"]),
+				PackedStringArray(["Fred", "Fred [en]", "Fred [fr]", "Fred [es]"]),
+			],
+			"expected": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["Alice", "Alice [en]", "Alice [fr]", "Alice [es]"]),
+				PackedStringArray(["Bob", "Bob [en]", "Bob [fr]", "Bob [es]"]),
+				PackedStringArray(["Eve", "Eve [en]", "Eve [fr]", "Eve [es]"]),
+				PackedStringArray(["Fred", "Fred [en]", "Fred [fr]", "Fred [es]"]),
+				PackedStringArray(["Carol", "Carol", "Carol", "Carol"]),
+				PackedStringArray(["Dave", "Dave", "Dave", "Dave"]),
+			],
+		},
 	]
 
 
@@ -262,10 +396,12 @@ class Test_parley_export:
 			"dialogue_sequence_ast": test_dialogue_sequence_ast,
 			"expected": [
 				PackedStringArray(["id", "type", "character_en", "text_en", "text_translation_key"]),
-				PackedStringArray(["node:2", "Dialogue", "uid://ceouii84qmu0w::alice", "[CSV]: Some text in English.", ""]),
+				PackedStringArray(["node:2", "Dialogue", "uid://ceouii84qmu0w::alice", "[CSV]: Some text in English.", "SOME_TEXT"]),
 				PackedStringArray(["node:3", "Dialogue Option", "uid://ceouii84qmu0w::bob", "[CSV]: Some option in English.", ""]),
 				PackedStringArray(["node:4", "Dialogue Option", "uid://ceouii84qmu0w::carol", "[CSV]: Another option in English.", ""]),
 				PackedStringArray(["node:5", "Dialogue", "uid://ceouii84qmu0w::dave", "[CSV]: Some text with no translation.", ""]),
+				PackedStringArray(["node:6", "Dialogue Option", "uid://ceouii84qmu0w::alice", "[CSV]: Same option text in English.", "SAME_OPTION_TEXT"]),
+				PackedStringArray(["node:7", "Dialogue Option", "uid://ceouii84qmu0w::alice", "[CSV]: Same option text in English.", "SAME_OPTION_TEXT"]),
 			],
 		},
 	]

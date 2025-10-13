@@ -22,4 +22,4 @@ func _ready() -> void:
 func _render() -> void:
 	if dialogue_text_label:
 		var character: ParleyCharacter = dialogue_node.resolve_character()
-		dialogue_text_label.text = "[b]%s[/b] – %s" % [tr(character.name if character.name != '' else 'Unknown'), dialogue_node.text]
+		dialogue_text_label.text = "[b]%s[/b] – %s" % [tr(character.name if character.name != '' else 'Unknown', 'DIALOGUE'), dialogue_node.text]

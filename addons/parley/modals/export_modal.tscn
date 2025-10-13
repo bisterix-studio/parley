@@ -5,7 +5,7 @@
 
 [node name="ExportModal" type="Window"]
 auto_translate_mode = 1
-title = "Export to CSV"
+title = "Export Dialogue Text Translations to CSV"
 initial_position = 2
 size = Vector2i(1400, 800)
 min_size = Vector2i(1400, 800)
@@ -39,7 +39,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "res://export/export.csv"
-expand_to_text_length = true
 
 [node name="ChoosePathButton" type="Button" parent="ExportMarginContainer/ExportContainer/PathContainer"]
 layout_mode = 2
@@ -53,7 +52,7 @@ size_flags_vertical = 3
 bbcode_enabled = true
 text = "[color=#19e34f]
 [ul]CSV path name is valid[/ul][/color][color=#19e34f]
-[ul]Will export the current Dialogue Sequence to CSV[/ul][/color]
+[ul]Will export the Dialogue Text Translations to CSV[/ul][/color]
 "
 fit_content = true
 

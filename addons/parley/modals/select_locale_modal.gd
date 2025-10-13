@@ -4,6 +4,7 @@ extends Window
 
 #region DEFS
 var selected_locale: String = "Invalid" : set = _set_selected_locale
+var available_locales: PackedStringArray = []
 var available_languages: PackedStringArray = []
 var available_countries: PackedStringArray = []
 var selected_language: PackedStringArray = [] : set = _set_selected_language
@@ -13,6 +14,7 @@ var selected_country: PackedStringArray = [] : set = _set_selected_country
 const default_country_code: String = "[Default]"
 
 
+@onready var locales_list: ItemList = %LocalesList
 @onready var languages_list: ItemList = %LanguagesList
 @onready var countries_list: ItemList = %CountriesList
 @onready var select_button: Button = %SelectButton
@@ -25,21 +27,28 @@ signal locale_changed(new_locale: String)
 
 #region LIFECYCLE
 func _ready() -> void:
+	var all_locales: PackedStringArray = TranslationServer.get_loaded_locales()
+	var new_available_locales: PackedStringArray = PackedStringArray([])
+	for locale: String in all_locales:
+		var _result: int = new_available_locales.append(TranslationServer.standardize_locale(locale))
+	available_locales = new_available_locales
 	available_languages = TranslationServer.get_all_languages()
 	var new_available_countries: PackedStringArray = [default_country_code]
 	new_available_countries.append_array(TranslationServer.get_all_countries())
 	available_countries = new_available_countries
+	_render_locales_list()
 	_render_languages_list()
 	_render_countries_list()
 	selected_language = []
 	selected_country = []
-	selected_locale = "Invalid"
+	selected_locale = "None"
 #endregion
 
 
 #region SETTERS
 func _set_selected_locale(new_selected_locale: String) -> void:
 	selected_locale = new_selected_locale
+	_render_select_button()
 	_render_selected_locale_value()
 
 
@@ -59,6 +68,14 @@ func _set_selected_country(new_selected_country: PackedStringArray) -> void:
 
 
 #region RENDERERS
+func _render_locales_list() -> void:
+	if locales_list:
+		locales_list.clear()
+		for locale: String in available_locales:
+			var item: String = "%s [%s]" % [TranslationServer.get_locale_name(locale), locale]
+			var _result: int = locales_list.add_item(item)
+
+
 func _render_languages_list() -> void:
 	if languages_list:
 		languages_list.clear()
@@ -91,6 +108,16 @@ func _render_selected_locale_value() -> void:
 
 
 #region SIGNALS
+func _on_locales_list_item_selected(index: int) -> void:
+	if index < 0:
+		return
+	# This is needed to stop weird overflow bug with item search
+	if index >= available_locales.size():
+		index = index % available_locales.size()
+	var locale: String = available_locales[index]
+	selected_locale = locale
+
+
 func _on_languages_list_item_selected(index: int) -> void:
 	if index < 0:
 		return
@@ -126,17 +153,13 @@ func _on_select_button_pressed() -> void:
 
 #region UTILS
 func _is_locale_valid() -> bool:
-	return selected_language.size() == 1
+	return selected_locale.length() > 0 and selected_locale != "None"
 
 
 func _compile_locale(should_log: bool = false) -> String:
 	if not _is_locale_valid():
 		if should_log:
-			push_warning(ParleyUtils.log.warn_msg("Unable to compile locale for testing Dialogue Sequences with: Invalid (language: %s, country: %s)" % [",".join(selected_language), ",".join(selected_country)]))
+			push_warning(ParleyUtils.log.warn_msg("Unable to compile locale for testing Dialogue Sequences with: %s" % [selected_locale]))
 		return ""
-
-	var locale: String = selected_language[0]
-	if selected_country.size() > 0 and selected_country[0] != default_country_code:
-			locale += "_%s" % selected_country[0]
-	return locale
+	return selected_locale
 #endregion

@@ -12,7 +12,7 @@
       "position": "(760.0, 1080.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "[CSV]: Some text in English.",
-      "text_translation_key": ""
+      "text_translation_key": "SOME_TEXT"
     },
     {
       "id": "node:3",
@@ -37,6 +37,22 @@
       "character": "uid://ceouii84qmu0w::dave",
       "text": "[CSV]: Some text with no translation.",
       "text_translation_key": ""
+    },
+    {
+      "id": "node:6",
+      "type": "DIALOGUE_OPTION",
+      "position": "(2520.0, 920.0)",
+      "character": "uid://ceouii84qmu0w::alice",
+      "text": "[CSV]: Same option text in English.",
+      "text_translation_key": "SAME_OPTION_TEXT"
+    },
+    {
+      "id": "node:7",
+      "type": "DIALOGUE_OPTION",
+      "position": "(2520.0, 1260.0)",
+      "character": "uid://ceouii84qmu0w::alice",
+      "text": "[CSV]: Same option text in English.",
+      "text_translation_key": "SAME_OPTION_TEXT"
     }
   ],
   "edges": [
@@ -81,6 +97,24 @@
       "from_node": "node:3",
       "from_slot": 0,
       "to_node": "node:5",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:7",
+      "from_node": "node:5",
+      "from_slot": 0,
+      "to_node": "node:6",
+      "to_slot": 0,
+      "should_override_colour": false,
+      "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"
+    },
+    {
+      "id": "edge:8",
+      "from_node": "node:5",
+      "from_slot": 0,
+      "to_node": "node:7",
       "to_slot": 0,
       "should_override_colour": false,
       "colour_override": "(0.4118, 0.4118, 0.4118, 1.0)"

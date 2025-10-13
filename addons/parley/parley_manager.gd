@@ -173,6 +173,11 @@ func register_localisation_path(path: String) -> int:
 	return OK
 
 
+func push_toast(message: String, severity: int = 0, tooltip: String = "") -> void:
+	if Engine.is_editor_hint():
+		EditorInterface.get_editor_toaster().push_toast(message, severity, tooltip)
+
+
 ## Update localisation for all known Dialogue Sequences
 func update_localisations(dialogue_sequences_to_register: Array[ParleyDialogueSequenceAst] = [], clean: bool = true) -> int:
 	# TODO: do we need to consider the translation mode?
