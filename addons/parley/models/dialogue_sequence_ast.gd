@@ -706,6 +706,11 @@ func _emit_dialogue_updated() -> void:
 	if is_ready:
 		dialogue_updated.emit(self)
 
+func get_edge_ast(from_node: String, from_slot: int, to_node: String, to_slot: int) -> ParleyEdgeAst:
+	for edge: ParleyEdgeAst in edges:
+		if edge.from_node == from_node && edge.from_slot == from_slot && edge.to_node == to_node && edge.to_slot == to_slot:
+			return edge
+	return null
 
 func _to_string() -> String:
 	return "ParleyDialogueSequenceAst<nodes=%d edges=%d>" % [nodes.size(), edges.size()]

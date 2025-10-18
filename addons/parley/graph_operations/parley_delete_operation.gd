@@ -3,20 +3,17 @@ class_name ParleyDeleteOperation
 extends ParleyGraphOperation
 
 var selected_connections: Array[ParleyGraphEdge]
-var selected_nodes: Array[ParleyGraphNode]
+var selected_node_ids: Array[String]
 var deleted_node_datas: Array[NodeData]
 var graph_view: ParleyGraphView
 
 func _init(_graph_view: ParleyGraphView, _selected_connections: Array[ParleyGraphEdge], _selected_nodes: Array[ParleyGraphNode]) -> void:
 	graph_view = _graph_view
 	selected_connections = _selected_connections.duplicate()
-	selected_nodes = _selected_nodes.duplicate()
-
+	for node: ParleyGraphNode in _selected_nodes:
+		selected_node_ids.append(node.id)
+	
 func undo() -> void:
-	pass
-	# Re-add deleted nodes
-
-	selected_nodes.clear()
 	var graph_nodes: Dictionary = {}
 	for node_data : NodeData in deleted_node_datas:
 		var deleted_node : ParleyNodeAst = node_data.node_ast
@@ -27,47 +24,43 @@ func undo() -> void:
 	
 	for node_data : NodeData in deleted_node_datas:
 		for connection : ParleyGraphEdge in node_data.connections:
-			connection.to_node = graph_view.get_node(NodePath(connection.to_node_name)) as ParleyGraphNode
-			connection.from_node = graph_view.get_node(NodePath(connection.from_node_name)) as ParleyGraphNode
-			if node_data.node_name == connection.to_node_name:
-				selected_nodes.append(connection.to_node)
-				pass
-			elif node_data.node_name == connection.from_node_name:
-				selected_nodes.append(connection.from_node)
-				pass
+			connection.to_node = graph_view.get_node(NodePath(connection.to_node_name))
+			connection.from_node = graph_view.get_node(NodePath(connection.from_node_name))
 			connection.connect_node(graph_view)
 
 	for connection : ParleyGraphEdge in selected_connections:
-		connection.to_node = graph_view.get_node(NodePath(connection.to_node_name)) as ParleyGraphNode
-		connection.from_node = graph_view.get_node(NodePath(connection.from_node_name)) as ParleyGraphNode
+		connection.to_node = graph_view.get_node(NodePath(connection.to_node_name))
+		connection.from_node = graph_view.get_node(NodePath(connection.from_node_name))
 		connection.connect_node(graph_view)
 
 	graph_view.generate()
 
 func do() -> void:
-	for selected_node : ParleyGraphNode in selected_nodes:
-		if graph_view.has_node(NodePath(selected_node.name)):
-			var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(selected_node.id)
-			var connections : Array[ParleyGraphEdge] = get_connections_for_node(graph_view, selected_node)
-			deleted_node_datas.append(NodeData.new(selected_node.name, ast, connections))
+	deleted_node_datas.clear()
+	for selected_node_id : String in selected_node_ids:
+		var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(selected_node_id)
+		if ast != null:
+			var connections : Array[ParleyGraphEdge] = get_connections_for_node(graph_view, selected_node_id)
+			deleted_node_datas.append(NodeData.new(selected_node_id, ast, connections))
 
-	for selected_node : ParleyGraphNode in selected_nodes:
-		if graph_view.has_node(NodePath(selected_node.name)):
-			print("remove node")
-			var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(selected_node.id)
+	for selected_node_id : String in selected_node_ids:
+		var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(selected_node_id)
+		if ast != null:
+			print(selected_node_id)
+			var selected_node : ParleyGraphNode = graph_view.find_node_by_id(selected_node_id)
 			graph_view._on_node_deselected(selected_node)
 			graph_view.remove_child(selected_node)
-			graph_view.ast.remove_node(selected_node.id)
+			graph_view.ast.remove_node(selected_node_id)
 
+	graph_view._on_connections_deselected()
 	for connection : ParleyGraphEdge in selected_connections:
-		print("disconnect connection")
 		connection.disconnect_node(graph_view)
-		
+
 	graph_view.generate()
 
-func get_connections_for_node(graph_edit: GraphEdit, node: GraphNode) -> Array[ParleyGraphEdge]:
+func get_connections_for_node(graph_view: ParleyGraphView, node_id: String) -> Array[ParleyGraphEdge]:
 	var result: Array[ParleyGraphEdge] = []
-	var connections: Array[Dictionary] = graph_edit.get_connection_list()
+	var connections: Array[Dictionary] = graph_view.get_connection_list()
 	
 	for conn: Dictionary in connections:
 		var from_name: String = conn.get("from_node")
@@ -77,8 +70,9 @@ func get_connections_for_node(graph_edit: GraphEdit, node: GraphNode) -> Array[P
 		var to_node: ParleyGraphNode = graph_view.get_node(NodePath(to_name)) as ParleyGraphNode
 		var from_node: ParleyGraphNode = graph_view.get_node(NodePath(from_name)) as ParleyGraphNode
 
-		if from_name == node.name or to_name == node.name:
-			result.append(ParleyGraphEdge.new(from_node, from_port, to_node, to_port))
+		if to_node.id == node_id or from_node.id == node_id:
+			var edge_ast: ParleyEdgeAst = graph_view.ast.get_edge_ast(from_node.id, from_port, to_node.id, to_port)
+			result.append(ParleyGraphEdge.new(edge_ast, from_node, from_port, to_node, to_port))
 	
 	return result
 
@@ -86,10 +80,10 @@ func get_connections_for_node(graph_edit: GraphEdit, node: GraphNode) -> Array[P
 class NodeData:
 	var node_ast: ParleyNodeAst
 	var connections: Array[ParleyGraphEdge]
-	var node_name: String
+	var node_id: String
 
-	func _init(_node_name: String, _node_ast :ParleyNodeAst, _connections: Array[ParleyGraphEdge]) -> void:
-		node_name = _node_name
+	func _init(_node_id: String, _node_ast :ParleyNodeAst, _connections: Array[ParleyGraphEdge]) -> void:
+		node_id = _node_id
 		node_ast = _node_ast
 		connections = _connections
 

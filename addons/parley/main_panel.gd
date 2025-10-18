@@ -55,8 +55,8 @@ var selected_node_ast: ParleyNodeAst: set = _set_selected_node_ast
 signal dialogue_ast_selected(dialogue_ast: ParleyDialogueSequenceAst)
 signal node_selected(node_ast: ParleyNodeAst)
 
-var undoHistory: Array[ParleyGraphOperation] = []
-var redoHistory: Array[ParleyGraphOperation] = []
+var undoHistory: Dictionary = {}
+var redoHistory: Dictionary = {}
 
 #region SETUP
 func _ready() -> void:
@@ -681,20 +681,25 @@ func _delete_selected() -> void:
 		add_undo_operation(deleteConnection)
 
 func add_undo_operation(operation: ParleyGraphOperation) -> void:
-	redoHistory.clear()
-	undoHistory.push_back(operation)
+	if not undoHistory.has(dialogue_ast):
+		undoHistory[dialogue_ast] = [] as Array[ParleyGraphOperation]
+	if not redoHistory.has(dialogue_ast):
+		redoHistory[dialogue_ast] = [] as Array[ParleyGraphOperation]
+	
+	redoHistory[dialogue_ast].clear()
+	undoHistory[dialogue_ast].push_back(operation)
 
 func _undo() -> void:
-	if undoHistory.size() > 0:
+	if undoHistory[dialogue_ast].size() > 0:
 		print("Undo")
-		var operation: ParleyGraphOperation = undoHistory.pop_back()
+		var operation: ParleyGraphOperation = undoHistory[dialogue_ast].pop_back()
 		operation.undo()
-		redoHistory.push_back(operation)
+		redoHistory[dialogue_ast].push_back(operation)
 
 func _redo() -> void:
-	if redoHistory.size() > 0:
+	if redoHistory[dialogue_ast].size() > 0:
 		print("Redo")
-		var operation: ParleyGraphOperation = redoHistory.pop_back()
+		var operation: ParleyGraphOperation = redoHistory[dialogue_ast].pop_back()
 		operation.do()
 		add_undo_operation(operation)
 

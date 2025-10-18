@@ -370,6 +370,11 @@ func _on_node_selected(node: Node) -> void:
 func _on_node_deselected(node: Node) -> void:
 	selectedNodes.erase(node)
 	pass
+func _on_connections_deselected() -> void:
+	while onUnselect.size() > 0:
+		var callable: Callable = onUnselect.pop_front()
+		callable.call()
+
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		_handle_mouse_select(event as InputEventMouseButton)
@@ -420,19 +425,20 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 				
 				foundAnyConnection = true
 				var connection: ParleyGraphEdge = _find_existing_connection(from_node, from_port, to_node, to_port)
+				var edge_ast: ParleyEdgeAst = ast.get_edge_ast(from_node.id, from_port, to_node.id, to_port)
 				if connection == null:
-					connection = ParleyGraphEdge.new(from_node, from_port, to_node, to_port)
+					connection = ParleyGraphEdge.new(edge_ast, from_node, from_port, to_node, to_port)
 					connection.select()
 					selectedConnections.append(connection as ParleyGraphEdge)
 					onUnselect.append(func() -> void:
 						connection.unselect()
 						selectedConnections.erase(connection)
 					)
-					print("Selected connection:", connection.as_string())
+					print("Selected connection: ", connection.as_string())
 				else:
 					selectedConnections.erase(connection)
 					connection.unselect()
-					print("Unselected existing connection:", connection.as_string())
+					print("Unselected existing connection: ", connection.as_string())
 				break
 
 		if not foundAnyConnection && not mouse_event.is_command_or_control_pressed():
