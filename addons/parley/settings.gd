@@ -15,7 +15,7 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
 	ParleyConstants.FACT_STORE_PATH: "res://facts/fact_store.tres",
 	# Internationalisation
-	ParleyConstants.TRANSLATION_MODE: ParleyContext.TranslationMode.keys()[ParleyContext.TranslationMode.PO],
+	ParleyConstants.TRANSLATION_MODE: ParleyContext.TranslationMode.keys()[ParleyContext.TranslationMode.Auto],
 	ParleyConstants.TRANSLATION_CSV_HEADER_KEY: &"keys",
 	# Test Dialogue Sequence
 	# We can't preload this because of circular deps so let's

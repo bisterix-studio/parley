@@ -13,6 +13,14 @@ Ensure the following are installed:
 
 - [Godot](https://godotengine.org/)
 
+## Conventions
+
+### GDScript
+
+Parley does not enforce a strict style guide but where possible, it is
+recommended to follow the Godot GDScript style guide as described
+[here](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html).
+
 ## Documentation
 
 Documentation is a vital part of Parley and should always be included for any

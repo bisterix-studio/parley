@@ -9,6 +9,8 @@ import "prismjs/components/prism-json.js";
 import "prismjs/components/prism-bash.js";
 import "prismjs/components/prism-yaml.js";
 import "prismjs/components/prism-gdscript.js";
+import "prismjs/components/prism-csv.js";
+import "prismjs/components/prism-diff.js";
 
 // Adapted from: https://github.com/denoland/fresh
 

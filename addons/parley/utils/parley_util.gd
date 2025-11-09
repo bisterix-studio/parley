@@ -108,6 +108,14 @@ class translation:
 		return ""
 
 
+	## Set the translation context for a node field.
+	## If it can't be found, do nothing.
+	static func set_msg_ctx(node: ParleyNodeAst, field: String, value: String, suffix: StringName = &"_translation_key") -> void:
+		if not is_instance_of(node.get(field + suffix), TYPE_STRING):
+			return
+		return node.set(field + suffix, value)
+
+
 	## Translate the input string
 	static func translate(input: StringName) -> String:
 		var instance: Object = new()

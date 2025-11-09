@@ -64,13 +64,16 @@ Default: `res://addons/parley/components/default_balloon.tscn`
 Defines the translation mode to determine how to find and interpret
 translations. It can be one of several values:
 
+- `Auto` - The Translation Mode will be inferred from translations present in
+  the project. Only `CSV` or `PO` Translation Modes can be inferred. This is the
+  default behaviour.
 - `PO` -
-  [Godot PO files](https://docs.godotengine.org/en/4.4/tutorials/i18n/localization_using_gettext.html)
-  will be used to find and interpret translations. This is the default
-  behaviour.
-
-<!-- TODO: CSV -->
-<!-- TODO: - `OFF` - No internationalisation will be applied. -->
+  [Godot PO files](https://docs.godotengine.org/en/stable/tutorials/i18n/localization_using_gettext.html)
+  will be used to find and interpret translations.
+- `CSV` -
+  [CSV files](https://docs.godotengine.org/en/stable/tutorials/i18n/localization_using_spreadsheets.html)
+  will be used to find and interpret translations.
+- `Off` - No internationalisation will be applied.
 
 More information about internationalisation support in Parley can be found
 [here](../i18n/index.md).
@@ -78,6 +81,17 @@ More information about internationalisation support in Parley can be found
 Setting path: `parley/translations/mode`
 
 Default: `PO`
+
+### CSV Header Key
+
+Defines the CSV header key that is used in CSV translation exports and imports.
+
+More information about internationalisation support in Parley can be found
+[here](../i18n/index.md).
+
+Setting path: `parley/translations/csv_header_key`
+
+Default: `keys`
 
 ## Testing
 

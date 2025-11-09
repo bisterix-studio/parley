@@ -23,6 +23,11 @@ class Test_parley_export:
 	func after_each() -> void:
 		tmp_dir = null
 
+	
+	func get_params(cases: Array[Dictionary]) -> Dictionary:
+		var filtered_cases: Array = cases.filter(func (c: Dictionary) -> bool: return c.get('only', false))
+		return use_parameters(cases if filtered_cases.size() == 0 else filtered_cases)
+
 
 	var test_export_dialogue_text_translation_cases: Array[Dictionary] = [
 		# Initial export
@@ -151,7 +156,7 @@ class Test_parley_export:
 			"existing": [
 				PackedStringArray(["keys", "en", "fr", "es"]),
 				PackedStringArray(["SOME_TEXT", "[CSV]: Some old text in English.", "[CSV]: Some old text in French.", "[CSV]: Some old text in Spanish."]),
-				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English.", "[CSV]: Some option in English."]),
+				PackedStringArray(["[CSV]: Some option in English.", "[CSV]: Some old option in English.", "[CSV]: Some old option in French.", "[CSV]: Some old option in Spanish."]),
 				PackedStringArray(["Existing keys row 1", "Existing en row 1", "Existing fr row 1", "Existing es row 1"]),
 				PackedStringArray(["Existing keys row 2", "Existing en row 2", "Existing fr row 1", "Existing es row 1"]),
 			],
@@ -211,7 +216,7 @@ class Test_parley_export:
 	]
 
 
-	func test_export_dialogue_text_translation_csv(params: Dictionary = use_parameters(test_export_dialogue_text_translation_cases)) -> void:
+	func test_export_dialogue_text_translation_csv(params: Dictionary = get_params(test_export_dialogue_text_translation_cases)) -> void:
 		# Arrange
 		var existing: Variant = params.get("existing")
 		var path: String = tmp_dir.get_current_dir().path_join("export_%s.csv" % [str(int(Time.get_unix_time_from_system()))])
@@ -345,19 +350,40 @@ class Test_parley_export:
 				PackedStringArray(["Dave", "Dave", "Dave", "Dave"]),
 			],
 		},
+		# Should not override existing lines where the character name is unchanged
 		{
 			"dialogue_sequence_ast": test_dialogue_sequence_ast,
 			"existing": [
 				PackedStringArray(["keys", "en", "fr", "es"]),
-				PackedStringArray(["Alice", "Alice [en]", "Alice [fr]", "Alice [es]"]),
-				PackedStringArray(["Bob", "Bob [en]", "Bob [fr]", "Bob [es]"]),
+				PackedStringArray(["Alice", "Alice", "Alice [fr]", "Alice [es]"]),
+				PackedStringArray(["Bob", "Bob", "Bob [fr]", "Bob [es]"]),
 				PackedStringArray(["Eve", "Eve [en]", "Eve [fr]", "Eve [es]"]),
 				PackedStringArray(["Fred", "Fred [en]", "Fred [fr]", "Fred [es]"]),
 			],
 			"expected": [
 				PackedStringArray(["keys", "en", "fr", "es"]),
-				PackedStringArray(["Alice", "Alice [en]", "Alice [fr]", "Alice [es]"]),
-				PackedStringArray(["Bob", "Bob [en]", "Bob [fr]", "Bob [es]"]),
+				PackedStringArray(["Alice", "Alice", "Alice [fr]", "Alice [es]"]),
+				PackedStringArray(["Bob", "Bob", "Bob [fr]", "Bob [es]"]),
+				PackedStringArray(["Eve", "Eve [en]", "Eve [fr]", "Eve [es]"]),
+				PackedStringArray(["Fred", "Fred [en]", "Fred [fr]", "Fred [es]"]),
+				PackedStringArray(["Carol", "Carol", "Carol", "Carol"]),
+				PackedStringArray(["Dave", "Dave", "Dave", "Dave"]),
+			],
+		},
+		# Should override existing lines where the character name is changed
+		{
+			"dialogue_sequence_ast": test_dialogue_sequence_ast,
+			"existing": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["Alice", "Alice", "Alice [fr]", "Alice [es]"]),
+				PackedStringArray(["Bob", "Bob old [en]", "Bob old [fr]", "Bob old [es]"]),
+				PackedStringArray(["Eve", "Eve [en]", "Eve [fr]", "Eve [es]"]),
+				PackedStringArray(["Fred", "Fred [en]", "Fred [fr]", "Fred [es]"]),
+			],
+			"expected": [
+				PackedStringArray(["keys", "en", "fr", "es"]),
+				PackedStringArray(["Alice", "Alice", "Alice [fr]", "Alice [es]"]),
+				PackedStringArray(["Bob", "Bob", "Bob", "Bob"]),
 				PackedStringArray(["Eve", "Eve [en]", "Eve [fr]", "Eve [es]"]),
 				PackedStringArray(["Fred", "Fred [en]", "Fred [fr]", "Fred [es]"]),
 				PackedStringArray(["Carol", "Carol", "Carol", "Carol"]),

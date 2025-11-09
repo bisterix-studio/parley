@@ -76,7 +76,7 @@ const toc: RawTableOfContents = {
           ["character-store", "Character Store"],
         ],
       },
-      internationalisation: {
+      i18n: {
         title: "Internationalisation",
         pages: [
           ["localisation-using-csv", "Localisation using CSV files"],

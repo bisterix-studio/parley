@@ -143,17 +143,17 @@ static func _export(file_type: ParleyExportModal.FileType, export_type: ParleyEx
 					continue
 				if key_values.size() < 2:
 					continue
-				var value: String = key_values[1]
+				var entry_locale_value: String = key_values[1]
 
 				# Handle existing lines
 				var existing_line_index: int = existing_lines_map.get(entry_key, -1)
 				if existing_line_index >= 0 and existing_line_index < lines_to_store.size():
-					var column_index: int = headers.find(locale)
+					var project_locale_column_index: int = headers.find(locale)
 					var existing_line: PackedStringArray = lines_to_store[existing_line_index]
-					var override_value: bool = false
-					if column_index >= 0:
-						var existing_value: String = existing_line[column_index]
-						override_value = existing_value != value and value != entry_key
+					var should_override_value: bool = false
+					if project_locale_column_index >= 0:
+						var existing_value: String = existing_line[project_locale_column_index]
+						should_override_value = existing_value != entry_locale_value
 
 					var existing_line_to_store: PackedStringArray = PackedStringArray([key_values[0]])
 					var index: int = 1
@@ -164,7 +164,7 @@ static func _export(file_type: ParleyExportModal.FileType, export_type: ParleyEx
 							# TODO: support _notes
 							var _result: int = existing_line_to_store.append(column_value)
 						else:
-							var _result: int = existing_line_to_store.append(value if override_value else column_value)
+							var _result: int = existing_line_to_store.append(entry_locale_value if should_override_value else column_value)
 						index += 1
 					lines_to_store[existing_line_index] = existing_line_to_store
 					continue
@@ -177,7 +177,7 @@ static func _export(file_type: ParleyExportModal.FileType, export_type: ParleyEx
 						# TODO: support _notes
 						var _result: int = new_line_to_store.append("")
 					else:
-						var _result: int = new_line_to_store.append(value)
+						var _result: int = new_line_to_store.append(entry_locale_value)
 				lines_to_store.append(new_line_to_store)
 		_:
 			var message: String = "Unable to export: Unknown file type (file_type:%s, export_type:%s)" % [file_type_name, export_type_name]
