@@ -701,7 +701,6 @@ func add_undo_operation(operation: ParleyGraphOperation) -> void:
 func _undo() -> void:
 	_validate_history()
 	if undo_history[dialogue_ast].size() > 0:
-		print("Undo")
 		var operation: ParleyGraphOperation = undo_history[dialogue_ast].pop_back()
 		operation.undo()
 		redo_history[dialogue_ast].push_back(operation)
@@ -710,7 +709,6 @@ func _undo() -> void:
 func _redo() -> void:
 	_validate_history()
 	if redo_history[dialogue_ast].size() > 0:
-		print("Redo")
 		var operation: ParleyGraphOperation = redo_history[dialogue_ast].pop_back()
 		operation.do()
 		undo_history[dialogue_ast].push_back(operation)

@@ -44,7 +44,6 @@ func do() -> void:
 	for selected_node_id : String in selected_node_ids:
 		var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(selected_node_id)
 		if ast != null:
-			print(selected_node_id)
 			var selected_node : ParleyGraphNode = graph_view.find_node_by_id(selected_node_id)
 			graph_view._on_node_deselected(selected_node)
 			graph_view.remove_child(selected_node)

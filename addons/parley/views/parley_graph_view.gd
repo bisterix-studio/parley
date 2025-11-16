@@ -444,11 +444,11 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 						connection.unselect()
 						selected_connections.erase(connection)
 					)
-					print("Selected connection: ", connection.as_string())
+					print_rich(ParleyUtils.log.info_msg("Selected connection: {connection}".format({"connection": connection.as_string()})))
 				else:
 					selected_connections.erase(connection)
 					connection.unselect()
-					print("Unselected existing connection: ", connection.as_string())
+					print_rich(ParleyUtils.log.info_msg("Unselected existing connection: {connection}".format({"connection": connection.as_string()})))
 				break
 
 		if not foundAnyConnection && not mouse_event.is_command_or_control_pressed():
