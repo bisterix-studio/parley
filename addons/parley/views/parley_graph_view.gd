@@ -429,7 +429,7 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 			# print("From: ",from_node ," To", to_node," Comparing x: ", from_pos.x, " ", pointer_pos.x, " ", to_pos.x , " distance: ", distance)
 
 			if  distance <= CLICK_DISTANCE:
-				# basically ctrl+click selects multiple
+				# basically ctrl/cmd+click selects multiple
 				if not mouse_event.is_command_or_control_pressed():
 					_clear_selection()
 				
