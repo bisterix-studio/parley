@@ -24,13 +24,9 @@ func undo() -> void:
 	
 	for node_data : NodeData in deleted_node_datas:
 		for connection : ParleyGraphEdge in node_data.connections:
-			connection.to_node = graph_view.get_node(NodePath(connection.to_node_name))
-			connection.from_node = graph_view.get_node(NodePath(connection.from_node_name))
 			connection.connect_node(graph_view)
 
 	for connection : ParleyGraphEdge in selected_connections:
-		connection.to_node = graph_view.get_node(NodePath(connection.to_node_name))
-		connection.from_node = graph_view.get_node(NodePath(connection.from_node_name))
 		connection.connect_node(graph_view)
 
 	graph_view.generate()

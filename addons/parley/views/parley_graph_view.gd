@@ -34,6 +34,7 @@ func _exit_tree() -> void:
 	await clear()
 	ast = null
 	connections = []
+	_clear_selection()
 
 
 func generate(arrange: bool = false) -> void:
@@ -361,18 +362,18 @@ func set_selected_by_id(id: String, _goto: bool = true) -> void:
 
 
 const CLICK_DISTANCE: float = 50
-var onUnselect: Array[Callable] = []
-var selectedConnections: Array[ParleyGraphEdge] = []
-var selectedNodes: Array[ParleyGraphNode] = []
+var on_unselect: Array[Callable] = []
+var selected_connections: Array[ParleyGraphEdge] = []
+var selected_nodes: Array[ParleyGraphNode] = []
 
 func _on_node_selected(node: Node) -> void:
-	selectedNodes.append(node)
+	selected_nodes.append(node)
 func _on_node_deselected(node: Node) -> void:
-	selectedNodes.erase(node)
+	selected_nodes.erase(node)
 	pass
 func _on_connections_deselected() -> void:
-	while onUnselect.size() > 0:
-		var callable: Callable = onUnselect.pop_front()
+	while on_unselect.size() > 0:
+		var callable: Callable = on_unselect.pop_front()
 		callable.call()
 
 func _gui_input(event: InputEvent) -> void:
@@ -383,18 +384,24 @@ func _gui_input(event: InputEvent) -> void:
 		var key_event: InputEventKey = event as InputEventKey
 		if key_event.pressed and not key_event.echo:
 			#Ctrl + Z
-			if key_event.ctrl_pressed and key_event.keycode == KEY_Z:
+			if key_event.is_action_pressed("ui_undo"):
 				undo_request.emit()
 			#Ctrl + Y
-			elif key_event.ctrl_pressed and key_event.keycode == KEY_Y:
+			elif key_event.is_action_pressed("ui_redo"):
 				redo_request.emit()
 			#Ctrl + S
-			elif key_event.ctrl_pressed and key_event.keycode == KEY_S:
+			elif key_event.is_command_or_control_pressed() and key_event.keycode == KEY_S:
 				save_request.emit()
 			# Delete
 			elif key_event.keycode == KEY_DELETE:
 				delete_selected.emit()
-		
+
+func _clear_selection() -> void:
+	for connection :ParleyGraphEdge in selected_connections:
+		connection.unselect()
+	selected_connections.clear()
+	selected_nodes.clear()	
+
 func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 	var foundAnyConnection: bool = false
 	if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
@@ -418,10 +425,7 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 			if  distance <= CLICK_DISTANCE:
 				# basically ctrl+click selects multiple
 				if not mouse_event.is_command_or_control_pressed():
-					for connection :ParleyGraphEdge in selectedConnections:
-						connection.unselect()
-					selectedConnections.clear()
-					selectedNodes.clear()
+					_clear_selection()
 				
 				foundAnyConnection = true
 				var connection: ParleyGraphEdge = _find_existing_connection(from_node, from_port, to_node, to_port)
@@ -429,25 +433,25 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 				if connection == null:
 					connection = ParleyGraphEdge.new(edge_ast, from_node, from_port, to_node, to_port)
 					connection.select()
-					selectedConnections.append(connection as ParleyGraphEdge)
-					onUnselect.append(func() -> void:
+					selected_connections.append(connection as ParleyGraphEdge)
+					on_unselect.append(func() -> void:
 						connection.unselect()
-						selectedConnections.erase(connection)
+						selected_connections.erase(connection)
 					)
 					print("Selected connection: ", connection.as_string())
 				else:
-					selectedConnections.erase(connection)
+					selected_connections.erase(connection)
 					connection.unselect()
 					print("Unselected existing connection: ", connection.as_string())
 				break
 
 		if not foundAnyConnection && not mouse_event.is_command_or_control_pressed():
-			while onUnselect.size() > 0:
-				var callable: Callable = onUnselect.pop_front()
+			while on_unselect.size() > 0:
+				var callable: Callable = on_unselect.pop_front()
 				callable.call()
 
 func _find_existing_connection(_from_node: ParleyGraphNode, _from_port: int, _to_node: ParleyGraphNode, _to_port: int) -> ParleyGraphEdge:
-	for con: ParleyGraphEdge in selectedConnections:
+	for con: ParleyGraphEdge in selected_connections:
 		if con.from_node == _from_node && con.from_port == _from_port && con.to_node == _to_node && con.to_port == _to_port:
 			return con
 	return null

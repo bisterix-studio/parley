@@ -4,9 +4,11 @@
 extends Object
 class_name ParleyGraphEdge
 var from_node: ParleyGraphNode
+var from_node_id: String
 var from_slot: int
 var from_port: int
 var to_node: ParleyGraphNode
+var to_node_id: String
 var to_slot: int
 var to_port: int
 var to_node_name: String
@@ -24,6 +26,8 @@ func _init(_edge_ast: ParleyEdgeAst, _from_node: ParleyGraphNode, _from_port: in
 	to_port = _to_port
 	from_slot = from_node.get_output_port_slot(from_port)
 	to_slot = to_node.get_input_port_slot(to_port)
+	from_node_id = from_node.id
+	to_node_id = to_node.id
 	from_node_name = from_node.name
 	to_node_name = to_node.name
 	edge_ast = _edge_ast
@@ -31,12 +35,14 @@ func _init(_edge_ast: ParleyEdgeAst, _from_node: ParleyGraphNode, _from_port: in
 func disconnect_node(graph_view: ParleyGraphView) -> void:
 	if not graph_view:
 		return
-	graph_view.ast.remove_edge(from_node.id, from_port, to_node.id, to_port)
+
+	graph_view.ast.remove_edge(from_node_id, from_port, to_node_id, to_port)
 	graph_view.disconnect_node(from_node_name, from_port, to_node_name, to_port)
 
 func connect_node(graph_view: ParleyGraphView) -> int:
 	if not graph_view:
 		return FAILED
+	
 	graph_view.ast.edges.append(edge_ast)
 	return graph_view.connect_node(from_node_name, from_port, to_node_name, to_port)
 
@@ -44,18 +50,19 @@ func select() -> void:
 	if selected:
 		return
 	selected = true
-
+	if not is_instance_valid(from_node) or not is_instance_valid(to_node):
+		return
 	previousFromColor = from_node.get_slot_color_right(from_slot)
 	previousToColor = to_node.get_slot_color_left(to_slot)
-	from_node.set_slot_color_right(from_slot, Color.DEEP_SKY_BLUE) # "output_port_count + from_port - 1" is this a bug i really don't know but only this works
+	from_node.set_slot_color_right(from_slot, Color.DEEP_SKY_BLUE)
 	to_node.set_slot_color_left(to_slot, Color.DEEP_SKY_BLUE)
 
 func unselect() -> void:
 	if not selected:
 		return
-
 	selected = false
-
+	if not is_instance_valid(from_node) or not is_instance_valid(to_node):
+		return
 	from_node.set_slot_color_right(from_slot, previousFromColor)
 	to_node.set_slot_color_left(to_slot, previousToColor)
 
