@@ -663,32 +663,40 @@ func _on_docs_button_pressed() -> void:
 		push_error(ParleyUtils.log.error_msg("Unable to navigate to Parley Documentation at %s: %s" % [href, result]))
 #endregion
 
+
 func _duplicate_nodes_request() -> void:
 
 	pass
 	
+
 func _copy_nodes_request() -> void:
 	pass
 	
+
 func _paste_nodes_request() -> void:
 
 	pass
 	
+
 func _delete_selected() -> void:
 	if graph_view.selected_connections.size() > 0 || graph_view.selected_nodes.size() > 0:
 		var deleteConnection: ParleyDeleteOperation = ParleyDeleteOperation.new(graph_view, graph_view.selected_connections, graph_view.selected_nodes)
 		deleteConnection.do()
 		add_undo_operation(deleteConnection)
+
+
 func _validate_history() -> void:
 	if not undo_history.has(dialogue_ast):
 		undo_history[dialogue_ast] = [] as Array[ParleyGraphOperation]
 	if not redo_history.has(dialogue_ast):
 		redo_history[dialogue_ast] = [] as Array[ParleyGraphOperation]
 
+
 func add_undo_operation(operation: ParleyGraphOperation) -> void:
 	_validate_history()
 	redo_history[dialogue_ast].clear()
 	undo_history[dialogue_ast].push_back(operation)
+
 
 func _undo() -> void:
 	_validate_history()
@@ -698,6 +706,7 @@ func _undo() -> void:
 		operation.undo()
 		redo_history[dialogue_ast].push_back(operation)
 
+
 func _redo() -> void:
 	_validate_history()
 	if redo_history[dialogue_ast].size() > 0:
@@ -705,6 +714,7 @@ func _redo() -> void:
 		var operation: ParleyGraphOperation = redo_history[dialogue_ast].pop_back()
 		operation.do()
 		undo_history[dialogue_ast].push_back(operation)
+
 
 #region HELPERS
 func remove_edge(from_node: String, from_slot: int, to_node: String, to_slot: int) -> void:

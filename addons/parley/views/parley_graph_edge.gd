@@ -32,6 +32,7 @@ func _init(_edge_ast: ParleyEdgeAst, _from_node: ParleyGraphNode, _from_port: in
 	to_node_name = to_node.name
 	edge_ast = _edge_ast
 
+
 func disconnect_node(graph_view: ParleyGraphView) -> void:
 	if not graph_view:
 		return
@@ -39,12 +40,14 @@ func disconnect_node(graph_view: ParleyGraphView) -> void:
 	graph_view.ast.remove_edge(from_node_id, from_port, to_node_id, to_port)
 	graph_view.disconnect_node(from_node_name, from_port, to_node_name, to_port)
 
+
 func connect_node(graph_view: ParleyGraphView) -> int:
 	if not graph_view:
 		return FAILED
 	
 	graph_view.ast.edges.append(edge_ast)
 	return graph_view.connect_node(from_node_name, from_port, to_node_name, to_port)
+
 
 func select() -> void:
 	if selected:
@@ -57,6 +60,7 @@ func select() -> void:
 	from_node.set_slot_color_right(from_slot, Color.DEEP_SKY_BLUE)
 	to_node.set_slot_color_left(to_slot, Color.DEEP_SKY_BLUE)
 
+
 func unselect() -> void:
 	if not selected:
 		return
@@ -65,6 +69,7 @@ func unselect() -> void:
 		return
 	from_node.set_slot_color_right(from_slot, previousFromColor)
 	to_node.set_slot_color_left(to_slot, previousToColor)
+
 
 func as_string() -> String:
 	return "%s:%d -> %s:%d" % [from_node_name, from_port, to_node_name, to_port]

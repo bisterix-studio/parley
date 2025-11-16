@@ -360,7 +360,6 @@ func set_selected_by_id(id: String, _goto: bool = true) -> void:
 
 #region SHORTCUTS
 
-
 const CLICK_DISTANCE: float = 50
 var on_unselect: Array[Callable] = []
 var selected_connections: Array[ParleyGraphEdge] = []
@@ -368,13 +367,18 @@ var selected_nodes: Array[ParleyGraphNode] = []
 
 func _on_node_selected(node: Node) -> void:
 	selected_nodes.append(node)
+
+
 func _on_node_deselected(node: Node) -> void:
 	selected_nodes.erase(node)
 	pass
+
+
 func _on_connections_deselected() -> void:
 	while on_unselect.size() > 0:
 		var callable: Callable = on_unselect.pop_front()
 		callable.call()
+
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -396,11 +400,13 @@ func _gui_input(event: InputEvent) -> void:
 			elif key_event.keycode == KEY_DELETE:
 				delete_selected.emit()
 
+
 func _clear_selection() -> void:
 	for connection :ParleyGraphEdge in selected_connections:
 		connection.unselect()
 	selected_connections.clear()
 	selected_nodes.clear()	
+
 
 func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 	var foundAnyConnection: bool = false
@@ -450,11 +456,14 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 				var callable: Callable = on_unselect.pop_front()
 				callable.call()
 
+
 func _find_existing_connection(_from_node: ParleyGraphNode, _from_port: int, _to_node: ParleyGraphNode, _to_port: int) -> ParleyGraphEdge:
 	for con: ParleyGraphEdge in selected_connections:
 		if con.from_node == _from_node && con.from_port == _from_port && con.to_node == _to_node && con.to_port == _to_port:
 			return con
 	return null
+
+
 func _get_slot_position(node: GraphNode, slot_idx: int, is_output: bool) -> Vector2:
 	var local_pos: Vector2
 	if is_output:
@@ -464,6 +473,7 @@ func _get_slot_position(node: GraphNode, slot_idx: int, is_output: bool) -> Vect
 	
 	# Convert to GraphEdit local coordinates
 	return (node.position + scroll_offset) / zoom + local_pos
+
 
 func get_distance_to_segment(point: Vector2, segment_start: Vector2, segment_end: Vector2) -> float:
 	# Calculate the vector of the line segment.

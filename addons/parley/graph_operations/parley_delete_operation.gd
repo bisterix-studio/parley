@@ -13,6 +13,7 @@ func _init(_graph_view: ParleyGraphView, _selected_connections: Array[ParleyGrap
 	for node: ParleyGraphNode in _selected_nodes:
 		selected_node_ids.append(node.id)
 	
+	
 func undo() -> void:
 	var graph_nodes: Dictionary = {}
 	for node_data : NodeData in deleted_node_datas:
@@ -30,6 +31,7 @@ func undo() -> void:
 		connection.connect_node(graph_view)
 
 	graph_view.generate()
+
 
 func do() -> void:
 	deleted_node_datas.clear()
@@ -53,6 +55,7 @@ func do() -> void:
 		connection.disconnect_node(graph_view)
 
 	graph_view.generate()
+
 
 func get_connections_for_node(graph_view: ParleyGraphView, node_id: String) -> Array[ParleyGraphEdge]:
 	var result: Array[ParleyGraphEdge] = []
