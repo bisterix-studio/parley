@@ -34,8 +34,7 @@ func _exit_tree() -> void:
 	await clear()
 	ast = null
 	connections = []
-	_clear_selection()
-
+	
 
 func generate(arrange: bool = false) -> void:
 	await clear()
@@ -45,6 +44,8 @@ func generate(arrange: bool = false) -> void:
 
 
 func clear() -> void:
+	_clear_selected_connections()
+	_clear_selected_nodes()
 	clear_connections()
 	var children: Array[ParleyGraphNode] = []
 	for child: Node in get_children():
@@ -227,7 +228,6 @@ func set_edge_colour(edge: ParleyEdgeAst) -> void:
 func get_ast_node_name(ast_node: ParleyNodeAst) -> String:
 	return "%s-%s" % [str(ParleyDialogueSequenceAst.Type.find_key(ast_node.type)), ast_node.id.replace(ParleyNodeAst.id_prefix, '')]
 
-
 func _goto_node(node: ParleyGraphNode) -> void:
 	scroll_offset = (node.position_offset + node.size * 0.5) * zoom - size * 0.5
 #endregion
@@ -363,15 +363,15 @@ func set_selected_by_id(id: String, _goto: bool = true) -> void:
 const CLICK_DISTANCE: float = 50
 var on_unselect: Array[Callable] = []
 var selected_connections: Array[ParleyGraphEdge] = []
-var selected_nodes: Array[ParleyGraphNode] = []
+var selected_node_ids: Array[String] = []
 
 func _on_node_selected(node: Node) -> void:
-	selected_nodes.append(node)
+	var node_id: String = (node as ParleyGraphNode).id
+	selected_node_ids.append(node_id)
 
 
 func _on_node_deselected(node: Node) -> void:
-	selected_nodes.erase(node)
-	pass
+	selected_node_ids.erase((node as ParleyGraphNode).id)
 
 
 func _on_connections_deselected() -> void:
@@ -401,17 +401,28 @@ func _gui_input(event: InputEvent) -> void:
 				delete_selected.emit()
 
 
-func _clear_selection() -> void:
+func _clear_selected_nodes() -> void:
+	selected_node_ids.clear()	
+
+
+func _clear_selected_connections() -> void:
 	for connection :ParleyGraphEdge in selected_connections:
 		connection.unselect()
-	selected_connections.clear()
-	selected_nodes.clear()	
 
 
 func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 	var foundAnyConnection: bool = false
-	if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+	if mouse_event.is_released() and mouse_event.button_index == MOUSE_BUTTON_LEFT:
 		var pointer_pos: Vector2 = (mouse_event.position + scroll_offset) / zoom
+
+		if _node_exist_at_position(mouse_event.position): 
+			_clear_selected_connections()
+			return
+		# basically ctrl/cmd+click selects multiple
+		if not mouse_event.is_command_or_control_pressed():
+			_clear_selected_nodes()
+			_clear_selected_connections()
+
 		for conn: Dictionary in get_connection_list():
 			var from_node_name: String = conn.get("from_node")
 			var to_node_name: String = conn.get("to_node")
@@ -429,10 +440,6 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 			# print("From: ",from_node ," To", to_node," Comparing x: ", from_pos.x, " ", pointer_pos.x, " ", to_pos.x , " distance: ", distance)
 
 			if  distance <= CLICK_DISTANCE:
-				# basically ctrl/cmd+click selects multiple
-				if not mouse_event.is_command_or_control_pressed():
-					_clear_selection()
-				
 				foundAnyConnection = true
 				var connection: ParleyGraphEdge = _find_existing_connection(from_node, from_port, to_node, to_port)
 				var edge_ast: ParleyEdgeAst = ast.get_edge_ast(from_node.id, from_port, to_node.id, to_port)
@@ -500,5 +507,15 @@ func get_distance_to_segment(point: Vector2, segment_start: Vector2, segment_end
 		
 		# Return the distance between the original point and the closest point on the segment.
 		return point.distance_to(closest_point_on_segment)
+
+func _node_exist_at_position(pos: Vector2) -> GraphNode:
+	# GraphEdit applies zoom + scroll internally, so convert position properly
+	for node_id : String in selected_node_ids:
+		var node : ParleyGraphNode = find_node_by_id(node_id)
+		var node_rect: Rect2 = Rect2(node.position, node.size)
+		if node_rect.has_point(pos) and node is not ParleyGroupNode:
+			return node
+
+	return null
 
 #endregion

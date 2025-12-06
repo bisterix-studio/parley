@@ -679,8 +679,8 @@ func _paste_nodes_request() -> void:
 	
 
 func _delete_selected() -> void:
-	if graph_view.selected_connections.size() > 0 || graph_view.selected_nodes.size() > 0:
-		var deleteConnection: ParleyDeleteOperation = ParleyDeleteOperation.new(graph_view, graph_view.selected_connections, graph_view.selected_nodes)
+	if graph_view.selected_connections.size() > 0 || graph_view.selected_node_ids.size() > 0:
+		var deleteConnection: ParleyDeleteOperation = ParleyDeleteOperation.new(graph_view, graph_view.selected_connections, graph_view.selected_node_ids)
 		deleteConnection.do()
 		add_undo_operation(deleteConnection)
 

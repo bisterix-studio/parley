@@ -19,6 +19,7 @@ var previousFromColor: Color
 var previousToColor: Color
 var selected: bool
 
+# Duplicate should not be used on this class. The class is generated one time only at runtime when it is needed
 func _init(_edge_ast: ParleyEdgeAst, _from_node: ParleyGraphNode, _from_port: int, _to_node: ParleyGraphNode, _to_port: int) -> void:
 	from_node = _from_node
 	from_port = _from_port
@@ -55,8 +56,13 @@ func select() -> void:
 	selected = true
 	if not is_instance_valid(from_node) or not is_instance_valid(to_node):
 		return
-	previousFromColor = from_node.get_slot_color_right(from_slot)
-	previousToColor = to_node.get_slot_color_left(to_slot)
+	if edge_ast.should_override_colour:
+		previousFromColor = edge_ast.colour_override
+		previousToColor = edge_ast.colour_override
+	else:
+		previousFromColor = Color.LAWN_GREEN
+		previousToColor = Color.LAWN_GREEN
+		
 	from_node.set_slot_color_right(from_slot, Color.DEEP_SKY_BLUE)
 	to_node.set_slot_color_left(to_slot, Color.DEEP_SKY_BLUE)
 

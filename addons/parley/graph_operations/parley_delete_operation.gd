@@ -7,11 +7,10 @@ var selected_node_ids: Array[String]
 var deleted_node_datas: Array[NodeData]
 var graph_view: ParleyGraphView
 
-func _init(_graph_view: ParleyGraphView, _selected_connections: Array[ParleyGraphEdge], _selected_nodes: Array[ParleyGraphNode]) -> void:
+func _init(_graph_view: ParleyGraphView, _selected_connections: Array[ParleyGraphEdge], _selected_node_ids: Array[String]) -> void:
 	graph_view = _graph_view
 	selected_connections = _selected_connections.duplicate()
-	for node: ParleyGraphNode in _selected_nodes:
-		selected_node_ids.append(node.id)
+	selected_node_ids = _selected_node_ids.duplicate()
 	
 	
 func undo() -> void:
