@@ -10,6 +10,7 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	# Path: res://addons/parley/components/default_balloon.tscn
 	# This must be hard-coded here otherwise, we get compilation errors in the autoload
 	ParleyConstants.DIALOGUE_BALLOON_PATH: "uid://cf8jukut3b8qq",
+	ParleyConstants.DIALOGUE_RICH_TEXT_RENDER: false,
 	# Stores
 	ParleyConstants.CHARACTER_STORE_PATH: "res://characters/character_store.tres",
 	ParleyConstants.ACTION_STORE_PATH: "res://actions/action_store.tres",
@@ -25,6 +26,11 @@ static var TYPES: Dictionary = {
 	ParleyConstants.DIALOGUE_BALLOON_PATH: {
 		"name": ParleyConstants.DIALOGUE_BALLOON_PATH,
 		"type": TYPE_STRING,
+		"hint": PROPERTY_HINT_FILE,
+	},
+	ParleyConstants.DIALOGUE_RICH_TEXT_RENDER: {
+		"name": ParleyConstants.DIALOGUE_RICH_TEXT_RENDER,
+		"type": TYPE_BOOL,
 		"hint": PROPERTY_HINT_FILE,
 	},
 	ParleyConstants.ACTION_STORE_PATH: {
@@ -132,6 +138,6 @@ static func get_setting(key: String, default: Variant = null) -> Variant:
 
 static func validate_setting_key(key: String) -> bool:
 	if not key.begins_with("parley/"):
-		push_error(ParleyUtils.log.error_msg("Invalid Parley setting key. Key %s does not start with the correct scope: parley/"))
+		push_error(ParleyUtils.log.error_msg("Invalid Parley setting key. Key %s does not start with the correct scope: parley/" % key))
 		return false
 	return true

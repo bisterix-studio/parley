@@ -33,6 +33,11 @@ enum Type {DIALOGUE, DIALOGUE_OPTION, CONDITION, ACTION, START, END, GROUP, MATC
 
 var is_ready: bool = false
 
+#region DEFS
+const Constants = preload('../constants.gd')
+const Settings = preload('.././settings.gd')
+#endregion
+
 
 # TODO: add types here. However it may be causing circular dep issues
 signal dialogue_updated(new_dialogue_ast: Variant)
@@ -357,10 +362,17 @@ func next(ctx: ParleyContext, current_node: ParleyNodeAst = null, dry_run: bool 
 			continue
 		var next_node: ParleyNodeAst = filtered_next_nodes.front()
 		var next_type: Type = next_node.type
+		var rich_text_render_enabled: bool = Settings.get_setting(Constants.DIALOGUE_RICH_TEXT_RENDER)
 		match next_type:
 			Type.DIALOGUE:
+				if rich_text_render_enabled:
+					var text = ParleyUtils.richtext_renderer.render(next_node.get('text'))
+					next_node.set('text', text)
 				next_nodes.append(next_node)
 			Type.DIALOGUE_OPTION:
+				if rich_text_render_enabled:
+					var text = ParleyUtils.richtext_renderer.render(next_node.get('text'))
+					next_node.set('text', text)
 				next_nodes.append(next_node)
 			Type.ACTION:
 				if not dry_run:

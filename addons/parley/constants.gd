@@ -25,6 +25,7 @@ const EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH: String = "parley/editor/current_dia
 #region Dialogue
 # Project settings
 const DIALOGUE_BALLOON_PATH: String = "parley/dialogue/dialogue_balloon_path"
+const DIALOGUE_RICH_TEXT_RENDER: String = "parley/dialogue/dialogue_rich_text_render"
 #endregion
 
 #region Stores
