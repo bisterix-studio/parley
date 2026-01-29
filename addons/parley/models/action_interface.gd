@@ -3,6 +3,6 @@
 class_name ParleyActionInterface extends Object
 
 
-func run(ctx, values: Array) -> int:
+func run(ctx: ParleyContext, values: Array) -> int:
 	push_error('PARLEY_ERR: Action not implemented (ctx:%s, values:%s)' % [ctx, values])
 	return FAILED
