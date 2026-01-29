@@ -284,7 +284,7 @@ func _on_next_dialogue_button_gui_input(event: InputEvent, item: Control) -> voi
 	var current_node: ParleyDialogueNodeAst = current_node_asts.front()
 	if event is InputEventMouseButton and event.is_pressed() and event.get('button_index') == MOUSE_BUTTON_LEFT:
 		next(current_node)
-	elif event is InputEventKey and event.is_action_pressed(advance_dialogue_action) and item is ParleyNextDialogueButton and get_viewport().gui_get_focus_owner() == item:
+	elif event.is_action_pressed(advance_dialogue_action) and item is ParleyNextDialogueButton and get_viewport().gui_get_focus_owner() == item:
 		next(current_node)
 
 

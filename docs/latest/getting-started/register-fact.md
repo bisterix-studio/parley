@@ -54,7 +54,7 @@ enum DifficultyLevel {
 }
 
 func evaluate(ctx: ParleyContext, _values: Array) -> int:
-	return ctx.get('difficulty_level', DifficultyLevel.NORMAL)
+	return ctx.p_data.get('difficulty_level', DifficultyLevel.NORMAL)
 
 func available_values() -> Array[DifficultyLevel]:
 	return [
