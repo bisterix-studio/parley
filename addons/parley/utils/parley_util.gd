@@ -18,7 +18,7 @@ static func get_parley_editor_utils() -> Script:
 	var script_path: String = utils_path + "/parley_editor_util.gd"
 	_parley_editor_utils = load(script_path) 
 	if !_parley_editor_utils:
-		push_error("Parley editor util not found.")
+		push_error(log.error_msg("Parley editor util not found."))
 	return _parley_editor_utils
 
 
