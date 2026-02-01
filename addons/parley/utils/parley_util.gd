@@ -3,6 +3,24 @@
 @tool
 class_name ParleyUtils
 
+static var _parley_editor_utils: Script
+
+## Dynamically loads the Parley Editor Utils script at runtime.
+## This is necessary because that script uses editor-only APIs.
+## Returns the Script object if running in the editor, or null otherwise.
+static func get_parley_editor_utils() -> Script:
+	if !Engine.is_editor_hint():
+		return null
+	if _parley_editor_utils:
+		return _parley_editor_utils
+	var resource_path: String = ParleyUtils.new().get_script().resource_path
+	var utils_path: String = resource_path.get_base_dir()
+	var script_path: String = utils_path + "/parley_editor_util.gd"
+	_parley_editor_utils = load(script_path) 
+	if !_parley_editor_utils:
+		push_error(log.error_msg("Parley editor util not found."))
+	return _parley_editor_utils
+
 
 class signals:
 	## Connect safely to a signal and handle any errors accordingly
@@ -78,17 +96,9 @@ class file:
 		if ok != OK:
 			push_error(ParleyUtils.log.error_msg("Error creating resource %s at path %s: %s" % [resource, path, ok]))
 			return null
-		# When a file is created (especially one that has a new directory), the file system is not
-		# immediately updated. Therefore, we must wait for this to be updated before loading
-		# the saved resource into memory for use within the Parley Graph view.
 		if Engine.is_editor_hint():
-			EditorInterface.get_resource_filesystem().scan()
-			signals.safe_connect(timeout, _emit_filesystem_changed.bind(timeout))
-			while EditorInterface.get_resource_filesystem().get_scanning_progress() < 1:
-				await EditorInterface.get_resource_filesystem().filesystem_changed
-			signals.safe_disconnect(timeout, _emit_filesystem_changed)
+			var parley_editor_utils: Script = ParleyUtils.get_parley_editor_utils()
+			if parley_editor_utils:
+				@warning_ignore("unsafe_method_access")
+				await parley_editor_utils.refresh_filesystem_and_wait(timeout)
 		return load(path)
-	
-	static func _emit_filesystem_changed(timeout: Signal) -> void:
-		EditorInterface.get_resource_filesystem().filesystem_changed.emit()
-		signals.safe_disconnect(timeout, _emit_filesystem_changed)
