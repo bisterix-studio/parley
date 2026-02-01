@@ -28,7 +28,7 @@ to avoid type errors (without compromising type-safety).
 
 In this example, we will create a Fact that uses a custom context.
 
-> **Note:** it is assumed that the default Parley settings are used for the Fact
+> [info]: It is assumed that the default Parley settings are used for the Fact
 > Store and it is stored at: `res://facts/fact_store_main.tres`. Ensure you have
 > also familiarised yourself with the
 > [Condition Node](../nodes/condition-node.md) docs.
@@ -78,11 +78,11 @@ func evaluate(p_ctx: ParleyContext, _values: Array) -> bool:
 3. Follow the rest of the Fact registration
    [guide](../getting-started/register-fact.md) from step 2 onwards to complete
    the rest of the Fact setup.
+4. Follow the run Dialogue Sequence
+   [guide](../getting-started/run-dialogue-sequence.md) with the following tweak
+   when instantiating the custom context:
 
-4. Follow the run Dialogue Sequence guide with the following tweak when creating
-   the context:
-
-```gdscript
+```gdscript Instantiate the Custom Context
 var ctx: CustomContext
 
 func _ready() -> void:

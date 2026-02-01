@@ -24,7 +24,7 @@ in the corresponding
 
 ## Instructions
 
-> **Note:** it is assumed that the default Parley settings are used for the Fact
+> [info]: It is assumed that the default Parley settings are used for the Fact
 > Store and it is stored at: `res://facts/fact_store_main.tres`
 
 1. Create a Fact script (ensure that it extends the `ParleyFactInterface` class)
