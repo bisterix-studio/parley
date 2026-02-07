@@ -1,4 +1,3 @@
-# DeleteShortcut.gd
 class_name ParleyDeleteOperation
 extends ParleyGraphOperation
 
@@ -37,7 +36,7 @@ func do() -> void:
 	for selected_node_id : String in selected_node_ids:
 		var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(selected_node_id)
 		if ast != null:
-			var connections : Array[ParleyGraphEdge] = get_connections_for_node(graph_view, selected_node_id)
+			var connections : Array[ParleyGraphEdge] = ParleyGraphUtils.get_connections_for_node(graph_view, selected_node_id)
 			deleted_node_datas.append(NodeData.new(selected_node_id, ast, connections))
 
 	for selected_node_id : String in selected_node_ids:
@@ -55,32 +54,5 @@ func do() -> void:
 	graph_view.generate()
 
 
-func get_connections_for_node(graph_view: ParleyGraphView, node_id: String) -> Array[ParleyGraphEdge]:
-	var result: Array[ParleyGraphEdge] = []
-	var connections: Array[Dictionary] = graph_view.get_connection_list()
-	
-	for conn: Dictionary in connections:
-		var from_name: String = conn.get("from_node")
-		var to_name: String = conn.get("to_node")
-		var from_port: int = conn.get("from_port")
-		var to_port: int = conn.get("to_port")
-		var to_node: ParleyGraphNode = graph_view.get_node(NodePath(to_name)) as ParleyGraphNode
-		var from_node: ParleyGraphNode = graph_view.get_node(NodePath(from_name)) as ParleyGraphNode
 
-		if to_node.id == node_id or from_node.id == node_id:
-			var edge_ast: ParleyEdgeAst = graph_view.ast.get_edge_ast(from_node.id, from_port, to_node.id, to_port)
-			result.append(ParleyGraphEdge.new(edge_ast, from_node, from_port, to_node, to_port))
-	
-	return result
-
-
-class NodeData:
-	var node_ast: ParleyNodeAst
-	var connections: Array[ParleyGraphEdge]
-	var node_id: String
-
-	func _init(_node_id: String, _node_ast :ParleyNodeAst, _connections: Array[ParleyGraphEdge]) -> void:
-		node_id = _node_id
-		node_ast = _node_ast
-		connections = _connections
 

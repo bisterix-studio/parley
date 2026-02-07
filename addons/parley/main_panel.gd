@@ -297,9 +297,10 @@ func _on_insert_id_pressed(type: ParleyDialogueSequenceAst.Type) -> void:
 	if not dialogue_ast:
 		push_warning(ParleyUtils.log.warn_msg("Unable to add Node of type %s to the Dialogue Sequence. Dialogue Sequence is not currently loaded into Parley. Please open one via the file menu in the top left-hand side." % ParleyDialogueSequenceAst.get_type_name(type)))
 		return
-	var ast_node: Variant = dialogue_ast.add_new_node(type, (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom)
-	if ast_node:
-		await refresh()
+	var node_position: Vector2 = (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom
+	var create_node_operation: ParleyCreateNodeOperation = ParleyCreateNodeOperation.new(graph_view, type, node_position)
+	create_node_operation.do()
+	add_undo_operation(create_node_operation)
 
 
 func _on_save_pressed() -> void:
@@ -562,14 +563,15 @@ func _on_graph_view_connection_to_empty(from_node_name: StringName, from_slot: i
 	if not dialogue_ast:
 		return
 	# TODO: it may be better to create a helper for this calculation
-	var ast_node_variant: Variant = dialogue_ast.add_new_node(ParleyDialogueSequenceAst.Type.DIALOGUE, ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90))
-	if ast_node_variant and ast_node_variant is ParleyNodeAst:
-		var ast_node: ParleyNodeAst = ast_node_variant
-		await refresh()
-		var to_node_name: String = graph_view.get_ast_node_name(ast_node)
-		# TODO: This is the entry slot for a Dialogue AST Node, it may be better to create a helper function for this
-		var to_slot: int = 0
-		_add_edge(from_node_name, from_slot, to_node_name, to_slot)
+	var node_position: Vector2 = ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90)
+	var connection_to_empty_operation: ParleyConnectionToEmptyOperation = ParleyConnectionToEmptyOperation.new(
+		graph_view, 
+		ParleyDialogueSequenceAst.Type.DIALOGUE, 
+		node_position, 
+		from_node_name, 
+		from_slot)
+	connection_to_empty_operation.do()
+	add_undo_operation(connection_to_empty_operation)
 
 
 # TODO: add to docs
