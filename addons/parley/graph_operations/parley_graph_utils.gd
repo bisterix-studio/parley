@@ -18,3 +18,10 @@ static func get_connections_for_node(graph_view: ParleyGraphView, node_id: Strin
             result.append(ParleyGraphEdge.new(edge_ast, from_node, from_port, to_node, to_port))
 
     return result
+
+
+static func get_cursor_pos_at_graph_view(graph_view: ParleyGraphView) -> Vector2:
+    var mouse_pos: Vector2 = graph_view.get_viewport().get_mouse_position()
+    return (mouse_pos + graph_view.scroll_offset) / graph_view.zoom
+
+

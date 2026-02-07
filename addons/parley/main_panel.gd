@@ -50,7 +50,7 @@ var parley_manager: ParleyManager
 # TODO: remove this
 var selected_node_id: Variant
 var selected_node_ast: ParleyNodeAst: set = _set_selected_node_ast
-
+var copied_node_ids: Array[String]
 
 signal dialogue_ast_selected(dialogue_ast: ParleyDialogueSequenceAst)
 signal node_selected(node_ast: ParleyNodeAst)
@@ -667,17 +667,23 @@ func _on_docs_button_pressed() -> void:
 
 
 func _duplicate_nodes_request() -> void:
+	if graph_view.selected_node_ids.size() > 0 :
+		var duplicate_nodes_operation: ParleyDuplicateOperation = ParleyDuplicateOperation.new(graph_view, graph_view.selected_node_ids)
+		duplicate_nodes_operation.do()
+		add_undo_operation(duplicate_nodes_operation)
 
-	pass
-	
 
 func _copy_nodes_request() -> void:
-	pass
+	copied_node_ids.clear()
+	for node_id: String in graph_view.selected_node_ids:
+		copied_node_ids.append(node_id)
 	
 
 func _paste_nodes_request() -> void:
-
-	pass
+	if copied_node_ids.size() > 0:
+		var duplicate_nodes_operation: ParleyPasteOperation = ParleyPasteOperation.new(graph_view, copied_node_ids)
+		duplicate_nodes_operation.do()
+		add_undo_operation(duplicate_nodes_operation)
 	
 
 func _delete_selected() -> void:
