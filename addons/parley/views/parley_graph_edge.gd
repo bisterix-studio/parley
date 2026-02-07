@@ -56,15 +56,9 @@ func select() -> void:
 	selected = true
 	if not is_instance_valid(from_node) or not is_instance_valid(to_node):
 		return
-	if edge_ast.should_override_colour:
-		previousFromColor = edge_ast.colour_override
-		previousToColor = edge_ast.colour_override
-	else:
-		previousFromColor = Color.LAWN_GREEN
-		previousToColor = Color.LAWN_GREEN
-		
-	from_node.set_slot_color_right(from_slot, Color.DEEP_SKY_BLUE)
-	to_node.set_slot_color_left(to_slot, Color.DEEP_SKY_BLUE)
+	
+	from_node.select_from_slot(edge_ast.from_slot)
+	to_node.select_to_slot(edge_ast.to_slot)
 
 
 func unselect() -> void:
@@ -73,8 +67,12 @@ func unselect() -> void:
 	selected = false
 	if not is_instance_valid(from_node) or not is_instance_valid(to_node):
 		return
-	from_node.set_slot_color_right(from_slot, previousFromColor)
-	to_node.set_slot_color_left(to_slot, previousToColor)
+	if edge_ast.should_override_colour:
+		from_node.deselect_from_slot(edge_ast.from_slot, edge_ast.colour_override)
+	else:
+		from_node.deselect_from_slot(edge_ast.from_slot)
+	var from_node_colour: Color = from_node.get_from_slot_colour(edge_ast.from_slot)
+	to_node.unselect_to_slot(edge_ast.to_slot, from_node_colour)
 
 
 func as_string() -> String:

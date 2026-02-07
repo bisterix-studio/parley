@@ -44,7 +44,7 @@ func generate(arrange: bool = false) -> void:
 
 
 func clear() -> void:
-	_clear_selected_connections()
+	_unselect_connections()
 	_clear_selected_nodes()
 	clear_connections()
 	var children: Array[ParleyGraphNode] = []
@@ -360,7 +360,7 @@ func set_selected_by_id(id: String, _goto: bool = true) -> void:
 
 #region SHORTCUTS
 
-const CLICK_DISTANCE: float = 50
+const CLICK_DISTANCE: float = 5
 var on_unselect: Array[Callable] = []
 var selected_connections: Array[ParleyGraphEdge] = []
 var selected_node_ids: Array[String] = []
@@ -405,9 +405,13 @@ func _clear_selected_nodes() -> void:
 	selected_node_ids.clear()	
 
 
-func _clear_selected_connections() -> void:
+func _unselect_connections() -> void:
 	for connection :ParleyGraphEdge in selected_connections:
 		connection.unselect()
+
+
+func _clear_selected_connections() -> void:
+	selected_connections.clear()
 
 
 func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
@@ -416,10 +420,11 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 		var pointer_pos: Vector2 = (mouse_event.position + scroll_offset) / zoom
 
 		if _node_exist_at_position(mouse_event.position): 
-			_clear_selected_connections()
+			_unselect_connections()
 			return
 		# basically ctrl/cmd+click selects multiple
 		if not mouse_event.is_command_or_control_pressed():
+			_unselect_connections()
 			_clear_selected_nodes()
 			_clear_selected_connections()
 
@@ -436,7 +441,12 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 
 			var from_pos: Vector2 = _get_slot_position(from_node, from_port, true)
 			var to_pos: Vector2 = _get_slot_position(to_node, to_port, false)
-			var distance: float = get_distance_to_segment(pointer_pos, from_pos, to_pos) * zoom
+			var controls : Array = get_graph_bezier_controls(from_pos, to_pos)
+			var p0: Vector2 = controls[0]
+			var p1: Vector2 = controls[1]
+			var p2: Vector2 = controls[2]
+			var p3: Vector2 = controls[3]
+			var distance: float = get_distance_to_bezier(pointer_pos, p0, p1, p2, p3) * zoom
 			# print("From: ",from_node ," To", to_node," Comparing x: ", from_pos.x, " ", pointer_pos.x, " ", to_pos.x , " distance: ", distance)
 
 			if  distance <= CLICK_DISTANCE:
@@ -507,6 +517,66 @@ func get_distance_to_segment(point: Vector2, segment_start: Vector2, segment_end
 		
 		# Return the distance between the original point and the closest point on the segment.
 		return point.distance_to(closest_point_on_segment)
+
+
+func get_graph_bezier_controls(from: Vector2, to: Vector2) -> Array:
+	var dx : float= abs(to.x - from.x)
+	var offset : float = max(dx * 0.5, 40.0)
+
+	var p0 : Vector2 = from
+	var p1 : Vector2 = from + Vector2(offset, 0)
+	var p2 : Vector2 = to   - Vector2(offset, 0)
+	var p3 : Vector2 = to
+
+	return [p0, p1, p2, p3]
+
+
+func cubic_bezier(p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, t: float) -> Vector2:
+	var u : float = 1.0 - t
+
+	return (
+		u*u*u * p0 +
+		3.0 * u*u * t * p1 +
+		3.0 * u * t*t * p2 +
+		t*t*t * p3
+	)
+
+
+func get_distance_to_bezier(point: Vector2, p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2) -> float:
+	var closest_dist : float = INF
+	var closest_t : float = 0.0
+
+	# --- 1. Coarse sampling ---
+	const SAMPLES : float = 20
+	for i: int in range(SAMPLES + 1):
+		var t : float = float(i) / SAMPLES
+		var bez_point : Vector2 = cubic_bezier(p0, p1, p2, p3, t)
+		var d : float = point.distance_squared_to(bez_point)
+
+		if d < closest_dist:
+			closest_dist = d
+			closest_t = t
+
+	# --- 2. Refinement ---
+	var step : float = 1.0 / SAMPLES
+	for _i: int in range(5): # iterations
+		var t_left : float = clamp(closest_t - step, 0.0, 1.0)
+		var t_right : float = clamp(closest_t + step, 0.0, 1.0)
+
+		var d_left : float = point.distance_squared_to(cubic_bezier(p0, p1, p2, p3, t_left))
+		var d_right : float = point.distance_squared_to(cubic_bezier(p0, p1, p2, p3, t_right))
+
+		if d_left < closest_dist:
+			closest_dist = d_left
+			closest_t = t_left
+		elif d_right < closest_dist:
+			closest_dist = d_right
+			closest_t = t_right
+
+		step *= 0.5
+
+	return sqrt(closest_dist)
+
 
 func _node_exist_at_position(pos: Vector2) -> GraphNode:
 	# GraphEdit applies zoom + scroll internally, so convert position properly
