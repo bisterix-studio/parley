@@ -20,7 +20,7 @@ func undo() -> void:
     var connections : Array[ParleyGraphEdge] = ParleyGraphUtils.get_connections_for_node(graph_view, node_id)
 
     for connection: ParleyGraphEdge in connections:
-        connection.disconnect_node(graph_view)
+        connection.disconnect_node()
 
     var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(node_id)
     if ast != null:

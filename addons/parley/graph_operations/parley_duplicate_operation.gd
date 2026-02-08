@@ -15,6 +15,7 @@ func do() -> void:
 
 	graph_view._clear_selected_nodes()
 	var created_node_list: Array[String]
+	var node_names: Array[String]
 
 	for node_id: String in selected_node_ids:
 		var node : ParleyGraphNode = graph_view.find_node_by_id(node_id)
@@ -24,18 +25,24 @@ func do() -> void:
 			var connections : Array[ParleyGraphEdge] = ParleyGraphUtils.get_connections_for_node(graph_view, node_id)
 			created_node_datas.append(NodeData.new(node_id, ast_node, connections))
 			created_node_list.append(node_id)
+			node_names.append(node.name)
+		if ast_node is ParleyGroupNodeAst:
+			(ast_node as ParleyGroupNodeAst).size = node.size
 			
 	await graph_view.generate()
 
-	for node_id: String in created_node_list:
+	for i: int in range(created_node_list.size()):
+		var node_id: String = created_node_list[i]
+		var node_name: String = node_names[i]
 		var node : ParleyGraphNode = graph_view.find_node_by_id(node_id)
 		node.set_selected(true)
+		node.name = node_name
 
 
 func undo() -> void:
 	for node_data: NodeData in created_node_datas:
 		for connection: ParleyGraphEdge in node_data.connections:
-			connection.disconnect_node(graph_view)
+			connection.disconnect_node()
 
 		var selected_node : ParleyGraphNode = graph_view.find_node_by_id(node_data.node_id)
 		if selected_node:

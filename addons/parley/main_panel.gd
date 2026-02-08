@@ -55,8 +55,8 @@ var copied_node_ids: Array[String]
 signal dialogue_ast_selected(dialogue_ast: ParleyDialogueSequenceAst)
 signal node_selected(node_ast: ParleyNodeAst)
 
-var undo_history: Dictionary = {}
-var redo_history: Dictionary = {}
+var undo_histories: Dictionary = {}
+var redo_histories: Dictionary = {}
 
 #region SETUP
 func _ready() -> void:
@@ -667,7 +667,9 @@ func _on_docs_button_pressed() -> void:
 
 
 func _duplicate_nodes_request() -> void:
+	print("duplicate request",graph_view.selected_node_ids)
 	if graph_view.selected_node_ids.size() > 0 :
+		print("duplicating")
 		var duplicate_nodes_operation: ParleyDuplicateOperation = ParleyDuplicateOperation.new(graph_view, graph_view.selected_node_ids)
 		duplicate_nodes_operation.do()
 		add_undo_operation(duplicate_nodes_operation)
@@ -681,45 +683,51 @@ func _copy_nodes_request() -> void:
 
 func _paste_nodes_request() -> void:
 	if copied_node_ids.size() > 0:
-		var duplicate_nodes_operation: ParleyPasteOperation = ParleyPasteOperation.new(graph_view, copied_node_ids)
-		duplicate_nodes_operation.do()
-		add_undo_operation(duplicate_nodes_operation)
+		var paste_operation: ParleyPasteOperation = ParleyPasteOperation.new(graph_view, copied_node_ids)
+		paste_operation.do()
+		add_undo_operation(paste_operation)
 	
 
 func _delete_selected() -> void:
 	if graph_view.selected_connections.size() > 0 || graph_view.selected_node_ids.size() > 0:
-		var deleteConnection: ParleyDeleteOperation = ParleyDeleteOperation.new(graph_view, graph_view.selected_connections, graph_view.selected_node_ids)
-		deleteConnection.do()
-		add_undo_operation(deleteConnection)
+		var delete_operation: ParleyDeleteOperation = ParleyDeleteOperation.new(graph_view, graph_view.selected_connections, graph_view.selected_node_ids)
+		delete_operation.do()
+		add_undo_operation(delete_operation)
 
 
 func _validate_history() -> void:
-	if not undo_history.has(dialogue_ast):
-		undo_history[dialogue_ast] = [] as Array[ParleyGraphOperation]
-	if not redo_history.has(dialogue_ast):
-		redo_history[dialogue_ast] = [] as Array[ParleyGraphOperation]
+	if not undo_histories.has(dialogue_ast):
+		undo_histories[dialogue_ast] = [] as Array[ParleyGraphOperation]
+	if not redo_histories.has(dialogue_ast):
+		redo_histories[dialogue_ast] = [] as Array[ParleyGraphOperation]
 
 
 func add_undo_operation(operation: ParleyGraphOperation) -> void:
 	_validate_history()
-	redo_history[dialogue_ast].clear()
-	undo_history[dialogue_ast].push_back(operation)
+	var redo_history: Array[ParleyGraphOperation] = redo_histories[dialogue_ast]
+	var undo_history: Array[ParleyGraphOperation] = undo_histories[dialogue_ast]
+	redo_history.clear()
+	undo_history.push_back(operation)
 
 
 func _undo() -> void:
 	_validate_history()
-	if undo_history[dialogue_ast].size() > 0:
-		var operation: ParleyGraphOperation = undo_history[dialogue_ast].pop_back()
+	var redo_history: Array[ParleyGraphOperation] = redo_histories[dialogue_ast]
+	var undo_history: Array[ParleyGraphOperation] = undo_histories[dialogue_ast]
+	if undo_history.size() > 0:
+		var operation: ParleyGraphOperation = undo_history.pop_back()
 		operation.undo()
-		redo_history[dialogue_ast].push_back(operation)
+		redo_history.push_back(operation)
 
 
 func _redo() -> void:
 	_validate_history()
-	if redo_history[dialogue_ast].size() > 0:
-		var operation: ParleyGraphOperation = redo_history[dialogue_ast].pop_back()
+	var redo_history: Array[ParleyGraphOperation] = redo_histories[dialogue_ast]
+	var undo_history: Array[ParleyGraphOperation] = undo_histories[dialogue_ast]
+	if redo_history.size() > 0:
+		var operation: ParleyGraphOperation = redo_history.pop_back()
 		operation.do()
-		undo_history[dialogue_ast].push_back(operation)
+		undo_history.push_back(operation)
 
 
 #region HELPERS

@@ -37,16 +37,19 @@ func _exit_tree() -> void:
 	
 
 func generate(arrange: bool = false) -> void:
+	print("generate")
 	await clear()
 	_generate_dialogue_nodes()
 	if arrange:
 		arrange_nodes()
+	
+	call_deferred("refresh_connections")
 
 
 func clear() -> void:
-	_unselect_connections()
-	_clear_selected_nodes()
-	clear_connections()
+	# _unselect_connections()
+	# _clear_selected_nodes()
+	# clear_connections()
 	var children: Array[ParleyGraphNode] = []
 	for child: Node in get_children():
 		if child is ParleyGraphNode:
@@ -318,6 +321,7 @@ func _create_group_node(ast_node: ParleyGroupNodeAst, _should_regenerate: bool =
 	# EXPERIMENTAL: see how feedback goes. This is certainly a candidate to be put into settings
 	ParleyUtils.signals.safe_connect(node.dragged, func(_from: Vector2, _to: Vector2) -> void:
 		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
+		print("dragged")
 	)
 	return node
 
@@ -364,13 +368,20 @@ const CLICK_DISTANCE: float = 5
 var on_unselect: Array[Callable] = []
 var selected_connections: Array[ParleyGraphEdge] = []
 var selected_node_ids: Array[String] = []
+var _node_selection_triggered: bool
+var moving_nodes: bool
 
 func _on_node_selected(node: Node) -> void:
+	# if _try_select_connection(ParleyGraphUtils.get_cursor_pos_at_graph_view(self), is_command_or_control_pressed()):
+	# 	return
+	_node_selection_triggered = true
 	var node_id: String = (node as ParleyGraphNode).id
 	selected_node_ids.append(node_id)
+	print("selected callback ", node_id, " ", selected_node_ids.size())
 
 
 func _on_node_deselected(node: Node) -> void:
+	print("deselected callback ", selected_node_ids.size())
 	selected_node_ids.erase((node as ParleyGraphNode).id)
 
 
@@ -381,7 +392,7 @@ func _on_connections_deselected() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
+	if  event is InputEventMouseButton:
 		_handle_mouse_select(event as InputEventMouseButton)
 
 	if event is InputEventKey:
@@ -402,6 +413,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _clear_selected_nodes() -> void:
+	print("cleared selection", selected_node_ids.size())
 	selected_node_ids.clear()	
 
 
@@ -410,68 +422,95 @@ func _unselect_connections() -> void:
 		connection.unselect()
 
 
+func refresh_connections() -> void:
+	print("refreshing connections " , selected_connections.size())
+	for connection :ParleyGraphEdge in selected_connections:
+		connection.unselect()
+	for connection :ParleyGraphEdge in selected_connections:
+		connection.select()
+
 func _clear_selected_connections() -> void:
 	selected_connections.clear()
 
 
 func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
-	var foundAnyConnection: bool = false
+	if _node_selection_triggered:
+		print("returned")
+		_node_selection_triggered = false
+		return
+	if moving_nodes:
+		return
+
 	if mouse_event.is_released() and mouse_event.button_index == MOUSE_BUTTON_LEFT:
 		var pointer_pos: Vector2 = (mouse_event.position + scroll_offset) / zoom
+		var is_control_pressed: bool = mouse_event.is_command_or_control_pressed()
 
-		if _node_exist_at_position(mouse_event.position): 
-			_unselect_connections()
-			return
-		# basically ctrl/cmd+click selects multiple
-		if not mouse_event.is_command_or_control_pressed():
-			_unselect_connections()
-			_clear_selected_nodes()
-			_clear_selected_connections()
+		# if _node_exist_at_position(mouse_event.position): 
+		# 	_unselect_connections()
+		# 	return
+		
+		if _try_select_connection(pointer_pos, is_control_pressed):
+			pass
 
-		for conn: Dictionary in get_connection_list():
-			var from_node_name: String = conn.get("from_node")
-			var to_node_name: String = conn.get("to_node")
-			var from_port: int = conn.get("from_port")
-			var to_port: int = conn.get("to_port")
 
-			var from_node: ParleyGraphNode = get_node(NodePath(from_node_name)) as ParleyGraphNode
-			var to_node: ParleyGraphNode = get_node(NodePath(to_node_name)) as ParleyGraphNode
-			if not from_node or not to_node:
-				continue
+func _try_select_connection(pointer_pos: Vector2, is_control_pressed: bool) -> bool:
+	# print("pointer_pos ", pointer_pos," control pressed: ", is_control_pressed)
+	# basically ctrl/cmd+click selects multiple
+	if not is_control_pressed:
+		_unselect_connections()
+		_clear_selected_nodes()
+		_clear_selected_connections()
 
-			var from_pos: Vector2 = _get_slot_position(from_node, from_port, true)
-			var to_pos: Vector2 = _get_slot_position(to_node, to_port, false)
-			var controls : Array = get_graph_bezier_controls(from_pos, to_pos)
-			var p0: Vector2 = controls[0]
-			var p1: Vector2 = controls[1]
-			var p2: Vector2 = controls[2]
-			var p3: Vector2 = controls[3]
-			var distance: float = get_distance_to_bezier(pointer_pos, p0, p1, p2, p3) * zoom
-			# print("From: ",from_node ," To", to_node," Comparing x: ", from_pos.x, " ", pointer_pos.x, " ", to_pos.x , " distance: ", distance)
+	var foundAnyConnection: bool = false
+	for conn: Dictionary in get_connection_list():
+		var from_node_name: String = conn.get("from_node")
+		var to_node_name: String = conn.get("to_node")
+		var from_port: int = conn.get("from_port")
+		var to_port: int = conn.get("to_port")
 
-			if  distance <= CLICK_DISTANCE:
-				foundAnyConnection = true
-				var connection: ParleyGraphEdge = _find_existing_connection(from_node, from_port, to_node, to_port)
-				var edge_ast: ParleyEdgeAst = ast.get_edge_ast(from_node.id, from_port, to_node.id, to_port)
-				if connection == null:
-					connection = ParleyGraphEdge.new(edge_ast, from_node, from_port, to_node, to_port)
-					connection.select()
-					selected_connections.append(connection as ParleyGraphEdge)
-					on_unselect.append(func() -> void:
-						connection.unselect()
-						selected_connections.erase(connection)
-					)
-					print_rich(ParleyUtils.log.info_msg("Selected connection: {connection}".format({"connection": connection.as_string()})))
-				else:
-					selected_connections.erase(connection)
+		var from_node: ParleyGraphNode = get_node(NodePath(from_node_name)) as ParleyGraphNode
+		var to_node: ParleyGraphNode = get_node(NodePath(to_node_name)) as ParleyGraphNode
+		if not from_node or not to_node:
+			continue
+
+		var from_pos: Vector2 = _get_slot_position(from_node, from_port, true)
+		var to_pos: Vector2 = _get_slot_position(to_node, to_port, false)
+		var controls : Array = get_graph_bezier_controls(from_pos, to_pos)
+		var p0: Vector2 = controls[0]
+		var p1: Vector2 = controls[1]
+		var p2: Vector2 = controls[2]
+		var p3: Vector2 = controls[3]
+		var distance: float = get_distance_to_bezier(pointer_pos, p0, p1, p2, p3) * zoom
+		# print("From: ",from_node ," To", to_node," Comparing x: ", from_pos.x, " ", pointer_pos.x, " ", to_pos.x , " distance: ", distance)
+
+		if  distance <= CLICK_DISTANCE:
+			foundAnyConnection = true
+			var connection: ParleyGraphEdge = _find_existing_connection(from_node, from_port, to_node, to_port)
+			var edge_ast: ParleyEdgeAst = ast.get_edge_ast(from_node.id, from_port, to_node.id, to_port)
+			if connection == null:
+				connection = ParleyGraphEdge.new(self, edge_ast, from_node, from_port, to_node, to_port)
+				connection.select()
+				selected_connections.append(connection as ParleyGraphEdge)
+				on_unselect.append(func() -> void:
 					connection.unselect()
-					print_rich(ParleyUtils.log.info_msg("Unselected existing connection: {connection}".format({"connection": connection.as_string()})))
-				break
+					selected_connections.erase(connection)
+				)
+				print_rich(ParleyUtils.log.info_msg("Selected connection: {connection}".format({"connection": connection.as_string()})))
+			else:
+				selected_connections.erase(connection)
+				connection.unselect()
+				print_rich(ParleyUtils.log.info_msg("Unselected existing connection: {connection}".format({"connection": connection.as_string()})))
+			break
 
-		if not foundAnyConnection && not mouse_event.is_command_or_control_pressed():
-			while on_unselect.size() > 0:
-				var callable: Callable = on_unselect.pop_front()
-				callable.call()
+	if not foundAnyConnection && not is_control_pressed:
+		while on_unselect.size() > 0:
+			var callable: Callable = on_unselect.pop_front()
+			callable.call()
+	return foundAnyConnection
+
+
+func is_command_or_control_pressed() -> bool:
+	return Input.is_key_pressed(KEY_CTRL) or Input.is_key_pressed(KEY_META)
 
 
 func _find_existing_connection(_from_node: ParleyGraphNode, _from_port: int, _to_node: ParleyGraphNode, _to_port: int) -> ParleyGraphEdge:
@@ -582,10 +621,19 @@ func _node_exist_at_position(pos: Vector2) -> GraphNode:
 	# GraphEdit applies zoom + scroll internally, so convert position properly
 	for node_id : String in selected_node_ids:
 		var node : ParleyGraphNode = find_node_by_id(node_id)
-		var node_rect: Rect2 = Rect2(node.position, node.size)
-		if node_rect.has_point(pos) and node is not ParleyGroupNode:
+		var node_rect: Rect2 = Rect2(node.position, node.size / zoom)
+		print("pos",pos, "rect: ",node_rect)
+		if node_rect.has_point(pos):
 			return node
 
 	return null
 
 #endregion
+
+func _on_begin_node_move() -> void:
+	moving_nodes = true
+	print("moving begin")
+
+func _on_end_node_move() -> void:
+	moving_nodes = false
+	print("moving end")
