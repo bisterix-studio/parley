@@ -37,7 +37,6 @@ func _exit_tree() -> void:
 	
 
 func generate(arrange: bool = false) -> void:
-	print("generate")
 	await clear()
 	_generate_dialogue_nodes()
 	if arrange:
@@ -372,10 +371,13 @@ var _node_selection_triggered: bool
 var moving_nodes: bool
 
 func _on_node_selected(node: Node) -> void:
-	# if _try_select_connection(ParleyGraphUtils.get_cursor_pos_at_graph_view(self), is_command_or_control_pressed()):
-	# 	return
 	_node_selection_triggered = true
 	var node_id: String = (node as ParleyGraphNode).id
+	if _try_select_connection(ParleyGraphUtils.get_cursor_pos_at_graph_view(self), is_command_or_control_pressed()):
+		await _wait_for_mouse_release()
+		var unselected_node : ParleyGraphNode = find_node_by_id(node_id)
+		unselected_node.call_deferred("set_selected", false)
+		return
 	selected_node_ids.append(node_id)
 	print("selected callback ", node_id, " ", selected_node_ids.size())
 
@@ -413,7 +415,6 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _clear_selected_nodes() -> void:
-	print("cleared selection", selected_node_ids.size())
 	selected_node_ids.clear()	
 
 
@@ -423,11 +424,15 @@ func _unselect_connections() -> void:
 
 
 func refresh_connections() -> void:
-	print("refreshing connections " , selected_connections.size())
 	for connection :ParleyGraphEdge in selected_connections:
 		connection.unselect()
 	for connection :ParleyGraphEdge in selected_connections:
 		connection.select()
+
+
+func _wait_for_mouse_release() -> void:
+	while Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		await get_tree().process_frame
 
 func _clear_selected_connections() -> void:
 	selected_connections.clear()
@@ -435,7 +440,6 @@ func _clear_selected_connections() -> void:
 
 func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 	if _node_selection_triggered:
-		print("returned")
 		_node_selection_triggered = false
 		return
 	if moving_nodes:
@@ -632,8 +636,19 @@ func _node_exist_at_position(pos: Vector2) -> GraphNode:
 
 func _on_begin_node_move() -> void:
 	moving_nodes = true
-	print("moving begin")
+
 
 func _on_end_node_move() -> void:
 	moving_nodes = false
-	print("moving end")
+
+
+func _force_stop_drag() -> void:
+	release_focus()
+
+	# Reset cursor explicitly
+	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+
+	# This is the critical part:
+	# force GraphEdit to re-evaluate drag state
+	set_process_unhandled_input(false)
+	set_process_unhandled_input(true)

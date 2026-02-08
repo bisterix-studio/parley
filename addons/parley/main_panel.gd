@@ -667,9 +667,7 @@ func _on_docs_button_pressed() -> void:
 
 
 func _duplicate_nodes_request() -> void:
-	print("duplicate request",graph_view.selected_node_ids)
 	if graph_view.selected_node_ids.size() > 0 :
-		print("duplicating")
 		var duplicate_nodes_operation: ParleyDuplicateOperation = ParleyDuplicateOperation.new(graph_view, graph_view.selected_node_ids)
 		duplicate_nodes_operation.do()
 		add_undo_operation(duplicate_nodes_operation)
