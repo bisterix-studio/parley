@@ -1,7 +1,8 @@
+@tool
 class_name ParleyGraphUtils
 extends Node
 
-static func get_connections_for_node(graph_view: ParleyGraphView, node_id: String) -> Array:
+static func get_edges_for_node(graph_view: ParleyGraphView, node_id: String) -> Array:
 	var result: Array[ParleyGraphEdge] = []
 	var connections: Array[Dictionary] = graph_view.get_connection_list()
 

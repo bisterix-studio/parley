@@ -1,3 +1,4 @@
+@tool
 class_name ParleyDuplicateOperation
 extends ParleyGraphOperation
 
@@ -12,22 +13,29 @@ func _init(_graph_view: ParleyGraphView, _selected_node_ids: Array[String]) -> v
 	
 
 func do() -> void:
-
 	graph_view._clear_selected_nodes()
 	var created_node_list: Array[String]
 	var node_names: Array[String]
 
 	for node_id: String in selected_node_ids:
-		var node : ParleyGraphNode = graph_view.find_node_by_id(node_id)
-		var ast_node: ParleyNodeAst = graph_view.ast.add_new_node(node.type, node.position_offset + Vector2.DOWN * 200 + Vector2.RIGHT * 200 )
+		var ast_node : ParleyNodeAst = graph_view.ast.find_node_by_id(node_id)
 		if ast_node:
-			node_id = ast_node.id
-			var connections : Array[ParleyGraphEdge] = ParleyGraphUtils.get_connections_for_node(graph_view, node_id)
-			created_node_datas.append(NodeData.new(node_id, ast_node, connections))
-			created_node_list.append(node_id)
-			node_names.append(node.name)
-		if ast_node is ParleyGroupNodeAst:
-			(ast_node as ParleyGroupNodeAst).size = node.size
+			var new_ast_node : ParleyNodeAst = graph_view.ast.copy_node_ast(ast_node)
+			new_ast_node.position = new_ast_node.position + Vector2.RIGHT * 200 + Vector2.DOWN * 200
+			
+			# TODO: if we want to duplicate the connections create edges and pass them to the edge list later
+			created_node_datas.append(NodeData.new(new_ast_node.id, new_ast_node, []))
+			created_node_list.append(new_ast_node.id)
+			node_names.append(graph_view.get_ast_node_name(new_ast_node))
+
+		# var selected_ast : ParleyNodeAst = graph_view.ast.find_node_by_id(node_id)
+		# var ast_node: ParleyNodeAst = graph_view.ast.add_new_node(selected_ast.type, selected_ast.position + Vector2.DOWN * 200 + Vector2.RIGHT * 200 )
+		# if ast_node:
+		# 	node_id = ast_node.id
+		# 	var connections : Array[ParleyGraphEdge] = ParleyGraphUtils.get_connections_for_node(graph_view, node_id)
+		# 	created_node_datas.append(NodeData.new(node_id, ast_node, connections))
+		# 	created_node_list.append(node_id)
+		# 	node_names.append(selected_ast.resource_name)
 			
 	await graph_view.generate()
 
@@ -41,8 +49,8 @@ func do() -> void:
 
 func undo() -> void:
 	for node_data: NodeData in created_node_datas:
-		for connection: ParleyGraphEdge in node_data.connections:
-			connection.disconnect_node()
+		for edge: ParleyGraphEdge in node_data.edges:
+			edge.disconnect_node()
 
 		var selected_node : ParleyGraphNode = graph_view.find_node_by_id(node_data.node_id)
 		if selected_node:

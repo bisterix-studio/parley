@@ -1,14 +1,15 @@
+@tool
 class_name ParleyDeleteOperation
 extends ParleyGraphOperation
 
-var selected_connections: Array[ParleyGraphEdge]
+var selected_edges: Array[ParleyGraphEdge]
 var selected_node_ids: Array[String]
 var deleted_node_datas: Array[NodeData]
 var graph_view: ParleyGraphView
 
-func _init(_graph_view: ParleyGraphView, _selected_connections: Array[ParleyGraphEdge], _selected_node_ids: Array[String]) -> void:
+func _init(_graph_view: ParleyGraphView, _selected_edges: Array[ParleyGraphEdge], _selected_node_ids: Array[String]) -> void:
 	graph_view = _graph_view
-	selected_connections = _selected_connections.duplicate()
+	selected_edges = _selected_edges.duplicate()
 	selected_node_ids = _selected_node_ids.duplicate()
 	
 	
@@ -25,11 +26,11 @@ func undo() -> void:
 		created_node_list.append(added_node.id)
 	
 	for node_data : NodeData in deleted_node_datas:
-		for connection : ParleyGraphEdge in node_data.connections:
-			connection.connect_node()
+		for edge : ParleyGraphEdge in node_data.edges:
+			edge.connect_node()
 
-	for connection : ParleyGraphEdge in selected_connections:
-		connection.connect_node()
+	for edge : ParleyGraphEdge in selected_edges:
+		edge.connect_node()
 
 	await graph_view.generate()
 
@@ -38,18 +39,18 @@ func undo() -> void:
 		var node : ParleyGraphNode = graph_view.find_node_by_id(node_id)
 		node.set_selected(true)
 
-	for connection : ParleyGraphEdge in selected_connections:
-		connection.unselect()
-	for connection : ParleyGraphEdge in selected_connections:
-		connection.select()
+	for edge : ParleyGraphEdge in selected_edges:
+		edge.unselect()
+	for edge : ParleyGraphEdge in selected_edges:
+		edge.select()
 
 func do() -> void:
 	deleted_node_datas.clear()
 	for selected_node_id : String in selected_node_ids:
 		var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(selected_node_id)
 		if ast != null:
-			var connections : Array[ParleyGraphEdge] = ParleyGraphUtils.get_connections_for_node(graph_view, selected_node_id)
-			deleted_node_datas.append(NodeData.new(selected_node_id, ast, connections))
+			var edges : Array[ParleyGraphEdge] = ParleyGraphUtils.get_edges_for_node(graph_view, selected_node_id)
+			deleted_node_datas.append(NodeData.new(selected_node_id, ast, edges))
 
 	for selected_node_id : String in selected_node_ids:
 		var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(selected_node_id)
@@ -59,9 +60,9 @@ func do() -> void:
 			graph_view.remove_child(selected_node)
 			graph_view.ast.remove_node(selected_node_id)
 
-	graph_view._on_connections_deselected()
-	for connection : ParleyGraphEdge in selected_connections:
-		connection.disconnect_node()
+	graph_view._on_edges_deselected()
+	for edge : ParleyGraphEdge in selected_edges:
+		edge.disconnect_node()
 
 	graph_view.generate()
 

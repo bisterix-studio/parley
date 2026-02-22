@@ -1,3 +1,4 @@
+@tool
 class_name ParleyConnectionToEmptyOperation
 extends ParleyGraphOperation
 
@@ -17,10 +18,10 @@ func _init(_graph_view: ParleyGraphView, _node_type: ParleyDialogueSequenceAst.T
     
 
 func undo() -> void:
-    var connections : Array[ParleyGraphEdge] = ParleyGraphUtils.get_connections_for_node(graph_view, node_id)
+    var edges : Array[ParleyGraphEdge] = ParleyGraphUtils.get_edges_for_node(graph_view, node_id)
 
-    for connection: ParleyGraphEdge in connections:
-        connection.disconnect_node()
+    for edge: ParleyGraphEdge in edges:
+        edge.disconnect_node()
 
     var ast : ParleyNodeAst = graph_view.ast.find_node_by_id(node_id)
     if ast != null:

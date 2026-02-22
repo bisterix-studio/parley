@@ -144,6 +144,13 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> ParleyNodeAst
 	_emit_dialogue_updated()
 	return ast_node
 
+func copy_node_ast(ast_node: ParleyNodeAst) -> ParleyNodeAst:
+	print_rich(ParleyUtils.log.info_msg('Inserting new Node into the AST of type: %s' % [ast_node.type]))
+	var new_node_ast : ParleyNodeAst = ast_node.copy(_generate_node_id())
+	nodes.push_back(new_node_ast)
+	_emit_dialogue_updated()
+	return new_node_ast
+
 func add_node_from_ast(node_ast: ParleyNodeAst) -> ParleyNodeAst:
 	# Probably need to make sure the provided ID doesn't already exist
 	for node : ParleyNodeAst in nodes:
@@ -257,6 +264,7 @@ func remove_node(node_id: String) -> void:
 func find_node_by_id(id: String) -> ParleyNodeAst:
 	var filtered_nodes: Array = nodes.filter(func(node: ParleyNodeAst) -> bool: return str(node.id) == str(id))
 	if filtered_nodes.size() != 1:
+		print("filtered node count",filtered_nodes.size())
 		print_rich(ParleyUtils.log.info_msg("No AST Node found with ID: {id}".format({'id': id})))
 		return null
 	return filtered_nodes.front()
