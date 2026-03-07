@@ -35,7 +35,7 @@ func _init(_id: String = "", _position: Vector2 = Vector2.ZERO) -> void:
 
 #region SETTERS
 func _set_id(new_id: String) -> void:
-	# Once defined, id should be immutable
+	# Only allow change when copying or if not defined
 	if id.begins_with(id_prefix):
 		id = new_id
 	elif not id or id == id_prefix or not id.begins_with(id_prefix):
