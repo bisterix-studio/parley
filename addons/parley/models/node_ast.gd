@@ -58,9 +58,3 @@ func _to_string() -> String:
 static func get_colour() -> Color:
 	return Color("#7a2167")
 #endregion
-
-func copy(_id: String) -> ParleyNodeAst:
-	var duplicated: ParleyNodeAst = self.duplicate()
-	duplicated.id = _id
-	return duplicated
-

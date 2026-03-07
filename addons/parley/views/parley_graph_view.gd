@@ -9,6 +9,7 @@ var fact_store: ParleyFactStore = ParleyFactStore.new(): set = _set_fact_store
 var character_store: ParleyCharacterStore = ParleyCharacterStore.new(): set = _set_character_store
 
 #region SETUP
+const Constants = preload('../constants.gd')
 const dialogue_node_scene: PackedScene = preload("../components/dialogue/dialogue_node.tscn")
 const dialogue_option_node_scene: PackedScene = preload("../components/dialogue_option/dialogue_option_node.tscn")
 const action_node_scene: PackedScene = preload("../components/action/action_node.tscn")
@@ -25,7 +26,7 @@ signal undo_request()
 signal redo_request()
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+func _ready() -> void:	
 	await clear()
 	scroll_offset = Vector2(-50, -50)
 
@@ -46,6 +47,7 @@ func generate(arrange: bool = false) -> void:
 
 
 func clear() -> void:
+	clear_connections()
 	var children: Array[ParleyGraphNode] = []
 	for child: Node in get_children():
 		if child is ParleyGraphNode:
@@ -368,6 +370,9 @@ var _node_selection_triggered: bool
 var moving_nodes: bool
 
 func _on_node_selected(node: Node) -> void:
+	if not ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		return
+
 	_node_selection_triggered = true
 	var node_id: String = (node as ParleyGraphNode).id
 	if _try_select_edge(ParleyGraphUtils.get_cursor_pos_at_graph_view(self), is_command_or_control_pressed()):
@@ -380,17 +385,23 @@ func _on_node_selected(node: Node) -> void:
 
 
 func _on_node_deselected(node: Node) -> void:
+	if not ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		return
 	# print("deselected callback ", selected_node_ids.size())
 	selected_node_ids.erase((node as ParleyGraphNode).id)
 
 
 func _on_edges_deselected() -> void:
+	if not ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		return
 	while on_unselect.size() > 0:
 		var callable: Callable = on_unselect.pop_front()
 		callable.call()
 
 
 func _gui_input(event: InputEvent) -> void:
+	if not ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		return
 	if  event is InputEventMouseButton:
 		_handle_mouse_select(event as InputEventMouseButton)
 

@@ -20,6 +20,7 @@ const PARLEY_RUNTIME_SINGLETON: String = "ParleyRuntime"
 #region Editor
 # User settings
 const EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH: String = "parley/editor/current_dialogue_sequence_path"
+const EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE: String = "parley/editor/keyboard_shortcuts"
 #endregion
 
 #region Dialogue

@@ -3,7 +3,7 @@
 @tool
 class_name ParleyMainPanel extends VBoxContainer
 
-
+const Constants = preload('./constants.gd')
 const new_file_icon: CompressedTexture2D = preload("./assets/New.svg")
 const load_file_icon: CompressedTexture2D = preload("./assets/Load.svg")
 const export_to_csv_icon: CompressedTexture2D = preload("./assets/Export.svg")
@@ -16,7 +16,6 @@ const start_node_icon: CompressedTexture2D = preload("./assets/Start.svg")
 const end_node_icon: CompressedTexture2D = preload("./assets/End.svg")
 const group_node_icon: CompressedTexture2D = preload("./assets/Group.svg")
 const jump_node_icon: CompressedTexture2D = preload("./assets/Jump.svg")
-
 
 var parley_manager: ParleyManager
 @export var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(): set = _set_dialogue_ast
@@ -298,9 +297,16 @@ func _on_insert_id_pressed(type: ParleyDialogueSequenceAst.Type) -> void:
 		push_warning(ParleyUtils.log.warn_msg("Unable to add Node of type %s to the Dialogue Sequence. Dialogue Sequence is not currently loaded into Parley. Please open one via the file menu in the top left-hand side." % ParleyDialogueSequenceAst.get_type_name(type)))
 		return
 	var node_position: Vector2 = (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom
-	var create_node_operation: ParleyCreateNodeOperation = ParleyCreateNodeOperation.new(graph_view, type, node_position)
-	create_node_operation.do()
-	add_undo_operation(create_node_operation)
+
+	if ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false):
+		var create_node_operation: ParleyCreateNodeOperation = ParleyCreateNodeOperation.new(graph_view, type, node_position)
+		create_node_operation.do()
+		add_undo_operation(create_node_operation)
+	else:
+		var ast_node: Variant = dialogue_ast.add_new_node(type, (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom)
+		if ast_node:
+			await refresh()
+
 
 
 func _on_save_pressed() -> void:
@@ -563,15 +569,25 @@ func _on_graph_view_connection_to_empty(from_node_name: StringName, from_slot: i
 	if not dialogue_ast:
 		return
 	# TODO: it may be better to create a helper for this calculation
-	var node_position: Vector2 = ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90)
-	var connection_to_empty_operation: ParleyConnectionToEmptyOperation = ParleyConnectionToEmptyOperation.new(
-		graph_view, 
-		ParleyDialogueSequenceAst.Type.DIALOGUE, 
-		node_position, 
-		from_node_name, 
-		from_slot)
-	connection_to_empty_operation.do()
-	add_undo_operation(connection_to_empty_operation)
+	if ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false):
+		var node_position: Vector2 = ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90)
+		var connection_to_empty_operation: ParleyConnectionToEmptyOperation = ParleyConnectionToEmptyOperation.new(
+			graph_view, 
+			ParleyDialogueSequenceAst.Type.DIALOGUE, 
+			node_position, 
+			from_node_name, 
+			from_slot)
+		connection_to_empty_operation.do()
+		add_undo_operation(connection_to_empty_operation)
+	else:
+		var ast_node_variant: Variant = dialogue_ast.add_new_node(ParleyDialogueSequenceAst.Type.DIALOGUE, ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90))
+		if ast_node_variant and ast_node_variant is ParleyNodeAst:
+			var ast_node: ParleyNodeAst = ast_node_variant
+			await refresh()
+			var to_node_name: String = graph_view.get_ast_node_name(ast_node)
+			# TODO: This is the entry slot for a Dialogue AST Node, it may be better to create a helper function for this
+			var to_slot: int = 0
+			_add_edge(from_node_name, from_slot, to_node_name, to_slot)
 
 
 # TODO: add to docs

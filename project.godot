@@ -58,3 +58,4 @@ locale/locale_filter_mode=1
 stores/action_store_path="uid://bfwohwb0ftpuq"
 stores/fact_store_path="uid://c3c7k7lljjqv3"
 stores/character_store_path="uid://ceouii84qmu0w"
+editor/keyboard_shortcuts=true
