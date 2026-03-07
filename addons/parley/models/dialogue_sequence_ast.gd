@@ -158,7 +158,7 @@ func add_node_from_ast(node_ast: ParleyNodeAst) -> ParleyNodeAst:
 			push_warning(ParleyUtils.log.warn_msg("ID already exists in Dialogue Sequence. Not adding to AST."))
 			return
 			
-	# Also worth storing the insertion index somewhere as well?
+	# TODO: also worth storing the insertion index somewhere as well
 	nodes.append(node_ast)
 	_emit_dialogue_updated()
 	return node_ast
