@@ -40,6 +40,7 @@ func _set_id(new_id: String) -> void:
 		id = new_id
 	elif not id or id == id_prefix or not id.begins_with(id_prefix):
 		id = new_id if new_id.begins_with(id_prefix) else "%s%s" % [id_prefix, new_id]
+#endregion
 
 #region UTILS
 ## Convert this resource into a Dictionary for storage

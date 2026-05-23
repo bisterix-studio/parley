@@ -26,7 +26,7 @@ signal undo_request()
 signal redo_request()
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:	
+func _ready() -> void:
 	await clear()
 	scroll_offset = Vector2(-50, -50)
 
