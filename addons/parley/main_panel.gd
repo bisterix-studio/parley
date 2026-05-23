@@ -49,7 +49,7 @@ var parley_manager: ParleyManager
 # TODO: remove this
 var selected_node_id: Variant
 var selected_node_ast: ParleyNodeAst: set = _set_selected_node_ast
-var copied_node_ids: Array[String]
+var copied_node_ids: Array[String] = []
 
 signal dialogue_ast_selected(dialogue_ast: ParleyDialogueSequenceAst)
 signal node_selected(node_ast: ParleyNodeAst)
