@@ -270,7 +270,6 @@ func remove_node(node_id: String) -> void:
 func find_node_by_id(id: String) -> ParleyNodeAst:
 	var filtered_nodes: Array = nodes.filter(func(node: ParleyNodeAst) -> bool: return str(node.id) == str(id))
 	if filtered_nodes.size() != 1:
-		print("filtered node count",filtered_nodes.size())
 		print_rich(ParleyUtils.log.info_msg("No AST Node found with ID: {id}".format({'id': id})))
 		return null
 	return filtered_nodes.front()
@@ -662,7 +661,6 @@ func _parse_position_from_raw_node_ast(node: Dictionary) -> Vector2:
 	if is_instance_of(raw_position, TYPE_VECTOR2):
 		return raw_position
 	elif not is_instance_of(raw_position, TYPE_STRING):
-		print(raw_position)
 		push_warning(ParleyUtils.log.warn_msg("Unable to parse position of node: %s. Defaulting to %s" % [node.get('id', 'unknown'), str(default)]))
 		return default
 	var position: String = raw_position

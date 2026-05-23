@@ -43,7 +43,8 @@ func generate(arrange: bool = false) -> void:
 	if arrange:
 		arrange_nodes()
 	
-	call_deferred("refresh_edges")
+	if ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		call_deferred("refresh_edges")
 
 
 func clear() -> void:
@@ -319,7 +320,6 @@ func _create_group_node(ast_node: ParleyGroupNodeAst, _should_regenerate: bool =
 	# EXPERIMENTAL: see how feedback goes. This is certainly a candidate to be put into settings
 	ParleyUtils.signals.safe_connect(node.dragged, func(_from: Vector2, _to: Vector2) -> void:
 		var _nodes: Array[ParleyGraphNode] = _update_nodes_covered_by_group_node(node, ast_node)
-		print("dragged")
 	)
 	return node
 
@@ -381,13 +381,11 @@ func _on_node_selected(node: Node) -> void:
 		unselected_node.call_deferred("set_selected", false)
 		return
 	selected_node_ids.append(node_id)
-	# print("selected callback ", node_id, " ", selected_node_ids.size())
 
 
 func _on_node_deselected(node: Node) -> void:
 	if not ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
 		return
-	# print("deselected callback ", selected_node_ids.size())
 	selected_node_ids.erase((node as ParleyGraphNode).id)
 
 
