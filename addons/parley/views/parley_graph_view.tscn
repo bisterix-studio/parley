@@ -14,3 +14,6 @@ zoom = 0.5
 show_zoom_label = true
 show_arrange_button = false
 script = ExtResource("1_iscqg")
+
+[connection signal="begin_node_move" from="." to="." method="_on_begin_node_move"]
+[connection signal="end_node_move" from="." to="." method="_on_end_node_move"]
