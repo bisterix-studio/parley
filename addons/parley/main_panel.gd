@@ -619,7 +619,6 @@ func update_edge(edge: ParleyEdgeAst) -> void:
 
 # TODO: add to docs
 func delete_node_by_id(id: String) -> void:
-	print(id)
 	if not dialogue_ast:
 		return
 	if not selected_node_id or not is_instance_of(selected_node_id, TYPE_STRING):

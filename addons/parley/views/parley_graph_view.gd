@@ -455,16 +455,11 @@ func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
 		var pointer_pos: Vector2 = (mouse_event.position + scroll_offset) / zoom
 		var is_control_pressed: bool = mouse_event.is_command_or_control_pressed()
 
-		# if _node_exist_at_position(mouse_event.position): 
-		# 	_unselect_edges()
-		# 	return
-		
 		if _try_select_edge(pointer_pos, is_control_pressed):
 			pass
 
 
 func _try_select_edge(pointer_pos: Vector2, is_control_pressed: bool) -> bool:
-	# print("pointer_pos ", pointer_pos," control pressed: ", is_control_pressed)
 	# basically ctrl/cmd+click selects multiple
 	if not is_control_pressed:
 		_unselect_edges()
@@ -491,7 +486,6 @@ func _try_select_edge(pointer_pos: Vector2, is_control_pressed: bool) -> bool:
 		var p2: Vector2 = controls[2]
 		var p3: Vector2 = controls[3]
 		var distance: float = get_distance_to_bezier(pointer_pos, p0, p1, p2, p3) * zoom
-		# print("From: ",from_node ," To", to_node," Comparing x: ", from_pos.x, " ", pointer_pos.x, " ", to_pos.x , " distance: ", distance)
 
 		if  distance <= CLICK_DISTANCE:
 			foundAnyEdge = true
@@ -630,7 +624,6 @@ func _node_exist_at_position(pos: Vector2) -> GraphNode:
 	for node_id : String in selected_node_ids:
 		var node : ParleyGraphNode = find_node_by_id(node_id)
 		var node_rect: Rect2 = Rect2(node.position, node.size / zoom)
-		print("pos",pos, "rect: ",node_rect)
 		if node_rect.has_point(pos):
 			return node
 
