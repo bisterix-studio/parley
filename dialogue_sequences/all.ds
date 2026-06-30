@@ -12,7 +12,7 @@
       "position": "(1680.0, 440.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "Look. I made a whatdyamacallit.",
-      "text_translation_key": ""
+      "text_translation_key": "LOOK_I_MADE_A_WHATDYAMACALLIT__D2883LUL36R1D_3_TEXT"
     },
     {
       "id": "node:4",
@@ -20,7 +20,7 @@
       "position": "(2140.0, 460.0)",
       "character": "uid://ceouii84qmu0w::bob",
       "text": "Wow. Great.",
-      "text_translation_key": ""
+      "text_translation_key": "WOW_GREAT__D2883LUL36R1D_4_TEXT"
     },
     {
       "id": "node:6",
@@ -47,7 +47,7 @@
       "position": "(3100.0, 420.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "I have a coffee.",
-      "text_translation_key": ""
+      "text_translation_key": "I_HAVE_A_COFFEE__D2883LUL36R1D_7_TEXT"
     },
     {
       "id": "node:8",
@@ -55,7 +55,7 @@
       "position": "(3600.0, 320.0)",
       "character": "uid://ceouii84qmu0w::carol",
       "text": "Give to Alice.",
-      "text_translation_key": ""
+      "text_translation_key": "GIVE_TO_ALICE__D2883LUL36R1D_8_TEXT"
     },
     {
       "id": "node:13",
@@ -63,7 +63,7 @@
       "position": "(3600.0, 700.0)",
       "character": "uid://ceouii84qmu0w::carol",
       "text": "Keep it.",
-      "text_translation_key": ""
+      "text_translation_key": "KEEP_IT__D2883LUL36R1D_13_TEXT"
     },
     {
       "id": "node:9",
@@ -82,7 +82,7 @@
       "position": "(4500.0, 360.0)",
       "character": "uid://ceouii84qmu0w::carol",
       "text": "Here you go.",
-      "text_translation_key": ""
+      "text_translation_key": "HERE_YOU_GO__D2883LUL36R1D_10_TEXT"
     },
     {
       "id": "node:11",
@@ -90,7 +90,7 @@
       "position": "(4940.0, 360.0)",
       "character": "uid://ceouii84qmu0w::dave",
       "text": "Cheers.",
-      "text_translation_key": ""
+      "text_translation_key": "CHEERS__D2883LUL36R1D_11_TEXT"
     },
     {
       "id": "node:12",
@@ -98,7 +98,7 @@
       "position": "(5420.0, 360.0)",
       "character": "uid://ceouii84qmu0w::carol",
       "text": "You're welcome.",
-      "text_translation_key": ""
+      "text_translation_key": "YOURE_WELCOME__D2883LUL36R1D_12_TEXT"
     },
     {
       "id": "node:14",
@@ -106,7 +106,7 @@
       "position": "(4060.0, 800.0)",
       "character": "uid://ceouii84qmu0w::carol",
       "text": "But it's mine.",
-      "text_translation_key": ""
+      "text_translation_key": "BUT_ITS_MINE__D2883LUL36R1D_14_TEXT"
     },
     {
       "id": "node:15",
@@ -114,7 +114,7 @@
       "position": "(4500.0, 800.0)",
       "character": "uid://ceouii84qmu0w::dave",
       "text": "Fair enough.",
-      "text_translation_key": ""
+      "text_translation_key": "FAIR_ENOUGH__D2883LUL36R1D_15_TEXT"
     },
     {
       "id": "node:16",
@@ -136,7 +136,7 @@
       "position": "(4040.0, 1260.0)",
       "character": "uid://ceouii84qmu0w::bob",
       "text": "Mmm. Coffee. Now, what did you want me to look at?",
-      "text_translation_key": ""
+      "text_translation_key": "MMM_COFFEE_NOW_WHAT_DID_YOU_WANT__D2883LUL36R1D_17_TEXT"
     },
     {
       "id": "node:19",
@@ -144,7 +144,7 @@
       "position": "(3620.0, 1740.0)",
       "character": "uid://ceouii84qmu0w::bob",
       "text": "I NEED COFFEE!",
-      "text_translation_key": ""
+      "text_translation_key": "I_NEED_COFFEE__D2883LUL36R1D_19_TEXT"
     },
     {
       "id": "node:20",
@@ -152,7 +152,7 @@
       "position": "(4120.0, 1740.0)",
       "character": "uid://ceouii84qmu0w::custom:englebert",
       "text": "I'll get you coffee, Mama. But first, CATNIP.",
-      "text_translation_key": ""
+      "text_translation_key": "ILL_GET_YOU_COFFEE_MAMA_BUT_FIRS__D2883LUL36R1D_20_TEXT"
     },
     {
       "id": "node:21",
@@ -191,7 +191,7 @@
       "position": "(980.0, 140.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "Look, I need coffee.",
-      "text_translation_key": ""
+      "text_translation_key": "LOOK_I_NEED_COFFEE__D2883LUL36R1D_24_TEXT"
     },
     {
       "id": "node:25",
@@ -199,7 +199,7 @@
       "position": "(980.0, 580.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "Look, I really need coffee.",
-      "text_translation_key": ""
+      "text_translation_key": "LOOK_I_REALLY_NEED_COFFEE__D2883LUL36R1D_25_TEXT"
     },
     {
       "id": "node:26",
@@ -207,7 +207,7 @@
       "position": "(960.0, 1000.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "Look, I really really REALLY need coffee.",
-      "text_translation_key": ""
+      "text_translation_key": "LOOK_I_REALLY_REALLY_REALLY_NEED__D2883LUL36R1D_26_TEXT"
     },
     {
       "id": "node:27",
@@ -215,7 +215,7 @@
       "position": "(960.0, 1480.0)",
       "character": "uid://ceouii84qmu0w::alice",
       "text": "Coffee please.",
-      "text_translation_key": ""
+      "text_translation_key": "COFFEE_PLEASE__D2883LUL36R1D_27_TEXT"
     },
     {
       "id": "node:28",

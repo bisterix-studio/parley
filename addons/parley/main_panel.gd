@@ -6,6 +6,7 @@ class_name ParleyMainPanel extends VBoxContainer
 
 const ParleyExport = preload("./parley_export.gd")
 const ParleyImport = preload("./parley_import.gd")
+const Constants = preload("./constants.gd")
 
 
 const new_file_icon: CompressedTexture2D = preload("./assets/New.svg")

@@ -49,7 +49,7 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/parley/pl
 [internationalization]
 
 locale/translation_remaps={}
-locale/translations=PackedStringArray("res://addons/parley/locale/tooltip_translations.en.translation", "res://locale/fr.po", "res://locale/all.en.translation", "res://locale/all.fr.translation")
+locale/translations=PackedStringArray("res://locale/fr.po", "res://locale/all.en.translation", "res://locale/all.fr.translation")
 locale/translations_pot_files=PackedStringArray("res://dialogue_sequences/all.ds", "res://dialogue_sequences/next_dialogue.ds", "res://tests/fixtures/basic_pot_translations.ds", "res://tests/fixtures/basic_ast_node_generation_input.ds", "res://tests/fixtures/basic_match_input.ds", "res://tests/fixtures/from_jump_node_input.ds", "res://tests/fixtures/to_jump_node_input.ds", "res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds", "res://tests/fixtures/basic_guard_input.ds", "res://examples/create-to-jump-node-basic.ds", "res://examples/create-match-basic.ds", "res://examples/create-group-basic.ds", "res://examples/create-from-jump-node-basic.ds", "res://examples/create-dialogue-option-basic.ds", "res://examples/create-dialogue-basic.ds", "res://examples/create-condition-basic.ds", "res://examples/create-action-basic.ds", "res://examples/all.ds", "res://tests/fixtures/basic_csv_translations.ds", "res://tests/fixtures/generate_text_translation_keys_translations.ds")
 locale/locale_filter_mode=0
 

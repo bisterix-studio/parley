@@ -46,7 +46,7 @@ func _init(_title: String = "", _nodes: Array = [], _edges: Array = []) -> void:
 	title = _title
 	# TODO: add validation to ensure IDs are globally unique within the context of the dialogue
 	for node: Dictionary in _nodes:
-		add_ast_node(node)
+		var _node: ParleyNodeAst = add_ast_node(node)
 	for edge: Dictionary in _edges:
 		add_ast_edge(edge)
 	is_ready = true
