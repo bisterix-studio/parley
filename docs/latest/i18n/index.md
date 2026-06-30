@@ -240,5 +240,5 @@ When **running** Dialogue Sequences:
 
 Determined in the following order:
 
-- Just what the translation server is currently set to for the user playing the
+1. Just what the translation server is currently set to for the user playing the
   game.
