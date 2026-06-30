@@ -23,7 +23,6 @@ const end_node_icon: CompressedTexture2D = preload("./assets/End.svg")
 const group_node_icon: CompressedTexture2D = preload("./assets/Group.svg")
 const jump_node_icon: CompressedTexture2D = preload("./assets/Jump.svg")
 
-
 var parley_manager: ParleyManager
 @export var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(): set = _set_dialogue_ast
 @export var action_store: ParleyActionStore = ParleyActionStore.new(): set = _set_action_store
@@ -60,11 +59,13 @@ var parley_manager: ParleyManager
 # TODO: remove this
 var selected_node_id: Variant
 var selected_node_ast: ParleyNodeAst: set = _set_selected_node_ast
-
+var copied_node_ids: Array[String] = []
 
 signal dialogue_ast_selected(dialogue_ast: ParleyDialogueSequenceAst)
 signal node_selected(node_ast: ParleyNodeAst)
 
+var undo_histories: Dictionary = {}
+var redo_histories: Dictionary = {}
 
 #region SETUP
 func _ready() -> void:
@@ -345,9 +346,17 @@ func _on_insert_id_pressed(type: ParleyDialogueSequenceAst.Type) -> void:
 	if not dialogue_ast:
 		push_warning(ParleyUtils.log.warn_msg("Unable to add Node of type %s to the Dialogue Sequence. Dialogue Sequence is not currently loaded into Parley. Please open one via the file menu in the top left-hand side." % ParleyDialogueSequenceAst.get_type_name(type)))
 		return
-	var ast_node: Variant = dialogue_ast.add_new_node(type, (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom)
-	if ast_node:
-		await refresh()
+	var node_position: Vector2 = (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom
+
+	if ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false):
+		var create_node_operation: ParleyCreateNodeOperation = ParleyCreateNodeOperation.new(graph_view, type, node_position)
+		create_node_operation.do()
+		add_undo_operation(create_node_operation)
+	else:
+		var ast_node: Variant = dialogue_ast.add_new_node(type, (graph_view.scroll_offset + graph_view.size * 0.5) / graph_view.zoom)
+		if ast_node:
+			await refresh()
+
 
 
 func _on_translations_menu_id_pressed(id: int) -> void:
@@ -661,14 +670,25 @@ func _on_graph_view_connection_to_empty(from_node_name: StringName, from_slot: i
 	if not dialogue_ast:
 		return
 	# TODO: it may be better to create a helper for this calculation
-	var ast_node_variant: Variant = dialogue_ast.add_new_node(ParleyDialogueSequenceAst.Type.DIALOGUE, ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90))
-	if ast_node_variant and ast_node_variant is ParleyNodeAst:
-		var ast_node: ParleyNodeAst = ast_node_variant
-		await refresh()
-		var to_node_name: String = graph_view.get_ast_node_name(ast_node)
-		# TODO: This is the entry slot for a Dialogue AST Node, it may be better to create a helper function for this
-		var to_slot: int = 0
-		_add_edge(from_node_name, from_slot, to_node_name, to_slot)
+	if ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false):
+		var node_position: Vector2 = ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90)
+		var connection_to_empty_operation: ParleyConnectionToEmptyOperation = ParleyConnectionToEmptyOperation.new(
+			graph_view, 
+			ParleyDialogueSequenceAst.Type.DIALOGUE, 
+			node_position, 
+			from_node_name, 
+			from_slot)
+		connection_to_empty_operation.do()
+		add_undo_operation(connection_to_empty_operation)
+	else:
+		var ast_node_variant: Variant = dialogue_ast.add_new_node(ParleyDialogueSequenceAst.Type.DIALOGUE, ((graph_view.scroll_offset + release_position) / graph_view.zoom) + Vector2(0, -90))
+		if ast_node_variant and ast_node_variant is ParleyNodeAst:
+			var ast_node: ParleyNodeAst = ast_node_variant
+			await refresh()
+			var to_node_name: String = graph_view.get_ast_node_name(ast_node)
+			# TODO: This is the entry slot for a Dialogue AST Node, it may be better to create a helper function for this
+			var to_slot: int = 0
+			_add_edge(from_node_name, from_slot, to_node_name, to_slot)
 
 
 # TODO: add to docs
@@ -807,6 +827,68 @@ func _on_import_modal_import_requested(import_type: ParleyImportModal.ImportType
 			push_error(ParleyUtils.log.error_msg("Unable to import data: unknown import type (file_type:%s, import_type:%s)" % [file_type_name, import_type_name]))
 			return
 #endregion
+
+
+func _duplicate_nodes_request() -> void:
+	if graph_view.selected_node_ids.size() > 0 :
+		var duplicate_nodes_operation: ParleyDuplicateOperation = ParleyDuplicateOperation.new(graph_view, graph_view.selected_node_ids)
+		duplicate_nodes_operation.do()
+		add_undo_operation(duplicate_nodes_operation)
+
+
+func _copy_nodes_request() -> void:
+	copied_node_ids.clear()
+	for node_id: String in graph_view.selected_node_ids:
+		copied_node_ids.append(node_id)
+	
+
+func _paste_nodes_request() -> void:
+	if copied_node_ids.size() > 0:
+		var paste_operation: ParleyPasteOperation = ParleyPasteOperation.new(graph_view, copied_node_ids)
+		paste_operation.do()
+		add_undo_operation(paste_operation)
+	
+
+func _delete_selected() -> void:
+	if graph_view.selected_edges.size() > 0 || graph_view.selected_node_ids.size() > 0:
+		var delete_operation: ParleyDeleteOperation = ParleyDeleteOperation.new(graph_view, graph_view.selected_edges, graph_view.selected_node_ids)
+		delete_operation.do()
+		add_undo_operation(delete_operation)
+
+
+func _validate_history() -> void:
+	if not undo_histories.has(dialogue_ast):
+		undo_histories[dialogue_ast] = [] as Array[ParleyGraphOperation]
+	if not redo_histories.has(dialogue_ast):
+		redo_histories[dialogue_ast] = [] as Array[ParleyGraphOperation]
+
+
+func add_undo_operation(operation: ParleyGraphOperation) -> void:
+	_validate_history()
+	var redo_history: Array[ParleyGraphOperation] = redo_histories[dialogue_ast]
+	var undo_history: Array[ParleyGraphOperation] = undo_histories[dialogue_ast]
+	redo_history.clear()
+	undo_history.push_back(operation)
+
+
+func _undo() -> void:
+	_validate_history()
+	var redo_history: Array[ParleyGraphOperation] = redo_histories[dialogue_ast]
+	var undo_history: Array[ParleyGraphOperation] = undo_histories[dialogue_ast]
+	if undo_history.size() > 0:
+		var operation: ParleyGraphOperation = undo_history.pop_back()
+		operation.undo()
+		redo_history.push_back(operation)
+
+
+func _redo() -> void:
+	_validate_history()
+	var redo_history: Array[ParleyGraphOperation] = redo_histories[dialogue_ast]
+	var undo_history: Array[ParleyGraphOperation] = undo_histories[dialogue_ast]
+	if redo_history.size() > 0:
+		var operation: ParleyGraphOperation = redo_history.pop_back()
+		operation.do()
+		undo_history.push_back(operation)
 
 
 #region HELPERS

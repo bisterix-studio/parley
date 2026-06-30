@@ -25,7 +25,7 @@ In this guide, we will create a character that can be used to create
 
 ![Register a Character](../../../www/static/docs/register-character/register-character.gif)
 
-> [info]: it is assumed that the default Parley settings are used for the
+> [info]: It is assumed that the default Parley settings are used for the
 > Character Store and it is stored at:
 > `res://characters/character_store_main.tres`. You can find more information on
 > changing the default Parley settings [here](../reference/parley-settings.md).

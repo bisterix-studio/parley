@@ -59,3 +59,4 @@ stores/action_store_path="uid://bfwohwb0ftpuq"
 stores/fact_store_path="uid://c3c7k7lljjqv3"
 stores/character_store_path="uid://ceouii84qmu0w"
 test_dialogue_sequence/default_locale="en"
+editor/keyboard_shortcuts=true

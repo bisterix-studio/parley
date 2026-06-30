@@ -9,6 +9,7 @@ var fact_store: ParleyFactStore = ParleyFactStore.new(): set = _set_fact_store
 var character_store: ParleyCharacterStore = ParleyCharacterStore.new(): set = _set_character_store
 
 #region SETUP
+const Constants = preload('../constants.gd')
 const dialogue_node_scene: PackedScene = preload("../components/dialogue/dialogue_node.tscn")
 const dialogue_option_node_scene: PackedScene = preload("../components/dialogue_option/dialogue_option_node.tscn")
 const action_node_scene: PackedScene = preload("../components/action/action_node.tscn")
@@ -18,6 +19,11 @@ const start_node_scene: PackedScene = preload("../components/start/start_node.ts
 const end_node_scene: PackedScene = preload("../components/end/end_node.tscn")
 const group_node_scene: PackedScene = preload("../components/group/group_node.tscn")
 const jump_node_scene: PackedScene = preload("../components/jump/jump_node.tscn")
+
+signal delete_selected()
+signal save_request()
+signal undo_request()
+signal redo_request()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -29,13 +35,16 @@ func _exit_tree() -> void:
 	await clear()
 	ast = null
 	connections = []
-
+	
 
 func generate(arrange: bool = false) -> void:
 	await clear()
 	_generate_dialogue_nodes()
 	if arrange:
 		arrange_nodes()
+	
+	if ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		call_deferred("refresh_edges")
 
 
 func clear() -> void:
@@ -221,7 +230,6 @@ func set_edge_colour(edge: ParleyEdgeAst) -> void:
 func get_ast_node_name(ast_node: ParleyNodeAst) -> String:
 	return "%s-%s" % [str(ParleyDialogueSequenceAst.Type.find_key(ast_node.type)), ast_node.id.replace(ParleyNodeAst.id_prefix, '')]
 
-
 func _goto_node(node: ParleyGraphNode) -> void:
 	scroll_offset = (node.position_offset + node.size * 0.5) * zoom - size * 0.5
 #endregion
@@ -351,4 +359,281 @@ func set_selected_by_id(id: String, _goto: bool = true) -> void:
 			set_selected(node)
 			_goto_node(node as ParleyGraphNode)
 			return
+
+#region SHORTCUTS
+
+const CLICK_DISTANCE: float = 5
+var on_unselect: Array[Callable] = []
+var selected_edges: Array[ParleyGraphEdge] = []
+var selected_node_ids: Array[String] = []
+var _node_selection_triggered: bool
+var moving_nodes: bool
+
+func _on_node_selected(node: Node) -> void:
+	if not ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		return
+
+	_node_selection_triggered = true
+	var node_id: String = (node as ParleyGraphNode).id
+	if _try_select_edge(ParleyGraphUtils.get_cursor_pos_at_graph_view(self), is_command_or_control_pressed()):
+		await _wait_for_mouse_release()
+		var unselected_node : ParleyGraphNode = find_node_by_id(node_id)
+		unselected_node.call_deferred("set_selected", false)
+		return
+	selected_node_ids.append(node_id)
+
+
+func _on_node_deselected(node: Node) -> void:
+	if not ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		return
+	selected_node_ids.erase((node as ParleyGraphNode).id)
+
+
+func _on_edges_deselected() -> void:
+	if not ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		return
+	while on_unselect.size() > 0:
+		var callable: Callable = on_unselect.pop_front()
+		callable.call()
+
+
+func _gui_input(event: InputEvent) -> void:
+	if not ParleySettings.get_setting(Constants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE, false): 
+		return
+	if  event is InputEventMouseButton:
+		_handle_mouse_select(event as InputEventMouseButton)
+
+	if event is InputEventKey:
+		var key_event: InputEventKey = event as InputEventKey
+		if key_event.pressed and not key_event.echo:
+			#Ctrl + Z
+			if key_event.is_action_pressed("ui_undo"):
+				undo_request.emit()
+			#Ctrl + Y
+			elif key_event.is_action_pressed("ui_redo"):
+				redo_request.emit()
+			#Ctrl + S
+			elif key_event.is_command_or_control_pressed() and key_event.keycode == KEY_S:
+				save_request.emit()
+			# Delete
+			elif key_event.keycode == KEY_DELETE:
+				delete_selected.emit()
+
+
+func _clear_selected_nodes() -> void:
+	selected_node_ids.clear()	
+
+
+func _unselect_edges() -> void:
+	for edge :ParleyGraphEdge in selected_edges:
+		edge.unselect()
+
+
+func refresh_edges() -> void:
+	for edge :ParleyGraphEdge in selected_edges:
+		edge.unselect()
+	for edge :ParleyGraphEdge in selected_edges:
+		edge.select()
+
+
+func _wait_for_mouse_release() -> void:
+	while Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		await get_tree().process_frame
+
+func _clear_selected_edges() -> void:
+	selected_edges.clear()
+
+
+func _handle_mouse_select(mouse_event: InputEventMouseButton) -> void:
+	if _node_selection_triggered:
+		_node_selection_triggered = false
+		return
+	if moving_nodes:
+		return
+
+	if mouse_event.is_released() and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+		var pointer_pos: Vector2 = (mouse_event.position + scroll_offset) / zoom
+		var is_control_pressed: bool = mouse_event.is_command_or_control_pressed()
+
+		if _try_select_edge(pointer_pos, is_control_pressed):
+			pass
+
+
+func _try_select_edge(pointer_pos: Vector2, is_control_pressed: bool) -> bool:
+	# basically ctrl/cmd+click selects multiple
+	if not is_control_pressed:
+		_unselect_edges()
+		_clear_selected_nodes()
+		_clear_selected_edges()
+
+	var foundAnyEdge: bool = false
+	for conn: Dictionary in get_connection_list():
+		var from_node_name: String = conn.get("from_node")
+		var to_node_name: String = conn.get("to_node")
+		var from_port: int = conn.get("from_port")
+		var to_port: int = conn.get("to_port")
+
+		var from_node: ParleyGraphNode = get_node(NodePath(from_node_name)) as ParleyGraphNode
+		var to_node: ParleyGraphNode = get_node(NodePath(to_node_name)) as ParleyGraphNode
+		if not from_node or not to_node:
+			continue
+
+		var from_pos: Vector2 = _get_slot_position(from_node, from_port, true)
+		var to_pos: Vector2 = _get_slot_position(to_node, to_port, false)
+		var controls : Array = get_graph_bezier_controls(from_pos, to_pos)
+		var p0: Vector2 = controls[0]
+		var p1: Vector2 = controls[1]
+		var p2: Vector2 = controls[2]
+		var p3: Vector2 = controls[3]
+		var distance: float = get_distance_to_bezier(pointer_pos, p0, p1, p2, p3) * zoom
+
+		if  distance <= CLICK_DISTANCE:
+			foundAnyEdge = true
+			var edge: ParleyGraphEdge = _find_existing_edge(from_node, from_port, to_node, to_port)
+			var edge_ast: ParleyEdgeAst = ast.get_edge_ast(from_node.id, from_port, to_node.id, to_port)
+			if edge == null:
+				edge = ParleyGraphEdge.new(self, edge_ast, from_node, from_port, to_node, to_port)
+				edge.select()
+				selected_edges.append(edge as ParleyGraphEdge)
+				on_unselect.append(func() -> void:
+					edge.unselect()
+					selected_edges.erase(edge)
+				)
+				print_rich(ParleyUtils.log.info_msg("Selected edge: {edge}".format({"edge": edge.as_string()})))
+			else:
+				selected_edges.erase(edge)
+				edge.unselect()
+				print_rich(ParleyUtils.log.info_msg("Unselected existing edge: {edge}".format({"edge": edge.as_string()})))
+			break
+
+	if not foundAnyEdge && not is_control_pressed:
+		_on_edges_deselected()
+	return foundAnyEdge
+
+
+func is_command_or_control_pressed() -> bool:
+	return Input.is_key_pressed(KEY_CTRL) or Input.is_key_pressed(KEY_META)
+
+
+func _find_existing_edge(_from_node: ParleyGraphNode, _from_port: int, _to_node: ParleyGraphNode, _to_port: int) -> ParleyGraphEdge:
+	for con: ParleyGraphEdge in selected_edges:
+		if con.from_node == _from_node && con.from_port == _from_port && con.to_node == _to_node && con.to_port == _to_port:
+			return con
+	return null
+
+
+func _get_slot_position(node: GraphNode, slot_idx: int, is_output: bool) -> Vector2:
+	var local_pos: Vector2
+	if is_output:
+		local_pos = node.get_output_port_position(slot_idx)
+	else:
+		local_pos = node.get_input_port_position(slot_idx)
+	
+	# Convert to GraphEdit local coordinates
+	return (node.position + scroll_offset) / zoom + local_pos
+
+
+func get_distance_to_segment(point: Vector2, segment_start: Vector2, segment_end: Vector2) -> float:
+	# Calculate the vector of the line segment.
+	var segment_vec: Vector2 = segment_end - segment_start
+	
+	# If the segment has no length, return the distance to the start point.
+	if segment_vec.length_squared() == 0.0:
+		return point.distance_to(segment_start)
+		
+	# Project the point onto the line defined by the segment.
+	# The result 't' is a factor from 0.0 (at segment_start) to 1.0 (at segment_end).
+	var t:float = (point - segment_start).dot(segment_vec) / segment_vec.length_squared()
+	
+	# Clamp 't' to the range [0, 1] to stay within the segment.
+	# - If t < 0, the closest point is segment_start.
+	# - If t > 1, the closest point is segment_end.
+	# - Otherwise, it's a point along the segment.
+	if t > 1:
+		return point.distance_to(segment_end)
+	if t < 0:
+		return point.distance_to(segment_start)
+	else:
+		var closest_point_on_segment: Vector2 = segment_start.lerp(segment_end, t)
+		
+		# Return the distance between the original point and the closest point on the segment.
+		return point.distance_to(closest_point_on_segment)
+
+
+func get_graph_bezier_controls(from: Vector2, to: Vector2) -> Array:
+	var dx : float= abs(to.x - from.x)
+	var offset : float = max(dx * 0.5, 40.0)
+
+	var p0 : Vector2 = from
+	var p1 : Vector2 = from + Vector2(offset, 0)
+	var p2 : Vector2 = to   - Vector2(offset, 0)
+	var p3 : Vector2 = to
+
+	return [p0, p1, p2, p3]
+
+
+func cubic_bezier(p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, t: float) -> Vector2:
+	var u : float = 1.0 - t
+
+	return (
+		u*u*u * p0 +
+		3.0 * u*u * t * p1 +
+		3.0 * u * t*t * p2 +
+		t*t*t * p3
+	)
+
+
+func get_distance_to_bezier(point: Vector2, p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2) -> float:
+	var closest_dist : float = INF
+	var closest_t : float = 0.0
+
+	# --- 1. Coarse sampling ---
+	const SAMPLES : float = 20
+	for i: int in range(SAMPLES + 1):
+		var t : float = float(i) / SAMPLES
+		var bez_point : Vector2 = cubic_bezier(p0, p1, p2, p3, t)
+		var d : float = point.distance_squared_to(bez_point)
+
+		if d < closest_dist:
+			closest_dist = d
+			closest_t = t
+
+	# --- 2. Refinement ---
+	var step : float = 1.0 / SAMPLES
+	for _i: int in range(5): # iterations
+		var t_left : float = clamp(closest_t - step, 0.0, 1.0)
+		var t_right : float = clamp(closest_t + step, 0.0, 1.0)
+
+		var d_left : float = point.distance_squared_to(cubic_bezier(p0, p1, p2, p3, t_left))
+		var d_right : float = point.distance_squared_to(cubic_bezier(p0, p1, p2, p3, t_right))
+
+		if d_left < closest_dist:
+			closest_dist = d_left
+			closest_t = t_left
+		elif d_right < closest_dist:
+			closest_dist = d_right
+			closest_t = t_right
+
+		step *= 0.5
+
+	return sqrt(closest_dist)
+
+
+func _node_exist_at_position(pos: Vector2) -> GraphNode:
+	# GraphEdit applies zoom + scroll internally, so convert position properly
+	for node_id : String in selected_node_ids:
+		var node : ParleyGraphNode = find_node_by_id(node_id)
+		var node_rect: Rect2 = Rect2(node.position, node.size / zoom)
+		if node_rect.has_point(pos):
+			return node
+
+	return null
+
 #endregion
+
+func _on_begin_node_move() -> void:
+	moving_nodes = true
+
+
+func _on_end_node_move() -> void:
+	moving_nodes = false

@@ -87,6 +87,7 @@ const toc: RawTableOfContents = {
         title: "Customisation",
         pages: [
           ["customise-dialogue-balloon", "Customise Dialogue Balloon"],
+          ["customise-parley-context", "Customise Parley Context"],
         ],
       },
       examples: {

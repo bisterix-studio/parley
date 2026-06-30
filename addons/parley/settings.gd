@@ -22,6 +22,7 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	# hardcode it for now but allow people to edit it in settings
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: "res://addons/parley/views/test_dialogue_sequence_scene.tscn",
 	ParleyConstants.TEST_DEFAULT_LOCALE: "",
+	ParleyConstants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE: false,
 }
 
 

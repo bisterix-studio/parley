@@ -8,5 +8,5 @@ func evaluate(ctx: ParleyContext, values: Array) -> Variant:
 	return
 
 
-func available_values() -> Array[Variant]:
+func available_values() -> Array:
 	return []

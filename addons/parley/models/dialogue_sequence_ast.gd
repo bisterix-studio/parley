@@ -61,7 +61,7 @@ func _set_title(new_title: String) -> void:
 
 #region BUILDING DIALOGUE
 ## Add a node to the list of nodes from an AST
-func add_ast_node(node: Dictionary) -> void:
+func add_ast_node(node: Dictionary) -> ParleyNodeAst:
 	var type: Type = Type.get(node.get('type'), Type.UNKNOWN)
 	var id_variant: Variant = node.get('id')
 	var position: Vector2 = _parse_position_from_raw_node_ast(node)
@@ -116,6 +116,7 @@ func add_ast_node(node: Dictionary) -> void:
 			return
 	ast_node.position = position
 	nodes.push_back(ast_node)
+	return ast_node
 
 
 ## Add a new node to the list of nodes
@@ -149,6 +150,29 @@ func add_new_node(type: Type, position: Vector2 = Vector2.ZERO) -> ParleyNodeAst
 	_emit_dialogue_updated()
 	return ast_node
 
+
+# Copy the input Node AST and add to the Dialogue Sequenece AST
+func copy_node_ast(ast_node: ParleyNodeAst) -> ParleyNodeAst:
+	print_rich(ParleyUtils.log.info_msg('Copying Node with ID %s and Type %s' % [ast_node.id, ast_node.type]))
+	var new_node_dict: Dictionary = ast_node.to_dict()
+	new_node_dict.id = _generate_node_id()
+	var new_node_ast: ParleyNodeAst = add_ast_node(new_node_dict)
+	if new_node_ast:
+		_emit_dialogue_updated()
+	return new_node_ast
+
+
+func add_node_from_ast(node_ast: ParleyNodeAst) -> ParleyNodeAst:
+	# Probably need to make sure the provided ID doesn't already exist
+	for node : ParleyNodeAst in nodes:
+		if node.id == node_ast.id:
+			push_warning(ParleyUtils.log.warn_msg("ID already exists in Dialogue Sequence. Not adding to AST."))
+			return
+			
+	# TODO: also worth storing the insertion index somewhere as well
+	nodes.append(node_ast)
+	_emit_dialogue_updated()
+	return node_ast
 
 ## Update Node AST position
 func update_node_position(ast_node_id: String, position: Vector2) -> void:
@@ -245,7 +269,6 @@ func remove_node(node_id: String) -> void:
 		index += 1
 
 	_emit_dialogue_updated()
-
 
 ## Find a Node AST by its ID.
 ## Example: ast.find_node_by_id("1")
@@ -530,7 +553,7 @@ func _run_action(ctx: ParleyContext, node_ast: ParleyNodeAst) -> void:
 	var result: int = await action.run(ctx, action_node_ast.values)
 	action.free()
 	if result != OK:
-		push_error(ParleyUtils.log.error_msg("Unable to run Action (code:%i)" % result))
+		push_error(ParleyUtils.log.error_msg("Unable to run Action (code:%d)" % result))
 
 
 ## Indicator for whether the node is at the end of the current Dialogue Sequence
@@ -764,7 +787,9 @@ static func is_dialogue_options(p_nodes: Array[ParleyNodeAst]) -> bool:
 func _parse_position_from_raw_node_ast(node: Dictionary) -> Vector2:
 	var default: Vector2 = Vector2.ZERO
 	var raw_position: Variant = node.get('position', str(default))
-	if not is_instance_of(raw_position, TYPE_STRING):
+	if is_instance_of(raw_position, TYPE_VECTOR2):
+		return raw_position
+	elif not is_instance_of(raw_position, TYPE_STRING):
 		push_warning(ParleyUtils.log.warn_msg("Unable to parse position of node: %s. Defaulting to %s" % [node.get('id', 'unknown'), str(default)]))
 		return default
 	var position: String = raw_position
@@ -825,6 +850,11 @@ func _emit_dialogue_updated() -> void:
 	if is_ready:
 		dialogue_updated.emit(self)
 
+func get_edge_ast(from_node: String, from_slot: int, to_node: String, to_slot: int) -> ParleyEdgeAst:
+	for edge: ParleyEdgeAst in edges:
+		if edge.from_node == from_node && edge.from_slot == from_slot && edge.to_node == to_node && edge.to_slot == to_slot:
+			return edge
+	return null
 
 func _to_string() -> String:
 	return "ParleyDialogueSequenceAst<nodes=%d edges=%d>" % [nodes.size(), edges.size()]

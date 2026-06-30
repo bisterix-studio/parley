@@ -5,7 +5,7 @@
 
 #region General
 # TODO: figure out better way of getting this version as it is duplicated
-const VERSION: StringName = &"2.1.0"
+const VERSION: StringName = &"2.2.0"
 const AST_VERSION: StringName = &"1.1.0"
 const USER_CONFIG_PATH: StringName = &"user://parley_user_config.json"
 const DIALOGUE_SEQUENCE_EXTENSION: StringName = &"ds"
@@ -24,6 +24,7 @@ const PARLEY_RUNTIME_SINGLETON: StringName = &"ParleyRuntime"
 #region Editor
 # User settings
 const EDITOR_CURRENT_DIALOGUE_SEQUENCE_PATH: StringName = &"parley/editor/current_dialogue_sequence_path"
+const EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE: StringName = &"parley/editor/keyboard_shortcuts"
 #endregion
 
 

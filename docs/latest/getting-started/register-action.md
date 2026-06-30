@@ -26,7 +26,7 @@ Node in the corresponding
 
 ![Register an Action](../../../www/static/docs/register-action/register-action.gif)
 
-> [info]: it is assumed that the default Parley settings are used for the Action
+> [info]: It is assumed that the default Parley settings are used for the Action
 > Store and it is stored at: `res://actions/action_store_main.tres`. You can
 > find more information on changing the default Parley settings
 > [here](../reference/parley-settings.md).
