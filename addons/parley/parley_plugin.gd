@@ -8,6 +8,7 @@ extends EditorPlugin
 const ParleyIcon: CompressedTexture2D = preload("./assets/ParleyIconBubble.svg")
 const ParleyConstants = preload("./constants.gd")
 const ParleyImportPlugin: GDScript = preload("./import_plugin.gd")
+const ParleyTranslationParserPlugin: GDScript = preload("./translation_parser.gd")
 const StoresEditorScene: PackedScene = preload("./stores/stores_editor.tscn")
 const ParleyNodeScene: PackedScene = preload("./views/parley_node.tscn")
 const ParleyEdges: PackedScene = preload("./views/parley_edges.tscn")
@@ -16,6 +17,7 @@ const MainPanelScene: PackedScene = preload("./main_panel.tscn")
 
 var main_panel_instance: ParleyMainPanel
 var import_plugin: EditorImportPlugin
+var translation_parser_plugin: EditorTranslationParserPlugin
 var stores_editor: ParleyStoresEditor
 var node_editor: ParleyNodeEditor
 var edges_editor: ParleyEdgesEditor
@@ -36,8 +38,12 @@ func _enter_tree() -> void:
 		var parley_manager: ParleyManager = ParleyManager.get_instance()
 
 		# Import plugin setup
-		import_plugin = ParleyImportPlugin.new()
+		import_plugin = ParleyImportPlugin.new(parley_manager)
 		add_import_plugin(import_plugin)
+
+		# Translation plugin setup
+		translation_parser_plugin = ParleyTranslationParserPlugin.new()
+		add_translation_parser_plugin(translation_parser_plugin)
 		
 		# Stores Editor Dock
 		stores_editor = StoresEditorScene.instantiate()
@@ -78,7 +84,9 @@ func _enter_tree() -> void:
 		# TODO: it may be better to not refresh automatically upon a dialogue ast change
 		# or defer the refresh so it happens after all the other setters are made.
 		_setup_data()
-		main_panel_instance.dialogue_ast = parley_manager.load_current_dialogue_sequence()
+		var dialogue_sequence_ast: ParleyDialogueSequenceAst = parley_manager.load_current_dialogue_sequence()
+		main_panel_instance.dialogue_ast = dialogue_sequence_ast
+		node_editor.dialogue_sequence_ast = dialogue_sequence_ast
 
 		# Hide the main panel. Very much required.
 		_make_visible(false)
@@ -90,6 +98,10 @@ func _exit_tree() -> void:
 		
 	if import_plugin:
 		remove_import_plugin(import_plugin)
+		import_plugin = null
+
+	if translation_parser_plugin:
+		remove_translation_parser_plugin(translation_parser_plugin)
 		import_plugin = null
 		
 	if node_editor:

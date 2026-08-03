@@ -11,7 +11,8 @@
       "type": "DIALOGUE",
       "position": "(1272.0, 243.0)",
       "character": "uid://ceouii84qmu0w::alice",
-      "text": "Jumped!"
+      "text": "Jumped!",
+      "text_translation_key": ""
     },
     {
       "id": "node:3",

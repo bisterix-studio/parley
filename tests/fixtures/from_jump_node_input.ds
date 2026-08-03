@@ -11,7 +11,8 @@
       "type": "DIALOGUE",
       "position": "(2134.0, 1701.0)",
       "character": "uid://ceouii84qmu0w::alice",
-      "text": "About to jump..."
+      "text": "About to jump...",
+      "text_translation_key": ""
     },
     {
       "id": "node:3",

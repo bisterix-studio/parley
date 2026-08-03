@@ -8,13 +8,15 @@ class_name ParleyDialogueOptionNodeEditor extends ParleyBaseNodeEditor
 var character_store: ParleyCharacterStore: set = _set_character_store
 @export var character: String = "": set = _set_character
 @export var option: String = "": set = _set_option
+@export var text_translation_key: String = "": set = _set_text_translation_key
 
 
 @onready var character_selector: OptionButton = %CharacterSelector
 @onready var option_editor: TextEdit = %OptionEditor
+@onready var text_translation_key_editor: ParleyTranslationKeyEditor = %TranslationKeyEditor
 
 
-signal dialogue_option_node_changed(id: String, character: String, option: String)
+signal dialogue_option_node_changed(id: String, character: String, option: String, text_translation_key: String)
 #endregion
 
 
@@ -22,6 +24,7 @@ signal dialogue_option_node_changed(id: String, character: String, option: Strin
 func _ready() -> void:
 	set_title()
 	_render_option()
+	_render_text_translation_key_editor(true)
 	_render_character_options()
 	if character_store:
 		ParleyUtils.signals.safe_connect(character_store.changed, _on_character_store_changed)
@@ -48,6 +51,11 @@ func _set_option(new_option: String) -> void:
 func _set_character(new_character: String) -> void:
 	character = new_character
 	_render_character()
+
+
+func _set_text_translation_key(new_text_translation_key: String) -> void:
+	text_translation_key = new_text_translation_key
+	_render_text_translation_key_editor()
 #endregion
 
 
@@ -55,6 +63,14 @@ func _set_character(new_character: String) -> void:
 func _render_option() -> void:
 	if option_editor and option_editor.text != option:
 		option_editor.text = option
+
+
+func _render_text_translation_key_editor(on_ready: bool = false) -> void:
+	if text_translation_key_editor:
+		if text_translation_key_editor.key != text_translation_key:
+			text_translation_key_editor.key = text_translation_key
+		if on_ready:
+			text_translation_key_editor.label = &"Text Translation Key: "
 
 
 func _render_character_options() -> void:
@@ -89,10 +105,20 @@ func _on_character_selector_item_selected(index: int) -> void:
 		emit_dialogue_option_node_changed()
 
 
+func _on_translation_key_editor_key_changed(new_key: String) -> void:
+	text_translation_key = new_key
+	emit_dialogue_option_node_changed()
+
+
+func _on_translation_key_editor_key_generation_requested() -> void:
+	text_translation_key = ParleyUtils.translation.generate_key(option, dialogue_sequence_ast, node_ast, 'text')
+	emit_dialogue_option_node_changed()
+
+
 func _on_character_store_changed() -> void:
 	_render_character_options()
 
 
 func emit_dialogue_option_node_changed() -> void:
-	dialogue_option_node_changed.emit(id, character, option)
+	dialogue_option_node_changed.emit(id, character, option, text_translation_key)
 #endregion

@@ -55,8 +55,8 @@ func _emit_jump_node_changed() -> void:
 func _on_edit_dialogue_sequence_button_pressed() -> void:
 	if not dialogue_sequence_ast_ref or not ResourceLoader.exists(dialogue_sequence_ast_ref):
 		return
-	var dialogue_sequence_ast: ParleyDialogueSequenceAst = load(dialogue_sequence_ast_ref)
-	if dialogue_sequence_ast is ParleyDialogueSequenceAst:
+	var dialogue_sequence_ast_to_edit: ParleyDialogueSequenceAst = load(dialogue_sequence_ast_ref)
+	if dialogue_sequence_ast_to_edit is ParleyDialogueSequenceAst:
 		if Engine.is_editor_hint():
 			EditorInterface.set_main_screen_editor("Parley")
 		dialogue_sequence_ast_selected.emit(dialogue_sequence_ast_editor.resource)

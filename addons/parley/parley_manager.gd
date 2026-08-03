@@ -146,7 +146,73 @@ func _get_fact_store() -> ParleyFactStore:
 
 # TODO: should this file be split into editor and non-editor files (e.g. ParleyManager, ParleyRuntime)
 #region EDITOR
-## Plugin use only
+## Get Parley plugin version
+func get_plugin_version() -> String:
+	var plugin: EditorPlugin = Engine.get_meta(ParleyConstants.PARLEY_PLUGIN_METADATA)
+	if not plugin:
+		return "Unknown"
+	return plugin.get_plugin_version()
+
+
+## Update localisation for all known Dialogue Sequences
+func register_localisation_path(path: String) -> int:
+	# TODO: do we need to consider the translation mode?
+	var pot_generation_candidates: PackedStringArray = ProjectSettings.get_setting(ParleyConstants.TRANSLATIONS_POT_FILES, [])
+	var changed: bool = false
+
+	if not pot_generation_candidates.has(path):
+		var _result: bool = pot_generation_candidates.append(path)
+		changed = true
+
+	if changed:
+		ProjectSettings.set_setting(ParleyConstants.TRANSLATIONS_POT_FILES, pot_generation_candidates)
+		var project_settings_save_result: int = ProjectSettings.save()
+		if project_settings_save_result != OK:
+			push_error(ParleyUtils.log.error_msg("Unable to save project settings: %d" % [project_settings_save_result]))
+		return project_settings_save_result
+	return OK
+
+
+func push_toast(message: String, severity: int = 0, tooltip: String = "") -> void:
+	if Engine.is_editor_hint():
+		EditorInterface.get_editor_toaster().push_toast(message, severity, tooltip)
+
+
+## Update localisation for all known Dialogue Sequences
+func update_localisations(dialogue_sequences_to_register: Array[ParleyDialogueSequenceAst] = [], clean: bool = true) -> int:
+	# TODO: do we need to consider the translation mode?
+	var pot_generation_candidates: PackedStringArray = ProjectSettings.get_setting(ParleyConstants.TRANSLATIONS_POT_FILES, [])
+	var changed: bool = false
+
+	# Perform registrations
+	for dialogue_sequence_to_register: ParleyDialogueSequenceAst in dialogue_sequences_to_register:
+		if not dialogue_sequence_to_register.resource_path or (clean and not ResourceLoader.exists(dialogue_sequence_to_register.resource_path)):
+			push_warning(ParleyUtils.log.warn_msg("Unable to register localisation for Dialogue Sequence because it does not exist within the file system (ds:%s)" % dialogue_sequence_to_register))
+			return ERR_DOES_NOT_EXIST
+		else:
+			if not pot_generation_candidates.has(dialogue_sequence_to_register.resource_path):
+				var _result: bool = pot_generation_candidates.append(dialogue_sequence_to_register.resource_path)
+				changed = true
+
+	# Clean-up any candidates that no longer exist
+	# Reverse array so that elements are removed from the end and the indices are correct for any subsequence removals
+	if clean:
+		for i: int in range(pot_generation_candidates.size() - 1, -1, -1):
+			var candidate: String = pot_generation_candidates[i]
+			if candidate.get_extension() == ParleyConstants.DIALOGUE_SEQUENCE_EXTENSION and not ResourceLoader.exists(candidate):
+				pot_generation_candidates.remove_at(i)
+				changed = true
+
+	# Update project settings if POT candidates have been changed in any way
+	if changed:
+		ProjectSettings.set_setting(ParleyConstants.TRANSLATIONS_POT_FILES, pot_generation_candidates)
+		var project_settings_save_result: int = ProjectSettings.save()
+		if project_settings_save_result != OK:
+			push_error(ParleyUtils.log.error_msg("Unable to save project settings: %d" % [project_settings_save_result]))
+		return project_settings_save_result
+	return OK
+
+
 func set_current_dialogue_sequence(path: Variant) -> void:
 	if not Engine.is_editor_hint():
 		return
@@ -171,6 +237,29 @@ func load_test_dialogue_sequence() -> ParleyDialogueSequenceAst:
 	if current_dialogue_sequence_path and ResourceLoader.exists(current_dialogue_sequence_path):
 		return load(current_dialogue_sequence_path)
 	return ParleyDialogueSequenceAst.new()
+
+
+## Plugin use only
+func get_test_locale() -> String:
+	var test_locale: Variant = ParleySettings.get_user_value(ParleyConstants.TEST_LOCALE, "")
+	if test_locale and is_instance_of(test_locale, TYPE_STRING):
+		return test_locale
+
+	test_locale = ParleySettings.get_setting(ParleyConstants.TEST_DEFAULT_LOCALE, "")
+	if test_locale and is_instance_of(test_locale, TYPE_STRING):
+		return test_locale
+
+	test_locale = ProjectSettings.get_setting(ParleyConstants.TRANSLATION_LOCALE_TEST, "")
+	if test_locale and is_instance_of(test_locale, TYPE_STRING):
+		return test_locale
+
+	return TranslationServer.get_tool_locale()
+
+
+## Plugin use only
+func set_test_locale(new_test_locale: String) -> void:
+	ParleySettings.set_user_value(ParleyConstants.TEST_LOCALE, new_test_locale)
+	print_rich(ParleyUtils.log.info_msg("Set test locale to: %s" % new_test_locale))
 
 
 ## Plugin use only

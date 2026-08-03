@@ -10,9 +10,14 @@ const ParleyConstants = preload('./constants.gd')
 
 
 const ast_version: String = ParleyConstants.AST_VERSION
+var parley_manager: ParleyManager
 
 
 enum Presets {DEFAULT}
+
+
+func _init(p_parley_manager: ParleyManager) -> void:
+	parley_manager = p_parley_manager
 
 
 func _get_importer_name() -> String:
@@ -26,7 +31,7 @@ func _get_visible_name() -> String:
 
 
 func _get_recognized_extensions() -> PackedStringArray:
-	return ["ds"]
+	return [ParleyConstants.DIALOGUE_SEQUENCE_EXTENSION]
 
 
 func _get_save_extension() -> String:
@@ -69,9 +74,9 @@ func _get_option_visibility(_path: String, _option_name: StringName, _options: D
 	return true
 
 
-func _import(source_file: String, save_path: String, _options: Dictionary, _platform_variants: Array[String], _gen_files: Array[String]) -> int:
+func _import(source_file_path: String, save_path: String, _options: Dictionary, _platform_variants: Array[String], _gen_files: Array[String]) -> int:
 	# Serialisation
-	var file: FileAccess = FileAccess.open(source_file, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(source_file_path, FileAccess.READ)
 	if file == null:
 		return FileAccess.get_open_error()
 	var raw_text: String = file.get_as_text()
@@ -100,4 +105,8 @@ func _import(source_file: String, save_path: String, _options: Dictionary, _plat
 
 	# Compilation
 	var dialogue_ast: ParleyDialogueSequenceAst = ParleyDialogueSequenceAst.new(title, nodes, edges)
-	return ResourceSaver.save(dialogue_ast, "%s.%s" % [save_path, _get_save_extension()])
+	var save_result: int = ResourceSaver.save(dialogue_ast, "%s.%s" % [save_path, _get_save_extension()])
+	if save_result == OK:
+		if parley_manager and not source_file_path.begins_with("res://.godot"):
+			return parley_manager.register_localisation_path(source_file_path)
+	return save_result

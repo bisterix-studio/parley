@@ -1,0 +1,106 @@
+[gd_scene load_steps=4 format=3 uid="uid://dm8p6rjl3h1km"]
+
+[ext_resource type="Script" uid="uid://cibpxogypvfom" path="res://addons/parley/modals/import_modal.gd" id="1_tpqe8"]
+[ext_resource type="Texture2D" uid="uid://d4d8bblglcblx" path="res://addons/parley/assets/Folder.svg" id="2_u08re"]
+[ext_resource type="PackedScene" uid="uid://dlqqxs60xui5w" path="res://addons/parley/components/editor/resource_editor.tscn" id="3_u08re"]
+
+[node name="ImportModal" type="Window"]
+auto_translate_mode = 1
+title = "Import Dialogue Text Translations to CSV"
+initial_position = 2
+size = Vector2i(1400, 800)
+min_size = Vector2i(1400, 800)
+script = ExtResource("1_tpqe8")
+
+[node name="ImportMarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="ImportContainer" type="VBoxContainer" parent="ImportMarginContainer"]
+layout_mode = 2
+
+[node name="PathContainer" type="HBoxContainer" parent="ImportMarginContainer/ImportContainer"]
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="ImportMarginContainer/ImportContainer/PathContainer"]
+layout_mode = 2
+text = "Path:"
+
+[node name="PathEdit" type="LineEdit" parent="ImportMarginContainer/ImportContainer/PathContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "res://imports/import.csv"
+
+[node name="ChoosePathButton" type="Button" parent="ImportMarginContainer/ImportContainer/PathContainer"]
+layout_mode = 2
+icon = ExtResource("2_u08re")
+flat = true
+
+[node name="DialogueSequenceEditorContainer" type="HBoxContainer" parent="ImportMarginContainer/ImportContainer"]
+layout_mode = 2
+
+[node name="DialogueSequenceEditor" parent="ImportMarginContainer/ImportContainer/DialogueSequenceEditorContainer" instance=ExtResource("3_u08re")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+key = "Will import into"
+base_type = "ParleyDialogueSequenceAst"
+editable = false
+
+[node name="Status" type="RichTextLabel" parent="ImportMarginContainer/ImportContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[color=#19e34f]
+[ul]CSV path name is valid[/ul][/color][color=#19e34f]
+[ul]Will import the selected CSV to the current Dialogue Text Translations.[/ul][/color][color=#19e34f]
+[ul]If a matching text translation key is found, the node text will be replaced by the configured project locale translation.[/ul][/color]
+"
+fit_content = true
+
+[node name="ActionButonContainer" type="HBoxContainer" parent="ImportMarginContainer/ImportContainer"]
+layout_mode = 2
+
+[node name="CancelContainer" type="MarginContainer" parent="ImportMarginContainer/ImportContainer/ActionButonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CancelButton" type="Button" parent="ImportMarginContainer/ImportContainer/ActionButonContainer/CancelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Cancel"
+
+[node name="ImportContainer" type="MarginContainer" parent="ImportMarginContainer/ImportContainer/ActionButonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ImportButton" type="Button" parent="ImportMarginContainer/ImportContainer/ActionButonContainer/ImportContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Import"
+
+[node name="ChoosePathModal" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "Open a File"
+initial_position = 2
+size = Vector2i(1000, 750)
+ok_button_text = "Open"
+file_mode = 0
+filters = PackedStringArray("*.csv")
+
+[connection signal="close_requested" from="." to="." method="_on_close_requested"]
+[connection signal="pressed" from="ImportMarginContainer/ImportContainer/PathContainer/ChoosePathButton" to="." method="_on_choose_path_button_pressed"]
+[connection signal="pressed" from="ImportMarginContainer/ImportContainer/ActionButonContainer/CancelContainer/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="ImportMarginContainer/ImportContainer/ActionButonContainer/ImportContainer/ImportButton" to="." method="_on_import_button_pressed"]
+[connection signal="file_selected" from="ChoosePathModal" to="." method="_on_choose_path_modal_file_selected"]

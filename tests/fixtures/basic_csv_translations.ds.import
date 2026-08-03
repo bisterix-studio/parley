@@ -1,0 +1,14 @@
+[remap]
+
+importer="parley_dialogue_sequence_ast_1.1.0"
+type="Resource"
+uid="uid://bruulwjtl0kx7"
+path="res://.godot/imported/basic_csv_translations.ds-0a0c8b13075f885396479c8fab1ee991.tres"
+
+[deps]
+
+source_file="res://tests/fixtures/basic_csv_translations.ds"
+dest_files=["res://.godot/imported/basic_csv_translations.ds-0a0c8b13075f885396479c8fab1ee991.tres"]
+
+[params]
+

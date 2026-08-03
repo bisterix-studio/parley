@@ -40,18 +40,10 @@ func start(p_ctx: ParleyContext, p_dialogue_sequence_ast: ParleyDialogueSequence
 	is_waiting_for_input = false
 	ctx = p_ctx
 	dialogue_sequence_ast = p_dialogue_sequence_ast
-	if p_start_node is ParleyDialogueNodeAst or p_start_node is ParleyDialogueOptionNodeAst:
-		current_node_asts = [p_start_node]
-	elif p_start_node:
-		var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.run(ctx, dialogue_sequence_ast, p_start_node)
-		current_node_asts = run_result.node_asts
-		dialogue_sequence_ast = run_result.dialogue_sequence
-		run_result.free() # Needed to ensure that everything is correctly freed up at exit
-	else:
-		var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.run(ctx, dialogue_sequence_ast)
-		current_node_asts = run_result.node_asts
-		dialogue_sequence_ast = run_result.dialogue_sequence
-		run_result.free() # Needed to ensure that everything is correctly freed up at exit
+	var run_result: ParleyRunResult = await ParleyDialogueSequenceAst.init(ctx, dialogue_sequence_ast, p_start_node if p_start_node else null)
+	current_node_asts = run_result.node_asts
+	dialogue_sequence_ast = run_result.dialogue_sequence
+	run_result.free() # Needed to ensure that everything is correctly freed up at exit
 
 
 ## Process the next Nodes
@@ -85,7 +77,7 @@ func _set_current_node_asts(p_current_node_asts: Array[ParleyNodeAst]) -> void:
 	balloon.show()
 	current_node_asts = p_current_node_asts
 	var current_children: Array[Node] = balloon_container.get_children()
-	var first_node: ParleyNodeAst = p_current_node_asts.front()
+	var first_node: ParleyNodeAst = current_node_asts.front()
 	var next_children: Array[Node] = await _build_next_children(current_children, first_node)
 	if next_children.size() == 0:
 		return

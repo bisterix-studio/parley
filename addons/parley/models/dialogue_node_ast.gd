@@ -14,26 +14,34 @@ class_name ParleyDialogueNodeAst extends ParleyNodeAst
 @export_multiline var text: String
 
 
+## The translation id for the text field of the Dialogue Node AST.
+## Example: "world_dialect__I_need_some_coffee"
+@export var text_translation_key: String
+
+
 ## Create a new instance of a Dialogue Node AST.
 ## Example: ParleyDialogueNodeAst.new("1", Vector2.ZERO, "Alice", "I need some coffee.")
 func _init(
-	_id: String = "",
-	_position: Vector2 = Vector2.ZERO,
-	_character: String = "",
-	_text: String = ""
+	p_id: String = "",
+	p_position: Vector2 = Vector2.ZERO,
+	p_character: String = "",
+	p_text: String = "",
+	p_text_translation_key: String = ""
 ) -> void:
 	type = ParleyDialogueSequenceAst.Type.DIALOGUE
-	id = _id
-	position = _position
-	character = _character
-	text = _text
+	id = p_id
+	position = p_position
+	character = p_character
+	text = p_text
+	text_translation_key = p_text_translation_key
 
 
 ## Update a Dialogue Node AST.
 ## Example: node.update("Alice", "I need some coffee.")
-func update(_character: String, _text: String) -> void:
-	character = _character
-	text = _text
+func update(p_character: String, p_text: String, p_text_translation_key: String) -> void:
+	character = p_character
+	text = p_text
+	text_translation_key = p_text_translation_key
 
 
 static func get_colour() -> Color:
@@ -41,6 +49,24 @@ static func get_colour() -> Color:
 
 
 #region UTILS
+func to_resolved(resolved_text: String) -> ParleyDialogueNodeAst:
+	return ParleyDialogueNodeAst.new(
+		id,
+		position,
+		character,
+		resolved_text,
+		text_translation_key
+	)
+
+
 func resolve_character() -> ParleyCharacter:
 	return ParleyCharacterStore.resolve_character_ref(character)
+
+
+## Get translation strings for the Dialogue Node
+func get_translation_strings() -> Array[PackedStringArray]:
+	var translation_strings: Array[PackedStringArray] = []
+	if text:
+		translation_strings.append(PackedStringArray([text, ParleyUtils.translation.get_msg_ctx(self, 'text')]))
+	return translation_strings
 #endregion

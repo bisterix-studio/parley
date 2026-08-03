@@ -1,0 +1,359 @@
+# LANGUAGE translation for Parley for the following files:
+# res://dialogue_sequences/all.ds
+# res://dialogue_sequences/next_dialogue.ds
+# res://tests/fixtures/basic_pot_translations.ds
+# res://tests/fixtures/basic_ast_node_generation_input.ds
+# res://tests/fixtures/basic_match_input.ds
+# res://tests/fixtures/from_jump_node_input.ds
+# res://tests/fixtures/to_jump_node_input.ds
+# res://tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds
+# res://tests/fixtures/basic_guard_input.ds
+# res://examples/create-to-jump-node-basic.ds
+# res://examples/create-match-basic.ds
+# res://examples/create-group-basic.ds
+# res://examples/create-from-jump-node-basic.ds
+# res://examples/create-dialogue-option-basic.ds
+# res://examples/create-dialogue-basic.ds
+# res://examples/create-condition-basic.ds
+# res://examples/create-action-basic.ds
+# res://examples/all.ds
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Parley\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: dialogue_sequences/all.ds
+#: examples/all.ds
+msgid "Look. I made a whatdyamacallit."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: tests/fixtures/basic_ast_node_generation_input.ds
+#: examples/all.ds
+msgid "Wow. Great."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: examples/all.ds
+msgid "I have a coffee."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: examples/all.ds
+msgid "Give to Alice."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: examples/all.ds
+msgid "Keep it."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: tests/fixtures/basic_ast_node_generation_input.ds
+#: examples/all.ds
+msgid "Here you go."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: tests/fixtures/basic_ast_node_generation_input.ds
+#: examples/all.ds
+msgid "Cheers."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: tests/fixtures/basic_ast_node_generation_input.ds
+#: examples/all.ds
+msgid "You're welcome."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: tests/fixtures/basic_ast_node_generation_input.ds
+#: examples/all.ds
+msgid "But it's mine."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: tests/fixtures/basic_ast_node_generation_input.ds
+#: examples/all.ds
+msgid "Fair enough."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: tests/fixtures/basic_ast_node_generation_input.ds
+#: examples/all.ds
+msgid "Mmm. Coffee. Now, what did you want me to look at?"
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: tests/fixtures/basic_ast_node_generation_input.ds
+#: examples/all.ds
+msgid "I NEED COFFEE!"
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: tests/fixtures/basic_ast_node_generation_input.ds
+#: examples/all.ds
+msgid "I'll get you coffee, Mama. But first, CATNIP."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: examples/all.ds
+msgid "Look, I need coffee."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: examples/all.ds
+msgid "Look, I really need coffee."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: examples/all.ds
+msgid "Look, I really really REALLY need coffee."
+msgstr ""
+
+#: dialogue_sequences/all.ds
+#: examples/all.ds
+msgid "Coffee please."
+msgstr ""
+
+#: dialogue_sequences/next_dialogue.ds
+msgid "Let's talk about something else."
+msgstr ""
+
+#: dialogue_sequences/next_dialogue.ds
+msgid "Okey dokey."
+msgstr ""
+
+#: tests/fixtures/basic_pot_translations.ds
+msgctxt "PO_SOME_TEXT_IN_ENGLISH__BQMV0F42CXSDT_2_TEXT"
+msgid "[PO]: Some text in English."
+msgstr ""
+
+#: tests/fixtures/basic_pot_translations.ds
+msgctxt "PO_SOME_OPTION_IN_ENGLISH__BQMV0F42CXSDT_3_TEXT"
+msgid "[PO]: Some option in English."
+msgstr ""
+
+#: tests/fixtures/basic_pot_translations.ds
+msgid "[PO]: Another option in English."
+msgstr ""
+
+#: tests/fixtures/basic_pot_translations.ds
+msgid "[PO]: Some text with no translation."
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input.ds
+msgid "Look. I made a thing."
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input.ds
+msgid "LOOK AT MY THING!"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input.ds
+msgid "Give to Alice"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input.ds
+msgid "Keep it"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input.ds
+msgid "Some really really really long dialogue text that never ends because of reasons. Let's repeat! Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. Some really really really long dialogue text that never ends because of reasons. "
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input.ds
+msgid ""
+"Sp    aces\n"
+"\n"
+"\n"
+"Returns\n"
+"\n"
+"\n"
+"\tTab1\n"
+"\n"
+"\n"
+"             \t\t\tTab2"
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+#: examples/create-match-basic.ds
+msgid "Yep, coffee please."
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+#: examples/create-match-basic.ds
+msgid "Seriously, I need coffee."
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+#: examples/create-match-basic.ds
+msgid "COFFEE."
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+#: examples/create-match-basic.ds
+msgid "If in doubt, coffee please."
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+msgid "Let's play some snooker!"
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+msgid "You potted the red ball!"
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+msgid "And that's a bad miss."
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+msgid "You potted the blue ball!"
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+msgid "You potted the pink ball!"
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+msgid "You potted the yellow ball!"
+msgstr ""
+
+#: tests/fixtures/basic_match_input.ds
+#: examples/create-match-basic.ds
+msgid "Let's find Alice's coffee status."
+msgstr ""
+
+#: tests/fixtures/from_jump_node_input.ds
+#: examples/create-from-jump-node-basic.ds
+msgid "About to jump..."
+msgstr ""
+
+#: tests/fixtures/to_jump_node_input.ds
+#: examples/create-to-jump-node-basic.ds
+msgid "Jumped!"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds
+msgid "Test cases"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds
+msgid "Fixture 1"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds
+msgid "Fixture 2"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds
+msgid "Ordered already"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds
+msgid "Created in a different order"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds
+msgid "Top"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds
+msgid "Middle"
+msgstr ""
+
+#: tests/fixtures/basic_ast_node_generation_input_with_sorting_cases.ds
+msgid "Bottom"
+msgstr ""
+
+#: tests/fixtures/basic_guard_input.ds
+msgid "Start"
+msgstr ""
+
+#: tests/fixtures/basic_guard_input.ds
+msgid "SHOULD NOT BE RENDERED"
+msgstr ""
+
+#: tests/fixtures/basic_guard_input.ds
+msgid "No guard 1"
+msgstr ""
+
+#: tests/fixtures/basic_guard_input.ds
+msgid "No guard 2"
+msgstr ""
+
+#: tests/fixtures/basic_guard_input.ds
+msgid "End"
+msgstr ""
+
+#: tests/fixtures/basic_guard_input.ds
+msgid "Behind truthy guard"
+msgstr ""
+
+#: examples/create-group-basic.ds
+msgid "Hello"
+msgstr ""
+
+#: examples/create-group-basic.ds
+msgid "Hey"
+msgstr ""
+
+#: examples/create-group-basic.ds
+msgid "Hi"
+msgstr ""
+
+#: examples/create-dialogue-option-basic.ds
+#: examples/create-dialogue-basic.ds
+msgid "Hi Bob!"
+msgstr ""
+
+#: examples/create-dialogue-option-basic.ds
+msgid "Yes please!"
+msgstr ""
+
+#: examples/create-dialogue-option-basic.ds
+msgid "Would you like some coffee?"
+msgstr ""
+
+#: examples/create-dialogue-option-basic.ds
+msgid "How are you?"
+msgstr ""
+
+#: examples/create-dialogue-option-basic.ds
+msgid "Goodbye!"
+msgstr ""
+
+#: examples/create-dialogue-option-basic.ds
+msgid "Not too bad thanks!"
+msgstr ""
+
+#: examples/create-dialogue-option-basic.ds
+msgid "See ya!"
+msgstr ""
+
+#: examples/create-dialogue-basic.ds
+msgid "Hello Alice!"
+msgstr ""
+
+#: examples/create-condition-basic.ds
+msgid "Where's my coffee??"
+msgstr ""
+
+#: examples/create-condition-basic.ds
+msgid "Thanks for the coffee!"
+msgstr ""
+
+#: examples/create-action-basic.ds
+msgid "Let's rest for 4 hours"
+msgstr ""
+
+#: examples/create-action-basic.ds
+msgid "What a lovely rest."
+msgstr ""

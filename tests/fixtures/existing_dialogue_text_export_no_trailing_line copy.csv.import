@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bqh8r6munqwpq"
+
+[deps]
+
+files=["res://tests/fixtures/existing_dialogue_text_export_no_trailing_line copy.en.translation", "res://tests/fixtures/existing_dialogue_text_export_no_trailing_line copy.fr.translation", "res://tests/fixtures/existing_dialogue_text_export_no_trailing_line copy.es.translation"]
+
+source_file="res://tests/fixtures/existing_dialogue_text_export_no_trailing_line copy.csv"
+dest_files=["res://tests/fixtures/existing_dialogue_text_export_no_trailing_line copy.en.translation", "res://tests/fixtures/existing_dialogue_text_export_no_trailing_line copy.fr.translation", "res://tests/fixtures/existing_dialogue_text_export_no_trailing_line copy.es.translation"]
+
+[params]
+
+compress=true
+delimiter=0

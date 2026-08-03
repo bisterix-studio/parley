@@ -3,10 +3,17 @@
 @tool
 class_name ParleyMainPanel extends VBoxContainer
 
-const Constants = preload('./constants.gd')
+
+const ParleyExport = preload("./parley_export.gd")
+const ParleyImport = preload("./parley_import.gd")
+const Constants = preload("./constants.gd")
+
+
 const new_file_icon: CompressedTexture2D = preload("./assets/New.svg")
 const load_file_icon: CompressedTexture2D = preload("./assets/Load.svg")
-const export_to_csv_icon: CompressedTexture2D = preload("./assets/Export.svg")
+const export_icon: CompressedTexture2D = preload("./assets/Export.svg")
+const import_icon: CompressedTexture2D = preload("./assets/Import.svg")
+const generate_icon: CompressedTexture2D = preload("./assets/Generate.svg")
 const insert_after_icon: CompressedTexture2D = preload("./assets/InsertAfter.svg")
 const dialogue_icon: CompressedTexture2D = preload("./assets/Dialogue.svg")
 const dialogue_option_icon: CompressedTexture2D = preload("./assets/DialogueOption.svg")
@@ -37,13 +44,17 @@ var parley_manager: ParleyManager
 
 @onready var file_menu: MenuButton = %FileMenu
 @onready var insert_menu: MenuButton = %InsertMenu
+@onready var translations_menu: MenuButton = %TranslationMenu
 @onready var docs_button: Button = %DocsButton
 @onready var new_dialogue_sequence_modal: ParleyNewDialogueSequenceModal = %NewDialogueSequenceModal
 @onready var edit_dialogue_sequence_modal: ParleyEditDialogueSequenceModal = %EditDialogueSequenceModal
-@onready var export_to_csv_modal: ParleyExportToCsvModal = %ExportToCsvModal
+@onready var export_modal: ParleyExportModal = %ExportModal
+@onready var import_modal: ParleyImportModal = %ImportModal
+@onready var select_locale_modal: Window = %SelectLocaleModal
 @onready var editor: HSplitContainer = %EditorView
 @onready var sidebar: ParleySidebar = %Sidebar
-@onready var bottom_panel: MarginContainer = %BottomPanel
+@onready var bottom_panel: ParleyBottomPanel = %BottomPanel
+@onready var test_locale_editor: Button = %TestLocaleEditor
 
 
 # TODO: remove this
@@ -59,7 +70,7 @@ var redo_histories: Dictionary = {}
 
 #region SETUP
 func _ready() -> void:
-	_setup()
+	_setup(true)
 
 
 func refresh(arrange: bool = false) -> void:
@@ -154,10 +165,10 @@ func _set_node_ast(new_node_ast: ParleyNodeAst) -> void:
 	match new_node_ast.type:
 		ParleyDialogueSequenceAst.Type.DIALOGUE:
 			var dialogue_node_ast: ParleyDialogueNodeAst = new_node_ast
-			_on_dialogue_node_editor_dialogue_node_changed(dialogue_node_ast.id, dialogue_node_ast.character, dialogue_node_ast.text)
+			_on_dialogue_node_editor_dialogue_node_changed(dialogue_node_ast.id, dialogue_node_ast.character, dialogue_node_ast.text, dialogue_node_ast.text_translation_key)
 		ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION:
 			var dialogue_option_node_ast: ParleyDialogueOptionNodeAst = new_node_ast
-			_on_dialogue_option_node_editor_dialogue_option_node_changed(dialogue_option_node_ast.id, dialogue_option_node_ast.character, dialogue_option_node_ast.text)
+			_on_dialogue_option_node_editor_dialogue_option_node_changed(dialogue_option_node_ast.id, dialogue_option_node_ast.character, dialogue_option_node_ast.text, dialogue_option_node_ast.text_translation_key)
 		ParleyDialogueSequenceAst.Type.CONDITION:
 			var condition_node_ast: ParleyConditionNodeAst = new_node_ast
 			_on_condition_node_editor_condition_node_changed(condition_node_ast.id, condition_node_ast.description, condition_node_ast.combiner, condition_node_ast.conditions)
@@ -176,47 +187,61 @@ func _set_node_ast(new_node_ast: ParleyNodeAst) -> void:
 		_:
 			push_error(ParleyUtils.log.error_msg("Unsupported Node type: %s for Node with ID: %s" % [ParleyDialogueSequenceAst.get_type_name(selected_node_ast.type), selected_node_ast.id]))
 			return
-
-
-# TODO: move to the correct region in this file
-func _on_dialogue_ast_changed(new_dialogue_ast: ParleyDialogueSequenceAst) -> void:
-	if sidebar:
-		sidebar.current_dialogue_ast = new_dialogue_ast
 #endregion
 
 
 #region RENDERERS
 func _render_toolbar() -> void:
-	# TODO: we might need to register this dynamically at a later date
-	# it seems that it only does this at the project level atm.
-	save_button.tooltip_text = &"Save the current Dialogue Sequence."
+	if save_button:
+		# TODO: we might need to register this dynamically at a later date
+		# it seems that it only does this at the project level atm.
+		save_button.tooltip_text = &"Save the current Dialogue Sequence."
 
-	arrange_nodes_button.tooltip_text = &"Arrange the current Dialogue Sequence nodes."
+	if arrange_nodes_button:
+		arrange_nodes_button.tooltip_text = &"Arrange the current Dialogue Sequence nodes."
 
-	refresh_button.tooltip_text = &"Refresh the current Dialogue Sequence."
+	if refresh_button:
+		refresh_button.tooltip_text = &"Refresh the current Dialogue Sequence."
 
-	docs_button.icon = get_theme_icon("Help", "EditorIcons")
-	docs_button.text = &"Docs"
-	docs_button.tooltip_text = &"Navigate to the Parley Documentation."
-	docs_button.flat = true
+	if docs_button:
+		docs_button.icon = get_theme_icon("Help", "EditorIcons")
+		docs_button.text = &"Docs"
+		docs_button.tooltip_text = &"Navigate to the Parley Documentation."
+		docs_button.flat = true
+
+
+func _render_bottom_panel() -> void:
+	if bottom_panel and parley_manager:
+		bottom_panel.version = parley_manager.get_plugin_version()
+
+
+func _render_test_locale_editor(on_ready: bool = false) -> void:
+	if test_locale_editor:
+		if on_ready:
+			test_locale_editor.tooltip_text = &"Set the default locale that will be used when testing Dialogue Sequences."
+		if parley_manager:
+			test_locale_editor.text = parley_manager.get_test_locale()
 #endregion
 
 
 #region SETUP
-func _setup() -> void:
+func _setup(on_ready: bool = false) -> void:
 	_setup_file_menu()
 	_setup_insert_menu()
+	_render_translations_menu()
 	_render_toolbar()
+	_render_bottom_panel()
+	_render_test_locale_editor(on_ready)
 
 
 ## Set up the file menu
 func _setup_file_menu() -> void:
 	var popup: PopupMenu = file_menu.get_popup()
 	popup.clear()
-	popup.add_icon_item(new_file_icon, "New Dialogue Sequence...", 0)
-	popup.add_icon_item(load_file_icon, "Open Dialogue Sequence...", 1)
-	popup.add_separator("Export")
-	popup.add_icon_item(export_to_csv_icon, "Export to CSV...", 2)
+	popup.add_icon_item(new_file_icon, &"New Dialogue Sequence...", 0)
+	popup.add_icon_item(load_file_icon, &"Open Dialogue Sequence...", 1)
+	popup.add_separator(&"Export")
+	popup.add_icon_item(export_icon, &"Export to CSV...", 2)
 	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_file_id_pressed)
 
 
@@ -224,20 +249,42 @@ func _setup_file_menu() -> void:
 func _setup_insert_menu() -> void:
 	var popup: PopupMenu = insert_menu.get_popup()
 	popup.clear()
-	popup.add_separator("Dialogue")
+	popup.add_separator(&"Dialogue")
 	popup.add_icon_item(dialogue_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.DIALOGUE), ParleyDialogueSequenceAst.Type.DIALOGUE)
 	popup.add_icon_item(dialogue_option_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION), ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION)
-	popup.add_separator("Conditions")
+	popup.add_separator(&"Conditions")
 	popup.add_icon_item(condition_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.CONDITION), ParleyDialogueSequenceAst.Type.CONDITION)
 	popup.add_icon_item(condition_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.MATCH), ParleyDialogueSequenceAst.Type.MATCH)
-	popup.add_separator("Actions")
+	popup.add_separator(&"Actions")
 	popup.add_icon_item(action_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.ACTION), ParleyDialogueSequenceAst.Type.ACTION)
 	popup.add_icon_item(jump_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.JUMP), ParleyDialogueSequenceAst.Type.JUMP)
-	popup.add_separator("Misc")
+	popup.add_separator(&"Misc")
 	popup.add_icon_item(start_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.START), ParleyDialogueSequenceAst.Type.START)
 	popup.add_icon_item(end_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.END), ParleyDialogueSequenceAst.Type.END)
 	popup.add_icon_item(group_node_icon, ParleyDialogueSequenceAst.get_type_name(ParleyDialogueSequenceAst.Type.GROUP), ParleyDialogueSequenceAst.Type.GROUP)
 	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_insert_id_pressed)
+
+
+func _render_translations_menu() -> void:
+	var popup: PopupMenu = translations_menu.get_popup()
+	popup.clear()
+
+	popup.add_separator(&"Exports")
+	popup.add_icon_item(export_icon, &"Export Dialogue to CSV...", 0)
+	popup.set_item_tooltip(0, &"Export Dialogue Text Translations to CSV")
+
+	popup.add_icon_item(export_icon, &"Export Characters to CSV...", 1)
+	popup.set_item_tooltip(1, &"Export Character Translations to CSV")
+
+	popup.add_separator(&"Imports")
+	popup.add_icon_item(import_icon, &"Import Dialogue from CSV...", 2)
+	popup.set_item_tooltip(2, &"Import Dialogue Text Translations from CSV")
+
+	popup.add_separator(&"Generators")
+	popup.add_icon_item(generate_icon, &"Generate Text Translation keys...", 3)
+	popup.set_item_tooltip(3, &"Generate Text Translation keys for Dialogue Sequence Nodes")
+
+	ParleyUtils.signals.safe_connect(popup.id_pressed, _on_translations_menu_id_pressed)
 #endregion
 
 
@@ -251,8 +298,7 @@ func _on_file_id_pressed(id: int) -> void:
 			# TODO: get this from config (note, see the Node inspector as well)
 			open_file_dialogue.current_dir = "res://dialogue_sequences"
 		2:
-			export_to_csv_modal.dialogue_ast = dialogue_ast
-			export_to_csv_modal.render()
+			export_modal.render(ParleyExportModal.ExportType.Node, ParleyExportModal.FileType.Csv, dialogue_ast)
 		_:
 			print_rich(ParleyUtils.log.info_msg("Unknown option ID pressed: {id}".format({'id': id})))
 
@@ -275,7 +321,7 @@ func _on_graph_view_node_deselected(_node: Node) -> void:
 
 #region BUTTONS
 func _on_open_dialog_file_selected(path: String) -> void:
-	dialogue_ast = load(path)
+	dialogue_ast = ResourceLoader.load(path, 'ParleyDialogueSequenceAst')
 	# TODO: emit as a signal and handle in the plugin
 	if parley_manager:
 		parley_manager.set_current_dialogue_sequence(path)
@@ -285,10 +331,15 @@ func _on_new_dialogue_sequence_modal_dialogue_ast_created(new_dialogue_ast: Parl
 	dialogue_ast = new_dialogue_ast
 	# TODO: emit as a signal and handle in the plugin
 	if parley_manager:
-		var current: Variant = null
+		var current_path: Variant = null
 		if dialogue_ast and dialogue_ast.resource_path:
-			current = dialogue_ast.resource_path
-		parley_manager.set_current_dialogue_sequence(current)
+			current_path = dialogue_ast.resource_path
+		parley_manager.set_current_dialogue_sequence(current_path)
+		# This is needed to correctly reload upon file saves
+		if dialogue_ast:
+			var update_result: int = parley_manager.update_localisations([dialogue_ast])
+			if update_result != OK:
+				push_warning(ParleyUtils.log.warn_msg("Unable to update localisations for new Dialogue Sequence (ds:%s): %s" % [dialogue_ast, error_string(update_result)]))
 	refresh(true)
 
 
@@ -309,13 +360,47 @@ func _on_insert_id_pressed(type: ParleyDialogueSequenceAst.Type) -> void:
 
 
 
+func _on_translations_menu_id_pressed(id: int) -> void:
+	match id:
+		0:
+			export_modal.render(ParleyExportModal.ExportType.DialogueTextTranslation, ParleyExportModal.FileType.Csv, dialogue_ast)
+		1:
+			export_modal.render(ParleyExportModal.ExportType.CharacterNameTranslation, ParleyExportModal.FileType.Csv, dialogue_ast)
+		2:
+			import_modal.render(ParleyImportModal.ImportType.DialogueTextTranslation, ParleyImportModal.FileType.Csv, dialogue_ast)
+		3:
+			if dialogue_ast:
+				var ast_changed: bool = dialogue_ast.generate_text_translation_keys()
+				# TODO: This is currently to make sure that the currently open editor updates when the dialogue sequence updates.
+				# However, to improve future maintainability and better software patterns, we should do this
+				# generically by just noting that the Dialogue Sequence AST has changed and inferring everything from there
+				if ast_changed and selected_node_ast and selected_node_id:
+					node_selected.emit(selected_node_ast)
+				if selected_node_id:
+					var currently_selected_node_id: String = selected_node_id
+					var currently_selected_node_ast: ParleyNodeAst = dialogue_ast.find_node_by_id(currently_selected_node_id)
+					if currently_selected_node_ast:
+						node_selected.emit(currently_selected_node_ast)
+				print_rich(ParleyUtils.log.info_msg("Generated Text Translation Keys for Dialogue Sequence AST: {dialogue_ast}".format({'dialogue_ast': dialogue_ast})))
+		_:
+			print_rich(ParleyUtils.log.info_msg("Unknown option ID pressed: {id}".format({'id': id})))
+
+
 func _on_save_pressed() -> void:
+	await _save_and_refresh_dialogue()
+
+
+func _save_and_refresh_dialogue() -> void:
 	var result: int = _save_dialogue()
 	if result != OK:
 		return
 	# This is needed to reset the Graph and ensure
 	# that no weirdness is going to happen. For example
 	# move the group nodes after a save when refresh isn't present
+	if parley_manager and dialogue_ast:
+		var update_result: int = parley_manager.update_localisations([dialogue_ast])
+		if update_result != OK:
+			push_warning(ParleyUtils.log.warn_msg("Unable to update localisations when saving Dialogue Sequence (ds:%s): %s" % [dialogue_ast, error_string(update_result)]))
 	await refresh()
 
 
@@ -331,6 +416,7 @@ func _save_dialogue() -> int:
 	if Engine.is_editor_hint():
 		EditorInterface.get_resource_filesystem().reimport_files([dialogue_ast.resource_path])
 	return OK
+
 
 func _on_arrange_nodes_button_pressed() -> void:
 	selected_node_id = null
@@ -350,6 +436,7 @@ func _on_test_dialogue_from_start_button_pressed() -> void:
 	if parley_manager:
 		parley_manager.run_test_dialogue_from_start(dialogue_ast)
 
+
 func _on_test_dialogue_from_selected_button_pressed() -> void:
 	# TODO: dialogue is technically async so we should ideally wait here
 	var result: int = _save_dialogue()
@@ -362,6 +449,11 @@ func _on_test_dialogue_from_selected_button_pressed() -> void:
 
 
 #region SIGNALS
+func _on_dialogue_ast_changed(new_dialogue_ast: ParleyDialogueSequenceAst) -> void:
+	if sidebar:
+		sidebar.current_dialogue_ast = new_dialogue_ast
+
+
 func _on_action_store_changed() -> void:
 	if action_store and dialogue_ast:
 		var nodes: Array[ParleyNodeAst] = dialogue_ast.find_nodes_by_types([ParleyDialogueSequenceAst.Type.ACTION])
@@ -381,10 +473,20 @@ func _on_character_store_changed() -> void:
 		var nodes: Array[ParleyNodeAst] = dialogue_ast.find_nodes_by_types([ParleyDialogueSequenceAst.Type.DIALOGUE, ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION])
 		for node_ast: ParleyNodeAst in nodes:
 			_set_node_ast(node_ast)
-		
+
 
 func _on_node_editor_node_changed(new_node_ast: ParleyNodeAst) -> void:
 	selected_node_ast = new_node_ast
+
+
+func _on_test_locale_editor_pressed() -> void:
+	select_locale_modal.show()
+
+
+func _on_select_locale_modal_locale_changed(new_test_locale: String) -> void:
+	if parley_manager:
+			parley_manager.set_test_locale(new_test_locale)
+	_render_test_locale_editor()
 
 
 func _on_graph_view_scroll_offset_changed(offset: Vector2) -> void:
@@ -395,7 +497,7 @@ func _on_graph_view_scroll_offset_changed(offset: Vector2) -> void:
 
 
 # TODO: remove ast stuff
-func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: String, new_dialogue_text: String) -> void:
+func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: String, new_dialogue_text: String, new_text_translation_key: String) -> void:
 	if not dialogue_ast:
 		return
 	var _ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
@@ -404,7 +506,7 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 		return
 	if _ast_node is ParleyDialogueNodeAst:
 		var ast_node: ParleyDialogueNodeAst = _ast_node
-		ast_node.update(new_character, new_dialogue_text)
+		ast_node.update(new_character, new_dialogue_text, new_text_translation_key)
 	# TODO: move into graph view
 	if _selected_node is ParleyDialogueNode:
 		var selected_node: ParleyDialogueNode = _selected_node
@@ -413,7 +515,7 @@ func _on_dialogue_node_editor_dialogue_node_changed(id: String, new_character: S
 
 
 # TODO: remove ast stuff
-func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, new_character: String, new_option_text: String) -> void:
+func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, new_character: String, new_option_text: String, new_text_translation_key: String) -> void:
 	if not dialogue_ast:
 		return
 	var _ast_node: ParleyNodeAst = dialogue_ast.find_node_by_id(id)
@@ -422,7 +524,7 @@ func _on_dialogue_option_node_editor_dialogue_option_node_changed(id: String, ne
 		return
 	if _ast_node is ParleyDialogueOptionNodeAst:
 		var ast_node: ParleyDialogueOptionNodeAst = _ast_node
-		ast_node.update(new_character, new_option_text)
+		ast_node.update(new_character, new_option_text, new_text_translation_key)
 	# TODO: move into graph view
 	if _selected_node is ParleyDialogueOptionNode:
 		var selected_node: ParleyDialogueOptionNode = _selected_node
@@ -540,7 +642,7 @@ func _on_jump_node_editor_action_node_changed(id: String, dialogue_sequence_ast_
 	# Graph View
 	# TODO: move into Graph View
 	var jump_node: ParleyJumpNode = parley_graph_node_variant
-	jump_node.dialogue_sequence_ast = load(jump_node_ast.dialogue_sequence_ast_ref) if ResourceLoader.exists(jump_node_ast.dialogue_sequence_ast_ref) else ParleyDialogueSequenceAst.new()
+	jump_node.dialogue_sequence_ast = ResourceLoader.load(jump_node_ast.dialogue_sequence_ast_ref, 'ParleyDialogueSequenceAst') if ResourceLoader.exists(jump_node_ast.dialogue_sequence_ast_ref) else ParleyDialogueSequenceAst.new()
 
 
 func _on_group_node_editor_group_node_changed(id: String, group_name: String, colour: Color) -> void:
@@ -678,6 +780,53 @@ func _on_docs_button_pressed() -> void:
 	var result: int = OS.shell_open(href)
 	if result != OK:
 		push_error(ParleyUtils.log.error_msg("Unable to navigate to Parley Documentation at %s: %s" % [href, result]))
+
+
+func _on_export_requested(export_type: ParleyExportModal.ExportType, file_type: ParleyExportModal.FileType, dialogue_sequence_ast: ParleyDialogueSequenceAst, path: String) -> void:
+	var file_type_name: String = ParleyUtils.string.get_enum_key_name(ParleyExportModal.FileType, file_type)
+	var export_type_name: String = ParleyUtils.string.get_enum_key_name(ParleyExportModal.ExportType, export_type)
+	match export_type:
+		ParleyExportModal.ExportType.Node:
+			var result: Array = ParleyExport.export_node(file_type, dialogue_sequence_ast, path)
+			var code: int = result[0]
+			if code != OK:
+				parley_manager.push_toast("Unable to export Nodes from current Dialogue Sequence (code:%s): %s" % [error_string(code), result[1]], EditorToaster.SEVERITY_ERROR)
+				return
+			parley_manager.push_toast(&"Successfully exported Nodes from current Dialogue Sequence")
+		ParleyExportModal.ExportType.DialogueTextTranslation:
+			var result: Array = ParleyExport.export_dialogue_text_translation(file_type, dialogue_sequence_ast, path)
+			var code: int = result[0]
+			if code != OK:
+				parley_manager.push_toast("Unable to export Text Translations from current Dialogue Sequence (code:%s): %s" % [error_string(code), result[1]], EditorToaster.SEVERITY_ERROR)
+				return
+			parley_manager.push_toast(&"Successfully exported Text Translations from current Dialogue Sequence")
+		ParleyExportModal.ExportType.CharacterNameTranslation:
+			var result: Array = ParleyExport.export_character_name_translation(file_type, dialogue_sequence_ast, path)
+			var code: int = result[0]
+			if code != OK:
+				parley_manager.push_toast("Unable to export Character Names from current Dialogue Sequence (code:%s): %s" % [error_string(code), result[1]], EditorToaster.SEVERITY_ERROR)
+				return
+			parley_manager.push_toast(&"Successfully exported Character Names from current Dialogue Sequence")
+		_:
+			push_error(ParleyUtils.log.error_msg("Unable to export data: unknown export type (file_type:%s, export_type:%s)" % [file_type_name, export_type_name]))
+			return
+
+
+func _on_import_modal_import_requested(import_type: ParleyImportModal.ImportType, file_type: ParleyImportModal.FileType, dialogue_sequence_ast: ParleyDialogueSequenceAst, path: String) -> void:
+	var file_type_name: String = ParleyUtils.string.get_enum_key_name(ParleyImportModal.FileType, file_type)
+	var import_type_name: String = ParleyUtils.string.get_enum_key_name(ParleyImportModal.ImportType, import_type)
+	match import_type:
+		ParleyImportModal.ImportType.DialogueTextTranslation:
+			var result: Array = ParleyImport.import_dialogue_text_translation(file_type, dialogue_sequence_ast, path)
+			var code: int = result[0]
+			if code != OK:
+				parley_manager.push_toast("Unable to import Text Translations into current Dialogue Sequence (code:%s): %s" % [error_string(code), result[1]], EditorToaster.SEVERITY_ERROR)
+				return
+			await _save_and_refresh_dialogue()
+			parley_manager.push_toast(&"Successfully imported Text Translations into current Dialogue Sequence", EditorToaster.SEVERITY_INFO)
+		_:
+			push_error(ParleyUtils.log.error_msg("Unable to import data: unknown import type (file_type:%s, import_type:%s)" % [file_type_name, import_type_name]))
+			return
 #endregion
 
 
@@ -759,9 +908,9 @@ func _add_edge(from_node_name: StringName, from_slot: int, to_node_name: StringN
 	if added_edge:
 		graph_view.add_edge(added_edge, from_node_name, to_node_name)
 
-func _is_selected_node(id: String) -> bool:
+func _is_selected_node(id: String, should_log: bool = true) -> bool:
 	var is_selected_node: bool = selected_node_id == id
-	if not is_selected_node:
+	if not is_selected_node and should_log:
 		push_warning(ParleyUtils.log.warn_msg("Node with ID %s is not selected" % id))
 	return is_selected_node
 #endregion

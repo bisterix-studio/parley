@@ -3,14 +3,20 @@
 @tool
 class_name ParleyDialogueSequenceAstFormatSaver extends ResourceFormatSaver
 
+
+const ParleyConstants = preload('./constants.gd')
+
+
 ## Returns the list of extensions available for saving the resource object,
 ## provided it is recognized (see _recognize).
 func _recognize(resource: Resource) -> bool:
 	return is_instance_of(resource, ParleyDialogueSequenceAst)
 
+
 ## Returns whether the given resource object can be saved by this saver.
 func _get_recognized_extensions(_resource: Resource) -> PackedStringArray:
-	return PackedStringArray(["ds"])
+	return PackedStringArray([ParleyConstants.DIALOGUE_SEQUENCE_EXTENSION])
+
 
 ## Saves the given resource object to a file at the target path.
 ## flags is a bitmask composed with SaverFlags constants.

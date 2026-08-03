@@ -8,7 +8,7 @@ uid="uid://wc2udkydnpmq"
 
 files=["res://addons/parley/translations/tooltip_translations.en.translation"]
 
-source_file="res://addons/parley/translations/tooltip_translations.csv"
+source_file="res://addons/parley/locale/tooltip_translations.csv"
 dest_files=["res://addons/parley/translations/tooltip_translations.en.translation"]
 
 [params]

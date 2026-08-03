@@ -3,6 +3,9 @@
 @tool
 class_name ParleyUtils
 
+const Constants = preload("res://addons/parley/constants.gd")
+const Settings = preload("res://addons/parley/settings.gd")
+
 static var _parley_editor_utils: Script
 
 ## Dynamically loads the Parley Editor Utils script at runtime.
@@ -73,6 +76,7 @@ class resource:
 			return ""
 		return ResourceUID.id_to_text(id)
 
+
 class generate:
 	static func id(array: Array, parent_id: String, name: String = "") -> String:
 		var local_id: String
@@ -102,3 +106,101 @@ class file:
 				@warning_ignore("unsafe_method_access")
 				await parley_editor_utils.refresh_filesystem_and_wait(timeout)
 		return load(path)
+	
+	static func _emit_filesystem_changed(timeout: Signal) -> void:
+		EditorInterface.get_resource_filesystem().filesystem_changed.emit()
+		signals.safe_disconnect(timeout, _emit_filesystem_changed)
+
+
+class translation:
+	## Get the translation context for a node field.
+	## If it can't be found, default to empty string.
+	static func get_msg_ctx(node: ParleyNodeAst, field: String, suffix: StringName = &"_translation_key") -> String:
+		var result_variant: Variant = node.get(field + suffix)
+		if is_instance_of(result_variant, TYPE_STRING):
+			var result: String = result_variant
+			return result
+		return ""
+
+
+	## Set the translation context for a node field.
+	## If it can't be found, do nothing.
+	static func set_msg_ctx(node: ParleyNodeAst, field: String, value: String, suffix: StringName = &"_translation_key") -> void:
+		if not is_instance_of(node.get(field + suffix), TYPE_STRING):
+			return
+		return node.set(field + suffix, value)
+
+
+	## Translate the input string
+	static func translate(input: StringName) -> String:
+		var instance: Object = new()
+		var resource_path: String = instance.get_script().resource_path
+		var base_path: String = resource_path.get_base_dir()
+		instance.free()
+
+		var paths: Array[String] = [
+			TranslationServer.get_tool_locale(),
+			TranslationServer.get_tool_locale().substr(0, 2),
+			"en",
+		].map(func (locale: String) -> String: return "%s/locale/%s.po" % [base_path, locale])
+		for path: String in paths:
+			if FileAccess.file_exists(path):
+				var translations: Translation = load(path)
+				return translations.get_message(input)
+		return input
+
+
+	## Generate a translation key for the target node field.
+	## For a correctly generated key, the following must be true: [br]
+	##  - The Dialogue Sequence AST must exist in the file system[br]
+	##  - The field must exist and be populated on the node[br]
+	##  - The field on the node must be of type String[br]
+	static func generate_key(input: String, dialogue_sequence_ast: ParleyDialogueSequenceAst = null, node_ast: ParleyNodeAst = null, field: String = "") -> String:
+		if not dialogue_sequence_ast or not dialogue_sequence_ast.resource_path or not ResourceLoader.exists(dialogue_sequence_ast.resource_path):
+			push_warning(log.warn_msg("Unable to generate translation key: No Dialogue Sequence AST exists (dialogue_sequence_ast: %s, node: %s, field: %s)" % [dialogue_sequence_ast, node_ast, field]))
+			return ""
+
+		if not is_instance_of(node_ast.get(field), TYPE_STRING):
+			push_warning(log.warn_msg("Unable to generate translation key: field does not exist on Node AST (dialogue_sequence_ast: %s, node: %s, field: %s)" % [dialogue_sequence_ast, node_ast, field]))
+			return ""
+
+		var suffix: String = "__" + "_".join([
+			resource.get_uid(dialogue_sequence_ast).replace("uid://", ''),
+			node_ast.id.replace(node_ast.id_prefix, ''),
+			field
+		]).to_upper()
+
+		var special_character_regex: RegEx = RegEx.create_from_string("[^\\w\\s]")
+		var space_regex: RegEx = RegEx.create_from_string("[\\s]+")
+		var result: String = special_character_regex.sub(input.strip_edges(), '', true)
+		result = space_regex.sub(result, ' ', true)
+		return result.to_snake_case().to_upper().substr(0, 32) + suffix
+	
+
+	static func get_csv_key_value(node_ast: ParleyNodeAst, field_to_translate: StringName) -> PackedStringArray:
+		var key: String = ParleyUtils.translation.get_msg_ctx(node_ast, field_to_translate)
+		var value_variant: Variant = node_ast.get(field_to_translate)
+		var value: String = value_variant if is_instance_of(value_variant, TYPE_STRING) else ""
+		return PackedStringArray([key if key else value, value])
+	
+
+	static func get_locale() -> StringName:
+		var locale: StringName = Settings.get_setting(Constants.TEST_DEFAULT_LOCALE)
+		if locale:
+			return locale
+
+		locale = ProjectSettings.get_setting(Constants.TRANSLATION_LOCALE_FALLBACK)
+		if locale:
+			return locale
+
+		return TranslationServer.get_tool_locale()
+
+
+	static func get_csv_key_name() -> StringName:
+		return ParleySettings.get_setting(Constants.TRANSLATION_CSV_HEADER_KEY)
+
+
+class string:
+	static func get_enum_key_name(input: Dictionary, key: int) -> String:
+		var key_name: String = input.keys()[key]
+		return key_name.capitalize()

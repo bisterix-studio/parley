@@ -14,26 +14,34 @@ class_name ParleyDialogueOptionNodeAst extends ParleyNodeAst
 @export var text: String
 
 
+## The translation id for the text field of the Dialogue Node AST.
+## Example: "world_dialect__I_need_some_coffee"
+@export var text_translation_key: String
+
+
 ## Create a new instance of a Dialogue Option Node AST.
 ## Example: ParleyDialogueOptionNodeAst.new("1", Vector2.ZERO, "Alice", "Slurp some coffee.")
 func _init(
 	p_id: String = "",
 	p_position: Vector2 = Vector2.ZERO,
 	p_character: String = "",
-	p_text: String = ""
+	p_text: String = "",
+	p_text_translation_key: String = ""
 ) -> void:
 	type = ParleyDialogueSequenceAst.Type.DIALOGUE_OPTION
 	id = p_id
 	position = p_position
 	character = p_character
 	text = p_text
+	text_translation_key = p_text_translation_key
 
 
 ## Update a Dialogue Option Node AST.
 ## Example: node.update("Alice", "Slurp some coffee.")
-func update(p_character: String, p_text: String) -> void:
+func update(p_character: String, p_text: String, p_text_translation_key: String) -> void:
 	character = p_character
 	text = p_text
+	text_translation_key = p_text_translation_key
 
 
 static func get_colour() -> Color:
@@ -41,6 +49,24 @@ static func get_colour() -> Color:
 
 
 #region UTILS
+func to_resolved(resolved_text: String) -> ParleyDialogueOptionNodeAst:
+	return ParleyDialogueOptionNodeAst.new(
+		id,
+		position,
+		character,
+		resolved_text,
+		text_translation_key
+	)
+
+
 func resolve_character() -> ParleyCharacter:
 	return ParleyCharacterStore.resolve_character_ref(character)
+
+
+## Get translation strings for the Dialogue Option Node
+func get_translation_strings() -> Array[PackedStringArray]:
+	var translation_strings: Array[PackedStringArray] = []
+	if text:
+		translation_strings.append(PackedStringArray([text, ParleyUtils.translation.get_msg_ctx(self, 'text')]))
+	return translation_strings
 #endregion
