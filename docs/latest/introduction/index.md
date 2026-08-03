@@ -41,6 +41,7 @@ Some stand out features:
   sequence
 - Easy testing of your dialogue at any stage in the sequence
 - Well-defined Dialogue AST for easy review and management of Dialogue Sequences
+- Internationalization (i18n) support for both CSV and GNUText
 - Character Store for management of characters in Dialogue and Dialogue Options
 - Action Store for management of actions for use with Action Nodes
 - Fact Store for management of facts for use with Condition and Match Nodes
@@ -56,8 +57,8 @@ Here are some key features on the Parley horizon. We are always open to new
 ideas, please don't hesitate to
 [get-in-touch](https://github.com/bisterix-studio/parley/issues).
 
-- Translation support
 - Dialogue text expressions
+- Custom Action Nodes
 
 ## License
 

@@ -8,11 +8,12 @@ guidance described
 [here](https://docs.godotengine.org/en/stable/tutorials/i18n/localization_using_spreadsheets.html).
 
 With Parley, users can both import and export CSV files to manage
-internationalisation.
+internationalisation. This can be done via the `Translations` menu in the Parley
+Editor.
 
 In CSV mode, no context will be provided to the inbuilt `tr` function and as
-such, the translation identifier provided becomes very important. As such,
-translation CSV files can be broken down into two main components:
+such, the translation identifier provided becomes very important. Translation
+CSV files can be broken down into two main components:
 
 ## 1. Translation ID
 

@@ -104,7 +104,8 @@ import (e.g. the `en` column value), this Parley will set the
 > `Translations` -> `Generate Text Translation Keys...` button in the Parley
 > plugin view.
 
-As an example, let's say we have the following CSV to import:
+As an example, let's say we have the following CSV to import containing updated
+text fields:
 
 ```csv
 keys,en

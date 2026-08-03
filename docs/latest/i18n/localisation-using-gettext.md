@@ -10,13 +10,14 @@ This is especially useful if you want to support plurals and context in your
 translations. However, it is a more complex format than CSV files.
 
 With Parley, users use PO files to manage internationalisation. Information on
-how to create PO files can be found
+how to create and use PO files can be found
 [here](https://docs.godotengine.org/en/stable/tutorials/i18n/localization_using_gettext.html#creating-the-po-template).
 
 This approach in Parley can be broken down into two key components:
 
-- `msgid` - this corresponds to the `text` value that is used to identify the
-  translation. E.g. the `text` field on the Dialogue or Dialogue Option Node.
+- `msgid` - this corresponds to the `text` value that is primarily used to
+  identify the translation. E.g. the `text` field on the Dialogue or Dialogue
+  Option Node.
 - `msgctxt` - this corresponds to the Translation Key on the node. For example,
   the `text_translation_key` on a Dialogue Node.
 
@@ -63,3 +64,21 @@ msgid "Give to Alice."
 > will generate a text Translation Key for every Dialogue or Dialogue Option
 > Node that doesn't have a populated Text Translation Key in the Dialogue
 > Sequence.
+
+The POT file for the french translation (`fr.po`) would be:
+
+```txt
+# node:1
+msgid "I have a coffee."
+msgstr "Je prends un café."
+
+# node:2
+msgctxt "GIVE_TO_ALICE"
+msgid "Give to Alice."
+msgstr "Donnez-le à Alice."
+```
+
+When this POT file is registered in Godot via the
+[defined mechanisms](https://docs.godotengine.org/en/stable/tutorials/i18n/localization_using_gettext.html)
+and the locale is set to `fr`, then the displayed language would be French when
+Parley is run.
