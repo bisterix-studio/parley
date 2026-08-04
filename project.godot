@@ -46,6 +46,10 @@ project/assembly_name="Parley"
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/parley/plugin.cfg")
 
+[global_group]
+
+parley_typewriter_effect="Used to find all typewriters in a scene to coordinate them"
+
 [internationalization]
 
 locale/translation_remaps={}

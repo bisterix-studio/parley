@@ -51,7 +51,7 @@ func next(current_node_ast: ParleyNodeAst) -> void:
 	#check if the typewriter effect is enabled
 	if ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT):
 		#dialogue container is instantiated each dialoge node, this includes a new typewriter effect script each time
-		var typewriter_effects : Array[Node] = find_children("*", "TypewriterEffectComponent", true, false)
+		var typewriter_effects : Array[Node] = get_tree().get_nodes_in_group("parley_typewriter_effect")
 		#find all typewriter effects that were created, and check to see if they are finished
 		var all_typewriters_finished = true
 		for typewriter_effect in typewriter_effects:
