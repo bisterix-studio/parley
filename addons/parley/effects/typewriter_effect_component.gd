@@ -15,17 +15,23 @@ var enabled : bool = false
 
 func _ready() -> void:
 	enabled = ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT)
+	
 	if not enabled:
 		return
+	
+	#set visible characters to 0 so the typewriter effect can begin
 	rich_text_label_for_typewriter_effect.visible_characters = 0
 
 
 func _process(delta: float) -> void:
 	if not enabled:
 		return
+	
 	_character_timer += delta
+	#when the interval has elapsed, increase visible characters
 	if _character_timer >= time_between_characters_in_seconds:
 		_character_timer -= time_between_characters_in_seconds
+		#if the visible ratio is 1.0, then all characters have been revealed and the process should stop
 		if rich_text_label_for_typewriter_effect.visible_ratio < 1.0:
 			rich_text_label_for_typewriter_effect.visible_characters += 1 
 			typed.emit()
