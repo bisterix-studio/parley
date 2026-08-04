@@ -6,10 +6,10 @@ uid="uid://wc2udkydnpmq"
 
 [deps]
 
-files=["res://addons/parley/translations/tooltip_translations.en.translation"]
+files=["res://addons/parley/locale/tooltip_translations.en.translation"]
 
 source_file="res://addons/parley/locale/tooltip_translations.csv"
-dest_files=["res://addons/parley/translations/tooltip_translations.en.translation"]
+dest_files=["res://addons/parley/locale/tooltip_translations.en.translation"]
 
 [params]
 

@@ -64,3 +64,9 @@ const TEST_DIALOGUE_SEQUENCE_FROM_START: StringName = &"parley/test_dialogue_seq
 const TEST_DIALOGUE_SEQUENCE_START_NODE_ID: StringName = &"parley/test_dialogue_sequence/start_node_id"
 const TEST_LOCALE: StringName = &"parley/test_dialogue_sequence/locale"
 #endregion
+
+
+#region Effects
+#project settings
+const TYPEWRITER_EFFECT : StringName = &"parley/effects/typewriter_effect"
+const BEEP_SPEECH_EFFECT : StringName = &"parley/effects/beep_speech_effect"

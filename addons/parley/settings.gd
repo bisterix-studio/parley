@@ -23,6 +23,8 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: "res://addons/parley/views/test_dialogue_sequence_scene.tscn",
 	ParleyConstants.TEST_DEFAULT_LOCALE: "",
 	ParleyConstants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE: false,
+	ParleyConstants.TYPEWRITER_EFFECT: false,
+	ParleyConstants.BEEP_SPEECH_EFFECT: false
 }
 
 
