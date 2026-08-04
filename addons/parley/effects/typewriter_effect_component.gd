@@ -35,3 +35,15 @@ func _process(delta: float) -> void:
 		if rich_text_label_for_typewriter_effect.visible_ratio < 1.0:
 			rich_text_label_for_typewriter_effect.visible_characters += 1 
 			typed.emit()
+
+
+#checked by default_balloon
+func is_finished() -> bool:
+	if rich_text_label_for_typewriter_effect.visible_ratio == 1.0:
+		return true
+	return false
+
+
+#called by default_balloon when trying to advance dialogue
+func force_finished() -> void:
+	rich_text_label_for_typewriter_effect.visible_ratio = 1.0

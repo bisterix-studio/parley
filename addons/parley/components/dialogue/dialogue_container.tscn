@@ -68,6 +68,7 @@ drag_and_drop_selection_enabled = false
 visible_characters_behavior = 1
 
 [node name="TypewriterEffectComponent" type="Node" parent="PanelContainer/MarginContainer/DialogueContainer/DialogueTextLabel" node_paths=PackedStringArray("rich_text_label_for_typewriter_effect")]
+unique_name_in_owner = true
 script = ExtResource("2_vvwrg")
 rich_text_label_for_typewriter_effect = NodePath("..")
 

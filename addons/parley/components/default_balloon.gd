@@ -48,6 +48,23 @@ func start(p_ctx: ParleyContext, p_dialogue_sequence_ast: ParleyDialogueSequence
 
 ## Process the next Nodes
 func next(current_node_ast: ParleyNodeAst) -> void:
+	#check if the typewriter effect is enabled
+	if ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT):
+		#dialogue container is instantiated each dialoge node, this includes a new typewriter effect script each time
+		var typewriter_effects : Array[Node] = find_children("*", "TypewriterEffectComponent", true, false)
+		#find all typewriter effects that were created, and check to see if they are finished
+		var all_typewriters_finished = true
+		for typewriter_effect in typewriter_effects:
+			if not typewriter_effect.is_finished():
+				all_typewriters_finished = false
+		#if not all typewriters are finshed, then we force them all to finish immediately. We do not advance
+		if not all_typewriters_finished:
+			for typewriter_effect in typewriter_effects:
+				typewriter_effect.force_finished()
+			return
+		#here the typewriter has finished, so we will continue to advance
+	
+	
 	# Probably want to emit at this point? Or maybe earlier
 	dialogue_history.append(current_node_ast)
 	previous_node_ast = current_node_ast
