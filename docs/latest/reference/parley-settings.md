@@ -150,8 +150,12 @@ prevent accidentaly polyphony with multiple speech sound effects overlapping.
 If the typewriter effect is not enabled this is the time interval used between
 speech effects being played.
 
+Default: 0.1
+
 
 ### Maximum Speech Sounds Effect Time in seconds
 
 When using speech sound effect, and not using typewriter effect, this is the
 duration for which the entire effect will run.
+
+Default: 5.0
