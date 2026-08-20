@@ -114,7 +114,7 @@ gradually reveals the dialogue text over time.
 
 Default: Off
 
-### Speech Sound
+### Speech Sound Effect
 
 This effect is used to play sounds as the text is shown. If used in conjuction with Typewriter Effect, 
 the speech sound will attempt to synchronize with the timing of the Typewriter Effect. If Typewriter Effect is off, 

@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bd5ar2queljgh" path="res://addons/parley/components/dialogue/dialogue_container.gd" id="1_akamh"]
 [ext_resource type="Script" uid="uid://bbdricgwnglk5" path="res://addons/parley/effects/typewriter_effect_component.gd" id="2_vvwrg"]
-[ext_resource type="Script" uid="uid://c2u3gq16nfr0q" path="res://addons/parley/effects/beep_speech_effect_component.gd" id="3_8w4k7"]
-[ext_resource type="AudioStream" uid="uid://hwc3of52rugy" path="res://addons/parley/assets/beep.ogg" id="4_oa67k"]
+[ext_resource type="Script" uid="uid://c2u3gq16nfr0q" path="res://addons/parley/effects/speech_sound_effect_component.gd" id="3_8w4k7"]
+[ext_resource type="AudioStream" uid="uid://hwc3of52rugy" path="res://addons/parley/assets/speech_sound.ogg" id="4_oa67k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_umhml"]
 bg_color = Color(0, 0, 0, 1)

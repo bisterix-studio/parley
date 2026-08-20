@@ -48,21 +48,13 @@ func start(p_ctx: ParleyContext, p_dialogue_sequence_ast: ParleyDialogueSequence
 
 ## Process the next Nodes
 func next(current_node_ast: ParleyNodeAst) -> void:
-	#check if the typewriter effect is enabled
-	if ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT):
-		#dialogue container is instantiated each dialoge node, this includes a new typewriter effect script each time
-		var typewriter_effects : Array[Node] = get_tree().get_nodes_in_group("parley_typewriter_effect")
-		#find all typewriter effects that were created, and check to see if they are finished
-		var all_typewriters_finished = true
-		for typewriter_effect in typewriter_effects:
-			if not typewriter_effect.is_finished():
-				all_typewriters_finished = false
-		#if not all typewriters are finshed, then we force them all to finish immediately. We do not advance
-		if not all_typewriters_finished:
-			for typewriter_effect in typewriter_effects:
-				typewriter_effect.force_finished()
-			return
-		#here the typewriter has finished, so we will continue to advance
+	if not _check_typewriter_effect_ready_to_advance():
+		#if not all typewriters are finshed, then request they do so immediately.
+		_request_typewriter_effects_finish()
+		#the typewriter effect has been forced to finish. In order to allow the user to review
+		#the finished text we now return. If we did not return, the dialogue would advance immediately
+		#to the next node.
+		return
 	
 	
 	# Probably want to emit at this point? Or maybe earlier
@@ -299,4 +291,33 @@ func _on_next_dialogue_button_gui_input(event: InputEvent, item: Control) -> voi
 
 func _on_dialogue_options_container_dialogue_option_selected(current_node: ParleyDialogueOptionNodeAst) -> void:
 	next(current_node)
+#endregion
+
+
+#region Effects
+#returns false if the typewriter effect is enabled and the typewriter effects for the current node have not completed
+func _check_typewriter_effect_ready_to_advance() -> bool:
+	#check if the typewriter effect is enabled
+	if ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT):
+		if not _is_typewriter_effect_finished():
+			return false
+	return true
+
+
+#returns true if the typewriter effects for the current node have all completed.
+func _is_typewriter_effect_finished() -> bool:
+#dialogue container is instantiated each dialoge node, this includes a new typewriter effect script each time
+		var typewriter_effects : Array[Node] = get_tree().get_nodes_in_group("parley_typewriter_effect")
+		#find all typewriter effects that were created, and check to see if they are finished
+		var all_typewriters_finished = true
+		for typewriter_effect in typewriter_effects:
+			if not typewriter_effect.is_finished():
+				all_typewriters_finished = false
+		return all_typewriters_finished
+
+
+func _request_typewriter_effects_finish() -> void:
+	var typewriter_effects : Array[Node] = get_tree().get_nodes_in_group("parley_typewriter_effect")
+	for typewriter_effect in typewriter_effects:
+				typewriter_effect.force_finished()
 #endregion
