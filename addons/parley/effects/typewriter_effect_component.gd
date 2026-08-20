@@ -7,18 +7,19 @@ signal finished
 
 
 @export var rich_text_label_for_typewriter_effect : RichTextLabel
-@export var time_between_characters_in_seconds : float = 0.05
 
 
 var _character_timer : float = 0.0
 var enabled : bool = false
+var _time_between_characters_revealed_in_seconds = 0.05
 
 
 func _ready() -> void:
 	add_to_group("parley_typewriter_effect")
 	
 	
-	enabled = ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT)
+	enabled = ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT_ACTIVE)
+	_time_between_characters_revealed_in_seconds = ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT_TIME_BETWEEN_CHARACTERS_REVEALED_IN_SECONDS)
 	
 	if not enabled:
 		return
@@ -46,8 +47,8 @@ func _process(delta: float) -> void:
 	
 	_character_timer += delta
 	#when the interval has elapsed, increase visible characters
-	if _character_timer >= time_between_characters_in_seconds:
-		_character_timer -= time_between_characters_in_seconds
+	if _character_timer >= _time_between_characters_revealed_in_seconds:
+		_character_timer -= _time_between_characters_revealed_in_seconds
 		#if the visible ratio is 1.0, then all characters have been revealed and the process should stop
 		if rich_text_label_for_typewriter_effect.visible_ratio < 1.0:
 			rich_text_label_for_typewriter_effect.visible_characters += 1 

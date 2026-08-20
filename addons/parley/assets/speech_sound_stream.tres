@@ -1,0 +1,8 @@
+[gd_resource type="AudioStreamRandomizer" load_steps=2 format=3 uid="uid://d1ciqhhctvqy7"]
+
+[ext_resource type="AudioStream" uid="uid://hwc3of52rugy" path="res://addons/parley/assets/speech_sound.ogg" id="1_0veda"]
+
+[resource]
+random_pitch = 1.12246
+streams_count = 1
+stream_0/stream = ExtResource("1_0veda")

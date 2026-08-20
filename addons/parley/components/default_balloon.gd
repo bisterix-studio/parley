@@ -298,7 +298,7 @@ func _on_dialogue_options_container_dialogue_option_selected(current_node: Parle
 #returns false if the typewriter effect is enabled and the typewriter effects for the current node have not completed
 func _check_typewriter_effect_ready_to_advance() -> bool:
 	#check if the typewriter effect is enabled
-	if ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT):
+	if ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT_ACTIVE):
 		if not _is_typewriter_effect_finished():
 			return false
 	return true

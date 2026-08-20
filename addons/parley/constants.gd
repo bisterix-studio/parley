@@ -68,5 +68,10 @@ const TEST_LOCALE: StringName = &"parley/test_dialogue_sequence/locale"
 
 #region Effects
 #project settings
-const TYPEWRITER_EFFECT : StringName = &"parley/effects/typewriter_effect"
-const BEEP_SPEECH_EFFECT : StringName = &"parley/effects/beep_speech_effect"
+const TYPEWRITER_EFFECT_ACTIVE : StringName = &"parley/effects/typewriter_effect_active"
+const TYPEWRITER_EFFECT_TIME_BETWEEN_CHARACTERS_REVEALED_IN_SECONDS = &"parley/effects/typewriter_effect_time_between_characters_revealed_in_seconds"
+const SPEECH_SOUND_EFFECT_ACTIVE : StringName = &"parley/effects/speech_sound_effect_active"
+const SPEECH_SOUND_AUDIO_STREAM_PATH : StringName = &"parley/effects/speech_sound_audio_stream_path"
+const MINIMUM_DELAY_BETWEEN_SPEECH_SOUNDS_IN_SECONDS : StringName = &"parley/effects/minimum_delay_between_speech_sounds_in_seconds"
+const MAXIMUM_SPEECH_SOUNDS_EFFECT_TIME_IN_SECONDS : StringName = &"parley/effects/maximum_speech_sounds_effect_time_in_seconds"
+#endregion

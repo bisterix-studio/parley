@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://h2um32nfoi50"]
+[gd_scene load_steps=5 format=3 uid="uid://h2um32nfoi50"]
 
 [ext_resource type="Script" uid="uid://bd5ar2queljgh" path="res://addons/parley/components/dialogue/dialogue_container.gd" id="1_akamh"]
 [ext_resource type="Script" uid="uid://bbdricgwnglk5" path="res://addons/parley/effects/typewriter_effect_component.gd" id="2_vvwrg"]
 [ext_resource type="Script" uid="uid://c2u3gq16nfr0q" path="res://addons/parley/effects/speech_sound_effect_component.gd" id="3_8w4k7"]
-[ext_resource type="AudioStream" uid="uid://hwc3of52rugy" path="res://addons/parley/assets/speech_sound.ogg" id="4_oa67k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_umhml"]
 bg_color = Color(0, 0, 0, 1)
@@ -17,11 +16,6 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 shadow_color = Color(0, 0, 0, 0.164706)
-
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_e8iqh"]
-random_pitch = 1.12246
-streams_count = 1
-stream_0/stream = ExtResource("4_oa67k")
 
 [node name="DialogueContainer" type="MarginContainer"]
 custom_minimum_size = Vector2(200, 0)
@@ -78,4 +72,3 @@ typewriter_effect = NodePath("../TypewriterEffectComponent")
 audio_stream_player = NodePath("AudioStreamPlayer2D")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="PanelContainer/MarginContainer/DialogueContainer/DialogueTextLabel/BeepSpeechEffectComponent"]
-stream = SubResource("AudioStreamRandomizer_e8iqh")
