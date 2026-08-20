@@ -103,3 +103,21 @@ Dialogue Sequences.
 Setting path: `parley/test_dialogue_sequence/test_scene_path`
 
 Default: `res://addons/parley/views/test_dialogue_sequence_scene.tscn`
+
+
+## Effects
+
+### Typewriter Effect
+
+When on this will enable a typewriter special effect for dialogue text. This special effect 
+gradually reveals the dialogue text over time.
+
+Default: Off
+
+### Speech Sound
+
+This effect is used to play sounds as the text is shown. If used in conjuction with Typewriter Effect, 
+the speech sound will attempt to synchronize with the timing of the Typewriter Effect. If Typewriter Effect is off, 
+the speech sounds will be played for 5 seconds by default.
+
+Default: Off
