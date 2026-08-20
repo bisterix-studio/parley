@@ -29,13 +29,13 @@ func _ready() -> void:
 		if typewriter_effect:
 			var _error_code : int = typewriter_effect.typed.connect(beep)
 		else:
-			push_warning("Typewriter Effect is enabled in Parley Settings but BeepSpeechEffectComponent does not have a reference to the TypewriterEffect Node")
+			push_warning(ParleyUtils.log.warn_msg("Typewriter Effect is enabled in Parley Settings but BeepSpeechEffectComponent does not have a reference to the TypewriterEffect Node"))
 	
 	#Sanity check on the assigned audio stream player. The AudioStreamPlayer2D and AudioStreamPlayer3D do not inherit from a shared node.
 	#The script supports AudioStreamPlayer3D to be used if a dev wants positional audio for dialogues.
 	if audio_stream_player and audio_stream_player is AudioStreamPlayer2D or audio_stream_player is AudioStreamPlayer3D:
 		return
-	push_warning("BeepSpeechEffectComponent does not have an AudioStreamPlayer2D or AudioStreamPlayer3D assigned")
+	push_warning(ParleyUtils.log.warn_msg("BeepSpeechEffectComponent does not have an AudioStreamPlayer2D or AudioStreamPlayer3D assigned"))
 
 
 #called via signals to beep in timing with Typewriter Effect
