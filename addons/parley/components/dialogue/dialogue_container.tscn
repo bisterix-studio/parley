@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://h2um32nfoi50"]
+[gd_scene load_steps=5 format=3 uid="uid://h2um32nfoi50"]
 
 [ext_resource type="Script" uid="uid://bd5ar2queljgh" path="res://addons/parley/components/dialogue/dialogue_container.gd" id="1_akamh"]
+[ext_resource type="Script" uid="uid://bbdricgwnglk5" path="res://addons/parley/effects/typewriter_effect_component.gd" id="2_vvwrg"]
+[ext_resource type="Script" uid="uid://c2u3gq16nfr0q" path="res://addons/parley/effects/speech_sound_effect_component.gd" id="3_8w4k7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_umhml"]
 bg_color = Color(0, 0, 0, 1)
@@ -49,7 +51,7 @@ theme_override_font_sizes/mono_font_size = 24
 theme_override_font_sizes/normal_font_size = 24
 theme_override_font_sizes/bold_font_size = 24
 bbcode_enabled = true
-text = "[b]Unknown[/b] - "
+text = "[b]Unknown[/b] – "
 fit_content = true
 scroll_active = false
 shortcut_keys_enabled = false
@@ -58,3 +60,15 @@ hint_underlined = false
 deselect_on_focus_loss_enabled = false
 drag_and_drop_selection_enabled = false
 visible_characters_behavior = 1
+
+[node name="TypewriterEffectComponent" type="Node" parent="PanelContainer/MarginContainer/DialogueContainer/DialogueTextLabel" node_paths=PackedStringArray("rich_text_label_for_typewriter_effect") groups=["parley_typewriter_effect"]]
+unique_name_in_owner = true
+script = ExtResource("2_vvwrg")
+rich_text_label_for_typewriter_effect = NodePath("..")
+
+[node name="BeepSpeechEffectComponent" type="Node" parent="PanelContainer/MarginContainer/DialogueContainer/DialogueTextLabel" node_paths=PackedStringArray("typewriter_effect", "audio_stream_player")]
+script = ExtResource("3_8w4k7")
+typewriter_effect = NodePath("../TypewriterEffectComponent")
+audio_stream_player = NodePath("AudioStreamPlayer2D")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="PanelContainer/MarginContainer/DialogueContainer/DialogueTextLabel/BeepSpeechEffectComponent"]

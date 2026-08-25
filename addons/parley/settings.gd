@@ -23,6 +23,13 @@ static var DEFAULT_SETTINGS: Dictionary = {
 	ParleyConstants.TEST_DIALOGUE_SEQUENCE_TEST_SCENE_PATH: "res://addons/parley/views/test_dialogue_sequence_scene.tscn",
 	ParleyConstants.TEST_DEFAULT_LOCALE: "",
 	ParleyConstants.EDITOR_IS_KEYBOARD_SHORTCUTS_ACTIVE: false,
+	# Effects
+	ParleyConstants.TYPEWRITER_EFFECT_ACTIVE: false,
+	ParleyConstants.TYPEWRITER_EFFECT_TIME_BETWEEN_CHARACTERS_REVEALED_IN_SECONDS: 0.05,
+	ParleyConstants.SPEECH_SOUND_EFFECT_ACTIVE: false,
+	ParleyConstants.SPEECH_SOUND_AUDIO_STREAM_PATH: "res://addons/parley/assets/speech_sound_stream.tres",
+	ParleyConstants.MINIMUM_DELAY_BETWEEN_SPEECH_SOUNDS_IN_SECONDS: 0.1,
+	ParleyConstants.MAXIMUM_SPEECH_SOUNDS_EFFECT_TIME_IN_SECONDS: 5.0
 }
 
 
