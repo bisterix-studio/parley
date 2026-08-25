@@ -309,15 +309,19 @@ func _is_typewriter_effect_finished() -> bool:
 #dialogue container is instantiated each dialoge node, this includes a new typewriter effect script each time
 		var typewriter_effects : Array[Node] = get_tree().get_nodes_in_group("parley_typewriter_effect")
 		#find all typewriter effects that were created, and check to see if they are finished
-		var all_typewriters_finished = true
-		for typewriter_effect in typewriter_effects:
-			if not typewriter_effect.is_finished():
-				all_typewriters_finished = false
+		var all_typewriters_finished: bool = true
+		for _typewriter_effect: Node in typewriter_effects:
+			if _typewriter_effect is TypewriterEffectComponent:
+				var typewriter_effect: TypewriterEffectComponent = _typewriter_effect
+				if not typewriter_effect.is_finished():
+					all_typewriters_finished = false
 		return all_typewriters_finished
 
 
 func _request_typewriter_effects_finish() -> void:
 	var typewriter_effects : Array[Node] = get_tree().get_nodes_in_group("parley_typewriter_effect")
-	for typewriter_effect in typewriter_effects:
-				typewriter_effect.force_finished()
+	for _typewriter_effect: Node in typewriter_effects:
+		if _typewriter_effect is TypewriterEffectComponent:
+			var typewriter_effect: TypewriterEffectComponent = _typewriter_effect
+			typewriter_effect.force_finished()
 #endregion

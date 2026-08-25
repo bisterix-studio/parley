@@ -23,7 +23,7 @@ func _ready() -> void:
 	typewriter_enabled = ParleyUtils.Settings.get_setting(ParleyUtils.Constants.TYPEWRITER_EFFECT_ACTIVE)
 	_minimum_delay_between_speech_sounds_in_seconds = ParleyUtils.Settings.get_setting(ParleyUtils.Constants.MINIMUM_DELAY_BETWEEN_SPEECH_SOUNDS_IN_SECONDS)
 	_maximum_speech_sounds_effect_time_in_seconds = ParleyUtils.Settings.get_setting(ParleyUtils.Constants.MAXIMUM_SPEECH_SOUNDS_EFFECT_TIME_IN_SECONDS)
-	audio_stream_player.stream = load(ParleyUtils.Settings.get_setting(ParleyUtils.Constants.SPEECH_SOUND_AUDIO_STREAM_PATH))
+	var audio_stream_player_stream_path: String = ParleyUtils.Settings.get_setting(ParleyUtils.Constants.SPEECH_SOUND_AUDIO_STREAM_PATH)
 	
 	
 	if not enabled:
@@ -39,8 +39,10 @@ func _ready() -> void:
 	#Sanity check on the assigned audio stream player. The AudioStreamPlayer2D and AudioStreamPlayer3D do not inherit from a shared node.
 	#The script supports AudioStreamPlayer3D to be used if a dev wants positional audio for dialogues.
 	if audio_stream_player and audio_stream_player is AudioStreamPlayer2D or audio_stream_player is AudioStreamPlayer3D:
-		return
-	push_warning(ParleyUtils.log.warn_msg("BeepSpeechEffectComponent does not have an AudioStreamPlayer2D or AudioStreamPlayer3D assigned"))
+		@warning_ignore("UNSAFE_PROPERTY_ACCESS")
+		audio_stream_player.stream = load(audio_stream_player_stream_path)
+	else:
+		push_warning(ParleyUtils.log.warn_msg("BeepSpeechEffectComponent does not have an AudioStreamPlayer2D or AudioStreamPlayer3D assigned"))
 
 
 #called via signals to beep in timing with Typewriter Effect
