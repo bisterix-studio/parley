@@ -25,14 +25,6 @@ var previous_node_ast: ParleyNodeAst = null
 var current_node_asts: Array[ParleyNodeAst]: set = _set_current_node_asts
 
 
-#region LIFECYCLE
-func _exit_tree() -> void:
-	# Ensure the ctx is fully cleaned up
-	if ctx and not ctx.is_queued_for_deletion():
-		ctx.free()
-#endregion
-
-
 #region PROCESSING
 ## Start some dialogue
 func start(p_ctx: ParleyContext, p_dialogue_sequence_ast: ParleyDialogueSequenceAst, p_start_node: ParleyNodeAst = null) -> void:
