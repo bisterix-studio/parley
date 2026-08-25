@@ -9,9 +9,9 @@ signal finished
 @export var rich_text_label_for_typewriter_effect : RichTextLabel
 
 
-var _character_timer : float = 0.0
-var enabled : bool = false
-var _time_between_characters_revealed_in_seconds = 0.05
+var _character_timer: float = 0.0
+var enabled: bool = false
+var _time_between_characters_revealed_in_seconds: float = 0.05
 
 
 func _ready() -> void:
@@ -25,16 +25,17 @@ func _ready() -> void:
 		return
 	
 	
-	var typewriters = get_tree().get_nodes_in_group("parley_typewriter_effect")
-	print(typewriters)
+	var typewriters: Array[Node] = get_tree().get_nodes_in_group("parley_typewriter_effect")
 	#only worry about other typewriters if we are not the first added to the scene tree
 	if enabled and typewriters.size() > 1:
-		#we werent the first in the scene tree, disable ourselves for now.
+		#we weren't the first in the scene tree, disable ourselves for now.
 		enabled = false
 		#figure out which typewriter came before us.
-		var my_index = typewriters.find(self)
-		#ask that typewriter to let us know when they are finshed
-		typewriters[my_index - 1].finished.connect(_on_previous_typewriter_finished)
+		var my_index: int = typewriters.find(self)
+		#ask that typewriter to let us know when they are finished
+		if my_index > 0:
+			var typewriter: TypewriterEffectComponent = typewriters[my_index - 1]
+			var _result: int = typewriter.finished.connect(_on_previous_typewriter_finished)
 		
 	
 	#set visible characters to 0 so the typewriter effect can begin
@@ -68,17 +69,17 @@ func is_finished() -> bool:
 #called by default_balloon when trying to advance dialogue
 func force_finished() -> void:
 	rich_text_label_for_typewriter_effect.visible_ratio = 1.0
-	#since this typewriter is no longer revelant, prevent other typewriters from finding it
+	#since this typewriter is no longer relevant, prevent other typewriters from finding it
 	remove_from_group("parley_typewriter_effect")
 	finished.emit()
 
 
 #connected to another typewriter's signal. Should never end up being called if typewriters are disabled
 func _on_previous_typewriter_finished() -> void:
-	#now that the typewriter before us is finished, enable self and typewrite
+	#now that the typewriter before us is finished, enable self and type-write
 	enabled = true
 
 
 func _exit_tree() -> void:
-	#since this typewriter is no longer revelant, prevent other typewriters from finding it
+	#since this typewriter is no longer relevant, prevent other typewriters from finding it
 	remove_from_group("parley_typewriter_effect")
